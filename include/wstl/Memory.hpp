@@ -19,7 +19,7 @@
 #include "Algorithm.hpp"
 #include "NullPointer.hpp"
 
-#ifdef __WSTL_LIBC_WRAPPERS__
+#ifdef __WSTL_MEMOPS_USE_LIBC__
 #include <string.h>
 #endif
 
@@ -30,11 +30,18 @@
 
 // Defines introduced
 
-/// @def __WSTL_LIBC_WRAPPERS__
-/// @brief If defined, the library will define wrappers for standard C library functions
+/// @def __WSTL_MEMOPS_USE_LIBC__
+/// @brief If defined, the library will use functions from the C standard library for memory operations
 /// @ingroup memory
 #ifdef __DOXYGEN__
-    #define __WSTL_LIBC_WRAPPERS__ 
+    #define __WSTL_MEMOPS_USE_LIBC__ 
+#endif
+
+/// @def __WSTL_MEMOPS_USE_BUILTINS__
+/// @brief If defined, the library will use compiler built-in functions for memory operations where available
+/// @ingroup memory
+#ifdef __DOXYGEN__
+    #define __WSTL_MEMOPS_USE_BUILTINS__ 
 #endif
 
 namespace wstl {
@@ -216,11 +223,11 @@ namespace wstl {
         typedef T& ReferenceType;
         
         /// @brief Default constructor
-        __WSTL_CONSTEXPR__ UniquePointer() : m_Pointer(__WSTL_NULLPTR__) __WSTL_NOEXCEPT__ {}
+        __WSTL_CONSTEXPR__ UniquePointer() __WSTL_NOEXCEPT__ : m_Pointer(__WSTL_NULLPTR__) {}
 
         /// @brief Parameterized constructor
         /// @param pointer The pointer to the object being managed
-        __WSTL_CONSTEXPR__ explicit UniquePointer(PointerType pointer) : m_Pointer(pointer) __WSTL_NOEXCEPT__ {}
+        __WSTL_CONSTEXPR__ explicit UniquePointer(PointerType pointer) __WSTL_NOEXCEPT__ : m_Pointer(pointer) {}
 
         #ifdef __WSTL_CXX11__
         /// @brief Move constructor
@@ -396,11 +403,11 @@ namespace wstl {
         typedef T& ReferenceType;
 
         /// @brief Default constructor
-        __WSTL_CONSTEXPR__ UniquePointer() : m_Pointer(__WSTL_NULLPTR__) __WSTL_NOEXCEPT__ {}
+        __WSTL_CONSTEXPR__ UniquePointer() __WSTL_NOEXCEPT__ : m_Pointer(__WSTL_NULLPTR__) {}
 
         /// @brief Parameterized constructor
         /// @param pointer The pointer to the object being managed
-        __WSTL_CONSTEXPR__ UniquePointer(PointerType pointer) : m_Pointer(pointer) __WSTL_NOEXCEPT__ {}
+        __WSTL_CONSTEXPR__ UniquePointer(PointerType pointer) __WSTL_NOEXCEPT__ : m_Pointer(pointer) {}
 
         #ifdef __WSTL_CXX11__
         /// @brief Move constructor
@@ -1113,286 +1120,176 @@ namespace wstl {
 
     // Wrappers for libc functions (if there are user-defined ones)
 
-    #ifdef __WSTL_LIBC_WRAPPERS__
-    using ::memchr;
-    using ::memcmp;
-    using ::memcpy;
-    using ::memmove;
-    using ::memset;
+    #if defined(__WSTL_MEMOPS_USE_LIBC__) || defined(__WSTL_MEMOPS_USE_BUILTINS__)
+        #define __WSTL_MEMOPS_INLINE__ inline
+    #else
+        #define __WSTL_MEMOPS_INLINE__
+    #endif
 
-    /// @brief Namespace for memory-related function wrappers
+    /// @brief Namespace for memory-related functions
     namespace memory {
         // Copy - memcpy
 
-        template<typename T, typename U>
-        inline typename EnableIf<
-            IsTriviallyCopyable<typename IteratorTraits<T*>::ValueType>::Value &&
-            IsTriviallyCopyable<typename IteratorTraits<U*>::ValueType>::Value,
-            T*
-        >::Type 
-        /// @brief Copies a range of memory from one location to another
-        /// @param sourceFirst The beginning of the range to copy
-        /// @param sourceLast The end of the range to copy
-        /// @param destinationFirst The beginning of the range to copy to
-        /// @return A pointer to the destination
-        /// @note Requires `__WSTL_LIBC_WRAPPERS__` to be defined
+        /// @brief Copies bytes from source range to a destination range
+        /// @details Default implementation is not optimized! Define `__WSTL_MEMOPS_USE_LIBC__` 
+        /// to use `memcpy` from the <string.h> header (can be used from libc or provided manually), 
+        /// or `__WSTL_MEMOPS_USE_BUILTINS__` to use compiler built-ins if available.
+        /// @param destination Pointer to the destination range
+        /// @param source Pointer to the source range
+        /// @param count Number of bytes to copy
+        /// @return Pointer to the destination range
         /// @ingroup memory
-        Copy(const T* sourceFirst, const T* sourceLast, U* destinationFirst) __WSTL_NOEXCEPT__ {
-            return reinterpret_cast<T*>(memcpy(
-                reinterpret_cast<void*>(destinationFirst),
-                reinterpret_cast<const void*>(sourceFirst), 
-                sizeof(typename IteratorTraits<U*>::ValueType) * static_cast<size_t>(sourceLast - sourceFirst)
-            ));
-        }
+        __WSTL_MEMOPS_INLINE__ void* Copy(void* destination, const void* source, size_t count) __WSTL_NOEXCEPT__ {
+            #ifdef __WSTL_MEMOPS_USE_LIBC___
+            return ::memcpy(destination, source, count);
+            #elif defined(__WSTL_MEMOPS_USE_BUILTINS__)
+            return __builtin_memcpy(destination, source, count);
+            #else
+            uint8_t* to = static_cast<uint8_t*>(destination);
+            const uint8_t* from = static_cast<const uint8_t*>(source);
 
-        template<typename T, typename U>
-        inline typename EnableIf<
-            IsTriviallyCopyable<typename IteratorTraits<T*>::ValueType>::Value && 
-            IsTriviallyCopyable<typename IteratorTraits<U*>::ValueType>::Value,
-            T*
-        >::Type
-        /// @brief Copies a range of memory from one location to another
-        /// @param sourceFirst The beginning of the range to copy
-        /// @param count The number of elements to copy
-        /// @param destinationFirst The beginning of the range to copy to
-        /// @return A pointer to the destination
-        /// @note Requires `__WSTL_LIBC_WRAPPERS__` to be defined
-        /// @ingroup memory
-        Copy(const T* sourceFirst, size_t count, U* destinationFirst) __WSTL_NOEXCEPT__ {
-            return reinterpret_cast<T*>(memcpy(
-                reinterpret_cast<void*>(destinationFirst),
-                reinterpret_cast<const void*>(sourceFirst), 
-                sizeof(typename IteratorTraits<U*>::ValueType) * count
-            ));
+            for(size_t i = 0; i < count; ++i) to[i] = from[i];
+
+            return destination;
+            #endif
         }
 
         // Set - memset
 
-        template<typename Pointer, typename T>
-        inline typename EnableIf<
-            IsTriviallyCopyable<typename IteratorTraits<Pointer>::ValueType>::Value, 
-            Pointer
-        >::Type
         /// @brief Sets a range of memory to a specified value
-        /// @param first The beginning of the range to set
-        /// @param last The end of the range to set
-        /// @param value The value to set the range to
-        /// @return A pointer to the beginning of the range
-        /// @note Requires `__WSTL_LIBC_WRAPPERS__` to be defined
+        /// @details Default implementation is not optimized! Define `__WSTL_MEMOPS_USE_LIBC__` 
+        /// to use `memcpy` from the <string.h> header (can be used from libc or provided manually), 
+        /// or `__WSTL_MEMOPS_USE_BUILTINS__` to use compiler built-ins if available.
+        /// @param pointer Pointer to the memory range
+        /// @param value Value to set
+        /// @param count Number of bytes to set
+        /// @return Pointer to the memory range
         /// @ingroup memory
-        Set(Pointer first, const Pointer last, T value) __WSTL_NOEXCEPT__ {
-            return reinterpret_cast<Pointer>(memset(
-                reinterpret_cast<void*>(first),
-                static_cast<char>(value), 
-                sizeof(typename IteratorTraits<Pointer>::ValueType) * static_cast<size_t>(last - first)
-            ));
-        }
+        __WSTL_MEMOPS_INLINE__ void* Set(void* pointer, int value, size_t count) __WSTL_NOEXCEPT__ {
+            #ifdef __WSTL_MEMOPS_USE_LIBC___
+            return ::memset(pointer, value, count);
+            #elif defined(__WSTL_MEMOPS_USE_BUILTINS__)
+            return __builtin_memset(pointer, value, count);
+            #else
+            uint8_t* to = static_cast<uint8_t*>(pointer);
 
-        template<typename Pointer, typename T>
-        inline typename EnableIf<
-            IsTriviallyCopyable<typename IteratorTraits<Pointer>::ValueType>::Value, 
-            Pointer
-        >::Type
-        /// @brief Sets a range of memory to a specified value
-        /// @param first The beginning of the range to set
-        /// @param count The number of elements to set
-        /// @param value The value to set the range to
-        /// @return A pointer to the beginning of the range
-        /// @note Requires `__WSTL_LIBC_WRAPPERS__` to be defined
-        /// @ingroup memory
-        Set(Pointer first, size_t count, T value) __WSTL_NOEXCEPT__ {
-            return reinterpret_cast<Pointer>(memset(
-                reinterpret_cast<void*>(first),
-                static_cast<char>(value), 
-                sizeof(typename IteratorTraits<Pointer>::ValueType) * count
-            ));
+            for(size_t i = 0; i < count; ++i) to[i] = static_cast<uint8_t>(value);
+
+            return pointer;
+            #endif
         }
 
         // Move - memmove
 
-        template<typename T, typename U>
-        inline typename EnableIf<
-            IsTriviallyCopyable<typename IteratorTraits<T*>::ValueType>::Value &&
-            IsTriviallyCopyable<typename IteratorTraits<U*>::ValueType>::Value, 
-            T*
-        >::Type
-        /// @brief Moves a range of memory from one location to another, handling overlapping regions
-        /// @param sourceFirst The beginning of the range to move
-        /// @param sourceLast The end of the range to move
-        /// @param destinationFirst The beginning of the destination range
-        /// @return A pointer to the beginning of the destination range
-        /// @note Requires `__WSTL_LIBC_WRAPPERS__` to be defined
+        /// @brief Moves memory range from source to destination, handling overlapping regions
+        /// @details Default implementation is not optimized! Define `__WSTL_MEMOPS_USE_LIBC__` 
+        /// to use `memcpy` from the <string.h> header (can be used from libc or provided manually), 
+        /// or `__WSTL_MEMOPS_USE_BUILTINS__` to use compiler built-ins if available.
+        /// @param destination Pointer to the destination range
+        /// @param source Pointer to the source range
+        /// @param count Number of bytes to move
+        /// @return Pointer to the destination range
         /// @ingroup memory
-        Move(const T* sourceFirst, const T* sourceLast, U* destinationFirst) __WSTL_NOEXCEPT__ {
-            return reinterpret_cast<T*>(memmove(
-                reinterpret_cast<void*>(destinationFirst),
-                reinterpret_cast<const void*>(sourceFirst), 
-                sizeof(typename IteratorTraits<U*>::ValueType) * static_cast<size_t>(sourceLast - sourceFirst)
-            ));
-        }
+        __WSTL_MEMOPS_INLINE__ void* Move(void* destination, const void* source, size_t count) __WSTL_NOEXCEPT__ {
+            #ifdef __WSTL_MEMOPS_USE_LIBC___
+            return ::memmove(destination, source, count);
+            #elif defined(__WSTL_MEMOPS_USE_BUILTINS__)
+            return __builtin_memmove(destination, source, count);
+            #else
+            uint8_t* to = static_cast<uint8_t*>(destination);
+            const uint8_t* from = static_cast<const uint8_t*>(source);
 
-        template<typename T, typename U>
-        inline typename EnableIf<
-            IsTriviallyCopyable<typename IteratorTraits<T*>::ValueType>::Value &&
-            IsTriviallyCopyable<typename IteratorTraits<U*>::ValueType>::Value, 
-            T*
-        >::Type
-        /// @brief Moves a range of memory from one location to another, handling overlapping regions
-        /// @param sourceFirst The beginning of the range to move
-        /// @param count The number of elements to move
-        /// @param destinationFirst The beginning of the destination range
-        /// @return A pointer to the beginning of the destination range
-        /// @note Requires `__WSTL_LIBC_WRAPPERS__` to be defined
-        /// @ingroup memory
-        Move(const T* sourceFirst, size_t count, U* destinationFirst) __WSTL_NOEXCEPT__ {
-            return reinterpret_cast<T*>(memmove(
-                reinterpret_cast<void*>(destinationFirst),
-                reinterpret_cast<const void*>(sourceFirst), 
-                sizeof(typename IteratorTraits<U*>::ValueType) * count
-            ));
+            if(destination < source) {
+                for(size_t i = 0; i < count; ++i) to[i] = from[i];
+            }
+            else if(destination > source) {
+                for(size_t i = count - 1; i >= 0; --i) to[i] = from[i];
+            }
+
+            return destination;
+            #endif
         }
 
         // Compare - memcmp
 
-        template<typename T, typename U>
-        __WSTL_NODISCARD__
-        inline typename EnableIf<
-            IsTriviallyCopyable<typename IteratorTraits<T*>::ValueType>::Value && 
-            IsTriviallyCopyable<typename IteratorTraits<U*>::ValueType>::Value, 
-            int
-        >::Type
         /// @brief Compares two ranges of memory
-        /// @param first1 The beginning of the first range
-        /// @param last1 The end of the first range
-        /// @param first2 The beginning of the second range
-        /// @return Zero if equal, negative if `first1` < `first2`, positive if `first1` > `first2`
-        /// @note Requires `__WSTL_LIBC_WRAPPERS__` to be defined
+        /// @details Default implementation is not optimized! Define `__WSTL_MEMOPS_USE_LIBC__` 
+        /// to use `memcpy` from the <string.h> header (can be used from libc or provided manually), 
+        /// or `__WSTL_MEMOPS_USE_BUILTINS__` to use compiler built-ins if available.
+        /// @param ptr1 Pointer to the first memory range
+        /// @param ptr2 Pointer to the second memory range
+        /// @param count Number of bytes to compare
+        /// @return Zero if equal, negative if `pointer1 < pointer2`, positive if `pointer1 > pointer2`
         /// @ingroup memory
-        Compare(const T* first1, const T* last1, const U* first2) __WSTL_NOEXCEPT__ {
-            return memcmp(
-                reinterpret_cast<const void*>(first1),
-                reinterpret_cast<const void*>(first2), 
-                sizeof(typename IteratorTraits<T*>::ValueType) * static_cast<size_t>(last1 - first1)
-            );
-        }
+        __WSTL_MEMOPS_INLINE__ int Compare(const void* pointer1, const void* pointer2, size_t count) __WSTL_NOEXCEPT__ {
+            #ifdef __WSTL_MEMOPS_USE_LIBC___
+            return ::memcmp(destination, source, count);
+            #elif defined(__WSTL_MEMOPS_USE_BUILTINS__)
+            return __builtin_memcmp(pointer1, pointer2, count);
+            #else
+            const uint8_t* a = static_cast<const uint8_t*>(pointer1);
+            const uint8_t* b = static_cast<const uint8_t*>(pointer2);
 
-        template<typename T, typename U>
-        __WSTL_NODISCARD__
-        inline typename EnableIf<
-            IsTriviallyCopyable<typename IteratorTraits<T*>::ValueType>::Value &&
-            IsTriviallyCopyable<typename IteratorTraits<U*>::ValueType>::Value, 
-            int
-        >::Type
-        /// @brief Compares two ranges of memory
-        /// @param first1 The beginning of the first range
-        /// @param count The number of elements to compare
-        /// @param first2 The beginning of the second range
-        /// @return Zero if equal, negative if `first1` < `first2`, positive if `first1` > `first2`
-        /// @note Requires `__WSTL_LIBC_WRAPPERS__` to be defined
-        /// @ingroup memory
-        Compare(const T* first1, size_t count, const U* first2) __WSTL_NOEXCEPT__ {
-            return memcmp(
-                reinterpret_cast<const void*>(first1),
-                reinterpret_cast<const void*>(first2), 
-                sizeof(typename IteratorTraits<T*>::ValueType) * count
-            );
+            while(count--) if(*a++ != *b++) return (*a < *b) ? -1 : 1;
+
+            return 0;
+            #endif
         }
 
         // Locate - memchr
 
-        template<typename Pointer, typename T>
-        inline typename EnableIf<
-            IsTriviallyCopyable<typename IteratorTraits<Pointer>::ValueType>::Value && 
-            !IsConst<typename RemovePointer<Pointer>::Type>::Value, 
-            char*
-        >::Type
-        /// @brief Finds the first occurrence of a byte value in a range of memory
-        /// @param first The beginning of the range
-        /// @param last The end of the range
-        /// @param value The byte value to find
-        /// @return A pointer to the first occurrence of `value` in the range, or `last` if not found
-        /// @note Requires `__WSTL_LIBC_WRAPPERS__` to be defined
+        /// @brief Finds the first occurrence of a byte in a memory range
+        /// @details Default implementation is not optimized! Define `__WSTL_MEMOPS_USE_LIBC__` 
+        /// to use `memcpy` from the <string.h> header (can be used from libc or provided manually), 
+        /// or `__WSTL_MEMOPS_USE_BUILTINS__` to use compiler built-ins if available.
+        /// @param pointer Pointer to the memory range
+        /// @param value Value to find
+        /// @param count Number of bytes to search
+        /// @return Pointer to the first occurrence of `value` in memory, or `nullptr` if not found
         /// @ingroup memory
-        Locate(Pointer first, Pointer last, T value) __WSTL_NOEXCEPT__ {
-            void* result = memchr(
-                reinterpret_cast<const void*>(first), 
-                static_cast<char>(value), 
-                sizeof(typename IteratorTraits<Pointer>::ValueType) * static_cast<size_t>(last - first)
-            );
-            
-            return reinterpret_cast<char*>((result == 0) ? last : result);
+        __WSTL_MEMOPS_INLINE__ const void* Locate(const void* pointer, int value, size_t count) __WSTL_NOEXCEPT__ {
+            #ifdef __WSTL_MEMOPS_USE_LIBC___
+            return ::memchr(pointer, value, count);
+            #elif defined(__WSTL_MEMOPS_USE_BUILTINS__)
+            return __builtin_memchr(pointer, value, count);
+            #else
+            const uint8_t* to = static_cast<const uint8_t*>(pointer);
+
+            while(count--) {
+                if(*to++ == static_cast<uint8_t>(value)) 
+                    return const_cast<void*>(static_cast<const void*>(to));
+            }
+
+            return NullPointer;
+            #endif
         }
 
-        template<typename Pointer, typename T>
-        inline typename EnableIf<
-            IsTriviallyCopyable<typename IteratorTraits<Pointer>::ValueType>::Value && 
-            !IsConst<typename RemovePointer<Pointer>::Type>::Value, 
-            char*
-        >::Type
-        /// @brief Finds the first occurrence of a byte value in a range of memory
-        /// @param first The beginning of the range
-        /// @param count The number of elements to search
-        /// @param value The byte value to find
-        /// @return A pointer to the first occurrence of `value` in the range, or `last` if not found
-        /// @note Requires `__WSTL_LIBC_WRAPPERS__` to be defined
+        /// @brief Finds the first occurrence of a byte in a memory range
+        /// @details Default implementation is not optimized! Define `__WSTL_MEMOPS_USE_LIBC__` 
+        /// to use `memcpy` from the <string.h> header (can be used from libc or provided manually), 
+        /// or `__WSTL_MEMOPS_USE_BUILTINS__` to use compiler built-ins if available.
+        /// @param pointer Pointer to the memory range
+        /// @param value Value to find
+        /// @param count Number of bytes to search
+        /// @return Pointer to the first occurrence of `value` in memory, or `nullptr` if not found
         /// @ingroup memory
-        Locate(Pointer first, size_t count, T value) __WSTL_NOEXCEPT__ {
-            void* result = memchr(
-                reinterpret_cast<const void*>(first), 
-                static_cast<char>(value), 
-                sizeof(typename IteratorTraits<Pointer>::ValueType) * count
-            );
-            
-            return reinterpret_cast<char*>((result == 0) ? first + count : result);
-        }
+        __WSTL_MEMOPS_INLINE__ void* Locate(void* pointer, int value, size_t count) __WSTL_NOEXCEPT__ {
+            #ifdef __WSTL_MEMOPS_USE_LIBC___
+            return ::memchr(pointer, value, count);
+            #elif defined(__WSTL_MEMOPS_USE_BUILTINS__)
+            return __builtin_memchr(pointer, value, count);
+            #else
+            uint8_t* to = static_cast<uint8_t*>(pointer);
 
-        template<typename Pointer, typename T>
-        inline typename EnableIf<
-            IsTriviallyCopyable<typename IteratorTraits<Pointer>::ValueType>::Value && 
-            IsConst<typename RemovePointer<Pointer>::Type>::Value, 
-            const char*
-        >::Type
-        /// @brief Finds the first occurrence of a byte value in a range of memory
-        /// @param first The beginning of the range
-        /// @param last The end of the range
-        /// @param value The byte value to find
-        /// @return A const pointer to the first occurrence of `value` in the range, or `last` if not found
-        /// @note Requires `__WSTL_LIBC_WRAPPERS__` to be defined
-        /// @ingroup memory
-        Locate(Pointer first, Pointer last, T value) __WSTL_NOEXCEPT__ {
-            const void* result = memchr(
-                reinterpret_cast<const void*>(first), 
-                static_cast<char>(value), 
-                sizeof(typename IteratorTraits<Pointer>::ValueType) * static_cast<size_t>(last - first)
-            );
-            
-            return reinterpret_cast<const char*>((result == 0) ? last : result);
-        }
+            while(count--) {
+                if(*to++ == static_cast<uint8_t>(value)) 
+                    return static_cast<void*>(to);
+            }
 
-        template<typename Pointer, typename T>
-        inline typename EnableIf<
-            IsTriviallyCopyable<typename IteratorTraits<Pointer>::ValueType>::Value && 
-            IsConst<typename RemovePointer<Pointer>::Type>::Value, 
-            const char*
-        >::Type
-        /// @brief Finds the first occurrence of a byte value in a range of memory
-        /// @param first The beginning of the range
-        /// @param count The number of elements to search
-        /// @param value The byte value to find
-        /// @return A const pointer to the first occurrence of `value` in the range, or `last` if not found
-        /// @note Requires `__WSTL_LIBC_WRAPPERS__` to be defined
-        /// @ingroup memory
-        Locate(Pointer first, size_t count, T value) __WSTL_NOEXCEPT__ {
-            const void* result = memchr(
-                reinterpret_cast<const void*>(first), 
-                static_cast<char>(value), 
-                sizeof(typename IteratorTraits<Pointer>::ValueType) * count
-            );
-            
-            return reinterpret_cast<const char*>((result == 0) ? first + count : result);
+            return NullPointer;
+            #endif
         }
     }
-    #endif
 }
 
 #endif

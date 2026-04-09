@@ -8,10 +8,11 @@
             "defines": [
                 "__WSTL_NO_INITIALIZERLIST__", 
                 "__WSTL_CHECK_PUSHPOP__",
-                "__WSTL_EXCEPTIONS__"
+                "__WSTL_EXCEPTIONS__",
+                "__WSTL_STD_ITERATORTRAITS_SUPPORT__"
             ],
             "cStandard": "c99",
-            "cppStandard": "c++11",
+            "cppStandard": "c++14",
             "intelliSenseMode": "macos-clang-arm64",
             "compilerPath": "/usr/bin/clang++"
         }

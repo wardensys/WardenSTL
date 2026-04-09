@@ -448,7 +448,7 @@ namespace wstl {
         /// @tparam B Second number
         template<typename T, T A, T B>
         #endif
-        class LCM;
+        struct LCM;
 
         template<typename T, T A, T B>
         #ifdef __WSTL_CXX11__

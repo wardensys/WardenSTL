@@ -220,6 +220,8 @@ namespace wstl {
             return ConstReverseIterator(m_Buffer);
         }
 
+        __WSTL_CONTAINER_RANGE_COMPAT__(BasicString)
+
         /// @brief Returns the length of the string
         SizeType Length() const {
             return this->m_CurrentSize;
@@ -231,7 +233,7 @@ namespace wstl {
             m_Buffer[0] = 0;
 
             #ifdef __WSTL_STRING_CLEAR_UNUSED__
-            memory::Set(m_Buffer, this->m_Capacity, 0);
+            memory::Set(m_Buffer, 0, this->m_Capacity);
             #endif
         }
 
@@ -281,7 +283,7 @@ namespace wstl {
                 else this->m_CurrentSize += count;
 
                 // Shifting
-                memory::Move(position, Min(this->m_CurrentSize - index, this->m_Capacity - index - count), position + count);
+                memory::Move(position + count, position, Min(this->m_CurrentSize - index, this->m_Capacity - index - count));
                 FillInRange(position, count, ch);
             }
 
@@ -326,7 +328,7 @@ namespace wstl {
                 else this->m_CurrentSize += count;
 
                 // Shifting
-                memory::Move(result, Min(this->m_CurrentSize - index, this->m_Capacity - index - count), result + count);
+                memory::Move(result + count, result, Min(this->m_CurrentSize - index, this->m_Capacity - index - count));
                 
                 result = CopyCharacters(first, count, result);
             }
@@ -409,7 +411,7 @@ namespace wstl {
             }
             else ++this->m_CurrentSize;
 
-            if(position != End()) memory::Move(result, End() - 1, result + 1);
+            if(position != End()) memory::Move(result + 1, result, Distance(result, End()) - 1);
             *result = ch;
 
             m_Buffer[this->m_CurrentSize] = 0;
@@ -473,11 +475,11 @@ namespace wstl {
 
             if(start == end) return start;
 
-            memory::Move(end, End(), start);
+            memory::Move(start, end, Distance(end, End()));
             this->m_CurrentSize -= Distance(first, last);
 
-            #ifdef __WSTL_STRING_CLEAR_UNUSED__
-            memory::Set(Begin() + this->m_CurrentSize, Begin() + this->m_Capacity, 0);
+            #ifndef __WSTL_STRING_CLEAR_UNUSED__
+            memory::Set(Begin() + this->m_CurrentSize, 0, this->m_Capacity);
             #else
             m_Buffer[this->m_CurrentSize] = 0;
             #endif
@@ -491,7 +493,7 @@ namespace wstl {
         Iterator Erase(ConstIterator position) {
             Iterator iterator = const_cast<Iterator>(position);
 
-            memory::Move(iterator + 1, End(), iterator);
+            memory::Move(iterator, iterator + 1, Distance(iterator + 1, End()));
             m_Buffer[--this->m_CurrentSize] = 0;
 
             return iterator;
@@ -559,7 +561,7 @@ namespace wstl {
             this->m_CurrentSize += SizeType(count);
             
             #ifdef __WSTL_STRING_CLEAR_UNUSED__
-            memory::Set(Begin() + this->m_CurrentSize, Begin() + this->m_Capacity, 0);
+            memory::Set(Begin() + this->m_CurrentSize, 0, this->m_Capacity);
             #else
             m_Buffer[this->m_CurrentSize] = 0;
             #endif
@@ -986,7 +988,7 @@ namespace wstl {
             if(position > this->Size()) return 0;
 
             count = Min(count, this->Size() - position);
-            memory::Move(m_Buffer + position, count, destination);
+            memory::Move(destination, m_Buffer + position, count);
 
             return count;
         }
@@ -1013,7 +1015,7 @@ namespace wstl {
             this->m_CurrentSize = count;
             
             #ifdef __WSTL_STRING_CLEAR_UNUSED__
-            memory::Set(Begin() + this->m_CurrentSize, Begin() + this->m_Capacity, 0);
+            memory::Set(Begin() + this->m_CurrentSize, 0, this->m_Capacity);
             #else
             m_Buffer[this->m_CurrentSize] = 0;
             #endif
@@ -1036,7 +1038,7 @@ namespace wstl {
             this->m_CurrentSize = operation(m_Buffer, count);
             
             #ifdef __WSTL_STRING_CLEAR_UNUSED__
-            memory::Set(Begin() + this->m_CurrentSize, Begin() + this->m_Capacity, 0);
+            memory::Set(Begin() + this->m_CurrentSize, 0, this->m_Capacity);
             #else
             m_Buffer[this->m_CurrentSize] = 0;
             #endif
@@ -1088,7 +1090,7 @@ namespace wstl {
             this->m_CurrentSize = SizeType(count);
             
             #ifdef __WSTL_STRING_CLEAR_UNUSED__
-            memory::Set(Begin() + this->m_CurrentSize, Begin() + this->m_Capacity, 0);
+            memory::Set(Begin() + this->m_CurrentSize, 0, this->m_Capacity);
             #else
             m_Buffer[this->m_CurrentSize] = 0;
             #endif
@@ -1125,7 +1127,7 @@ namespace wstl {
             this->m_CurrentSize = count;
             
             #ifdef __WSTL_STRING_CLEAR_UNUSED__
-            memory::Set(Begin() + this->m_CurrentSize, Begin() + this->m_Capacity, 0);
+            memory::Set(Begin() + this->m_CurrentSize, 0, this->m_Capacity);
             #else
             m_Buffer[this->m_CurrentSize] = 0;
             #endif
@@ -1868,7 +1870,7 @@ namespace wstl {
         template<typename Iterator1, typename Iterator2>
         static typename EnableIf<IsPointer<Iterator1>::Value && IsPointer<Iterator2>::Value, Iterator2>::Type
         CopyCharacters(Iterator1 source, size_t count, Iterator2 destination) {
-            memory::Move(source, count, destination);
+            memory::Move(destination, source, count);
             return destination + count;
         }
 
@@ -1953,26 +1955,26 @@ namespace wstl {
             // 3 cases: same size, grow, shrink
             if(insertCount == removeCount) {
                 // Same size: just overwrite (move is used when source overlaps)
-                memory::Move(string, insertCount, start);
+                memory::Move(start, string, insertCount);
             }
             else if (insertCount > removeCount) {
                 // Grow: shift tail then copy
-                memory::Move(tail, tailCount, tail + sizeChange);
+                memory::Move(tail + sizeChange, tail, tailCount);
 
                 // Handle case when source overlaps and is after the replacing range start
                 if(string > first && string < End()) string += sizeChange;
-                memory::Move(string, insertCount, start);
+                memory::Move(start, string, insertCount);
             }
             else {
                 // Shrink: move (is used when source overlaps) then shift tail
-                memory::Move(string, insertCount, start);
-                memory::Copy(tail, tailCount, tail + sizeChange);
+                memory::Move(start, string, insertCount);
+                memory::Copy(tail + sizeChange, tail, tailCount);
             }
 
             this->m_CurrentSize = Min(this->m_CurrentSize + sizeChange, this->Capacity());
             
             #ifdef __WSTL_STRING_CLEAR_UNUSED__
-            memory::Set(Begin() + this->m_CurrentSize, Begin() + this->m_Capacity, 0);
+            memory::Set(Begin() + this->m_CurrentSize, 0, this->m_Capacity);
             #else
             m_Buffer[this->m_CurrentSize] = 0;
             #endif

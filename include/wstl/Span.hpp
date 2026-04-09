@@ -202,6 +202,8 @@ namespace wstl {
             return ReverseCircularIterator(ReverseBegin(), ReverseEnd());
         }
 
+        __WSTL_CONTAINER_RANGE_COMPAT__(Span)
+
         /// @brief Returns a reference to the first element of the span
         __WSTL_NODISCARD__ __WSTL_CONSTEXPR__ ReferenceType Front() const __WSTL_NOEXCEPT__ {
             return *m_Begin;

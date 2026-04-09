@@ -272,7 +272,10 @@ namespace wstl {
     #define WSTL_COUNT_ARGS(...) __WSTL_COUNT_ARGS_IMPL__(dummy __VA_OPT__(,) __VA_ARGS__, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
 #elif defined(__WSTL_GCC__) || defined(__WSTL_CLANG__) || defined(__WSTL_ICC__)
     WSTL_DIAGNOSTIC_PUSH
-    WSTL_DIAGNOSTIC_IGNORE("-Wgnu-zero-variadic-macro-arguments")
+    #ifdef __WSTL_CLANG__
+        WSTL_DIAGNOSTIC_IGNORE("-Wgnu-zero-variadic-macro-arguments")
+    #endif
+
     #define WSTL_COUNT_ARGS(...) __WSTL_COUNT_ARGS_IMPL__(dummy, ##__VA_ARGS__, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
     WSTL_DIAGNOSTIC_POP
 #else

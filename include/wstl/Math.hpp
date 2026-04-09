@@ -477,7 +477,7 @@ namespace wstl {
     /// @ingroup maths
     template<typename T>
     __WSTL_NODISCARD__ __WSTL_CONSTEXPR__
-    inline typename EnableIf<!IsFloatingPoint<T>::Value, bool>::Type IsNaN(T value) {
+    inline typename EnableIf<!IsFloatingPoint<T>::Value, bool>::Type IsNaN(T) {
         return false;
     }
 
@@ -511,7 +511,7 @@ namespace wstl {
     /// @ingroup maths
     template<typename T>
     __WSTL_NODISCARD__ __WSTL_CONSTEXPR__
-    inline typename EnableIf<!IsFloatingPoint<T>::Value, bool>::Type IsInfinity(T value) {
+    inline typename EnableIf<!IsFloatingPoint<T>::Value, bool>::Type IsInfinity(T) {
         return false;
     }
 

@@ -368,8 +368,8 @@ namespace wstl {
     /// @see https://en.cppreference.com/w/cpp/utility/pair/make_pair
     template<typename T1, typename T2>
     __WSTL_CONSTEXPR14__ 
-    inline Pair<T1, T2> MakePair(T1&& a, T2&& b) {
-        return Pair<T1, T2>(Forward<T1>(a), Forward<T2>(b));
+    inline Pair<UnwrapReferenceDecayType<T1>, UnwrapReferenceDecayType<T2>> MakePair(T1&& a, T2&& b) {
+        return { Forward<T1>(a), Forward<T2>(b) };
     }
     #else
     /// @brief Makes a pair out of elements

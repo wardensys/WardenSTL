@@ -10,7 +10,12 @@
 #include "Container.hpp"
 #include "NullPointer.hpp"
 #include "TypeTraits.hpp"
-#include "private/Error.hpp"
+#include "InitializerList.hpp"
+#include "StandardExceptions.hpp"
+#include "PlacementNew.hpp"
+#include "Iterator.hpp"
+#include "Algorithm.hpp"
+#include "ErrorHandler.hpp"
 
 
 /// @defgroup list List
@@ -587,6 +592,8 @@ namespace wstl {
         ConstReverseIterator ConstReverseEnd() const {
             return ConstReverseIterator(Begin());
         }
+
+        __WSTL_CONTAINER_RANGE_COMPAT__(BasicList)
         
         /// @brief Clears the list, removing all elements
         void Clear() {

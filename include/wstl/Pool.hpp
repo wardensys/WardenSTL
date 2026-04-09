@@ -158,6 +158,8 @@ namespace wstl {
             return ConstIterator(this, this->m_Storage.Data + this->Capacity());
         }
 
+        __WSTL_CONTAINER_RANGE_COMPAT__(BasicIntrusivePool)
+
         /// @brief Allocates new object from the pool
         /// @return Pointer to the object
         PointerType Allocate() {
@@ -513,6 +515,8 @@ namespace wstl {
         ConstIterator ConstEnd() const {
             return ConstIterator(this, m_Indices.NoPosition);
         }
+
+        __WSTL_CONTAINER_RANGE_COMPAT__(IndexedPool)
 
         /// @brief Allocates new object from the pool
         /// @return Pointer to the object

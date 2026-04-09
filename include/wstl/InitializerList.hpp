@@ -8,6 +8,7 @@
 
 #include "private/Platform.hpp"
 #include "NullPointer.hpp"
+#include "Container.hpp"
 #include <stddef.h>
 
 
@@ -53,6 +54,8 @@ namespace std {
         constexpr ConstIterator End() const noexcept {
             return m_First + m_Length;
         }
+        
+        __WSTL_CONTAINER_RANGE_COMPAT__(initializer_list)
 
         /// @brief Default constructor
         constexpr initializer_list() noexcept : m_First(nullptr), m_Length(0) {}

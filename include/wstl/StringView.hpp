@@ -109,6 +109,8 @@ namespace wstl {
             return ConstReverseIterator(m_Data);
         }
 
+        __WSTL_CONTAINER_RANGE_COMPAT__(BasicStringView)
+
         /// @brief Access operator
         /// @param index Index of the character to access
         __WSTL_CONSTEXPR__ ConstReferenceType operator[](SizeType index) const {
@@ -190,7 +192,7 @@ namespace wstl {
 
             if(position < Size()) {
                 toCopy = Min(count, Size() - position);
-                memory::Move(position, toCopy, destination);
+                memory::Move(destination, position, toCopy);
             }
 
             return toCopy;

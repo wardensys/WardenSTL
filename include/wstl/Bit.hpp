@@ -71,7 +71,7 @@ namespace wstl {
     typename EnableIf<!IsIntegral<To>::Value && !IsIntegral<From>::Value && sizeof(To) == sizeof(From) && IsTriviallyCopyable<From>::Value && IsTriviallyCopyable<To>::Value, To>::Type
     BitCast(const From& source) __WSTL_NOEXCEPT__ {
         To destination;
-        memory::Copy(&source, sizeof(To), &destination);
+        memory::Copy(&destination, &source, sizeof(To));
         return destination;
     }
 
@@ -1444,6 +1444,17 @@ namespace wstl {
     template<typename T>
     __WSTL_CONSTEXPR14__ inline bool TestFlag(const T& object, T flag) __WSTL_NOEXCEPT__ {
         return (object & flag) != 0;
+    }
+
+    // Is even
+
+    /// @brief Checks if an integral value is even
+    /// @param value The value to check
+    /// @return True if the value is even, false otherwise
+    /// @ingroup binary
+    template<typename T>
+    __WSTL_CONSTEXPR__ typename EnableIf<IsIntegral<T>::Value, bool>::Type IsEven(T value) {
+        return (static_cast<typename MakeUnsigned<T>::Type>(value) & 1) == 0;
     }
 }
 

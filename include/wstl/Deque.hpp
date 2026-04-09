@@ -17,6 +17,7 @@
 #include "StandardExceptions.hpp"
 #include "PlacementNew.hpp"
 #include "Algorithm.hpp"
+#include "ErrorHandler.hpp"
 
 
 /// @defgroup deque Deque
@@ -782,6 +783,8 @@ namespace wstl {
         ConstReverseIterator ConstReverseEnd() const {
             return ConstReverseIterator(Begin());
         }
+
+        __WSTL_CONTAINER_RANGE_COMPAT__(BasicDeque)
 
         /// @brief Clears the deque, removing all elements
         void Clear() {

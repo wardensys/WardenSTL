@@ -302,10 +302,10 @@ namespace wstl {
     template<>
     class NumericLimits<char> : public __private::__IntegralLimitsCommon<> {
     public:
-        static const __WSTL_CONSTEXPR__ int Digits = (CHAR_BIT * sizeof(char)) - (IsSigned<char>::Value ? 1 : 0);
+        static const __WSTL_CONSTEXPR__ int Digits = (CHAR_BIT * sizeof(char)) - (wstl::IsSigned<char>::Value ? 1 : 0);
         static const __WSTL_CONSTEXPR__ int Digits10 = __WSTL_LOG10_2__(Digits);
-        static const __WSTL_CONSTEXPR__ bool IsSigned = IsSigned<char>::Value;
-        static const __WSTL_CONSTEXPR__ bool IsModulo = IsUnsigned<char>::Value;
+        static const __WSTL_CONSTEXPR__ bool IsSigned = wstl::IsSigned<char>::Value;
+        static const __WSTL_CONSTEXPR__ bool IsModulo = wstl::IsUnsigned<char>::Value;
 
         static __WSTL_CONSTEXPR__ char Min() __WSTL_NOEXCEPT__ { return char(CHAR_MIN); }
         static __WSTL_CONSTEXPR__ char Max() __WSTL_NOEXCEPT__ { return char(CHAR_MAX); }
@@ -366,9 +366,9 @@ namespace wstl {
     template<>
     class NumericLimits<char8_t> : public __private::__IntegralLimitsCommon<> {
     public:
-        static constexpr int Digits = (CHAR_BIT * sizeof(char8_t)) - (IsSigned<char8_t>::Value ? 1 : 0);
+        static constexpr int Digits = (CHAR_BIT * sizeof(char8_t)) - (wstl::IsSigned<char8_t>::Value ? 1 : 0);
         static constexpr int Digits10 = __WSTL_LOG10_2__(Digits);
-        static constexpr bool IsSigned = IsSigned<char8_t>::Value;
+        static constexpr bool IsSigned = wstl::IsSigned<char8_t>::Value;
         static constexpr bool IsModulo = false;
 
         static constexpr char8_t Min() __WSTL_NOEXCEPT__ { return char8_t(CHAR_MIN); }
@@ -432,10 +432,10 @@ namespace wstl {
     template<>
     class NumericLimits<wchar_t> : public __private::__IntegralLimitsCommon<> {
     public:
-        static const __WSTL_CONSTEXPR__ int Digits = (CHAR_BIT * sizeof(wchar_t)) - (IsSigned<wchar_t>::Value ? 1 : 0);
+        static const __WSTL_CONSTEXPR__ int Digits = (CHAR_BIT * sizeof(wchar_t)) - (wstl::IsSigned<wchar_t>::Value ? 1 : 0);
         static const __WSTL_CONSTEXPR__ int Digits10 = __WSTL_LOG10_2__(Digits);
-        static const __WSTL_CONSTEXPR__ bool IsSigned = IsSigned<wchar_t>::Value;
-        static const __WSTL_CONSTEXPR__ bool IsModulo = IsUnsigned<wchar_t>::Value;
+        static const __WSTL_CONSTEXPR__ bool IsSigned = wstl::IsSigned<wchar_t>::Value;
+        static const __WSTL_CONSTEXPR__ bool IsModulo = wstl::IsUnsigned<wchar_t>::Value;
 
         static __WSTL_CONSTEXPR__ wchar_t Min() __WSTL_NOEXCEPT__ { return WCHAR_MIN; }
         static __WSTL_CONSTEXPR__ wchar_t Max() __WSTL_NOEXCEPT__ { return WCHAR_MAX; }

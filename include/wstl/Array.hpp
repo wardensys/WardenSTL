@@ -142,6 +142,8 @@ namespace wstl {
             return End();
         }
 
+        __WSTL_CONTAINER_RANGE_COMPAT__(Array)
+
         /// @brief Gets the reverse iterator to the beginning of the array
         __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__ 
         ReverseIterator ReverseBegin() __WSTL_NOEXCEPT__ {

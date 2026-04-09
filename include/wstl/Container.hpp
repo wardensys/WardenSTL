@@ -8,7 +8,6 @@
 
 #include "private/Platform.hpp"
 #include "TypeTraits.hpp"
-#include "Memory.hpp"
 #include <stddef.h>
 
 
@@ -92,7 +91,7 @@ namespace wstl {
         /// @brief Rebinds the storage type to a different value type
         /// @tparam U The new value type to rebind to
         template<typename U>
-        struct Rebind { typedef typename Storage::Rebind<U>::Other Other; };
+        struct Rebind { typedef typename Storage::template Rebind<U>::Other Other; };
 
         /// @brief Indicates whether the storage type supports swapping itself without moving elements
         static const __WSTL_CONSTEXPR__ bool IsSwappable = false;
@@ -304,7 +303,7 @@ namespace wstl {
     protected:
         /// @brief Protected constructor
         /// @param capacity The maximum number of elements container can hold
-        ContainerBase(SizeType capacity) : m_Capacity(capacity), m_CurrentSize(0) {}
+        ContainerBase(SizeType capacity) : m_CurrentSize(0), m_Capacity(capacity) {}
 
         /// @brief Protected destructor
         ~ContainerBase() {}
@@ -421,5 +420,17 @@ namespace wstl {
         TypedContainerBase(SizeType capacity) : ContainerBase<>(capacity) {}
     };
 }
+
+// Macro for range-based loop compatibility for containers
+
+/// @brief Macro that defines hidden friend functions `begin` and `end` for a container type, 
+/// allowing it to be used in range-based for loops, must be used inside the container class definition
+/// @param type The container class to define the functions for
+/// @ingroup containers
+#define __WSTL_CONTAINER_RANGE_COMPAT__(type) \
+    friend __WSTL_CONSTEXPR__ typename type::Iterator begin(type& x) { return x.Begin(); } \
+    friend __WSTL_CONSTEXPR__ typename type::ConstIterator begin(const type& x) { return x.Begin(); } \
+    friend __WSTL_CONSTEXPR__ typename type::Iterator end(type& x) { return x.End(); } \
+    friend __WSTL_CONSTEXPR__ typename type::ConstIterator end(const type& x) { return x.End(); }
 
 #endif
