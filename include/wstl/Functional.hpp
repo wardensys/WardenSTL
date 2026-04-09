@@ -1320,6 +1320,20 @@ namespace wstl {
     };
     #endif
 
+    namespace compile {
+        /// @brief Adds two integral constant values at compile time
+        /// @tparam T Type of the integral constant values
+        /// @ingroup functional
+        template<typename T>
+        struct Plus {
+            /// @brief Applies the operation to two integral constant values
+            /// @tparam A Value of the first integral constant
+            /// @tparam B Value of the second integral constant
+            template<T A, T B>
+            struct Apply : IntegralConstant<T, (A + B)> {};
+        };
+    }
+
     // Minus
 
     #ifdef __WSTL_CXX11__
@@ -1366,6 +1380,20 @@ namespace wstl {
         } 
     };
     #endif
+
+    namespace compile {
+        /// @brief Subtracts two integral constant values at compile time
+        /// @tparam T Type of the integral constant values
+        /// @ingroup functional
+        template<typename T>
+        struct Minus {
+            /// @brief Applies the operation to two integral constant values
+            /// @tparam A Value of the first integral constant
+            /// @tparam B Value of the second integral constant
+            template<T A, T B>
+            struct Apply : IntegralConstant<T, (A - B)> {};
+        };
+    }
 
     // Multiplies
 
@@ -1414,6 +1442,20 @@ namespace wstl {
     };
     #endif
 
+    namespace compile {
+        /// @brief Multiplies two integral constant values at compile time
+        /// @tparam T Type of the integral constant values
+        /// @ingroup functional
+        template<typename T>
+        struct Multiplies {
+            /// @brief Applies the operation to two integral constant values
+            /// @tparam A Value of the first integral constant
+            /// @tparam B Value of the second integral constant
+            template<T A, T B>
+            struct Apply : IntegralConstant<T, (A * B)> {};
+        };
+    }
+
     // Divides
 
     #ifdef __WSTL_CXX11__
@@ -1460,6 +1502,20 @@ namespace wstl {
         } 
     };
     #endif
+
+    namespace compile {
+        /// @brief Divides two integral constant values at compile time
+        /// @tparam T Type of the integral constant values
+        /// @ingroup functional
+        template<typename T>
+        struct Divides {
+            /// @brief Applies the operation to two integral constant values
+            /// @tparam A Value of the first integral constant
+            /// @tparam B Value of the second integral constant
+            template<T A, T B>
+            struct Apply : IntegralConstant<T, (A / B)> {};
+        };
+    }
 
     // Modulus
 
@@ -1508,6 +1564,20 @@ namespace wstl {
     };
     #endif
 
+    namespace compile {
+        /// @brief Computes the modulus of two integral constant values at compile time
+        /// @tparam T Type of the integral constant values
+        /// @ingroup functional
+        template<typename T>
+        struct Modulus {
+            /// @brief Applies the operation to two integral constant values
+            /// @tparam A Value of the first integral constant
+            /// @tparam B Value of the second integral constant
+            template<T A, T B>
+            struct Apply : IntegralConstant<T, (A % B)> {};
+        };
+    }
+
     // Negate
 
     #ifdef __WSTL_CXX11__
@@ -1552,6 +1622,19 @@ namespace wstl {
         } 
     };
     #endif
+
+    namespace compile {
+        /// @brief Computes the negation of an integral constant value at compile time
+        /// @tparam T Type of the integral constant value
+        /// @ingroup functional
+        template<typename T>
+        struct Negate {
+            /// @brief Applies the operation to an integral constant value
+            /// @tparam X Value of the integral constant
+            template<T X>
+            struct Apply : IntegralConstant<T, (-X)> {};
+        };
+    }
 
     // Equal to
 
@@ -1600,6 +1683,20 @@ namespace wstl {
     };
     #endif
 
+    namespace compile {
+        /// @brief Compares two integral constant values for equality at compile time
+        /// @tparam T Type of the integral constant values
+        /// @ingroup functional
+        template<typename T>
+        struct EqualTo {
+            /// @brief Applies the operation to two integral constant values
+            /// @tparam A Value of the first integral constant
+            /// @tparam B Value of the second integral constant
+            template<T A, T B>
+            struct Apply : BoolConstant<(A == B)> {};
+        };
+    }
+
     // Not equal to
 
     #ifdef __WSTL_CXX11__
@@ -1646,6 +1743,20 @@ namespace wstl {
         } 
     };
     #endif
+
+    namespace compile {
+        /// @brief Compares two integral constant values for inequality at compile time
+        /// @tparam T Type of the integral constant values
+        /// @ingroup functional
+        template<typename T>
+        struct NotEqualTo {
+            /// @brief Applies the operation to two integral constant values
+            /// @tparam A Value of the first integral constant
+            /// @tparam B Value of the second integral constant
+            template<T A, T B>
+            struct Apply : BoolConstant<(A != B)> {};
+        };
+    }
 
     // Greater
 
@@ -1694,6 +1805,20 @@ namespace wstl {
     };
     #endif
 
+    namespace compile {
+        /// @brief Compares two integral constant values for greater-than relation at compile time
+        /// @tparam T Type of the integral constant values
+        /// @ingroup functional
+        template<typename T>
+        struct Greater {
+            /// @brief Applies the operation to two integral constant values
+            /// @tparam A Value of the first integral constant
+            /// @tparam B Value of the second integral constant
+            template<T A, T B>
+            struct Apply : BoolConstant<(A > B)> {};
+        };
+    }
+
     // Less
 
     #ifdef __WSTL_CXX11__
@@ -1740,6 +1865,20 @@ namespace wstl {
         } 
     };
     #endif
+
+    namespace compile {
+        /// @brief Compares two integral constant values for less-than relation at compile time
+        /// @tparam T Type of the integral constant values
+        /// @ingroup functional
+        template<typename T>
+        struct Less {
+            /// @brief Applies the operation to two integral constant values
+            /// @tparam A Value of the first integral constant
+            /// @tparam B Value of the second integral constant
+            template<T A, T B>
+            struct Apply : BoolConstant<(A < B)> {};
+        };
+    }
 
     // Greater equal
 
@@ -1788,6 +1927,20 @@ namespace wstl {
     };
     #endif
 
+    namespace compile {
+        /// @brief Compares two integral constant values for greater-than-or-equal-to relation at compile time
+        /// @tparam T Type of the integral constant values
+        /// @ingroup functional
+        template<typename T>
+        struct GreaterEqual {
+            /// @brief Applies the operation to two integral constant values
+            /// @tparam A Value of the first integral constant
+            /// @tparam B Value of the second integral constant
+            template<T A, T B>
+            struct Apply : BoolConstant<(A >= B)> {};
+        };
+    }
+
     // Less equal
 
     #ifdef __WSTL_CXX11__
@@ -1834,6 +1987,20 @@ namespace wstl {
         } 
     };
     #endif
+
+    namespace compile {
+        /// @brief Compares two integral constant values for less-than-or-equal-to relation at compile time
+        /// @tparam T Type of the integral constant values
+        /// @ingroup functional
+        template<typename T>
+        struct LessEqual {
+            /// @brief Applies the operation to two integral constant values
+            /// @tparam A Value of the first integral constant
+            /// @tparam B Value of the second integral constant
+            template<T A, T B>
+            struct Apply : BoolConstant<(A <= B)> {};
+        };
+    }
 
     // Logical and
 
@@ -1882,6 +2049,20 @@ namespace wstl {
     };
     #endif
 
+    namespace compile {
+        /// @brief Computes the logical AND of two integral constant values at compile time
+        /// @tparam T Type of the integral constant values
+        /// @ingroup functional
+        template<typename T>
+        struct LogicalAnd {
+            /// @brief Applies the operation to two integral constant values
+            /// @tparam A Value of the first integral constant
+            /// @tparam B Value of the second integral constant
+            template<T A, T B>
+            struct Apply : BoolConstant<(A && B)> {};
+        };
+    }
+
     // Logical or
 
     #ifdef __WSTL_CXX11__
@@ -1929,6 +2110,20 @@ namespace wstl {
     };
     #endif
 
+    namespace compile {
+        /// @brief Computes the logical OR of two integral constant values at compile time
+        /// @tparam T Type of the integral constant values
+        /// @ingroup functional
+        template<typename T>
+        struct LogicalOr {
+            /// @brief Applies the operation to two integral constant values
+            /// @tparam A Value of the first integral constant
+            /// @tparam B Value of the second integral constant
+            template<T A, T B>
+            struct Apply : BoolConstant<(A || B)> {};
+        };
+    }
+
     // Logical not
 
     #ifdef __WSTL_CXX11__
@@ -1973,6 +2168,19 @@ namespace wstl {
         } 
     };
     #endif
+
+    namespace compile {
+        /// @brief Computes the logical NOT of an integral constant value at compile time
+        /// @tparam T Type of the integral constant value
+        /// @ingroup functional
+        template<typename T>
+        struct LogicalNot {
+            /// @brief Applies the operation to an integral constant value
+            /// @tparam X Value of the integral constant
+            template<T X>
+            struct Apply : BoolConstant<!X> {};
+        };
+    }
 
     // Bitwise and
 
@@ -2021,6 +2229,20 @@ namespace wstl {
     };
     #endif
 
+    namespace compile {
+        /// @brief Computes the bitwise AND of two integral constant values at compile time
+        /// @tparam T Type of the integral constant values
+        /// @ingroup functional
+        template<typename T>
+        struct BitwiseAnd {
+            /// @brief Applies the operation to an integral constant value
+            /// @tparam A Value of the first integral constant
+            /// @tparam B Value of the second integral constant
+            template<T A, T B>
+            struct Apply : IntegralConstant<T, (A & B)> {};
+        };
+    }
+
     // Bitwise or
 
     #ifdef __WSTL_CXX11__
@@ -2067,6 +2289,20 @@ namespace wstl {
         } 
     };
     #endif
+
+    namespace compile {
+        /// @brief Computes the bitwise OR of two integral constant values at compile time
+        /// @tparam T Type of the integral constant values
+        /// @ingroup functional
+        template<typename T>
+        struct BitwiseOr {
+            /// @brief Applies the operation to an integral constant value
+            /// @tparam A Value of the first integral constant
+            /// @tparam B Value of the second integral constant
+            template<T A, T B>
+            struct Apply : IntegralConstant<T, (A | B)> {};
+        };
+    }
 
     // Bitwise xor
 
@@ -2115,6 +2351,20 @@ namespace wstl {
     };
     #endif
 
+    namespace compile {
+        /// @brief Computes the bitwise XOR of two integral constant values at compile time
+        /// @tparam T Type of the integral constant values
+        /// @ingroup functional
+        template<typename T>
+        struct BitwiseXor {
+            /// @brief Applies the operation to an integral constant value
+            /// @tparam A Value of the first integral constant
+            /// @tparam B Value of the second integral constant
+            template<T A, T B>
+            struct Apply : IntegralConstant<T, (A ^ B)> {};
+        };
+    }
+
     // Bitwise not
 
     #ifdef __WSTL_CXX11__
@@ -2159,6 +2409,19 @@ namespace wstl {
         } 
     };
     #endif
+
+    namespace compile {
+        /// @brief Computes the bitwise NOT of an integral constant value at compile time
+        /// @tparam T Type of the integral constant value
+        /// @ingroup functional
+        template<typename T>
+        struct BitwiseNot {
+            /// @brief Applies the operation to an integral constant value
+            /// @tparam X Value of the integral constant
+            template<T X>
+            struct Apply : IntegralConstant<T, ~X> {};
+        };
+    }
 
     // Identity
 
