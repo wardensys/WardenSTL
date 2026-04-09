@@ -9,11 +9,22 @@
 #include "private/Platform.hpp"
 #include <stddef.h>
 
+#ifndef __WSTL_NO_PLACEMENTNEW__
+    #ifdef __has_include
+        #if __has_include(<new>)
+            #define __WSTL_NO_PLACEMENTNEW__
+        #endif
+    #endif
+#endif
 
+#ifndef __WSTL_NO_PLACEMENTNEW__
 inline void* operator new(size_t, void* p) __WSTL_NOEXCEPT__ { return p; }
 inline void* operator new[](size_t, void* p) __WSTL_NOEXCEPT__ { return p; }
 
 inline void operator delete(void*, void*) __WSTL_NOEXCEPT__ {}
 inline void operator delete[](void*, void*) __WSTL_NOEXCEPT__ {}
+#else
+#include <new>
+#endif
 
 #endif
