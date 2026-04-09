@@ -301,18 +301,16 @@ namespace wstl {
     ForwardIterator SearchInRange(ForwardIterator first, ForwardIterator last, Size count, const T& value) {
         if(count <= 0) return first;
 
-        ForwardIterator end = first;
-        Advance(end, Distance(first, last) - count + 1);
-
-        for(; first != end; ++first) {
+        for(; first != last; ++first) {
             if(!(*first == value)) continue;
             
             ForwardIterator candidate = first;
-            ForwardIterator it = first;
-            Size i = 1;
-            for(++it; i < count; ++i, ++it) if(it == last || !(*it == value)) break;
-
-            if(i == count) return candidate;
+            
+            for(Size i = 1; true; ++i) {
+                if(i == count) return candidate;
+                if(++first == last) return last;
+                if(!(*first == value)) break;
+            }
         }
 
         return last;
@@ -332,18 +330,16 @@ namespace wstl {
     ForwardIterator SearchInRange(ForwardIterator first, ForwardIterator last, Size count, const T& value, BinaryPredicate predicate) {
         if(count <= 0) return first;
 
-        ForwardIterator end = first;
-        Advance(end, Distance(first, last) - count + 1);
-
-        for(; first != end; ++first) {
+        for(; first != last; ++first) {
             if(!predicate(*first, value)) continue;
             
             ForwardIterator candidate = first;
-            ForwardIterator it = first;
-            Size i = 1;
-            for(++it; i < count; ++i, ++it) if(it == last || !predicate(*it, value)) break;
-
-            if(i == count) return candidate;
+            
+            for(Size i = 1; true; ++i) {
+                if(i == count) return candidate;
+                if(++first == last) return last;
+                if(!predicate(*first, value)) break;
+            }
         }
 
         return last;
@@ -404,7 +400,7 @@ namespace wstl {
 
     // Find first of
 
-    /// @brief Finds the first occurence of any element from a sequence in a another range
+    /// @brief Finds the first occurence of any element from a sequence in an another range
     /// @param first Iterator to the beginning of the range
     /// @param last Iterator to the end of the range
     /// @param sequenceFirst Iterator to the beginning of the sequence
@@ -423,7 +419,7 @@ namespace wstl {
         return last;
     }
 
-    /// @brief Finds the first occurence of any element from a sequence in a another range using predicate
+    /// @brief Finds the first occurence of any element from a sequence in an another range using predicate
     /// @param first Iterator to the beginning of the range
     /// @param last Iterator to the end of the range
     /// @param sequenceFirst Iterator to the beginning of the sequence
@@ -1041,7 +1037,7 @@ namespace wstl {
     typename EnableIf<!IsBidirectionalIterator<ForwardIterator>::Value && IsForwardIterator<ForwardIterator>::Value, ForwardIterator>::Type 
     Partition(ForwardIterator first, ForwardIterator last, UnaryPredicate predicate) {
         first = FindIfNot(first, last, predicate);
-        if(first == last) return;
+        if(first == last) return first;
 
         for(ForwardIterator i = Next(first); i != last; ++i)
             if(predicate(*i)) {
@@ -1204,6 +1200,24 @@ namespace wstl {
     }
     #endif
 
+    namespace compile {
+        /// @brief Returns the smaller of two integral constant values using a comparator
+        /// @details Comparator must have `::Apply<A, B>::Value` member that returns a boolean value
+        /// @tparam T Type of the values
+        /// @tparam A First value
+        /// @tparam B Second value
+        /// @tparam Compare Binary comparator type
+        /// @ingroup algorithm
+        template<typename T, T A, T B, typename Compare = Less<T>, bool = Compare::template Apply<A, B>::Value>
+        struct Min;
+
+        template<typename T, T A, T B, typename Compare>
+        struct Min<T, A, B, Compare, true> : IntegralConstant<T, A> {};
+
+        template<typename T, T A, T B, typename Compare>
+        struct Min<T, A, B, Compare, false> : IntegralConstant<T, B> {};
+    }
+
     // Max element
 
     /// @brief Finds the biggest element in a range using a comparator
@@ -1288,9 +1302,27 @@ namespace wstl {
     }
     #endif
 
+    namespace compile {
+        /// @brief Returns the bigger of two integral constant values using a comparator
+        /// @details Comparator must have `::Apply<A, B>::Value` member that returns a boolean value
+        /// @tparam T Type of the values
+        /// @tparam A First value
+        /// @tparam B Second value
+        /// @tparam Compare Binary comparator type
+        /// @ingroup algorithm
+        template<typename T, T A, T B, typename Compare = Less<T>, bool = Compare::template Apply<A, B>::Value>
+        struct Max;
+
+        template<typename T, T A, T B, typename Compare>
+        struct Max<T, A, B, Compare, true> : IntegralConstant<T, B> {};
+
+        template<typename T, T A, T B, typename Compare>
+        struct Max<T, A, B, Compare, false> : IntegralConstant<T, A> {};
+    }
+
     // Min max element
 
-    /// @brief Finds the smallest and the largest element in a range using a  comparator
+    /// @brief Finds the smallest and the largest element in a range using a comparator
     /// @param first Iterator to the beginning of the range
     /// @param last Iterator to the end of the range
     /// @param compare Binary comparator function that returns a boolean value
@@ -1377,6 +1409,30 @@ namespace wstl {
     }
     #endif
 
+    namespace compile {
+        /// @brief Returns the smaller and the bigger of two integral constant values using a comparator
+        /// @details Comparator must have `::Apply<A, B>::Value` member that returns a boolean value
+        /// @tparam T Type of the values
+        /// @tparam A First value
+        /// @tparam B Second value
+        /// @tparam Compare Binary comparator type
+        /// @ingroup algorithm
+        template<typename T, T A, T B, typename Compare = Less<T>, bool = Compare::template Apply<A, B>::Value>
+        struct MinMax;
+
+        template<typename T, T A, T B, typename Compare>
+        struct MinMax<T, A, B, Compare, true> {
+            static const __WSTL_CONSTEXPR__ T Min = A;
+            static const __WSTL_CONSTEXPR__ T Max = B;
+        };
+
+        template<typename T, T A, T B, typename Compare>
+        struct MinMax<T, A, B, Compare, false> {
+            static const __WSTL_CONSTEXPR__ T Min = B;
+            static const __WSTL_CONSTEXPR__ T Max = A;
+        };
+    }
+
     // Clamp
 
     /// @brief Returns specified value if in range, otherwise the nearest boundary
@@ -1389,7 +1445,7 @@ namespace wstl {
     template<typename T>
     __WSTL_NODISCARD__ __WSTL_CONSTEXPR__
     inline const T& Clamp(const T& value, const T& low, const T& high) {
-        return (value < low) ? low : (high > value) ? high : value;
+        return (value < low) ? low : (high < value) ? high : value;
     }
 
     /// @brief Returns specified value if in range, otherwise the nearest boundary using a comparator
@@ -1404,6 +1460,19 @@ namespace wstl {
     __WSTL_NODISCARD__ __WSTL_CONSTEXPR__
     inline const T& Clamp(const T& value, const T& low, const T& high, Compare compare) {
         return compare(value, low) ? low : compare(high, value) ? high : value;
+    }
+
+    namespace compile {
+        /// @brief Returns specified integral constant value if in range, otherwise the nearest boundary using a comparator
+        /// @details Comparator must have `::Apply<A, B>::Value` member that returns a boolean value
+        /// @tparam T Type of the values
+        /// @tparam Value Value to clamp
+        /// @tparam Low Lower boundary
+        /// @tparam High Upper boundary
+        /// @tparam Compare Binary comparator type
+        /// @ingroup algorithm
+        template<typename T, T Value, T Low, T High, typename Compare = Less<T>>
+        struct Clamp : Min<T, Max<T, Value, Low, Compare>::Value, High, Compare> {};
     }
 
     // Equal
@@ -1645,7 +1714,7 @@ namespace wstl {
     template<typename RandomAccessIterator, typename Compare>
     __WSTL_CONSTEXPR14__
     void SortHeap(RandomAccessIterator first, RandomAccessIterator last, Compare compare) {
-        while(Distance(first, last) > 1) {
+        while(first != last) {
             PopHeap(first, last, compare);
             --last;
         }
@@ -1731,6 +1800,7 @@ namespace wstl {
     // Is sorted until
 
     /// @brief Checks if a range is sorted using a comparator until a certain position
+    /// @details Time complexity: O(N) (N = last - first); space complexity: O(1)
     /// @param first Iterator to the beginning of the range
     /// @param last Iterator to the end of the range
     /// @param compare Binary comparator function that returns a boolean value
@@ -1748,10 +1818,11 @@ namespace wstl {
             }
         }
 
-        return first;
+        return last;
     }
 
     /// @brief Checks if a range is sorted in ascending order until a certain position
+    /// @details Time complexity: O(N) (N = last - first); space complexity: O(1)
     /// @param first Iterator to the beginning of the range
     /// @param last Iterator to the end of the range
     /// @return Iterator to the first element that violates the sorted property
@@ -1759,13 +1830,22 @@ namespace wstl {
     /// @see https://en.cppreference.com/w/cpp/algorithm/is_sorted_until
     template<typename ForwardIterator>
     __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__
-    inline ForwardIterator IsSortedUntil(ForwardIterator first, ForwardIterator last) {
-        return IsSortedUntil(first, last, Less<>());
+    ForwardIterator IsSortedUntil(ForwardIterator first, ForwardIterator last) {
+        if(first != last) {
+            ForwardIterator next = first;
+            while(++next != last) {
+                if(*next < *first) return next;
+                first = next;
+            }
+        }
+
+        return last;
     }
 
     // Is sorted
 
     /// @brief Checks if a range is sorted
+    /// @details Time complexity: O(N) (N = last - first); space complexity: O(1)
     /// @param first Iterator to the beginning of the range
     /// @param last Iterator to the end of the range
     /// @return True if the range is sorted, false otherwise
@@ -1773,11 +1853,12 @@ namespace wstl {
     /// @see https://en.cppreference.com/w/cpp/algorithm/is_sorted
     template<typename ForwardIterator>
     __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__
-    inline bool IsSorted(ForwardIterator first, ForwardIterator last) {
+    bool IsSorted(ForwardIterator first, ForwardIterator last) {
         return IsSortedUntil(first, last) == last;
     }
 
     /// @brief Checks if a range is sorted using a comparator
+    /// @details Time complexity: O(N) (N = last - first); space complexity: O(1)
     /// @param first Iterator to the beginning of the range
     /// @param last Iterator to the end of the range
     /// @param compare Binary comparator function that returns a boolean value
@@ -1786,13 +1867,15 @@ namespace wstl {
     /// @see https://en.cppreference.com/w/cpp/algorithm/is_sorted
     template<typename ForwardIterator, typename Compare>
     __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__
-    inline bool IsSorted(ForwardIterator first, ForwardIterator last, Compare compare) {
+    bool IsSorted(ForwardIterator first, ForwardIterator last, Compare compare) {
         return IsSortedUntil(first, last, compare) == last;
     }
 
     // Quick sort
 
     /// @brief Sorts a range using quick sort algorithm and a comparator
+    /// @details Time complexity: O(N log N) on average, O(N^2) in the worst case (N = last - first); 
+    /// space complexity: O(log N) on average, O(N) in the worst case
     /// @param first Iterator to the beginning of the range
     /// @param last Iterator to the end of the range
     /// @param compare Binary comparator function that returns a boolean value
@@ -1820,6 +1903,8 @@ namespace wstl {
     }
 
     /// @brief Sorts a range into ascending order using quick sort algorithm
+    /// @details Time complexity: O(N log N) on average, O(N^2) in the worst case (N = last - first); 
+    /// space complexity: O(log N) on average, O(N) in the worst case
     /// @param first Iterator to the beginning of the range
     /// @param last Iterator to the end of the range
     /// @ingroup algorithm
@@ -1832,6 +1917,8 @@ namespace wstl {
     // Partial sort
 
     /// @brief Sorts first N elements of a range using a comparator
+    /// @details Time complexity: approximately O(N log M) (N = last - first, M = middle - first);
+    /// space complexity: O(1)
     /// @param first Iterator to the beginning of the range
     /// @param middle Iterator to the middle of the range
     /// @param last Iterator to the end of the range
@@ -1841,13 +1928,13 @@ namespace wstl {
     template<typename RandomAccessIterator, typename Compare>
     __WSTL_CONSTEXPR14__
     void PartialSort(RandomAccessIterator first, RandomAccessIterator middle, RandomAccessIterator last, Compare compare) {
-        if(Distance(first, last) <= 1) return;
+        if(Distance(first, last) <= 1 || Distance(first, middle) == 0) return;
         MakeHeap(first, middle, compare);
         
         for(RandomAccessIterator i = middle; i != last; ++i) {
             if(compare(*i, *first)) {
                 IteratorSwap(first, i);
-                PopHeap(first, middle, compare);
+                __private::__SiftDown(first, middle, first, compare);
             }
         }
 
@@ -1855,6 +1942,8 @@ namespace wstl {
     }
 
     /// @brief Sorts first N elements of a range into ascending order
+    /// @details Time complexity: approximately O(N log M) (N = last - first, M = middle - first);
+    /// space complexity: O(1)
     /// @param first Iterator to the beginning of the range
     /// @param middle Iterator to the middle of the range
     /// @param last Iterator to the end of the range
@@ -1869,6 +1958,8 @@ namespace wstl {
     // Partial sort copy
 
     /// @brief Copies first N elements of a range and sorts them using a comparator
+    /// @details Time complexity: approximately O(N log(min(N, D))) (N = last - first, D = resultLast - resultFirst);
+    /// space complexity: O(1)
     /// @param first Iterator to the beginning of the range
     /// @param last Iterator to the end of the range
     /// @param resultFirst Iterator to the beginning of the destination range
@@ -1890,7 +1981,7 @@ namespace wstl {
         for(; first != last; ++first) {
             if(compare(*first, *resultFirst)) {
                 *resultFirst = *first;
-                PopHeap(resultFirst, resultEnd, compare);
+                __private::__SiftDown(resultFirst, resultEnd, resultFirst, compare);
             }
         }
 
@@ -1899,6 +1990,8 @@ namespace wstl {
     }
 
     /// @brief Copies first N elements of a range and sorts them into ascending order
+    /// @details Time complexity: approximately O(N log(min(N, D))) (N = last - first, D = resultLast - resultFirst);
+    /// space complexity: O(1)
     /// @param first Iterator to the beginning of the range
     /// @param last Iterator to the end of the range
     /// @param resultFirst Iterator to the beginning of the destination range
@@ -1915,6 +2008,7 @@ namespace wstl {
     // Merge
 
     /// @brief Merges two sorted ranges into a single sorted range using a comparator
+    /// @details Time complexity: O(N + M) (N = last1 - first1, M = last2 - first2); space complexity: O(1)
     /// @param first1 Iterator to the beginning of the first range
     /// @param last1 Iterator to the end of the first range
     /// @param first2 Iterator to the beginning of the second range
@@ -1938,6 +2032,7 @@ namespace wstl {
     }
 
     /// @brief Merges two sorted ranges into a single sorted range
+    /// @details Time complexity: O(N + M) (N = last1 - first1, M = last2 - first2); space complexity: O(1)
     /// @param first1 Iterator to the beginning of the first range
     /// @param last1 Iterator to the end of the first range
     /// @param first2 Iterator to the beginning of the second range
@@ -1955,6 +2050,7 @@ namespace wstl {
     // Inplace merge
 
     /// @brief Merges two sorted ranges into a single sorted range in-place using a comparator
+    /// @details Time complexity: O(N log N) (N = last - first); space complexity: O(1)
     /// @param first Iterator to the beginning of the range
     /// @param middle Iterator to the end of the first range and the beginning of the second range
     /// @param last Iterator to the end of the range
@@ -1982,6 +2078,7 @@ namespace wstl {
     }
 
     /// @brief Merges two sorted ranges into a single sorted range in-place
+    /// @details Time complexity: O(N log N) (N = last - first); space complexity: O(1)
     /// @param first Iterator to the beginning of the range
     /// @param middle Iterator to the end of the first range and the beginning of the second range
     /// @param last Iterator to the end of the range
@@ -1995,46 +2092,75 @@ namespace wstl {
 
     // Merge sort
 
-    namespace __private {
-        template<typename RandomAccessIterator, typename Compare>
-        __WSTL_CONSTEXPR14__
-        void __MergeSort(RandomAccessIterator first, RandomAccessIterator last, RandomAccessIterator temp, Compare compare) {
-            if(Distance(first, last) <= 1) return;
-            RandomAccessIterator middle = first + (last - first) / 2;
-
-            __MergeSort(first, middle, temp, compare);
-            __MergeSort(middle, last, temp, compare);
-
-            Merge(first, middle, middle, last, temp, compare);
-            for(RandomAccessIterator l = first; l != last; ++l, ++temp) *l = *temp;
-        }
-    }
-
     /// @brief Sorts a range using merge sort algorithm and a comparator
+    /// @details Time complexity: O(N log N) (N = last - first); space complexity: O(N)
     /// @param first Iterator to the beginning of the range
     /// @param last Iterator to the end of the range
+    /// @param buffer Iterator to the beginning of the buffer range (must be at least as large as the input range)
     /// @param compare Binary comparator to use for sorting
     /// @ingroup algorithm
     template<typename RandomAccessIterator, typename Compare>
     __WSTL_CONSTEXPR14__
-    void MergeSort(RandomAccessIterator first, RandomAccessIterator last, Compare compare) {
-        typename IteratorTraits<RandomAccessIterator>::ValueType temp[Distance(first, last)];
-        __private::__MergeSort(first, last, temp, compare);
+    void MergeSort(RandomAccessIterator first, RandomAccessIterator last, RandomAccessIterator buffer, Compare compare) {
+        if(Distance(first, last) <= 1) return;
+        RandomAccessIterator middle = first + (last - first) / 2;
+
+        MergeSort(first, middle, buffer, compare);
+        MergeSort(middle, last, buffer, compare);
+
+        Merge(first, middle, middle, last, buffer, compare);
+        for(RandomAccessIterator l = first; l != last; ++l, ++buffer) *l = *buffer;
     }
 
     /// @brief Sorts a range into ascending order using merge sort algorithm
+    /// @details Time complexity: O(N log N) (N = last - first); space complexity: O(N)
     /// @param first Iterator to the beginning of the range
     /// @param last Iterator to the end of the range
+    /// @param buffer Iterator to the beginning of the buffer range (must be at least as large as the input range)
     /// @ingroup algorithm
     template<typename RandomAccessIterator>
     __WSTL_CONSTEXPR14__
-    inline void MergeSort(RandomAccessIterator first, RandomAccessIterator last) {
-        MergeSort(first, last, Less<typename IteratorTraits<RandomAccessIterator>::ValueType>());
+    inline void MergeSort(RandomAccessIterator first, RandomAccessIterator last, RandomAccessIterator buffer) {
+        MergeSort(first, last, buffer, Less<typename IteratorTraits<RandomAccessIterator>::ValueType>());
+    }
+
+    // Inplace merge sort
+
+    /// @brief Sorts a range using merge sort algorithm in-place and a comparator
+    /// @details Time complexity: O(N log^2 N) (N = last - first); space complexity: O(1)
+    /// @param first Iterator to the beginning of the range
+    /// @param last Iterator to the end of the range
+    /// @param compare Binary comparator to use for sorting
+    /// @ingroup algorithm
+    template<typename BidirectionalIterator, typename Compare>
+    __WSTL_CONSTEXPR14__
+    void InplaceMergeSort(BidirectionalIterator first, BidirectionalIterator last, Compare compare) {
+        typename IteratorTraits<BidirectionalIterator>::DifferenceType n = Distance(first, last);
+        if(n <= 1) return;
+
+        BidirectionalIterator middle = Next(first, n / 2);
+
+        InplaceMergeSort(first, middle, compare);
+        InplaceMergeSort(middle, last, compare);
+
+        InplaceMerge(first, middle, last, compare);
+    }
+
+    /// @brief Sorts a range into ascending order using merge sort algorithm in-place
+    /// @details Time complexity: O(N log^2 N) (N = last - first); space complexity: O(1)
+    /// @param first Iterator to the beginning of the range
+    /// @param last Iterator to the end of the range
+    /// @ingroup algorithm
+    template<typename BidirectionalIterator>
+    __WSTL_CONSTEXPR14__
+    inline void InplaceMergeSort(BidirectionalIterator first, BidirectionalIterator last) {
+        InplaceMergeSort(first, last, Less<typename IteratorTraits<BidirectionalIterator>::ValueType>());
     }
 
     // Heap sort
 
     /// @brief Sorts a range using heap sort algorithm and a comparator
+    /// @details Time complexity: O(N log N) (N = last - first); space complexity: O(1)
     /// @param first Iterator to the beginning of the range
     /// @param last Iterator to the end of the range
     /// @param compare Binary comparator to use for sorting
@@ -2047,6 +2173,7 @@ namespace wstl {
     }
 
     /// @brief Sorts a range into ascending order using heap sort algorithm
+    /// @details Time complexity: O(N log N) (N = last - first); space complexity: O(1)
     /// @param first Iterator to the beginning of the range
     /// @param last Iterator to the end of the range
     /// @ingroup algorithm
@@ -2058,24 +2185,8 @@ namespace wstl {
 
     // Nth element
 
-    namespace __private {
-        template<typename RandomAccessIterator, typename Compare>
-        class __PivotComparator {
-        public:
-            __WSTL_CONSTEXPR__ __PivotComparator(RandomAccessIterator pivot, Compare compare) 
-                : m_Pivot(pivot), m_Compare(compare) {};
-
-            bool operator()(const typename IteratorTraits<RandomAccessIterator>::ValueType& x) const {
-                return m_Compare(x, *m_Pivot);
-            }
-
-        private:
-            RandomAccessIterator m_Pivot;
-            Compare m_Compare;
-        };
-    }
-
-    /// @brief Partially sorts a range such that the element at `nth` is in its correct position using a comparator
+    /// @brief Rearranges a range such that the element at `nth` is in its correct position if the range were sorted using a comparator
+    /// @details Time complexity: O(N) (N = last - first); space complexity: O(1)
     /// @param first Iterator to the beginning of the range
     /// @param nth Iterator to the element to be placed in its correct position
     /// @param last Iterator to the end of the range
@@ -2085,19 +2196,37 @@ namespace wstl {
     template<typename RandomAccessIterator, typename Compare>
     __WSTL_CONSTEXPR14__
     void NthElement(RandomAccessIterator first, RandomAccessIterator nth, RandomAccessIterator last, Compare compare) {
-        while(first < last) {
-            RandomAccessIterator middle = Partition(first, last, 
-                __private::__PivotComparator<RandomAccessIterator, Compare>(first, compare));
+        while (first < last) {
+            // Median-of-three pivot selection
+            auto middle = first + (last - first) / 2;
+            
+            // Sort three pivots between themselves
+            if (compare(*middle, *first)) IteratorSwap(middle, first);
+            if (compare(*Previous(last), *first)) IteratorSwap(Previous(last), first);
+            if (compare(*Previous(last), *middle)) IteratorSwap(Previous(last), middle);
 
-            IteratorSwap(first, middle);
+            IteratorSwap(first, middle); // first is the pivot
 
-            if(middle == nth) return;
-            else if(middle < nth) first = middle + 1;
-            else last = middle;
+            // Partition
+            RandomAccessIterator i = Next(first);
+            for (RandomAccessIterator j = i; j < last; ++j) {
+                if (compare(*j, *first)) {
+                    IteratorSwap(i, j);
+                    ++i;
+                }
+            }
+
+            RandomAccessIterator pivotPosition = i - 1;
+            IteratorSwap(first, pivotPosition);
+
+            if (nth == pivotPosition) return; // return, element is in its position
+            else if (nth < pivotPosition) last = pivotPosition; // check left partition next
+            else first = pivotPosition + 1; // check right partition next
         }
     }
 
-    /// @brief Partially sorts a range such that the element at `nth` is in its correct position
+    /// @brief Rearranges a range such that the element at `nth` is in its correct position if the range were sorted into ascending order
+    /// @details Time complexity: O(N) (N = last - first); space complexity: O(1)
     /// @param first Iterator to the beginning of the range
     /// @param nth Iterator to the element to be placed in its correct position
     /// @param last Iterator to the end of the range
@@ -2112,6 +2241,8 @@ namespace wstl {
     // Sort
 
     /// @brief Sorts a range using a comparator. Uses quick sort algorithm internally
+    /// @details Time complexity: O(N log N) on average, O(N^2) in the worst case (N = last - first);\
+    /// space complexity: O(log N) on average, O(N) in the worst case
     /// @param first Iterator to the beginning of the range
     /// @param last Iterator to the end of the range
     /// @param compare Binary comparator to use for sorting
@@ -2124,6 +2255,8 @@ namespace wstl {
     }
 
     /// @brief Sorts a range into ascending order. Uses quick sort algorithm internally
+    /// @details Time complexity: O(N log N) on average, O(N^2) in the worst case (N = last - first);
+    /// space complexity: O(log N) on average, O(N) in the worst case
     /// @param first Iterator to the beginning of the range
     /// @param last Iterator to the end of the range
     /// @ingroup algorithm
@@ -2136,7 +2269,8 @@ namespace wstl {
 
     // Stable sort
 
-    /// @brief Sorts a range using a comparator, preserving order between equal elements. Uses merge sort algorithm internally
+    /// @brief Sorts a range using a comparator, preserving order between equal elements. Uses in-place merge sort algorithm internally
+    /// @details Time complexity: O(N log^2 N) (N = last - first); space complexity: O(1)
     /// @param first Iterator to the beginning of the range
     /// @param last Iterator to the end of the range
     /// @param compare Binary comparator to use for sorting
@@ -2145,10 +2279,11 @@ namespace wstl {
     template<typename RandomAccessIterator, typename Compare>
     __WSTL_CONSTEXPR14__
     inline void StableSort(RandomAccessIterator first, RandomAccessIterator last, Compare compare) {
-        MergeSort(first, last, compare);
+        InplaceMergeSort(first, last, compare);
     }
 
-    /// @brief Sorts a range into ascending order, preserving order between equal elements. Uses merge sort algorithm internally
+    /// @brief Sorts a range into ascending order, preserving order between equal elements. Uses in-place merge sort algorithm internally
+    /// @details Time complexity: O(N log^2 N) (N = last - first); space complexity: O(1)
     /// @param first Iterator to the beginning of the range
     /// @param last Iterator to the end of the range
     /// @ingroup algorithm
@@ -2156,7 +2291,7 @@ namespace wstl {
     template<typename RandomAccessIterator>
     __WSTL_CONSTEXPR14__
     inline void StableSort(RandomAccessIterator first, RandomAccessIterator last) {
-        MergeSort(first, last);
+        InplaceMergeSort(first, last);
     }
 
     // Lower bound
@@ -2235,7 +2370,7 @@ namespace wstl {
 
     // Binary search
 
-    /// @brief Checks if there is an element in a sorted range that is equal to the given value using a comparator
+    /// @brief Checks if there is an element in a sorted with a comparator range that is equal to the given value
     /// @param first Iterator to the beginning of the range
     /// @param last Iterator to the end of the range
     /// @param value Value to compare against
@@ -2247,7 +2382,7 @@ namespace wstl {
     __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__
     inline bool BinarySearch(ForwardIterator first, ForwardIterator last, const T& value, Compare compare) {
         first = LowerBound(first, last, value, compare);
-        return first != last && !compare(value, *first);
+        return !(first == last) && !compare(value, *first);
     }
 
     /// @brief Checks if there is an element in a sorted range that is equal to the given value
@@ -2306,7 +2441,7 @@ namespace wstl {
     __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__
     ForwardIterator BinaryFind(ForwardIterator first, ForwardIterator last, const T& value, Compare compare, Equality equality) {
         ForwardIterator i = LowerBound(first, last, value, compare);
-        return i != last || equality(value, *i) ? i : last;
+        return (i != last || equality(value, *i)) ? i : last;
     }
 
     /// @brief Find the given value in a sorted range using binary search algorithm
@@ -2546,15 +2681,14 @@ namespace wstl {
     template<typename ForwardIterator1, typename ForwardIterator2, typename BinaryPredicate>
     __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__
     bool IsPermutation(ForwardIterator1 first1, ForwardIterator1 last1, ForwardIterator2 first2, BinaryPredicate predicate) {
-        typedef typename IteratorTraits<ForwardIterator1>::DifferenceType DifferenceType;
-        DifferenceType len1 = Distance(first1, last1);
-        ForwardIterator2 last2 = Next(first2, len1);
+        if(first1 != last1) {
+            ForwardIterator2 last2 = Next(first2, Distance(first1, last1));
 
-        if(len1 != Distance(first2, last2)) return false;
-
-        for(ForwardIterator1 it = first1; it != last1; ++it) {
-            if(FindIf(first1, it, *it, BindFirst(predicate, *it)) != it) continue;
-            if(CountIf(first1, last1, *it, BindFirst(predicate, *it)) != Count(first2, last2, *it, BindFirst(predicate, *it))) return false;
+            for(ForwardIterator1 it = first1; it != last1; ++it) {
+                const BinderFirst<BinaryPredicate> predicateIsIt = BindFirst(predicate, *it);
+                if(FindIf(first1, it, predicateIsIt) != it) continue;
+                if(CountIf(first1, last1, predicateIsIt) != CountIf(first2, last2, predicateIsIt)) return false;
+            }
         }
 
         return true;
@@ -2570,21 +2704,68 @@ namespace wstl {
     template<typename ForwardIterator1, typename ForwardIterator2>
     __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__
     bool IsPermutation(ForwardIterator1 first1, ForwardIterator1 last1, ForwardIterator2 first2) {
-        typedef typename IteratorTraits<ForwardIterator1>::DifferenceType DifferenceType;
-        DifferenceType len1 = Distance(first1, last1);
-        ForwardIterator2 last2 = Next(first2, len1);
+        if(first1 != last1) {
+            ForwardIterator2 last2 = Next(first2, Distance(first1, last1));
 
-        if(len1 != Distance(first2, last2)) return false;
+            for(ForwardIterator1 it = first1; it != last1; ++it) {
+                if(Find(first1, it, *it) != it) continue;
+                if(Count(first1, last1, *it) != Count(first2, last2, *it)) return false;
+            }
+        }
 
-        for(ForwardIterator1 it = first1; it != last1; ++it) {
-            if(Find(first1, it, *it) != it) continue;
-            if(Count(first1, last1, *it) != Count(first2, last2, *it)) return false;
+        return true;
+    }
+
+    /// @brief Checks if two sorted ranges are permutations of each other using a predicate
+    /// @param first1 Iterator to the beginning of the first range
+    /// @param last1 Iterator to the end of the first range
+    /// @param first2 Iterator to the beginning of the second range
+    /// @param last2 Iterator to the end of the second range
+    /// @param predicate Binary predicate to use for comparison
+    /// @return True if the ranges are permutations of each other, false otherwise
+    /// @ingroup algorithm
+    /// @see https://en.cppreference.com/w/cpp/algorithm/is_permutation
+    template<typename ForwardIterator1, typename ForwardIterator2, typename BinaryPredicate>
+    __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__
+    bool IsPermutation(ForwardIterator1 first1, ForwardIterator1 last1, ForwardIterator2 first2, ForwardIterator2 last2, BinaryPredicate predicate) {
+        if(Distance(first1, last1) != Distance(first2, last2)) return false;
+
+        if(first1 != last1) {
+            for(ForwardIterator1 it = first1; it != last1; ++it) {
+                const BinderFirst<BinaryPredicate> predicateIsIt = BindFirst(predicate, *it);
+                if(FindIf(first1, it, predicateIsIt) != it) continue;
+                if(CountIf(first1, last1, predicateIsIt) != CountIf(first2, last2, predicateIsIt)) return false;
+            }
+        }
+
+        return true;
+    }
+
+    /// @brief Checks if two sorted ranges are permutations of each other
+    /// @param first1 Iterator to the beginning of the first range
+    /// @param last1 Iterator to the end of the first range
+    /// @param first2 Iterator to the beginning of the second range
+    /// @param last2 Iterator to the end of the second range
+    /// @return True if the ranges are permutations of each other, false otherwise
+    /// @ingroup algorithm
+    /// @see https://en.cppreference.com/w/cpp/algorithm/is_permutation
+    template<typename ForwardIterator1, typename ForwardIterator2>
+    __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__
+    bool IsPermutation(ForwardIterator1 first1, ForwardIterator1 last1, ForwardIterator2 first2, ForwardIterator2 last2) {
+        if(Distance(first1, last1) != Distance(first2, last2)) return false;
+
+        if(first1 != last1) {
+            for(ForwardIterator1 it = first1; it != last1; ++it) {
+                if(Find(first1, it, *it) != it) continue;
+                if(Count(first1, last1, *it) != Count(first2, last2, *it)) return false;
+            }
         }
 
         return true;
     }
 
     // Next permutation
+
     /// @brief Determines the next lexicographical permutation in a range using a comparator.
     /// If no permutation is found, the range is transformed into the first permutation and false is returned
     /// @param first Iterator to the beginning of the range
@@ -2722,6 +2903,8 @@ namespace wstl {
         for(; first != last && resultFirst != resultLast; ++first, ++resultFirst) *resultFirst = *first;
         return resultFirst;
     }
+
+    // Move safe
 
     /// @brief A safer version of the move algorithm that checks for overlapping ranges
     /// @param first Iterator to the beginning of the source range
