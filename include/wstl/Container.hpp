@@ -7,8 +7,9 @@
 #define __WSTL_CONTAINER_HPP__
 
 #include "private/Platform.hpp"
+#include "private/ParameterType.hpp"
 #include "TypeTraits.hpp"
-#include <stddef.h>
+#include "StaticAssert.hpp"
 
 
 namespace wstl {
@@ -388,6 +389,9 @@ namespace wstl {
         WSTL_STATIC_ASSERT(!IsVoid<ValueType>::Value, "T must be non-void");
 
     protected:
+        /// @brief The type of the parameter used for passing values of type T, optimized for small types
+        typedef typename __private::__ParameterType<T>::Type ParameterType;
+
         /// @brief Protected default constructor
         /// @details Only available if Storage is default-constructible
         TypedContainerBase() : ContainerBase<Storage>() {}
@@ -415,6 +419,9 @@ namespace wstl {
         WSTL_STATIC_ASSERT(!IsVoid<T>::Value, "T must be non-void");
 
     protected:
+        /// @brief The type of the parameter used for passing values of type T, optimized for small types
+        typedef typename __private::__ParameterType<T>::Type ParameterType;
+
         /// @brief Protected constructor
         /// @param capacity The maximum number of elements container can hold
         TypedContainerBase(SizeType capacity) : ContainerBase<>(capacity) {}
