@@ -6,11 +6,11 @@
 #ifndef __WSTL_TYPETRAITS_HPP__
 #define __WSTL_TYPETRAITS_HPP__
 
-#include <stddef.h>
-#include <stdint.h>
+#include "private/Platform.hpp"
 #include "NullPointer.hpp"
 #include "StaticAssert.hpp"
-#include "private/Platform.hpp"
+#include <stddef.h>
+#include <stdint.h>
 
 
 /// @defgroup type_traits Type Traits
@@ -24,6 +24,14 @@
 /// @ingroup type_traits
 #ifdef __DOXYGEN__
     #define __WSTL_EXCEPTIONS__ 
+#endif
+
+/// @def __WSTL_TYPETRAITS_NO_BUILTINS__
+/// @brief If defined, disables the use of compiler intrinsics for type traits, 
+/// forcing the use of heuristic implementations, some traits may always evaluate to `false`
+/// @ingroup type_traits
+#ifdef __DOXYGEN__
+    #define __WSTL_TYPETRAITS_NO_BUILTINS__ 
 #endif
 
 namespace wstl {
@@ -66,7 +74,7 @@ namespace wstl {
     /// @copydoc IntegralConstant
     /// @since C++17
     template<typename T, T V>
-    inline constexpr T IntegralConstantVariable = IntegralConstant<T, V>::Value;
+    inline constexpr T IntegralConstantValue = IntegralConstant<T, V>::Value;
     #endif
 
     // Bool constant
@@ -91,7 +99,7 @@ namespace wstl {
     /// @copydoc BoolConstant
     /// @since C++17
     template<bool V>
-    inline constexpr bool BoolConstantVariable = BoolConstant<V>::Value;
+    inline constexpr bool BoolConstantValue = BoolConstant<V>::Value;
     #endif
 
     // Integral constant definitions
@@ -484,7 +492,7 @@ namespace wstl {
     /// @copydoc AlignmentOf
     /// @since C++17
     template<typename T>
-    inline constexpr size_t AlignmentOfVariable = AlignmentOf<T>::Value;
+    inline constexpr size_t AlignmentOfValue = AlignmentOf<T>::Value;
     #endif
     
     // Rank
@@ -509,7 +517,7 @@ namespace wstl {
     /// @copydoc Rank
     /// @since C++17
     template<typename T>
-    inline constexpr size_t RankVariable = Rank<T>::Value;
+    inline constexpr size_t RankValue = Rank<T>::Value;
     #endif
 
     // Extent
@@ -522,14 +530,17 @@ namespace wstl {
     template<typename T, unsigned N = 0>
     struct Extent;
 
+    template<typename T, unsigned N>
+    struct Extent : IntegralConstant<size_t, 0> {};
+
     template<typename T>
     struct Extent<T[], 0> : IntegralConstant<size_t, 0> {};
 
     template<typename T, unsigned N>
     struct Extent<T[], N> : IntegralConstant<size_t, Extent<T, N - 1>::Value> {};
 
-    template<typename T, unsigned N>
-    struct Extent<T[N], 0> : IntegralConstant<size_t, N> {};
+    template<typename T, unsigned I>
+    struct Extent<T[I], 0> : IntegralConstant<size_t, I> {};
 
     template<typename T, unsigned I, unsigned N>
     struct Extent<T[I], N> : IntegralConstant<size_t, Extent<T, N - 1>::Value> {};
@@ -538,7 +549,7 @@ namespace wstl {
     /// @copydoc Extent
     /// @since C++17
     template<typename T, unsigned N = 0>
-    inline constexpr size_t ExtentVariable = Extent<T, N>::Value;
+    inline constexpr size_t ExtentValue = Extent<T, N>::Value;
     #endif
 
     // Declare value
@@ -601,64 +612,103 @@ namespace wstl {
 
     // Result of
 
+    namespace __private {
+        template<typename T>
+        static long __TestResultType(typename T::ResultType*);
+
+        template<typename>
+        static char __TestResultType(...);
+
+        template<typename Functor, bool IsFunctor = sizeof(__TestResultType<Functor>(0)) == sizeof(long)>
+        struct __ResultOfFunctor;
+
+        template<typename Functor>
+        struct __ResultOfFunctor<Functor, true> { typedef typename Functor::ResultType Type; };
+
+        template<typename Functor>
+        struct __ResultOf : __private::__ResultOfFunctor<Functor> {};
+
+        template<typename Return, typename Arg1, typename Arg2, typename Arg3>
+        struct __ResultOf<Return(*)(Arg1, Arg2, Arg3)> { typedef Return Type; };
+
+        template<typename Return, typename Arg1, typename Arg2>
+        struct __ResultOf<Return(*)(Arg1, Arg2)> { typedef Return Type; };
+
+        template<typename Return, typename Arg>
+        struct __ResultOf<Return(*)(Arg)> { typedef Return Type; };
+
+        template<typename Return>
+        struct __ResultOf<Return(*)()> { typedef Return Type; };
+
+        template<typename Return, typename Arg1, typename Arg2, typename Arg3>
+        struct __ResultOf<Return(&)(Arg1, Arg2, Arg3)> { typedef Return Type; };
+
+        template<typename Return, typename Arg1, typename Arg2>
+        struct __ResultOf<Return(&)(Arg1, Arg2)> { typedef Return Type; };
+
+        template<typename Return, typename Arg>
+        struct __ResultOf<Return(&)(Arg)> { typedef Return Type; };
+
+        template<typename Return>
+        struct __ResultOf<Return(&)()> { typedef Return Type; };
+
+        template<typename Object, typename Return, typename Arg1, typename Arg2, typename Arg3>
+        struct __ResultOf<Return(Object::*)(Arg1, Arg2, Arg3)> { typedef Return Type; };
+
+        template<typename Object, typename Return, typename Arg1, typename Arg2>
+        struct __ResultOf<Return(Object::*)(Arg1, Arg2)> { typedef Return Type; };
+
+        template<typename Object, typename Return, typename Arg>
+        struct __ResultOf<Return(Object::*)(Arg)> { typedef Return Type; };
+
+        template<typename Object, typename Return>
+        struct __ResultOf<Return(Object::*)()> { typedef Return Type; };
+
+        template<typename Object, typename Return, typename Arg1, typename Arg2, typename Arg3>
+        struct __ResultOf<Return(Object::*)(Arg1, Arg2, Arg3) const> { typedef Return Type; };
+
+        template<typename Object, typename Return, typename Arg1, typename Arg2>
+        struct __ResultOf<Return(Object::*)(Arg1, Arg2) const> { typedef Return Type; };
+
+        template<typename Object, typename Return, typename Arg>
+        struct __ResultOf<Return(Object::*)(Arg) const> { typedef Return Type; };
+
+        template<typename Object, typename Return>
+        struct __ResultOf<Return(Object::*)() const> { typedef Return Type; };
+
+        template<typename Object, typename Return, typename Arg1, typename Arg2, typename Arg3>
+        struct __ResultOf<Return(Object::*)(Arg1, Arg2, Arg3) volatile> { typedef Return Type; };
+
+        template<typename Object, typename Return, typename Arg1, typename Arg2>
+        struct __ResultOf<Return(Object::*)(Arg1, Arg2) volatile> { typedef Return Type; };
+
+        template<typename Object, typename Return, typename Arg>
+        struct __ResultOf<Return(Object::*)(Arg) volatile> { typedef Return Type; };
+
+        template<typename Object, typename Return>
+        struct __ResultOf<Return(Object::*)() volatile> { typedef Return Type; };
+
+        template<typename Object, typename Return, typename Arg1, typename Arg2, typename Arg3>
+        struct __ResultOf<Return(Object::*)(Arg1, Arg2, Arg3) const volatile> { typedef Return Type; };
+
+        template<typename Object, typename Return, typename Arg1, typename Arg2>
+        struct __ResultOf<Return(Object::*)(Arg1, Arg2) const volatile> { typedef Return Type; };
+
+        template<typename Object, typename Return, typename Arg>
+        struct __ResultOf<Return(Object::*)(Arg) const volatile> { typedef Return Type; };
+
+        template<typename Object, typename Return>
+        struct __ResultOf<Return(Object::*)() const volatile> { typedef Return Type; };
+    }
+
     /// @brief Deduces the result/return type of callable object
     /// @tparam Callable Type of callable object
     /// @ingroup type_traits
-    /// @note In C++98 it doesn't support functors without `ResultType`, 
-    /// and maximum argument count is 2
+    /// @deprecated Recommended below C++11. Otherwise better use `wstl::InvokeResult`
+    /// @note Maximum argument count is 3
     /// @see https://en.cppreference.com/w/cpp/types/result_of
     template<typename Callable>
-    struct ResultOf;
-
-    #ifdef __WSTL_CXX11__
-    template<typename Callable, typename... Args>
-    struct ResultOf<Callable(Args...)> {
-        using Type = decltype(DeclareValue<Callable>()(DeclareValue<Args>()...));
-    };
-
-    #else
-    template<typename Return, typename Arg1, typename Arg2>
-    struct ResultOf<Return(*)(Arg1, Arg2)> { typedef Return Type; };
-
-    template<typename Return, typename Arg1, typename Arg2>
-    struct ResultOf<Return(&)(Arg1, Arg2)> { typedef Return Type; };
-
-    template<typename Object, typename Return, typename Arg1, typename Arg2>
-    struct ResultOf<Return(Object::*)(Arg1, Arg2)> { typedef Return Type; };
-
-    template<typename Object, typename Return, typename Arg1, typename Arg2>
-    struct ResultOf<Return(Object::*)(Arg1, Arg2) const> { typedef Return Type; };
-
-    template<typename Return, typename Arg>
-    struct ResultOf<Return(*)(Arg)> { typedef Return Type; };
-
-    template<typename Return, typename Arg>
-    struct ResultOf<Return(&)(Arg)> { typedef Return Type; };
-
-    template<typename Object, typename Return, typename Arg>
-    struct ResultOf<Return(Object::*)(Arg)> { typedef Return Type; };
-
-    template<typename Object, typename Return, typename Arg>
-    struct ResultOf<Return(Object::*)(Arg) const> { typedef Return Type; };
-
-    template<typename Return>
-    struct ResultOf<Return(*)()> { typedef Return Type; };
-
-    template<typename Return>
-    struct ResultOf<Return(&)()> { typedef Return Type; };
-
-    template<typename Object, typename Return>
-    struct ResultOf<Return(Object::*)()> { typedef Return Type; };
-
-    template<typename Object, typename Return>
-    struct ResultOf<Return(Object::*)() const> { typedef Return Type; };
-
-    #endif
-
-    // Specialization for functors
-
-    template<typename Functor>
-    struct ResultOf { typedef typename Functor::ResultType Type; };
+    struct ResultOf : __private::__ResultOf<Callable> {};
 
     #ifdef __WSTL_CXX11__
     /// @copydoc ResultOf
@@ -669,6 +719,7 @@ namespace wstl {
 
     // Conjunction
 
+    #ifdef __WSTL_CXX11__
     /// @brief Performs logical AND on the sequence of traits
     /// @tparam T Sequence of traits
     /// @ingroup type_traits
@@ -685,16 +736,18 @@ namespace wstl {
 
     template<typename T1, typename... Tn>
     struct Conjunction<T1, Tn...> : Conditional<bool(T1::Value), Conjunction<Tn...>, T1>::Type {};
+    #endif
 
     #ifdef __WSTL_CXX17__
     /// @copydoc Conjunction
     /// @since C++17
     template<typename... T>
-    inline constexpr bool ConjunctionVariable = Conjunction<T...>::Value;
+    inline constexpr bool ConjunctionValue = Conjunction<T...>::Value;
     #endif
 
     // Disjunction
 
+    #ifdef __WSTL_CXX11__
     /// @brief Performs logical OR on the sequence of traits
     /// @tparam T Sequence of traits
     /// @ingroup type_traits
@@ -710,12 +763,13 @@ namespace wstl {
 
     template<typename T1, typename... Tn>
     struct Disjunction<T1, Tn...> : Conditional<bool(T1::Value), T1, Disjunction<Tn...>>::Type {};
+    #endif
 
     #ifdef __WSTL_CXX17__
     /// @copydoc Disjunction
     /// @since C++17
     template<typename... T>
-    inline constexpr bool DisjunctionVariable = Disjunction<T...>::Value;
+    inline constexpr bool DisjunctionValue = Disjunction<T...>::Value;
     #endif
 
     // Negation
@@ -734,7 +788,7 @@ namespace wstl {
     /// @copydoc Negation
     /// @since C++17
     template<typename T>
-    inline constexpr bool NegationVariable = Negation<T>::Value;
+    inline constexpr bool NegationValue = Negation<T>::Value;
     #endif
 
     // Type identity
@@ -778,7 +832,7 @@ namespace wstl {
     /// @copydoc IsConst
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsConstVariable = IsConst<T>::Value;
+    inline constexpr bool IsConstValue = IsConst<T>::Value;
     #endif
 
     // Is volatile
@@ -803,7 +857,7 @@ namespace wstl {
     /// @copydoc IsVolatile
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsVolatileVariable = IsVolatile<T>::Value;
+    inline constexpr bool IsVolatileValue = IsVolatile<T>::Value;
     #endif
 
     // Is same
@@ -826,7 +880,7 @@ namespace wstl {
     /// @copydoc IsSame
     /// @since C++17
     template<typename T1, typename T2>
-    inline constexpr bool IsSameVariable = IsSame<T1, T2>::Value;
+    inline constexpr bool IsSameValue = IsSame<T1, T2>::Value;
     #endif
 
     // Is null pointer
@@ -842,7 +896,7 @@ namespace wstl {
     /// @copydoc IsNullPointer
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsNullPointerVariable = IsNullPointer<T>::Value;
+    inline constexpr bool IsNullPointerValue = IsNullPointer<T>::Value;
     #endif
 
     // Is void
@@ -852,19 +906,13 @@ namespace wstl {
     /// @ingroup type_traits
     /// @see https://en.cppreference.com/w/cpp/types/is_void
     template<typename T>
-    struct IsVoid;
-
-    template<typename T>
-    struct IsVoid : FalseType {};
-
-    template<> 
-    struct IsVoid<void> : TrueType {};
+    struct IsVoid : IsSame<void, typename RemoveCV<T>::Type> {};
 
     #ifdef __WSTL_CXX17__
     /// @copydoc IsVoid
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsVoidVariable = IsVoid<T>::Value;
+    inline constexpr bool IsVoidValue = IsVoid<T>::Value;
     #endif
 
     // Is integral
@@ -894,6 +942,15 @@ namespace wstl {
     template<> struct IsIntegral<unsigned long> : TrueType {};
     template<> struct IsIntegral<unsigned long long> : TrueType {};
 
+    #ifdef __WSTL_CXX20__
+    template<> struct IsIntegral<char8_t> : TrueType {};
+    #endif
+
+    #ifdef __WSTL_CXX11__
+    template<> struct IsIntegral<char16_t> : TrueType {};
+    template<> struct IsIntegral<char32_t> : TrueType {};
+    #endif
+ 
     template<typename T> struct IsIntegral<const T> : IsIntegral<T> {};
     template<typename T> struct IsIntegral<volatile T> : IsIntegral<T> {};
     template<typename T> struct IsIntegral<const volatile T> : IsIntegral<T> {};
@@ -902,7 +959,7 @@ namespace wstl {
     /// @copydoc IsIntegral
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsIntegralVariable = IsIntegral<T>::Value;
+    inline constexpr bool IsIntegralValue = IsIntegral<T>::Value;
     #endif
 
     // Is floating point
@@ -929,7 +986,7 @@ namespace wstl {
     /// @copydoc IsFloatingPoint
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsFloatingPointVariable = IsFloatingPoint<T>::Value;
+    inline constexpr bool IsFloatingPointValue = IsFloatingPoint<T>::Value;
     #endif
 
     // Is arithmetic
@@ -945,7 +1002,7 @@ namespace wstl {
     /// @copydoc IsArithmetic
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsArithmeticVariable = IsArithmetic<T>::Value;
+    inline constexpr bool IsArithmeticValue = IsArithmetic<T>::Value;
     #endif
 
     // Is fundamental
@@ -959,13 +1016,13 @@ namespace wstl {
 
     template<typename T>
     struct IsFundamental : BoolConstant<(IsArithmetic<T>::Value || IsVoid<T>::Value ||
-        IsSame<NullPointerType, typename RemoveCV<T>::Type>::Value)> {};
+        IsNullPointer<T>::Value)> {};
 
     #ifdef __WSTL_CXX17__
     /// @copydoc IsFundamental
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsFundamentalVariable = IsFundamental<T>::Value;
+    inline constexpr bool IsFundamentalValue = IsFundamental<T>::Value;
     #endif
     
     // Is compound
@@ -987,7 +1044,79 @@ namespace wstl {
     /// @copydoc IsCompound
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsCompoundVariable = IsCompound<T>::Value;
+    inline constexpr bool IsCompoundValue = IsCompound<T>::Value;
+    #endif
+
+    // Is lvalue reference
+
+    namespace __private {
+        template<typename T>
+        struct __IsLValueReference : FalseType {};
+
+        template<typename T>
+        struct __IsLValueReference<T&> : TrueType {};
+    }   
+
+    /// @brief Checks whether type is lvalue reference
+    /// @tparam T Type to check
+    /// @ingroup type_traits
+    /// @see https://en.cppreference.com/w/cpp/types/is_lvalue_reference
+    template<typename T>
+    struct IsLValueReference : __private::__IsLValueReference<typename RemoveCV<T>::Type> {};
+
+    #ifdef __WSTL_CXX17__
+    /// @copydoc IsLValueReference
+    /// @since C++17
+    template<typename T>
+    inline constexpr bool IsLValueReferenceValue = IsLValueReference<T>::Value;
+    #endif
+
+    // Is rvalue reference
+
+    #ifdef __WSTL_CXX11__
+    namespace __private {
+        template<typename T>
+        struct __IsRValueReference : FalseType {};
+
+        template<typename T>
+        struct __IsRValueReference<T&&> : TrueType {};
+    }
+
+    /// @brief Checks whether type is rvalue reference
+    /// @tparam T Type to check
+    /// @ingroup type_traits
+    /// @since C++11
+    /// @see https://en.cppreference.com/w/cpp/types/is_rvalue_reference
+    template<typename T>
+    struct IsRValueReference : __private::__IsRValueReference<typename RemoveCV<T>::Type> {};
+
+    #ifdef __WSTL_CXX17__
+    /// @copydoc IsRValueReference
+    /// @since C++17
+    template<typename T>
+    inline constexpr bool IsRValueReferenceValue = IsRValueReference<T>::Value;
+    #endif
+    #endif
+
+    // Is reference (lvalue or rvalue)
+
+    /// @brief Checks whether type is reference
+    /// @tparam T Type to check
+    /// @ingroup type_traits
+    /// @see https://en.cppreference.com/w/cpp/types/is_reference
+    template<typename T>
+    struct IsReference : BoolConstant<(
+        IsLValueReference<T>::Value
+        #ifdef __WSTL_CXX11__
+        || IsRValueReference<T>::Value
+        #endif
+    )> {};
+
+    #ifdef __WSTL_CXX17__
+    /// @copydoc IsReference
+    /// @since C++17
+    template<typename T>
+    inline constexpr bool IsReferenceValue = IsReference<T>::Value;
     #endif
 
     // Is function
@@ -997,161 +1126,13 @@ namespace wstl {
     /// @ingroup type_traits
     /// @see https://en.cppreference.com/w/cpp/types/is_function
     template<typename T>
-    struct IsFunction : FalseType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args...)> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args..., ...)> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args...) const> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args...) volatile> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args...) const volatile> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args..., ...) const> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args..., ...) volatile> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args..., ...) const volatile> : TrueType {};
-
-    #ifdef __WSTL_CXX11__
-    template<typename Return, typename... Args> 
-    struct IsFunction<Return(Args...)&> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args...) const&> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args...) volatile&> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args...) const volatile&> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args..., ...)&> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args..., ...) const&> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args..., ...) volatile&> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args..., ...) const volatile&> : TrueType {};
-
-    template<typename Return, typename... Args> 
-    struct IsFunction<Return(Args...)&&> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args...) const&&> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args...) volatile&&> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args...) const volatile&&> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args..., ...)&&> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args..., ...) const&&> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args..., ...) volatile&&> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args..., ...) const volatile&&> : TrueType {};
-    
-    #if defined(__WSTL_EXCEPTIONS__) && defined(__WSTL_CXX17__)
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args...) noexcept> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args...) const noexcept> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args...) volatile noexcept> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args...) const volatile noexcept> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args..., ...) noexcept> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args..., ...) const noexcept> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args..., ...) volatile noexcept> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args..., ...) const volatile noexcept> : TrueType {};
-
-    template<typename Return, typename... Args> 
-    struct IsFunction<Return(Args...)& noexcept> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args...) const& noexcept> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args...) volatile& noexcept> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args...) const volatile& noexcept> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args..., ...)& noexcept> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args..., ...) const& noexcept> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args..., ...) volatile& noexcept> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args..., ...) const volatile& noexcept> : TrueType {};
-
-    template<typename Return, typename... Args> 
-    struct IsFunction<Return(Args...)&& noexcept> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args...) const&& noexcept> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args...) volatile&& noexcept> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args...) const volatile&& noexcept> : TrueType {};
-    
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args..., ...)&& noexcept> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args..., ...) const&& noexcept> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args..., ...) volatile&& noexcept> : TrueType {};
-
-    template<typename Return, typename... Args>
-    struct IsFunction<Return(Args..., ...) const volatile&& noexcept> : TrueType {};
-    #endif
-    #endif
+    struct IsFunction : BoolConstant<!(IsConst<const T>::Value || IsReference<T>::Value)> {};
 
     #ifdef __WSTL_CXX17__
     /// @copydoc IsFunction
     /// @since C++17 
     template<typename T>
-    inline constexpr bool IsFunctionVariable = IsFunction<T>::Value;
+    inline constexpr bool IsFunctionValue = IsFunction<T>::Value;
     #endif
 
     // Is array
@@ -1176,21 +1157,20 @@ namespace wstl {
     /// @copydoc IsArray
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsArrayVariable = IsArray<T>::Value;
+    inline constexpr bool IsArrayValue = IsArray<T>::Value;
     #endif
 
     // Is union
 
     /// @brief Checks whether type is union
     /// @tparam T Type to check
+    /// @note This trait may not work correctly on some compilers that do not support `__is_union` builtin. 
+    /// In such cases, it will always return false.
     /// @ingroup type_traits
     /// @see https://en.cppreference.com/w/cpp/types/is_union
     template<typename T>
-    struct IsUnion;
-
-    template<typename T>
     struct IsUnion : BoolConstant<
-    #if defined(__WSTL_GCC__) || defined(__WSTL_MSVC__) || defined(__WSTL_ICC__)
+    #if defined(__WSTL_SUPPORTED_COMPILER__) && !defined(__WSTL_TYPETRAITS_NO_BUILTINS__)
     __is_union(T)
     #else
     false
@@ -1201,7 +1181,7 @@ namespace wstl {
     /// @copydoc IsUnion
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsUnionVariable = IsUnion<T>::Value;
+    inline constexpr bool IsUnionValue = IsUnion<T>::Value;
     #endif
 
     // Is member pointer
@@ -1225,7 +1205,7 @@ namespace wstl {
     /// @copydoc IsMemberPointer
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsMemberPointerVariable = IsMemberPointer<T>::Value;
+    inline constexpr bool IsMemberPointerValue = IsMemberPointer<T>::Value;
     #endif
 
     // Is member function pointer
@@ -1250,7 +1230,7 @@ namespace wstl {
     /// @copydoc IsMemberFunctionPointer
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsMemberFunctionPointerVariable = IsMemberFunctionPointer<T>::Value;
+    inline constexpr bool IsMemberFunctionPointerValue = IsMemberFunctionPointer<T>::Value;
     #endif
 
     // Is member object pointer
@@ -1267,21 +1247,17 @@ namespace wstl {
     /// @copydoc IsMemberObjectPointer
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsMemberObjectPointerVariable = IsMemberObjectPointer<T>::Value;
+    inline constexpr bool IsMemberObjectPointerValue = IsMemberObjectPointer<T>::Value;
     #endif
 
     // Is class
 
     namespace __private {
         template<typename T>
-        static long __TestClass(int T::*) {
-            return !IsUnion<T>::Value;
-        }
+        static typename Conditional<!IsUnion<T>::Value, long, char>::Type __TestClass(int T::*);
 
         template<typename T> 
-        static char __TestClass(...) {
-            return false;
-        }
+        static char __TestClass(...);
     }
 
     /// @brief Checks whether type is non-union class
@@ -1295,33 +1271,32 @@ namespace wstl {
     /// @copydoc IsClass
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsClassVariable = IsClass<T>::Value;
+    inline constexpr bool IsClassValue = IsClass<T>::Value;
     #endif
 
     // Is base of
 
-    namespace __private {
-        template<typename Base, typename Derived>
-        static long __TestBaseOf(Base*);
-
-        template<typename, typename>
-        static char __TestBaseOf(...);
-    }
-
     /// @brief Checks whether type is base of another type
     /// @tparam Base Base type
     /// @tparam Derived Derived type
+    /// @note This trait may not work correctly on some compilers that do not support `__is_base_of` builtin. 
+    /// In such cases, it will always return false.
     /// @ingroup type_traits
     /// @see https://en.cppreference.com/w/cpp/types/is_base_of
     template<typename Base, typename Derived>
-    struct IsBaseOf : BoolConstant<IsClass<Base>::Value && IsClass<Derived>::Value 
-        && (sizeof(__private::__TestBaseOf<Base, Derived>(static_cast<Derived*>(0))) == sizeof(long))> {};
+    struct IsBaseOf : BoolConstant<
+        #if defined(__WSTL_SUPPORTED_COMPILER__) && !defined(__WSTL_TYPETRAITS_NO_BUILTINS__)
+        __is_base_of(Base, Derived)
+        #else
+        false
+        #endif
+    > {};
 
     #ifdef __WSTL_CXX17__
     /// @copydoc IsBaseOf
     /// @since C++17
     template<typename Base, typename Derived>
-    inline constexpr bool IsBaseOfVariable = IsBaseOf<Base, Derived>::Value;
+    inline constexpr bool IsBaseOfValue = IsBaseOf<Base, Derived>::Value;
     #endif
 
     // Is convertible
@@ -1372,39 +1347,32 @@ namespace wstl {
     /// @copydoc IsConvertible
     /// @since C++17
     template<typename From, typename To>
-    inline constexpr bool IsConvertibleVariable = IsConvertible<From, To>::Value;
+    inline constexpr bool IsConvertibleValue = IsConvertible<From, To>::Value;
     #endif
 
     // Is enum
 
-    namespace __private {
-        template<typename T>
-        struct __TestConvertibleToInt {
-
-            static T Type();
-            static long Check(int);
-            static char Check(...);
-            
-            static __WSTL_CONSTEXPR__ const bool Value = sizeof(Check(Type())) == sizeof(long);
-        };
-
-        template<typename T>
-        const __WSTL_CONSTEXPR__ bool __TestConvertibleToInt<T>::Value;
-    }
-
     /// @brief Checks whether type is enumeration
     /// @tparam T Type to check
+    /// @note This trait may not work correctly on some compilers that do not support `__is_enum` builtin. 
+    /// In such cases, it will use a fallback implementation that incorrectly identifies scoped enums and user-defined types with conversion to int.
     /// @ingroup type_traits
     /// @see https://en.cppreference.com/w/cpp/types/is_enum
     template<typename T>
-    struct IsEnum : BoolConstant<!IsFundamental<T>::Value && !IsClass<T>::Value && 
-        !IsUnion<T>::Value && __private::__TestConvertibleToInt<T>::Value> {};
+    struct IsEnum : BoolConstant<
+        #if defined(__WSTL_SUPPORTED_COMPILER__) && !defined(__WSTL_TYPETRAITS_NO_BUILTINS__)
+        __is_enum(T)
+        #else
+        !IsFundamental<T>::Value && !IsClass<T>::Value && 
+        !IsUnion<T>::Value && IsConvertible<T, int>::Value
+        #endif
+    > {};
     
     #ifdef __WSTL_CXX17__
     /// @copydoc IsEnum
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsEnumVariable = IsEnum<T>::Value;
+    inline constexpr bool IsEnumValue = IsEnum<T>::Value;
     #endif
 
     // Is pointer
@@ -1428,7 +1396,7 @@ namespace wstl {
     /// @copydoc IsPointer
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsPointerVariable = IsPointer<T>::Value;
+    inline constexpr bool IsPointerValue = IsPointer<T>::Value;
     #endif
 
     // Is scalar
@@ -1445,40 +1413,81 @@ namespace wstl {
     /// @copydoc IsScalar
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsScalarVariable = IsScalar<T>::Value;
+    inline constexpr bool IsScalarValue = IsScalar<T>::Value;
     #endif
 
     // Is trivial
 
     /// @brief Checks whether type is trivial (not user-defined)
     /// @tparam T Type to check
+    /// @note This trait may not work correctly on some compilers that do not support `__is_trivial` builtin. 
+    /// In such cases, it will always return false.
+    /// @deprecated Use more precise traits instead, such as `wstl::IsTriviallyConstructible`
     /// @ingroup type_traits
     /// @see https://en.cppreference.com/w/cpp/types/is_trivial
     template<typename T>
-    struct IsTrivial : BoolConstant<IsFundamental<T>::Value || IsPointer<T>::Value 
-        || IsArray<T>::Value> {};
+    struct IsTrivial : BoolConstant<
+        #if defined(__WSTL_SUPPORTED_COMPILER__) && !defined(__WSTL_TYPETRAITS_NO_BUILTINS__)
+        __is_trivial(T)
+        #else
+        false
+        #endif
+    > {};
 
     #ifdef __WSTL_CXX17__
     /// @copydoc IsTrivial
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsTrivialVariable = IsTrivial<T>::Value;
+    inline constexpr bool IsTrivialValue = IsTrivial<T>::Value;
     #endif
 
     // Is POD
 
     /// @brief Checks whether type is plain-old data 
     /// @tparam T Type to check
+    /// @note This trait may not work correctly on some compilers that do not support `__is_pod` builtin. 
+    /// In such cases, it will always return false.
+    /// @deprecated Use more precise traits instead, such as `wstl::IsStandardLayout`
     /// @ingroup type_traits
     /// @see https://en.cppreference.com/w/cpp/types/is_pod
     template<typename T>
-    struct IsPOD : BoolConstant<IsFundamental<T>::Value && IsPointer<T>::Value> {};
+    struct IsPOD : BoolConstant<
+        #if defined(__WSTL_SUPPORTED_COMPILER__) && !defined(__WSTL_TYPETRAITS_NO_BUILTINS__)
+        __is_pod(T)
+        #else
+        false
+        #endif
+    > {};
 
     #ifdef __WSTL_CXX17__
     /// @copydoc IsPOD
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsPODVariable = IsPOD<T>::Value;
+    inline constexpr bool IsPODValue = IsPOD<T>::Value;
+    #endif
+
+    // Is standard layout
+
+    /// @brief Checks whether type is standard layout
+    /// @tparam T Type to check
+    /// @note This trait may not work correctly on some compilers that do not support `__is_standard_layout` builtin. 
+    /// In such cases, it will always return false.
+    /// @ingroup type_traits
+    /// @see https://en.cppreference.com/w/cpp/types/is_standard_layout
+    template<typename T>
+    struct IsStandardLayout : BoolConstant<
+        #if defined(__WSTL_SUPPORTED_COMPILER__) && !defined(__WSTL_TYPETRAITS_NO_BUILTINS__)
+        __is_standard_layout(T)
+        #else
+        false
+        #endif
+    > {};
+
+    #ifdef __WSTL_CXX17__
+    /// @copydoc IsStandardLayout
+    /// @since C++17
+    template<typename T>
+    inline constexpr bool IsStandardLayoutValue = IsStandardLayout<T>::Value;
     #endif
 
     // Is object
@@ -1495,7 +1504,7 @@ namespace wstl {
     /// @copydoc IsObject
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsObjectVariable = IsObject<T>::Value;
+    inline constexpr bool IsObjectValue = IsObject<T>::Value;
     #endif
     
     // Is constructible
@@ -1504,32 +1513,56 @@ namespace wstl {
     /// @brief Checks whether type is constructor
     /// @tparam T Constructor type
     /// @tparam Args Argument types
+    /// @note This trait may not work correctly on some compilers that do not support `__is_constructible` builtin. 
+    /// In such cases, it will always return false.
     /// @ingroup type_traits
     /// @see https://en.cppreference.com/w/cpp/types/is_constructible
     template<typename T, typename... Args>
-    struct IsConstructible : BoolConstant<__is_constructible(T, Args...)> {};
+    struct IsConstructible : BoolConstant<
+        #if defined(__WSTL_SUPPORTED_COMPILER__) && !defined(__WSTL_TYPETRAITS_NO_BUILTINS__)
+        __is_constructible(T, Args...)
+        #else
+        false
+        #endif
+    > {};
     #else
     /// @brief Checks whether type is constructor
     /// @tparam T Constructor type
     /// @tparam Args Argument types
+    /// @note This trait may not work correctly on some compilers that do not support `__is_constructible` builtin. 
+    /// In such cases, it will always return false.
     /// @ingroup type_traits
     /// @see https://en.cppreference.com/w/cpp/types/is_constructible
     template<typename T, typename Args = void>
-    struct IsConstructible : BoolConstant<__is_constructible(T, Args)> {};
+    struct IsConstructible : BoolConstant<
+        #if defined(__WSTL_SUPPORTED_COMPILER__) && !defined(__WSTL_TYPETRAITS_NO_BUILTINS__)
+        __is_constructible(T, Args)
+        #else
+        false
+        #endif
+    > {};
     
     /// @brief Checks whether type is constructor
     /// @tparam T Constructor type
+    /// @note This trait may not work correctly on some compilers that do not support `__is_constructible` builtin. 
+    /// In such cases, it will always return false.
     /// @ingroup type_traits
     /// @see https://en.cppreference.com/w/cpp/types/is_constructible
     template<typename T>
-    struct IsConstructible<T, void> : BoolConstant<__is_constructible(T)> {};
+    struct IsConstructible<T, void> : BoolConstant<
+        #if defined(__WSTL_SUPPORTED_COMPILER__) && !defined(__WSTL_TYPETRAITS_NO_BUILTINS__)
+        __is_constructible(T)
+        #else
+        false
+        #endif
+    > {};
     #endif
 
     #ifdef __WSTL_CXX17__
     /// @copydoc IsConstructible
     /// @since C++17
     template<typename T, typename... Args>
-    inline constexpr bool IsConstructibleVariable = IsConstructible<T, Args...>::Value;
+    inline constexpr bool IsConstructibleValue = IsConstructible<T, Args...>::Value;
     #endif
 
     // Is trivially constuctible
@@ -1538,36 +1571,32 @@ namespace wstl {
     /// @brief Checks whether type is trivially constructible (does not call not trivial operations)
     /// @tparam T Constructor type
     /// @tparam Args Argument types
+    /// @note This trait may not work correctly on some compilers that do not support `__is_trivially_constructible` builtin. 
+    /// In such cases, it will always return false. In C++98 arguments are not supported.
     /// @ingroup type_traits
     /// @see https://en.cppreference.com/w/cpp/types/is_constructible
     template<typename T, typename... Args>
-    struct IsTriviallyConstructible : BoolConstant<__is_trivially_constructible(T, Args...)> {};
-    #else
-    /// @brief Checks whether type is trivially constructible (does not call not trivial operations)
-    /// @tparam T Constructor type
-    /// @tparam Args Argument types
-    /// @ingroup type_traits
-    /// @see https://en.cppreference.com/w/cpp/types/is_constructible
-    template<typename T, typename Args = void>
     struct IsTriviallyConstructible : BoolConstant<
-    #ifdef __WSTL_GCC__
-    __has_trivial_constructor(T)
-    #else
-    __is_trivially_constructible(T, Args)
-    #endif
+        #if defined(__WSTL_SUPPORTED_COMPILER__) && !defined(__WSTL_TYPETRAITS_NO_BUILTINS__)
+        __is_trivially_constructible(T, Args...)
+        #else
+        false
+        #endif
     > {};
-
+    #else
     /// @brief Checks whether type is trivially constructible (does not call not trivial operations)
     /// @tparam T Constructor type
+    /// @note This trait may not work correctly on some compilers that do not support `__has_trivial_constructor` builtin. 
+    /// In such cases, it will always return false. In C++98 arguments are not supported.
     /// @ingroup type_traits
     /// @see https://en.cppreference.com/w/cpp/types/is_constructible
     template<typename T>
-    struct IsTriviallyConstructible<T, void> : BoolConstant<
-    #ifdef __WSTL_GCC__
-    __has_trivial_constructor(T)
-    #else
-    __is_trivially_constructible(T)
-    #endif
+    struct IsTriviallyConstructible : BoolConstant<
+        #if defined(__WSTL_SUPPORTED_COMPILER__) && !defined(__WSTL_TYPETRAITS_NO_BUILTINS__)
+        __has_trivial_constructor(T)
+        #else
+        false 
+        #endif
     > {};
     #endif
 
@@ -1575,7 +1604,7 @@ namespace wstl {
     /// @copydoc IsTriviallyConstructible
     /// @since C++17
     template<typename T, typename... Args>
-    inline constexpr bool IsTriviallyConstructibleVariable = IsTriviallyConstructible<T, Args...>::Value;
+    inline constexpr bool IsTriviallyConstructibleValue = IsTriviallyConstructible<T, Args...>::Value;
     #endif
 
     // Is nothrow constructible
@@ -1584,52 +1613,61 @@ namespace wstl {
     #ifdef __WSTL_CXX11__
     namespace __private {
         template<typename T, typename... Args>
-        static constexpr bool __TestNothrowConstructible(int) noexcept(noexcept(T(DeclareValue<Args>()...))) {
-            return noexcept(T(DeclareValue<Args>()...));
-        }
+        static auto __TestNothrowConstructible(int) -> decltype(T(DeclareValue<Args>()...), BoolConstant<noexcept(T(DeclareValue<Args>()...))>{});
 
         template<typename, typename...>
-        static constexpr bool __TestNothrowConstructible(...) {
-            return false;
-        }
+        static FalseType __TestNothrowConstructible(...);
     }
 
     /// @brief Checks whether type is nothrow constructible (noexcept)
     /// @tparam T Constructor type
     /// @tparam ...Args Arguments type
+    /// @note This trait mainly uses `__is_nothrow_constructible` builtin, but if it's not available, 
+    /// it will use a fallback implementation that generally works but may not be 100% accurate in all cases. 
+    /// Requires `__WSTL_EXCEPTIONS__` to be defined.
     /// @ingroup type_traits
-    /// @note Requires `__WSTL_EXCEPTIONS__` to be defined
     /// @see https://en.cppreference.com/w/cpp/types/is_constructible
     template<typename T, typename... Args>
-    struct IsNothrowConstructible : 
-        public BoolConstant<__private::__TestNothrowConstructible<T, Args...>(0)> {};
+    struct IsNothrowConstructible : BoolConstant<
+        #if defined(__WSTL_SUPPORTED_COMPILER__) && !defined(__WSTL_TYPETRAITS_NO_BUILTINS__)
+        __is_nothrow_constructible(T, Args...)
+        #else
+        decltype(__private::__TestNothrowConstructible<T, Args...>(0))::Value && !IsVoid<T>::Value
+        #endif
+    > {};
 
     #else
     /// @brief Checks whether type is nothrow constructible (noexcept)
     /// @tparam T Constructor type
     /// @tparam Args Arguments type (does nothing, not supported in C++98)
+    /// @note This trait may not work correctly on some compilers that do not support used builtin.
+    /// In such cases, it will always return false. Requires `__WSTL_EXCEPTIONS__` to be defined.
     /// @ingroup type_traits
-    /// @note Requires `__WSTL_EXCEPTIONS__` to be defined
     /// @see https://en.cppreference.com/w/cpp/types/is_constructible
     template<typename T, typename Args = void>
     struct IsNothrowConstructible : BoolConstant<
-    #if defined(__WSTL_GCC__) || defined(__WSTL_CLANG__)
-    __has_nothrow_constructor(T)
-    #elif defined(__WSTL_MSVC__)
-    _has_nothrow_constructor(T)
-    #else
-    false
-    #endif
+        #ifdef __WSTL_TYPETRAITS_NO_BUILTINS__
+        false
+        #elif defined(__WSTL_GCC__) || defined(__WSTL_CLANG__) || defined(__WSTL_ICC__)
+        __has_nothrow_constructor(T)
+        #elif defined(__WSTL_MSVC__)
+        _has_nothrow_constructor(T)
+        #else
+        false
+        #endif
     > {};
     
     /// @brief Checks whether type is nothrow constructible (noexcept)
     /// @tparam T Constructor type
+    /// @note This trait may not work correctly on some compilers that do not support used builtin.
+    /// In such cases, it will always return false. Requires `__WSTL_EXCEPTIONS__` to be defined.
     /// @ingroup type_traits
-    /// @note Requires `__WSTL_EXCEPTIONS__` to be defined
     /// @see https://en.cppreference.com/w/cpp/types/is_constructible
     template<typename T>
     struct IsNothrowConstructible<T, void> : BoolConstant<
-    #if defined(__WSTL_GCC__) || defined(__WSTL_CLANG__)
+    #ifdef __WSTL_TYPETRAITS_NO_BUILTINS__
+    false
+    #elif defined(__WSTL_GCC__) || defined(__WSTL_CLANG__) || defined(__WSTL_ICC__)
     __has_nothrow_constructor(T)
     #elif defined(__WSTL_MSVC__)
     _has_nothrow_constructor(T)
@@ -1643,7 +1681,7 @@ namespace wstl {
     /// @copydoc IsNothrowConstructible
     /// @since C++17
     template<typename T, typename... Args>
-    inline constexpr bool IsNothrowConstructibleVariable = IsNothrowConstructible<T, Args...>::Value;
+    inline constexpr bool IsNothrowConstructibleValue = IsNothrowConstructible<T, Args...>::Value;
     #endif
     #endif
 
@@ -1660,7 +1698,7 @@ namespace wstl {
     /// @copydoc IsDefaultConstructible
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsDefaultConstructibleVariable = IsDefaultConstructible<T>::Value;
+    inline constexpr bool IsDefaultConstructibleValue = IsDefaultConstructible<T>::Value;
     #endif
 
     // Is implicitly default constructible
@@ -1671,7 +1709,7 @@ namespace wstl {
         void __TestImplicit(T);
 
         template<typename T>
-        static auto __TestImplicitConstructible(int) -> decltype(__TestImplicit<const T&>({}), TrueType{});
+        static auto __TestImplicitConstructible(int) -> decltype(__TestImplicit<T const&>({}), IsDefaultConstructible<T>{});
 
         template<typename>
         static FalseType __TestImplicitConstructible(...);
@@ -1697,7 +1735,7 @@ namespace wstl {
     /// @copydoc IsTriviallyDefaultConstructible
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsTriviallyDefaultConstructibleVariable = IsTriviallyDefaultConstructible<T>::Value;
+    inline constexpr bool IsTriviallyDefaultConstructibleValue = IsTriviallyDefaultConstructible<T>::Value;
     #endif
 
     // Is nothrow default constructible
@@ -1715,7 +1753,7 @@ namespace wstl {
     /// @copydoc IsNothrowDefaultConstructible
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsNothrowDefaultConstructibleVariable = IsNothrowDefaultConstructible<T>::Value;
+    inline constexpr bool IsNothrowDefaultConstructibleValue = IsNothrowDefaultConstructible<T>::Value;
     #endif
     #endif
 
@@ -1733,7 +1771,7 @@ namespace wstl {
     /// @copydoc IsCopyConstructible
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsCopyConstructibleVariable = IsCopyConstructible<T>::Value;
+    inline constexpr bool IsCopyConstructibleValue = IsCopyConstructible<T>::Value;
     #endif
 
     // Is trivially copy constructible
@@ -1750,7 +1788,7 @@ namespace wstl {
     /// @copydoc IsTriviallyCopyConstructible
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsTriviallyCopyConstructibleVariable = IsTriviallyCopyConstructible<T>::Value;
+    inline constexpr bool IsTriviallyCopyConstructibleValue = IsTriviallyCopyConstructible<T>::Value;
     #endif
 
     // Is nothrow copy constructible
@@ -1769,7 +1807,7 @@ namespace wstl {
     /// @copydoc IsNothrowCopyConstructible
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsNothrowCopyConstructibleVariable = IsNothrowCopyConstructible<T>::Value;
+    inline constexpr bool IsNothrowCopyConstructibleValue = IsNothrowCopyConstructible<T>::Value;
     #endif
     #endif
 
@@ -1788,7 +1826,7 @@ namespace wstl {
     /// @copydoc IsMoveConstructible
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsMoveConstructibleVariable = IsMoveConstructible<T>::Value;
+    inline constexpr bool IsMoveConstructibleValue = IsMoveConstructible<T>::Value;
     #endif
 
     // Is trivially move constructible
@@ -1806,7 +1844,7 @@ namespace wstl {
     /// @copydoc IsTriviallyMoveConstructible
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsTriviallyMoveConstructibleVariable = IsTriviallyMoveConstructible<T>::Value;
+    inline constexpr bool IsTriviallyMoveConstructibleValue = IsTriviallyMoveConstructible<T>::Value;
     #endif
 
     // Is nothrow move constructible
@@ -1826,7 +1864,7 @@ namespace wstl {
     /// @copydoc IsNothrowCopyConstructible
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsNothrowMoveConstructibleVariable = IsNothrowMoveConstructible<T>::Value;
+    inline constexpr bool IsNothrowMoveConstructibleValue = IsNothrowMoveConstructible<T>::Value;
     #endif
     #endif
     #endif
@@ -1835,15 +1873,11 @@ namespace wstl {
 
     namespace __private {
         #ifdef __WSTL_CXX11__
-        template<typename T, typename U, typename = decltype(DeclareValue<T&>() = DeclareValue<U&>(), void())>
-        static constexpr bool __TestAssignable(int) {
-            return true;
-        }   
+        template<typename T, typename U>
+        static auto __TestAssignable(int) -> decltype(DeclareValue<T>() = DeclareValue<U>(), TrueType{});
 
         template<typename, typename>
-        static constexpr bool __TestAssignable(...) {
-            return false;
-        }    
+        static FalseType __TestAssignable(...);  
         #else
         template<typename T, typename U>
         static long __TestAssignable(int, T* t = static_cast<T*>(0), U* u = static_cast<U*>(0), 
@@ -1857,12 +1891,16 @@ namespace wstl {
     /// @brief Checks whether type is assignable to another
     /// @tparam T Type to check
     /// @tparam U Type to check against
+    /// @note This trait mainly uses `__is_assignable` builtin, but if it's not available,
+    /// it will use a fallback implementation that generally works but may not be 100% accurate in all cases.
     /// @ingroup type_traits
     /// @see https://en.cppreference.com/w/cpp/types/is_assignable
     template<typename T, typename U>
     struct IsAssignable : BoolConstant<
-    #ifdef __WSTL_CXX11__
-    __private::__TestAssignable<T, U>(0)
+    #if defined(__WSTL_SUPPORTED_COMPILER__) && !defined(__WSTL_TYPETRAITS_NO_BUILTINS__)
+    __is_assignable(T, U)
+    #elif defined(__WSTL_CXX11__)
+    decltype(__private::__TestAssignable<T, U>(0))::Value
     #else
     sizeof(__private::__TestAssignable<T, U>(0)) == sizeof(long)
     #endif
@@ -1872,7 +1910,7 @@ namespace wstl {
     /// @copydoc IsAssignable
     /// @since C++17
     template<typename T, typename U>
-    inline constexpr bool IsAssignableVariable = IsAssignable<T, U>::Value;
+    inline constexpr bool IsAssignableValue = IsAssignable<T, U>::Value;
     #endif
 
     // Is trivially assignable
@@ -1880,11 +1918,15 @@ namespace wstl {
     /// @brief Checks whether type is trivially assignable to another (not calling any non-trivial operations)
     /// @tparam T Type to check
     /// @tparam U Type to check against
+    /// @note This trait may not work correctly on some compilers that do not support used builtins.
+    /// In such cases, it will always return false.
     /// @ingroup type_traits
     /// @see https://en.cppreference.com/w/cpp/types/is_assignable
     template<typename T, typename U>
     struct IsTriviallyAssignable : BoolConstant<
-        #if defined(__WSTL_CXX11__)
+        #ifdef __WSTL_TYPETRAITS_NO_BUILTINS__
+        false
+        #elif defined(__WSTL_SUPPORTED_COMPILER__) && defined(__WSTL_CXX11__)
         __is_trivially_assignable(T, U)
         #else
         IsAssignable<T, U>::Value && 
@@ -1902,32 +1944,52 @@ namespace wstl {
     /// @copydoc IsTriviallyAssignable
     /// @since C++17
     template<typename T, typename U>
-    inline constexpr bool IsTriviallyAssignableVariable = IsTriviallyAssignable<T, U>::Value;
+    inline constexpr bool IsTriviallyAssignableValue = IsTriviallyAssignable<T, U>::Value;
     #endif
 
     // Is nothrow assignable
 
     #ifdef __WSTL_EXCEPTIONS__
     #ifdef __WSTL_CXX11__
+    namespace __private {
+        template<typename T, typename U>
+        static auto __TestNothrowAssignable(int) -> decltype(BoolConstant<noexcept(DeclareValue<T>() = DeclareValue<U>())>{});
+
+        template<typename, typename>
+        static FalseType __TestNothrowAssignable(...);
+    }
+
     /// @brief Checks whether type is nothrow (noexcept) assignable to another
     /// @tparam T Type to check
     /// @tparam U Type to check against
+    /// @note This trait mainly uses `__is_nothrow_assignable` builtin, but if it's not available, 
+    /// it will use a fallback implementation that generally works but may not be 100% accurate in all cases.
+    /// Requires `__WSTL_EXCEPTIONS__` to be defined.
     /// @ingroup type_traits
-    /// @note Requires `__WSTL_EXCEPTIONS__` to be defined
     /// @see https://en.cppreference.com/w/cpp/types/is_assignable
     template<typename T, typename U>
-    struct IsNothrowAssignable : BoolConstant<IsAssignable<T, U>::Value && 
-        noexcept(DeclareValue<T>() = DeclareValue<U>())> {};
+    struct IsNothrowAssignable : BoolConstant<
+        #if defined(__WSTL_SUPPORTED_COMPILER__) && !defined(__WSTL_TYPETRAITS_NO_BUILTINS__)
+        __is_nothrow_assignable(T, U)
+        #else
+        IsAssignable<T, U>::Value && 
+        decltype(__private::__TestNothrowAssignable<T, U>(0))::Value
+        #endif
+    > {};
     #else
     /// @brief Checks whether type is nothrow (noexcept) assignable to another
     /// @tparam T Type to check
     /// @tparam U Type to check against
+    /// @note This trait may not work correctly on some compilers that do not support used builtin.
+    /// In such cases, it will always return false. Requires `__WSTL_EXCEPTIONS__` to be defined.
     /// @ingroup type_traits
     /// @note Requires `__WSTL_EXCEPTIONS__` to be defined
     /// @see https://en.cppreference.com/w/cpp/types/is_assignable
     template<typename T, typename U>
     struct IsNothrowAssignable : BoolConstant<
-    #if defined(__WSTL_GCC__) || defined(__WSTL_CLANG__) || defined(__WSTL_ICC__)
+    #ifdef __WSTL_TYPETRAITS_NO_BUILTINS__
+    false
+    #elif defined(__WSTL_GCC__) || defined(__WSTL_CLANG__) || defined(__WSTL_ICC__)
     __is_nothrow_assignable(T, U)
     #else
     false
@@ -1939,7 +2001,7 @@ namespace wstl {
     /// @copydoc IsNothrowAssignable
     /// @since C++17
     template<typename T, typename U>
-    inline constexpr bool IsNothrowAssignableVariable = IsNothrowAssignable<T, U>::Value;
+    inline constexpr bool IsNothrowAssignableValue = IsNothrowAssignable<T, U>::Value;
     #endif
     #endif
 
@@ -1957,7 +2019,7 @@ namespace wstl {
     /// @copydoc IsCopyAssignable
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsCopyAssignableVariable = IsCopyAssignable<T>::Value;
+    inline constexpr bool IsCopyAssignableValue = IsCopyAssignable<T>::Value;
     #endif
     
     // Is trivially copy assignable
@@ -1972,7 +2034,7 @@ namespace wstl {
 
     #ifdef __WSTL_CXX17__
     template<typename T>
-    inline constexpr bool IsTriviallyCopyAssignableVariable = IsTriviallyCopyAssignable<T>::Value;
+    inline constexpr bool IsTriviallyCopyAssignableValue = IsTriviallyCopyAssignable<T>::Value;
     #endif
 
     // Is nothrow copy assignable
@@ -1991,7 +2053,7 @@ namespace wstl {
     /// @copydoc IsNothrowCopyAssignable
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsNothrowCopyAssignableVariable = IsNothrowCopyAssignable<T>::Value;
+    inline constexpr bool IsNothrowCopyAssignableValue = IsNothrowCopyAssignable<T>::Value;
     #endif
     #endif
 
@@ -2011,7 +2073,7 @@ namespace wstl {
     /// @copydoc IsMoveAssignable
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsMoveAssignableVariable = IsMoveAssignable<T>::Value;
+    inline constexpr bool IsMoveAssignableValue = IsMoveAssignable<T>::Value;
     #endif
     
     // Is trivially move assignable
@@ -2029,7 +2091,7 @@ namespace wstl {
     /// @copydoc IsTriviallyMoveAssignable
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsTriviallyMoveAssignableVariable = IsTriviallyMoveAssignable<T>::Value;
+    inline constexpr bool IsTriviallyMoveAssignableValue = IsTriviallyMoveAssignable<T>::Value;
     #endif
 
     // Is nothrow move assignable
@@ -2050,7 +2112,7 @@ namespace wstl {
     /// @copydoc IsNothrowMoveAssignable
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsNothrowMoveAssignableVariable = IsNothrowMoveAssignable<T>::Value;
+    inline constexpr bool IsNothrowMoveAssignableValue = IsNothrowMoveAssignable<T>::Value;
     #endif
     #endif
     #endif
@@ -2060,26 +2122,24 @@ namespace wstl {
     namespace __private {
         #ifdef __WSTL_CXX11__
         template<typename T>
-        static constexpr bool __TestDestructible(int) {
-            return sizeof(decltype(DeclareValue<T>().~T(), void())) > 0;
-        }
+        static auto __TestDestructible(int) -> decltype(DeclareValue<T&>().~T(), TrueType{});
 
         template<typename T>
-        static constexpr bool __TestDestructible(...) {
-            return false;
-        }
+        static FalseType __TestDestructible(...);
         #endif
     }
 
     /// @brief Checks whether type is destructible
     /// @tparam T Type to check
+    /// @note This trait mainly uses `__is_destructible` or `__has_user_destructor` builtins, but if they're not available,
+    /// it will use a fallback implementation that generally works but may not be 100% accurate in all cases.
     /// @ingroup type_traits
     /// @see https://en.cppreference.com/w/cpp/types/is_destructible
     template<typename T>
     struct IsDestructible : BoolConstant<
-    #ifdef __WSTL_CXX11__
-    __private::__TestDestructible<T>(0)
-    #elif defined(__WSTL_GCC__) || defined(__WSTL_CLANG__)
+    #if defined(__WSTL_CXX11__) && defined(__WSTL_TYPETRAITS_NO_BUILTINS__)
+    decltype(__private::__TestDestructible<RemoveCVReferenceType<RemoveAllExtentsType<T>>>(0))::Value
+    #elif defined(__WSTL_GCC__) || defined(__WSTL_CLANG__) || defined(__WSTL_ICC__)
     __is_destructible(T)
     #elif defined(__WSTL_MSVC__)
     __has_user_destructor(T)
@@ -2092,18 +2152,22 @@ namespace wstl {
     /// @copydoc IsDestructible
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsDestructibleVariable = IsDestructible<T>::Value;
+    inline constexpr bool IsDestructibleValue = IsDestructible<T>::Value;
     #endif
 
     // Is trivially destructible
 
     /// @brief Checks whether type is trivially destructible
     /// @tparam T Type to check
+    /// @note This trait may not work correctly on some compilers that do not support used builtins.
+    /// In such cases, it will always return false.
     /// @ingroup type_traits
     /// @see https://en.cppreference.com/w/cpp/types/is_destructible
     template<typename T>
     struct IsTriviallyDestructible : BoolConstant<
-        #ifdef __has_builtin
+        #ifdef __WSTL_TYPETRAITS_NO_BUILTINS__
+        false
+        #elif defined(__has_builtin)
             #if __has_builtin(__is_trivially_destructible)
                 __is_trivially_destructible(T)
             #elif __has_builtin(__has_trivial_destructor)
@@ -2126,7 +2190,7 @@ namespace wstl {
     /// @copydoc IsTriviallyDestructible
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsTriviallyDestructibleVariable = IsTriviallyDestructible<T>::Value;
+    inline constexpr bool IsTriviallyDestructibleValue = IsTriviallyDestructible<T>::Value;
     #endif
 
     // Is nothrow destructible
@@ -2135,22 +2199,25 @@ namespace wstl {
     namespace __private {
         #ifdef __WSTL_CXX11__
         template<typename T>
-        static constexpr bool __TestNothrowDestructible() {
-            return noexcept(DeclareValue<T&>().~T());
-        }
+        static auto __TestNothrowDestructible(int) -> decltype(DeclareValue<T&>().~T(), BoolConstant<noexcept(DeclareValue<T&>().~T())>{});
+
+        template<typename T>
+        static FalseType __TestNothrowDestructible(...);
         #endif
     }
 
     /// @brief Checks whether type is nothrow (noexcept) destructible
     /// @tparam T Type to check
+    /// @note This trait mainly uses `__is_nothrow_destructible` builtin, but if it's not available,
+    /// it will use a fallback implementation that generally works but may not be 100% accurate in all cases. Requires `__WSTL_EXCEPTIONS__` to be defined.
+    /// Requires `__WSTL_EXCEPTIONS__` to be defined.
     /// @ingroup type_traits
-    /// @note Requires `__WSTL_EXCEPTIONS__` to be defined
     /// @see https://en.cppreference.com/w/cpp/types/is_destructible
     template<typename T>
     struct IsNothrowDestructible : BoolConstant<
-    #ifdef __WSTL_CXX11__
-    __private::__TestNothrowDestructible<T>()
-    #elif defined(__WSTL_GCC__) || defined(__WSTL_MSVC__) || defined(__WSTL_CLANG__)
+    #if defined(__WSTL_CXX11__) && defined(__WSTL_TYPETRAITS_NO_BUILTINS__)
+    decltype(__private::__TestNothrowDestructible<T>(0))::Value
+    #elif defined(__WSTL_SUPPORTED_COMPILER__)
     __is_nothrow_destructible(T)
     #else
     false
@@ -2161,7 +2228,7 @@ namespace wstl {
     /// @copydoc IsNothrowDestructible
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsNothrowDestructibleVariable = IsNothrowDestructible<T>::Value;
+    inline constexpr bool IsNothrowDestructibleValue = IsNothrowDestructible<T>::Value;
     #endif
     #endif
 
@@ -2169,11 +2236,15 @@ namespace wstl {
 
     /// @brief Checks whether type is trivially copyable
     /// @tparam T Type to check
+    /// @note This trait may not work correctly on some compilers that do not support used builtins.
+    /// In such cases, it will always return false.
     /// @ingroup type_traits
     /// @see https://en.cppreference.com/w/cpp/types/is_trivially_copyable
     template<typename T>
     struct IsTriviallyCopyable : BoolConstant<
-        #ifdef __has_builtin
+        #ifdef __WSTL_TYPETRAITS_NO_BUILTINS__
+        false
+        #elif defined(__has_builtin)
             #if __has_builtin(__is_trivially_copyable)
                 __is_trivially_copyable(T)
             #elif __has_builtin(__has_trivial_constructor)
@@ -2196,79 +2267,7 @@ namespace wstl {
     /// @copydoc IsTriviallyCopyable
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsTriviallyCopyableVariable = IsTriviallyCopyable<T>::Value;
-    #endif
-
-    // Is lvalue reference
-
-    namespace __private {
-        template<typename T>
-        struct __IsLValueReference : FalseType {};
-
-        template<typename T>
-        struct __IsLValueReference<T&> : TrueType {};
-    }   
-
-    /// @brief Checks whether type is lvalue reference
-    /// @tparam T Type to check
-    /// @ingroup type_traits
-    /// @see https://en.cppreference.com/w/cpp/types/is_lvalue_reference
-    template<typename T>
-    struct IsLValueReference : __private::__IsLValueReference<typename RemoveCV<T>::Type> {};
-
-    #ifdef __WSTL_CXX17__
-    /// @copydoc IsLValueReference
-    /// @since C++17
-    template<typename T>
-    inline constexpr bool IsLValueReferenceVariable = IsLValueReference<T>::Value;
-    #endif
-
-    // Is rvalue reference
-
-    #ifdef __WSTL_CXX11__
-    namespace __private {
-        template<typename T>
-        struct __IsRValueReference : FalseType {};
-
-        template<typename T>
-        struct __IsRValueReference<T&&> : TrueType {};
-    }
-
-    /// @brief Checks whether type is rvalue reference
-    /// @tparam T Type to check
-    /// @ingroup type_traits
-    /// @since C++11
-    /// @see https://en.cppreference.com/w/cpp/types/is_rvalue_reference
-    template<typename T>
-    struct IsRValueReference : __private::__IsRValueReference<typename RemoveCV<T>::Type> {};
-
-    #ifdef __WSTL_CXX17__
-    /// @copydoc IsRValueReference
-    /// @since C++17
-    template<typename T>
-    inline constexpr bool IsRValueReferenceVariable = IsRValueReference<T>::Value;
-    #endif
-    #endif
-
-    // Is reference (lvalue or rvalue)
-
-    /// @brief Checks whether type is reference
-    /// @tparam T Type to check
-    /// @ingroup type_traits
-    /// @see https://en.cppreference.com/w/cpp/types/is_reference
-    template<typename T>
-    struct IsReference : BoolConstant<(
-        IsLValueReference<T>::Value
-        #ifdef __WSTL_CXX11__
-        || IsRValueReference<T>::Value
-        #endif
-    )> {};
-
-    #ifdef __WSTL_CXX17__
-    /// @copydoc IsReference
-    /// @since C++17
-    template<typename T>
-    inline constexpr bool IsReferenceVariable = IsReference<T>::Value;
+    inline constexpr bool IsTriviallyCopyableValue = IsTriviallyCopyable<T>::Value;
     #endif
 
     // Is signed
@@ -2311,7 +2310,7 @@ namespace wstl {
     /// @copydoc IsSigned
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsSignedVariable = IsSigned<T>::Value;
+    inline constexpr bool IsSignedValue = IsSigned<T>::Value;
     #endif
 
     // IsUnsigned
@@ -2352,7 +2351,7 @@ namespace wstl {
     /// @copydoc IsUnsigned
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsUnsignedVariable = IsUnsigned<T>::Value;
+    inline constexpr bool IsUnsignedValue = IsUnsigned<T>::Value;
     #endif
 
     // Decay
@@ -2479,7 +2478,7 @@ namespace wstl {
     #endif
     #endif
     
-    // MakeSigned
+    // Make signed
 
     /// @brief Makes unsigned type signed
     /// @tparam T Type to convert
@@ -2491,32 +2490,35 @@ namespace wstl {
     template<typename T>
     struct MakeSigned { typedef T Type; };
 
-    template<>
-    struct MakeSigned<unsigned char> { typedef signed char Type; };
+    template<> struct MakeSigned<char> { typedef signed char Type; };
+    template<> struct MakeSigned<unsigned char> { typedef signed char Type; };
+    template<> struct MakeSigned<unsigned short> { typedef short Type; };
+    template<> struct MakeSigned<unsigned int> { typedef int Type; };
+    template<> struct MakeSigned<unsigned long> { typedef long Type; };
+    template<> struct MakeSigned<unsigned long long> { typedef long long Type; };
 
-    template<>
-    struct MakeSigned<unsigned short> { typedef short Type; };
+    template<> 
+    struct MakeSigned<wchar_t> {
+        typedef Conditional<sizeof(wchar_t) == sizeof(int16_t), int16_t, 
+            Conditional<sizeof(wchar_t) == sizeof(int32_t), int32_t, void>::Type>::Type Type;
+    };
 
-    template<>
-    struct MakeSigned<unsigned int> { typedef int Type; };
+    template<typename T>
+    struct MakeSigned<const T> { typedef const typename MakeSigned<T>::Type Type; };
 
-    template<>
-    struct MakeSigned<unsigned long> { typedef long Type; };
+    template<typename T>
+    struct MakeSigned<volatile T> { typedef volatile typename MakeSigned<T>::Type Type; };
 
-    template<>
-    struct MakeSigned<unsigned long long> { typedef long long Type; };
+    template<typename T>
+    struct MakeSigned<const volatile T> { typedef const volatile typename MakeSigned<T>::Type Type; };
 
     #ifdef __WSTL_CXX20__
-    template<>
-    struct MakeSigned<char8_t> { typedef signed char Type; };
+    template<> struct MakeSigned<char8_t> { typedef signed char Type; };
     #endif
 
     #ifdef __WSTL_CXX11__
-    template<>
-    struct MakeSigned<char16_t> { typedef signed short Type; };
-
-    template<>
-    struct MakeSigned<char32_t> { typedef signed int Type; };
+    template<> struct MakeSigned<char16_t> { typedef short Type; };
+    template<> struct MakeSigned<char32_t> { typedef int Type; };
 
     /// @copydoc MakeSigned
     /// @since C++11
@@ -2524,7 +2526,7 @@ namespace wstl {
     using MakeSignedType = typename MakeSigned<T>::Type;
     #endif
     
-    // MakeUnsigned
+    // Make unsigned
 
     /// @brief Makes signed type unsigned
     /// @tparam T Type to convert
@@ -2536,32 +2538,35 @@ namespace wstl {
     template<typename T>
     struct MakeUnsigned { typedef T Type; };
 
-    template<>
-    struct MakeUnsigned<char> { typedef unsigned char Type; };
+    template<> struct MakeUnsigned<char> { typedef unsigned char Type; };
+    template<> struct MakeUnsigned<signed char> { typedef unsigned char Type; };
+    template<> struct MakeUnsigned<short> { typedef unsigned short Type; };
+    template<> struct MakeUnsigned<int> { typedef unsigned int Type; };
+    template<> struct MakeUnsigned<long> { typedef unsigned long Type; };
+    template<> struct MakeUnsigned<long long> { typedef unsigned long long Type; };
 
-    template<>
-    struct MakeUnsigned<short> { typedef unsigned short Type; };
+    template<> 
+    struct MakeUnsigned<wchar_t> {
+        typedef Conditional<sizeof(wchar_t) == sizeof(uint16_t), uint16_t, 
+            Conditional<sizeof(wchar_t) == sizeof(uint32_t), uint32_t, void>::Type>::Type Type;
+    };
 
-    template<>
-    struct MakeUnsigned<int> { typedef unsigned int Type; };
+    template<typename T>
+    struct MakeUnsigned<const T> { typedef const typename MakeUnsigned<T>::Type Type; };
 
-    template<>
-    struct MakeUnsigned<long> { typedef unsigned long Type; };
+    template<typename T>
+    struct MakeUnsigned<volatile T> { typedef volatile typename MakeUnsigned<T>::Type Type; };
 
-    template<>
-    struct MakeUnsigned<long long> { typedef unsigned long long Type; };
+    template<typename T>
+    struct MakeUnsigned<const volatile T> { typedef const volatile typename MakeUnsigned<T>::Type Type; };
 
     #ifdef __WSTL_CXX20__
-    template<>
-    struct MakeUnsigned<char8_t> { typedef unsigned char Type; };
+    template<> struct MakeUnsigned<char8_t> { typedef unsigned char Type; };
     #endif
 
     #ifdef __WSTL_CXX11__
-    template<>
-    struct MakeUnsigned<char16_t> { typedef unsigned short Type; };
-
-    template<>
-    struct MakeUnsigned<char32_t> { typedef unsigned int Type; };
+    template<> struct MakeUnsigned<char16_t> { typedef unsigned short Type; };
+    template<> struct MakeUnsigned<char32_t> { typedef unsigned int Type; };
 
     /// @copydoc MakeUnsigned
     /// @since C++11
@@ -2606,7 +2611,7 @@ namespace wstl {
 
     /// @brief Checks whether type is aligned to specified alignment
     /// @tparam T Type to check
-    /// @tparam Alignment Alignment in bytes
+    /// @tparam Alignment Alignment to check against in bytes
     /// @ingroup type_traits
     template<typename T, size_t Alignment>
     struct IsTypeAligned : BoolConstant<((Alignment % AlignmentOf<T>::Value) == 0)> {};
@@ -2777,6 +2782,165 @@ namespace wstl {
     /// @since C++11
     template<size_t Index, typename... Types>
     using NthTypeType = typename NthType<Index, Types...>::Type;
+    #endif
+
+    #ifdef __WSTL_CXX11__
+    // Invoke result
+
+    // Include `Functional.hpp` to use it
+    template<typename T>
+    class ReferenceWrapper;
+
+    namespace __private {
+        template<typename T>
+        constexpr T&& __Forward(RemoveReferenceType<T>& t) __WSTL_NOEXCEPT__ {
+            return static_cast<T&&>(t);
+        }
+
+        template<typename T>
+        constexpr T&& __Forward(RemoveReferenceType<T>&& t) __WSTL_NOEXCEPT__ {
+            WSTL_STATIC_ASSERT(!IsLValueReference<T>::Value, "Invalid conversion rvalue to lvalue");
+            return static_cast<T&&>(t);
+        }
+
+        template<typename T>
+        struct __IsReferenceWrapper : FalseType {};
+
+        template<typename U>
+        struct __IsReferenceWrapper<ReferenceWrapper<U>> : TrueType {};
+
+        // General callable
+
+        template<typename Function, typename... Args>
+        constexpr auto __Invoke(Function&& function, Args&&... args) -> EnableIfType<!IsMemberPointer<Function>::Value, 
+        decltype((__Forward<Function>(function))(__Forward<Args>(args)...))> {
+            return (__Forward<Function>(function))(__Forward<Args>(args)...);
+        }
+
+        // Member function pointer, object
+
+        template<typename Function, typename Object, typename... Args>
+        constexpr auto __Invoke(Function&& function, Object&& object, Args&&... args) -> EnableIfType<!__private::__IsReferenceWrapper<DecayType<Object>>::Value && 
+        !IsPointer<Object>::Value && IsMemberFunctionPointer<DecayType<Function>>::Value, decltype((__Forward<Object>(object).*function)(__Forward<Args>(args)...))> {
+            return (__Forward<Object>(object).*function)(__Forward<Args>(args)...);
+        }
+
+        // Member function pointer, reference wrapper
+
+        template<typename Function, typename Reference, typename... Args>
+        constexpr auto __Invoke(Function&& function, Reference&& reference, Args&&... args) -> EnableIfType<__private::__IsReferenceWrapper<DecayType<Reference>>::Value && 
+        IsMemberFunctionPointer<DecayType<Function>>::Value, decltype((reference.Get().*function)(__Forward<Args>(args)...))> {
+            return (reference.Get().*function)(__Forward<Args>(args)...);
+        }
+
+        // Member function pointer, pointer
+
+        template<typename Function, typename Pointer, typename... Args>
+        constexpr auto __Invoke(Function&& function, Pointer&& pointer, Args&&... args) -> EnableIfType<IsPointer<DecayType<Pointer>>::Value && 
+        IsMemberFunctionPointer<DecayType<Function>>::Value, decltype(((*__Forward<Pointer>(pointer)).*function)(__Forward<Args>(args)...))> {
+            return ((*__Forward<Pointer>(pointer)).*function)(__Forward<Args>(args)...);
+        }
+
+        // Member object pointer, object
+
+        template<typename Function, typename Object>
+        constexpr auto __Invoke(Function&& function, Object&& object) -> EnableIfType<IsMemberObjectPointer<DecayType<Function>>::Value &&
+        !IsPointer<DecayType<Object>>::Value && !__private::__IsReferenceWrapper<DecayType<Object>>::Value, decltype(__Forward<Object>(object).*function)> {
+            return __Forward<Object>(object).*function;
+        }
+
+        // Member object pointer, reference wrapper
+
+        template<typename Function, typename Reference>
+        constexpr auto __Invoke(Function&& function, Reference&& reference) -> EnableIfType<IsMemberObjectPointer<DecayType<Function>>::Value && 
+        __private::__IsReferenceWrapper<DecayType<Reference>>::Value, decltype(reference.Get().*function)> {
+            return reference.Get().*function;
+        }
+
+        // Member object pointer, pointer
+
+        template<typename Function, typename Pointer>
+        constexpr auto __Invoke(Function&& function, Pointer&& pointer) -> EnableIfType<IsMemberObjectPointer<DecayType<Function>>::Value && 
+        IsPointer<DecayType<Pointer>>::Value, decltype((*__Forward<Pointer>(pointer)).*function)> {
+            return (*__Forward<Pointer>(pointer)).*function;
+        }
+
+        template<typename, typename Function, typename... Args>
+        struct __InvokeResult {};
+
+        template<typename Function, typename... Args>
+        struct __InvokeResult<VoidType<decltype(__Invoke(DeclareValue<Function>(), DeclareValue<Args>()...))>, Function, Args...> {
+            using Type = decltype(__Invoke(DeclareValue<Function>(), DeclareValue<Args>()...));
+        };
+    }
+
+    /// @brief Determines the result type of invoking a callable with specified arguments
+    /// @tparam Function Type of the callable to invoke
+    /// @tparam ...Args Types of the arguments to invoke with
+    /// @ingroup type_traits
+    /// @since C++11
+    /// @see https://en.cppreference.com/w/cpp/types/result_of
+    template<typename Function, typename... Args>
+    struct InvokeResult : __private::__InvokeResult<void, Function, Args...> {};
+
+    /// @copydoc InvokeResult
+    /// @since C++11
+    template<typename Function, typename... Args>
+    using InvokeResultType = typename InvokeResult<Function, Args...>::Type;
+
+    // Is invocable
+    
+    namespace __private {
+        template<typename, typename Function, typename... Args>
+        struct __IsInvocable : FalseType {};
+
+        template<typename Function, typename... Args>
+        struct __IsInvocable<VoidType<decltype(__Invoke(DeclareValue<Function>(), DeclareValue<Args>()...))>, Function, Args...> : TrueType {};
+    }
+
+    /// @brief Checks whether a callable can be invoked with specified arguments
+    /// @tparam Function Type of the callable to invoke
+    /// @tparam ...Args Types of the arguments to invoke with
+    /// @ingroup type_traits
+    /// @since C++11
+    /// @see https://en.cppreference.com/w/cpp/types/is_invocable
+    template<typename Function, typename... Args>
+    struct IsInvocable : __private::__IsInvocable<void, Function, Args...> {};
+
+    #ifdef __WSTL_CXX17__
+    /// @copydoc IsInvocable
+    /// @since C++17
+    template<typename Function, typename... Args>
+    inline constexpr bool IsInvocableValue = IsInvocable<Function, Args...>::Value;
+    #endif
+
+    // Is invocable return
+
+    namespace __private {
+        template<typename, typename Result, typename Function, typename... Args>
+        struct __IsInvocableReturn : FalseType {};
+
+        template<typename Result, typename Function, typename... Args>
+        struct __IsInvocableReturn<VoidType<decltype(__Invoke(DeclareValue<Function>(), DeclareValue<Args>()...))>, Result, Function, Args...> 
+            : BoolConstant<IsVoid<Result>::Value || IsConvertible<decltype(__Invoke(DeclareValue<Function>(), DeclareValue<Args>()...)), Result>::Value> {};
+    }
+
+    /// @brief Checks whether a callable can be invoked with specified arguments and return type is convertible to specified type
+    /// @tparam Result Type to check return type against
+    /// @tparam Function Type of the callable to invoke
+    /// @tparam ...Args Types of the arguments to invoke with
+    /// @ingroup type_traits
+    /// @since C++11
+    /// @see https://en.cppreference.com/w/cpp/types/is_invocable
+    template<typename Result, typename Function, typename... Args>
+    struct IsInvocableReturn : __private::__IsInvocableReturn<void, Result, Function, Args...> {};
+
+    #ifdef __WSTL_CXX17__
+    /// @copydoc IsInvocableReturn
+    /// @since C++17
+    template<typename Result, typename Function, typename... Args>
+    inline constexpr bool IsInvocableReturnValue = IsInvocableReturn<Result, Function, Args...>::Value;
+    #endif
     #endif
 }
 
