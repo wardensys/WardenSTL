@@ -1,3 +1,14 @@
+// Part of WardenSTL - https://github.com/WardenHD/WardenSTL
+// Copyright (c) 2025 Artem Bezruchko (WardenHD)
+//
+// This file is based on the Embedded Template Library (ETL)'s test_algorithm.cpp
+// from https://github.com/ETLCPP/etl, licensed under the MIT License.
+//
+// Some tests have been adapted and extended by Artem Bezruchko (WardenHD)
+// to improve coverage and match WardenSTL's implementation.
+//
+// Licensed under the MIT License. See LICENSE file for details.
+
 #include <doctest.h>
 #include <algorithm>
 #include <list>
@@ -9,8 +20,6 @@
 
 #include <wstl/Algorithm.hpp>
 #include <wstl/Bit.hpp>
-
-#include <iostream>
 
 #include "Utils.hpp"
 
@@ -25,103 +34,6 @@ int dataB[SIZE] = {1, 60, 4, 3, 9, 10, 5, 4, 10};
 
 std::list<int> dataLA(std::begin(dataA), std::end(dataA));
 std::list<int> dataLB(std::begin(dataB), std::end(dataB));
-
-struct NonTrivialData {
-    NonTrivialData() : A(0), B(0) {}
-    NonTrivialData(int a, int b) : A(a), B(b) {}
-
-    int A;
-    int B;
-};
-
-bool operator==(const NonTrivialData& a, const NonTrivialData& b) {
-    return a.A == b.A && a.B == b.B;
-}
-
-bool operator!=(const NonTrivialData& a, const NonTrivialData& b) {
-    return !(a == b);
-}
-
-bool operator<(const NonTrivialData& a, const NonTrivialData& b) {
-    return a.A < b.A || (a.A == b.A && a.B < b.B);
-}
-
-bool operator>(const NonTrivialData& a, const NonTrivialData& b) {
-    return b < a;
-}
-
-bool operator<=(const NonTrivialData& a, const NonTrivialData& b) {
-    return !(b < a);
-}
-
-bool operator>=(const NonTrivialData& a, const NonTrivialData& b) {
-    return !(a < b);
-}
-
-template<typename T>
-struct MovableData {
-    MovableData() : Value(), Valid(true) {}
-
-    explicit MovableData(const T& value) : Value(value), Valid(true) {}
-    explicit MovableData(T&& value) : Value(std::move(value)), Valid(true) {}
-
-    MovableData(MovableData&& other) noexcept : Value(std::move(other.Value)), Valid(true) {
-        other.Valid = false;
-    }
-
-    MovableData(const MovableData&& other) noexcept : Value(std::move(other.Value)), Valid(true) {
-        other.Valid = false;
-    }
-
-    virtual ~MovableData() {
-        Valid = false;
-    }
-
-    MovableData& operator=(MovableData&& other) noexcept {
-        Value = std::move(other.Value);
-        Valid = true;
-
-        other.Valid = false;
-        return *this;
-    }
-
-    bool operator<(const MovableData& other) const {
-        return Value < other.Value;
-    }
-
-    bool operator>(const MovableData& other) const {
-        return other.Value < Value;
-    }
-
-    bool operator<=(const MovableData& other) const {
-        return !(other.Value < Value);
-    }
-
-    bool operator>=(const MovableData& other) const {
-        return !(Value < other.Value);
-    }
-
-    operator bool() const {
-        return Valid;
-    }
-
-    T Value;
-    mutable bool Valid;
-
-private:
-    MovableData(const MovableData&) = delete;
-    MovableData& operator=(const MovableData&) = delete;
-};
-
-template<typename T>
-bool operator==(const MovableData<T>& a, const MovableData<T>& b) {
-    return a.Value == b.Value;
-}
-
-template<typename T>
-inline bool operator!=(const MovableData<T>& a, const MovableData<T>& b) {
-    return !(a == b);
-}
 
 constexpr size_t NONTRIVIAL_SIZE = 7;
 
@@ -781,13 +693,18 @@ TEST_SUITE("algorithm") {
     }
 
     TEST_CASE("ReverseCopy") {
-        int data[] = {1, 2, 3, 4, 5};
-        int buffer[5];
+        int result[SIZE];
+        int expected[SIZE];
 
-        wstl::ReverseCopy(std::begin(data), std::end(data), buffer);
+        int* ptr1 = wstl::ReverseCopy(std::begin(dataA), std::end(dataA), result);
+        int* ptr2 = std::reverse_copy(std::begin(dataA), std::end(dataA), expected);
+        
+        ptrdiff_t d1 = std::distance(result, ptr1);
+        ptrdiff_t d2 = std::distance(expected, ptr2);
+        CHECK(d1 == d2);
 
-        bool result = std::equal(std::rbegin(data), std::rend(data), buffer);
-        CHECK(result);
+        bool equal = std::equal(std::begin(expected), std::end(expected), result);
+        CHECK(equal);
     }
 
     TEST_CASE("Rotate") {
