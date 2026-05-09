@@ -2188,8 +2188,10 @@ namespace wstl {
         template<typename T, typename U1, typename U2, size_t N>
         FixedDeque(U1, U2, T(&)[N]) -> FixedDeque<T, N>;
 
+        #ifndef __WSTL_NO_INITIALIZERLIST__
         template<typename T, size_t N>
         FixedDeque(InitializerList<T>, T(&)[N]) -> FixedDeque<T, N>;
+        #endif
         #endif
     }
 }
