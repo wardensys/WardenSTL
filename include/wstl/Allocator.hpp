@@ -27,15 +27,15 @@ namespace wstl {
         /// @param file File where the exception occurred
         /// @param line Line number where the exception occurred
         /// @param message The exception message, default is `Bad allocation`
-        __WSTL_CONSTEXPR__ BadAllocation(StringType file, NumericType line, StringType message = "Bad allocation") : Exception(file, line, message) {}
+        __WSTL_CONSTEXPR__ BadAllocation(StringType file, NumericType line, StringType message = "Bad allocation") __WSTL_NOEXCEPT__ : Exception(file, line, message) {}
         #else
         /// @brief Constructor
         /// @param message The exception message, default is `Bad allocation`
-        __WSTL_CONSTEXPR__ BadAllocation(StringType message = "Bad allocation") : Exception(message) {}
+        __WSTL_CONSTEXPR__ BadAllocation(StringType message = "Bad allocation") __WSTL_NOEXCEPT__ : Exception(message) {}
         #endif
 
         /// @copydoc Exception::Name()
-        virtual StringType Name() const __WSTL_NOEXCEPT__ __WSTL_OVERRIDE__ {
+        __WSTL_CONSTEXPR20__ virtual StringType Name() const __WSTL_NOEXCEPT__ __WSTL_OVERRIDE__ {
             return "BadAllocation";
         }
     };

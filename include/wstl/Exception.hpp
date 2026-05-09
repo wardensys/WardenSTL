@@ -29,7 +29,7 @@ namespace wstl {
     class Exception {
     public:
         typedef const char* StringType;
-        typedef int NumericType;
+        typedef unsigned int NumericType;
 
         #ifdef __WSTL_EXCEPTION_LOCATION__
         /// @brief Constructor
@@ -37,36 +37,36 @@ namespace wstl {
         /// @param line Line number (usually __LINE__)
         /// @param message The exception message
         /// @note This is only available if __WSTL_EXCEPTION_LOCATION__ is defined
-        __WSTL_CONSTEXPR__ Exception(StringType file, NumericType line, StringType message)
+        __WSTL_CONSTEXPR__ Exception(StringType file, NumericType line, StringType message) __WSTL_NOEXCEPT__
             : m_Message(message), m_Line(line), m_Filename(file) {}
 
         #else 
         /// @brief Constructor
         /// @param message The exception message
-        __WSTL_CONSTEXPR__ Exception(StringType message) : m_Message(message) {}
+        __WSTL_CONSTEXPR__ Exception(StringType message) __WSTL_NOEXCEPT__ : m_Message(message) {}
         #endif
 
         /// @brief Virtual destructor
         virtual ~Exception() __WSTL_NOEXCEPT__ {}
 
         /// @brief Returns the name of the exception
-        virtual StringType Name() const __WSTL_NOEXCEPT__ = 0;
+        __WSTL_CONSTEXPR20__ virtual StringType Name() const __WSTL_NOEXCEPT__ = 0;
 
         /// @brief Gets the exception message
-        __WSTL_CONSTEXPR__ StringType What() const {
+        __WSTL_CONSTEXPR__ StringType What() const __WSTL_NOEXCEPT__ {
             return m_Message;
         }
 
         #ifdef __WSTL_EXCEPTION_LOCATION__
         /// @brief Gets the file for the exception
         /// @note This is only available if __WSTL_EXCEPTION_LOCATION__ is defined
-        __WSTL_CONSTEXPR__ StringType Filename() const {
+        __WSTL_CONSTEXPR__ StringType Filename() const __WSTL_NOEXCEPT__ {
             return m_Filename;
         }
 
         /// @brief Gets the line number for the exception
         /// @note This is only available if __WSTL_EXCEPTION_LOCATION__ is defined
-        __WSTL_CONSTEXPR__ NumericType Line() const {
+        __WSTL_CONSTEXPR__ NumericType Line() const __WSTL_NOEXCEPT__ {
             return m_Line;
         }
         #endif
@@ -88,8 +88,6 @@ namespace wstl {
     #define __WSTL_MAKE_EXCEPTION_1(exception) exception()
     #define __WSTL_MAKE_EXCEPTION_2(exception, message) exception(message)
     #endif
-
-    #define __WSTL_EXPAND__(x) x
     
     #define __WSTL_MAKE_EXCEPTION_IMPL__(count, ...) __WSTL_MAKE_EXCEPTION_##count(__VA_ARGS__)
     #define __WSTL_MAKE_EXCEPTION_IMPL2__(count, ...) __WSTL_MAKE_EXCEPTION_IMPL__(count, __VA_ARGS__)
