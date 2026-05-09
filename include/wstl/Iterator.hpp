@@ -11,11 +11,10 @@
 #ifndef __WSTL_ITERATOR_HPP__
 #define __WSTL_ITERATOR_HPP__
 
-#include <stddef.h>
-
-#include "private/Swap.hpp"
-#include "TypeTraits.hpp"
+#include "private/Platform.hpp"
 #include "private/AddressOf.hpp"
+#include "private/Move.hpp"
+#include "TypeTraits.hpp"
 
 #ifdef __WSTL_STD_ITERATORTRAITS_SUPPORT__
 #include <iterator>
@@ -506,14 +505,28 @@ namespace wstl {
         return !(x < y);
     }
 
+    // Addition operator for ReverseIterator
+    
+    /// @brief Adds an offset to a reverse iterator and returns a new reverse iterator
+    /// @param offset The offset to add (negative for backward movement)  
+    /// @param x Reverse iterator to add offset to  
+    /// @return A new reverse iterator advanced by `offset` positions
+    /// @ingroup iterator
+    template<typename T>
+    __WSTL_CONSTEXPR14__ ReverseIterator<T> operator+(typename ReverseIterator<T>::DifferenceType offset, const ReverseIterator<T>& x) {
+        return x + offset;
+    }
+
+    // Difference operator for ReverseIterator
+
+    /// @brief Calculates the difference between two reverse iterators
+    /// @param a First reverse iterator
+    /// @param b Second reverse iterator
+    /// @return The difference between the two iterators
+    /// @ingroup iterator
     template<typename T>
     __WSTL_CONSTEXPR14__ typename ReverseIterator<T>::DifferenceType operator-(const ReverseIterator<T>& x, const ReverseIterator<T>& y) {
         return y.Base() - x.Base();
-    }
-
-    template<typename T, typename Difference>
-    __WSTL_CONSTEXPR14__ ReverseIterator<T> operator+(Difference n, const ReverseIterator<T>& iterator) {
-        return iterator.operator+(n);
     }
 
     /// @brief Makes a reverse iterator from the given iterator
@@ -706,16 +719,30 @@ namespace wstl {
         return !(x < y);
     }
 
+    // Addition operator for MoveIterator
+
+    /// @brief Adds an offset to a move iterator and returns a new move iterator
+    /// @param offset The offset to add (negative for backward movement)  
+    /// @param x Move iterator to add offset to  
+    /// @return A new move iterator advanced by `offset` positions
+    /// @ingroup iterator
+    template<typename T>
+    __WSTL_CONSTEXPR14__ MoveIterator<T> operator+(typename MoveIterator<T>::DifferenceType offset, const MoveIterator<T>& iterator) {
+        return iterator + offset;
+    }
+
+    // Difference operator for MoveIterator
+
+    /// @brief Calculates the difference between two move iterators
+    /// @param a First move iterator
+    /// @param b Second move iterator
+    /// @return The difference between the two iterators
+    /// @ingroup iterator
     template<typename T1, typename T2>
     __WSTL_CONSTEXPR14__ auto operator-(const MoveIterator<T1>& x, const MoveIterator<T2>& y) -> decltype(x.Base() - y.Base()) {
         return x.Base() - y.Base();
     }
-
-    template<typename T, typename Difference>
-    __WSTL_CONSTEXPR14__ MoveIterator<T> operator+(Difference n, const MoveIterator<T>& iterator) {
-        return iterator + n;
-    }
-
+    
     /// @brief Makes a move iterator from the given iterator
     /// @param iterator The base iterator to adapt
     /// @return A `MoveIterator` object that starts at the position represented by the given iterator
