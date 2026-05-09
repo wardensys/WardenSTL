@@ -26,12 +26,14 @@
     #define __WSTL_ASSERT_SUPPORT__ 
 #endif
 
-/// @def __WSTL_ASSERT_PUSHPOP__
+/// @def __WSTL_CHECK_PUSHPOP__
 /// @brief If defined, push/pop operations in containers will be checked, and in case of error the exception will be thrown
 /// @ingroup error_handler
 #ifdef __DOXYGEN__
-    #define __WSTL_ASSERT_PUSHPOP__ 
+    #define __WSTL_CHECK_PUSHPOP__ 
 #endif
+
+
 
 #ifdef __WSTL_HANDLE_ERRORS__
 namespace wstl {
@@ -200,15 +202,35 @@ namespace wstl {
                 return (value);                                     \
             }
         #endif
+        
     #endif
 #endif
 
 // Additional defines
 
-#ifdef __WSTL_ASSERT_PUSHPOP__
+#ifdef __WSTL_CHECK_PUSHPOP__
     #define __WSTL_ASSERT_PUSHPOP_RETURN__(condition, exception) __WSTL_ASSERT_RETURN__(condition, exception)
 #else
     #define __WSTL_ASSERT_PUSHPOP_RETURN__(condition, exception)
-#endif 
+#endif
+
+#ifdef __WSTL_CHECK_ITERATOR__
+    #define __WSTL_ASSERT_ITERATOR_RETURNVALUE__(condition, exception, value) __WSTL_ASSERT_RETURNVALUE__(condition, exception, value)
+#else
+    #define __WSTL_ASSERT_ITERATOR_RETURNVALUE__(condition, exception, value)
+#endif
+
+#ifdef __WSTL_CHECK_INDEXOPERATOR__
+    #define __WSTL_ASSERT_INDEXOPERATOR__(condition, exception) __WSTL_ASSERT__(condition, exception)
+#else
+    #define __WSTL_ASSERT_INDEXOPERATOR__(condition, exception)
+#endif
+
+#ifdef __WSTL_CHECK_EXTRA__
+    #define __WSTL_ASSERT_EXTRA__(condition, exception) __WSTL_ASSERT__(condition, exception)
+#else
+    #define __WSTL_ASSERT_EXTRA__(condition, exception)
+#endif
+
 
 #endif
