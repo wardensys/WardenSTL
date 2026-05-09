@@ -9,7 +9,7 @@ import webbrowser
 
 env = Environment(
     CXX = 'clang++', # or your compiler of choice
-    CXXFLAGS = ['-std=c++14', '-Wall', '-Wextra', '-Wpedantic', '-Wconversion', 
+    CXXFLAGS = ['-std=c++11', '-Wall', '-Wextra', '-Wpedantic', '-Wconversion', 
                 '-Wshadow', '-Werror']
 )
 
@@ -17,9 +17,12 @@ env.Append(
     CPPDEFINES = [
         'DOCTEST_CONFIG_SUPER_FAST_ASSERTS',
         '__WSTL_NO_INITIALIZERLIST__',
+        '__WSTL_STD_ITERATORTRAITS_SUPPORT__',
         '__WSTL_CHECK_PUSHPOP__',
         '__WSTL_EXCEPTIONS__',
-        '__WSTL_STD_ITERATORTRAITS_SUPPORT__'
+        '__WSTL_EXCEPTION_LOCATION__',
+        '__WSTL_CHECK_ITERATOR__',
+        '__WSTL_CHECK_INDEXOPERATOR__'
     ],
     CPPPATH = [
         env.Dir('doctest/doctest').srcnode(),

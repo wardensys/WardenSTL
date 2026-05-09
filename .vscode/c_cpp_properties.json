@@ -9,10 +9,13 @@
                 "__WSTL_NO_INITIALIZERLIST__", 
                 "__WSTL_CHECK_PUSHPOP__",
                 "__WSTL_EXCEPTIONS__",
-                "__WSTL_STD_ITERATORTRAITS_SUPPORT__"
+                "__WSTL_STD_ITERATORTRAITS_SUPPORT__",
+                "__WSTL_EXCEPTION_LOCATION__",
+                "__WSTL_CHECK_ITERATOR__",
+                "__WSTL_CHECK_INDEXOPERATOR__"
             ],
             "cStandard": "c99",
-            "cppStandard": "c++14",
+            "cppStandard": "c++11",
             "intelliSenseMode": "macos-clang-arm64",
             "compilerPath": "/usr/bin/clang++"
         }
