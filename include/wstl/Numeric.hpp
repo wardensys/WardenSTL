@@ -10,7 +10,6 @@
 #define __WSTL_NUMERIC_HPP__
 
 #include "private/Platform.hpp"
-#include "private/Swap.hpp"
 #include "Iterator.hpp"
 #include "Math.hpp"
 
@@ -430,7 +429,7 @@ namespace wstl {
         /// @copydoc GCD
         /// @since C++17
         template<typename T, T A, T B, T... Rest>
-        inline constexpr T GCDVariable = GCD<T, A, B, Rest...>::Value;
+        inline constexpr T GCDValue = GCD<T, A, B, Rest...>::Value;
         #endif
 
         #ifdef __WSTL_CXX11__
@@ -477,7 +476,7 @@ namespace wstl {
         /// @copydoc LCM
         /// @since C++17
         template<typename T, T A, T B, T... Rest>
-        inline constexpr T LCMVariable = LCM<T, A, B, Rest...>::Value;
+        inline constexpr T LCMValue = LCM<T, A, B, Rest...>::Value;
         #endif
 
         /// @brief Computes the midpoint of two numbers at compile time
@@ -497,7 +496,7 @@ namespace wstl {
         /// @copydoc Midpoint
         /// @since C++17
         template<typename T, T A, T B>
-        inline constexpr T MidpointVariable = Midpoint<T, A, B>::Value;
+        inline constexpr T MidpointValue = Midpoint<T, A, B>::Value;
         #endif
     }
 }

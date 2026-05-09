@@ -201,7 +201,7 @@ namespace wstl {
     /// @copydoc RatioEqual
     /// @since C++17
     template<typename R1, typename R2>
-    inline constexpr bool RatioEqualVariable = RatioEqual<R1, R2>::Value;
+    inline constexpr bool RatioEqualValue = RatioEqual<R1, R2>::Value;
     #endif
 
     /// @brief Checks whether two ratios are not equal
@@ -216,7 +216,7 @@ namespace wstl {
     /// @copydoc RatioNotEqual
     /// @since C++17
     template<typename R1, typename R2>
-    inline constexpr bool RatioNotEqualVariable = RatioNotEqual<R1, R2>::Value;
+    inline constexpr bool RatioNotEqualValue = RatioNotEqual<R1, R2>::Value;
     #endif
 
     /// @brief Checks whether first ratio is less than second
@@ -231,7 +231,7 @@ namespace wstl {
     /// @copydoc RatioLess
     /// @since C++17
     template<typename R1, typename R2>
-    inline constexpr bool RatioLessVariable = RatioLess<R1, R2>::Value;
+    inline constexpr bool RatioLessValue = RatioLess<R1, R2>::Value;
     #endif
 
     /// @brief Checks whether first ratio is less than or equal to second
@@ -246,7 +246,7 @@ namespace wstl {
     /// @copydoc RatioLessEqual
     /// @since C++17
     template<typename R1, typename R2>
-    inline constexpr bool RatioLessEqualVariable = RatioLessEqual<R1, R2>::Value;
+    inline constexpr bool RatioLessEqualValue = RatioLessEqual<R1, R2>::Value;
     #endif
 
     /// @brief Checks whether first ratio is greater than second
@@ -261,7 +261,7 @@ namespace wstl {
     /// @copydoc RatioGreater
     /// @since C++17
     template<typename R1, typename R2>
-    inline constexpr bool RatioGreaterVariable = RatioGreater<R1, R2>::Value;
+    inline constexpr bool RatioGreaterValue = RatioGreater<R1, R2>::Value;
     #endif
 
     /// @brief Checks whether first ratio is greater than or equal to second
@@ -276,7 +276,7 @@ namespace wstl {
     /// @copydoc RatioGreaterEqual
     /// @since C++17
     template<typename R1, typename R2>
-    inline constexpr bool RatioGreaterEqualVariable = RatioGreaterEqual<R1, R2>::Value;
+    inline constexpr bool RatioGreaterEqualValue = RatioGreaterEqual<R1, R2>::Value;
     #endif
 }
 

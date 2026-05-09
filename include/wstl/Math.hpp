@@ -12,7 +12,6 @@
 #include "private/Platform.hpp"
 #include "TypeTraits.hpp"
 #include "Limits.hpp"
-#include "Exception.hpp"
 
 #include <stdint.h>
 #include <float.h>
@@ -118,7 +117,7 @@ namespace wstl {
         /// @copydoc Absolute
         /// @since C++17
         template<typename T, T N, typename Result = T>
-        inline constexpr Result AbsoluteVariable = Absolute<T, N, Result>::Value;
+        inline constexpr Result AbsoluteValue = Absolute<T, N, Result>::Value;
         #endif
 
         #ifdef __WSTL_CXX11__
@@ -143,7 +142,7 @@ namespace wstl {
         /// @copydoc AbsoluteUnsigned
         /// @since C++17
         template<typename T, T N, typename Result = typename MakeUnsigned<T>::Type>
-        inline constexpr Result AbsoluteUnsignedVariable = AbsoluteUnsigned<T, N, Result>::Value;
+        inline constexpr Result AbsoluteUnsignedValue = AbsoluteUnsigned<T, N, Result>::Value;
         #endif
     }
     
@@ -200,7 +199,7 @@ namespace wstl {
     /// @copydoc Power
     /// @ingroup maths
     template<size_t N, size_t POWER, typename UT = uint64_t>
-    inline constexpr UT PowerVariable = Power<N, POWER, UT>::Value;
+    inline constexpr UT PowerValue = Power<N, POWER, UT>::Value;
     #endif
 
     // Nth root
@@ -234,7 +233,7 @@ namespace wstl {
     /// @copydoc NthRoot
     /// @ingroup maths
     template<size_t N, size_t ROOT, size_t I = 1>
-    inline constexpr size_t NthRootVariable = NthRoot<N, ROOT, I>::Value;
+    inline constexpr size_t NthRootValue = NthRoot<N, ROOT, I>::Value;
     #endif
 
     // Square root
@@ -249,7 +248,7 @@ namespace wstl {
     /// @copydoc SquareRoot
     /// @ingroup maths
     template<size_t N, size_t I = 1>
-    inline constexpr size_t SquareRootVariable = SquareRoot<N, I>::Value;
+    inline constexpr size_t SquareRootValue = SquareRoot<N, I>::Value;
     #endif
 
     // Logarithm
@@ -306,7 +305,7 @@ namespace wstl {
     /// @copydoc Logarithm
     /// @ingroup maths
     template<size_t N, size_t BASE>
-    inline constexpr size_t LogarithmVariable = Logarithm<N, BASE>::Value;
+    inline constexpr size_t LogarithmValue = Logarithm<N, BASE>::Value;
     #endif
 
     /// @brief Computes logarithm of a number of integral type with base 2
@@ -319,7 +318,7 @@ namespace wstl {
     /// @copydoc Logarithm2
     /// @ingroup maths
     template<size_t N>
-    inline constexpr size_t Logarithm2Variable = Logarithm2<N>::Value;
+    inline constexpr size_t Logarithm2Value = Logarithm2<N>::Value;
     #endif
 
     /// @brief Computes logarithm of a number of integral type with base 10
@@ -332,7 +331,7 @@ namespace wstl {
     /// @copydoc Logarithm10
     /// @ingroup maths
     template<size_t N>
-    inline constexpr size_t Logarithm10Variable = Logarithm10<N>::Value;
+    inline constexpr size_t Logarithm10Value = Logarithm10<N>::Value;
     #endif
 
     // Factorial
@@ -359,7 +358,7 @@ namespace wstl {
     /// @copydoc Factorial
     /// @ingroup maths
     template<size_t N>
-    inline constexpr size_t FactorialVariable = Factorial<N>::Value;
+    inline constexpr size_t FactorialValue = Factorial<N>::Value;
     #endif
 
     // Fibonacci
@@ -393,7 +392,7 @@ namespace wstl {
     /// @copydoc Fibonacci
     /// @ingroup maths
     template<size_t N>
-    inline constexpr size_t FibonacciVariable = Fibonacci<N>::Value;
+    inline constexpr size_t FibonacciValue = Fibonacci<N>::Value;
     #endif
 
     // Permutations
@@ -425,7 +424,7 @@ namespace wstl {
     /// @copydoc Permutations
     /// @ingroup maths
     template<size_t N, size_t R>
-    inline constexpr size_t PermutationsVariable = Permutations<N, R>::Value;
+    inline constexpr size_t PermutationsValue = Permutations<N, R>::Value;
     #endif
 
     // Combinations
@@ -444,7 +443,7 @@ namespace wstl {
     /// @copydoc Combinations
     /// @ingroup maths
     template<size_t N, size_t R>
-    inline constexpr size_t CombinationsVariable = Combinations<N, R>::Value;
+    inline constexpr size_t CombinationsValue = Combinations<N, R>::Value;
     #endif
 
     // Is NaN

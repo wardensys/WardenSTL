@@ -109,15 +109,19 @@ namespace wstl {
 
 #if defined(_MSC_VER)
 #define __WSTL_MSVC__
+#define __WSTL_SUPPORTED_COMPILER__
 
 #elif defined(__clang__)
 #define __WSTL_CLANG__
+#define __WSTL_SUPPORTED_COMPILER__
 
 #elif defined(__GNUC__) || defined(__GNUG__)
 #define __WSTL_GCC__
+#define __WSTL_SUPPORTED_COMPILER__
 
 #elif defined(__INTEL_COMPILER)
 #define __WSTL_ICC__
+#define __WSTL_SUPPORTED_COMPILER__
 #endif
 
 // C++11 features

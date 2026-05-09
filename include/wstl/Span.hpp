@@ -12,8 +12,8 @@
 #define __WSTL_SPAN_HPP__
 
 #include "private/Platform.hpp"
-#include "Limits.hpp"
 #include "TypeTraits.hpp"
+#include "Limits.hpp"
 #include "Iterator.hpp"
 #include "CircularIterator.hpp"
 #include "Byte.hpp"
@@ -67,7 +67,7 @@ namespace wstl {
         typedef wstl::CircularIterator<Iterator> CircularIterator;
         typedef wstl::CircularIterator<ReverseIterator> ReverseCircularIterator;
 
-        static const __WSTL_CONSTEXPR__ size_t ExtentVariable = Extent;
+        static const __WSTL_CONSTEXPR__ size_t ExtentValue = Extent;
 
         /// @brief Constructor with iterator and size
         /// @param first Iterator to the first element
@@ -383,7 +383,7 @@ namespace wstl {
         typedef wstl::CircularIterator<Iterator> CircularIterator;
         typedef wstl::CircularIterator<ReverseIterator> ReverseCircularIterator;
 
-        static const __WSTL_CONSTEXPR__ size_t ExtentVariable = DynamicExtent;
+        static const __WSTL_CONSTEXPR__ size_t ExtentValue = DynamicExtent;
 
         /// @brief Default constructor
         __WSTL_CONSTEXPR__ Span() __WSTL_NOEXCEPT__ : m_Begin(__WSTL_NULLPTR__), m_End(__WSTL_NULLPTR__) {}
@@ -654,10 +654,10 @@ namespace wstl {
     };
 
     template<typename T, size_t Extent>
-    const __WSTL_CONSTEXPR__ size_t Span<T, Extent>::ExtentVariable;
+    const __WSTL_CONSTEXPR__ size_t Span<T, Extent>::ExtentValue;
 
     template<typename T>
-    const __WSTL_CONSTEXPR__ size_t Span<T, DynamicExtent>::ExtentVariable;
+    const __WSTL_CONSTEXPR__ size_t Span<T, DynamicExtent>::ExtentValue;
 
     // Template deduction guides
 

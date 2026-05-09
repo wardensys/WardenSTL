@@ -6,9 +6,8 @@
 #ifndef __WSTL_TUPLEUTILS_HPP__
 #define __WSTL_TUPLEUTILS_HPP__
 
-#include <stddef.h>
-#include "../TypeTraits.hpp"
 #include "Platform.hpp"
+#include "../TypeTraits.hpp"
 
 
 namespace wstl {
@@ -66,7 +65,7 @@ namespace wstl {
     /// @copydoc TupleSize
     /// @since C++17
     template<typename T>
-    inline constexpr size_t TupleSizeVariable = TupleSize<T>::Value;
+    inline constexpr size_t TupleSizeValue = TupleSize<T>::Value;
     #endif
 
     // Integer sequence
