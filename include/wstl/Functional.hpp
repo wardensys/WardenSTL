@@ -7,9 +7,11 @@
 #define __WSTL_FUNCTIONAL_HPP__
 
 #include "private/Platform.hpp"
-#include "private/Swap.hpp"
-#include "Tuple.hpp"
 #include "private/Error.hpp"
+#include "private/Swap.hpp"
+#include "private/Move.hpp"
+#include "Tuple.hpp"
+#include "TypeTraits.hpp"
 
 
 /// @defgroup functional Functional
@@ -22,22 +24,22 @@ namespace wstl {
     /// @brief Exception class for invalid function calls
     /// @ingroup functional
     /// @see https://en.cppreference.com/w/cpp/utility/functional/bad_function_call
-    class BadFunctionCall __WSTL_FINAL__ : public Exception {
+    class BadFunctionCall : public Exception {
     public:
         #ifdef __WSTL_EXCEPTION_LOCATION__
         /// @brief Constructor
         /// @param file The name of the source file where the exception occurred
         /// @param line The line number in the source file where the exception occurred
         /// @param message The message describing the exception, default is `Bad function call`
-        BadFunctionCall(StringType file, NumericType line, StringType message = "Bad function call") : Exception(file, line, message) {}
+        BadFunctionCall(StringType file, NumericType line, StringType message = "Bad function call") __WSTL_NOEXCEPT__ : Exception(file, line, message) {}
         #else
         /// @brief Constructor
         /// @param message The exception message, default is `Bad function call`
-        BadFunctionCall(StringType message = "Bad function call") : Exception(message) {}
+        BadFunctionCall(StringType message = "Bad function call") __WSTL_NOEXCEPT__ : Exception(message) {}
         #endif
 
         /// @copydoc Exception::Name()
-        virtual StringType Name() const __WSTL_NOEXCEPT__ __WSTL_OVERRIDE__ {
+        __WSTL_CONSTEXPR20__ virtual StringType Name() const __WSTL_NOEXCEPT__ __WSTL_OVERRIDE__ {
             return "BadFunctionCall";
         }
     };
@@ -947,6 +949,50 @@ namespace wstl {
     template<typename Object, typename Return> 
     inline bool operator!=(NullPointerType, const Function<Return(), Object>& function) __WSTL_NOEXCEPT__ {
         return !(NullPointer == function);
+    }
+    #endif
+
+    #ifdef __WSTL_CXX11__
+    // Invoke
+
+    /// @brief Invokes a callable object with the provided arguments by forwarding them
+    /// @param function The callable object to invoke
+    /// @param args... The arguments to be forwarded
+    /// @return The result of invoking the callable object
+    /// @since C++11
+    /// @see https://en.cppreference.com/w/cpp/utility/functional/invoke
+    template<typename Function, typename... Args>
+    constexpr auto Invoke(Function&& function, Args&&... args) -> decltype(__private::__Invoke(Forward<Function>(function), Forward<Args>(args)...)) {
+        return __private::__Invoke(Forward<Function>(function), Forward<Args>(args)...);
+    }
+
+    // Invoke return
+
+    /// @brief Invokes a callable object with the provided arguments by forwarding them, 
+    /// and returns the result cast to the specified type, void oveload
+    /// @tparam Result The type to cast the result to
+    /// @param function The callable object to invoke
+    /// @param args... The arguments to be forwarded
+    /// @since C++11
+    /// @see https://en.cppreference.com/w/cpp/utility/functional/invoke
+    template<typename Result, typename Function, typename... Args>
+    constexpr EnableIfType<IsVoid<Result>::Value && IsInvocableReturn<Result, Function, Args...>::Value, void> 
+    InvokeReturn(Function&& function, Args&&... args) {
+        return (void) Invoke(Forward<Function>(function), Forward<Args>(args)...);
+    }
+
+    /// @brief Invokes a callable object with the provided arguments by forwarding them, 
+    /// and returns the result cast to the specified type, non-void overload
+    /// @tparam Result The type to cast the result to
+    /// @param function The callable object to invoke
+    /// @param args... The arguments to be forwarded
+    /// @return The result of invoking the callable object, cast to the specified type
+    /// @since C++11
+    /// @see https://en.cppreference.com/w/cpp/utility/functional/invoke
+    template<typename Result, typename Function, typename... Args>
+    constexpr EnableIfType<!IsVoid<Result>::Value && IsInvocableReturn<Result, Function, Args...>::Value, Result> 
+    InvokeReturn(Function&& function, Args&&... args) {
+        return static_cast<Result>(Invoke(Forward<Function>(function), Forward<Args>(args)...));
     }
     #endif
 
@@ -2595,7 +2641,7 @@ namespace wstl {
     /// @copydoc IsPlaceholder
     /// @since C++17
     template<typename T>
-    inline constexpr int IsPlaceholderVariable = IsPlaceholder<T>::Value;
+    inline constexpr int IsPlaceholderValue = IsPlaceholder<T>::Value;
     #endif
 
     // Is bind expression
@@ -2612,7 +2658,7 @@ namespace wstl {
     /// @copydoc IsBindExpression
     /// @since C++17
     template<typename T>
-    inline constexpr bool IsBindExpressionVariable = IsBindExpression<T>::Value;
+    inline constexpr bool IsBindExpressionValue = IsBindExpression<T>::Value;
     #endif
 
     // Bind 
