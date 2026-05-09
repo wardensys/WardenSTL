@@ -9,8 +9,6 @@
 #ifndef __WSTL_CHARACTERTRAITS_HPP__
 #define __WSTL_CHARACTERTRAITS_HPP__
 
-#include <stddef.h>
-#include <stdint.h>
 #include "private/Platform.hpp"
 #include "NullPointer.hpp"
 #include "Algorithm.hpp"

@@ -6,8 +6,10 @@
 #ifndef __WSTL_TUPLE_HPP__
 #define __WSTL_TUPLE_HPP__
 
+#include "private/Platform.hpp"
 #include "private/TupleUtils.hpp"
 #include "private/Swap.hpp"
+#include "private/Move.hpp"
 
 
 /// @defgroup tuple Tuple

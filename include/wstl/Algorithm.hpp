@@ -6,6 +6,7 @@
 #ifndef __WSTL_ALGORITHM_HPP__
 #define __WSTL_ALGORITHM_HPP__
 
+#include "private/Platform.hpp"
 #include "Iterator.hpp"
 #include "Utility.hpp"
 #include "Functional.hpp"

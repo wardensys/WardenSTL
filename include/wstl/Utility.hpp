@@ -11,12 +11,12 @@
 #ifndef __WSTL_UTILITY_HPP__
 #define __WSTL_UTILITY_HPP__
 
-#include <stddef.h>
-#include "TypeTraits.hpp"
-#include "StaticAssert.hpp"
 #include "private/Platform.hpp"
 #include "private/Swap.hpp"
+#include "private/Move.hpp"
+#include "StaticAssert.hpp"
 #include "Tuple.hpp"
+#include "TypeTraits.hpp"
 
 
 /// @defgroup utility Utility

@@ -9,7 +9,6 @@
 #include "private/Platform.hpp"
 #include "NullPointer.hpp"
 #include "Container.hpp"
-#include <stddef.h>
 
 
 // Defines introduced

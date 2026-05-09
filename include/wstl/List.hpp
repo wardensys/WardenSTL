@@ -7,9 +7,9 @@
 #define __WSTL_LIST_HPP__
 
 #include "private/Platform.hpp"
+#include "TypeTraits.hpp"
 #include "Container.hpp"
 #include "NullPointer.hpp"
-#include "TypeTraits.hpp"
 #include "InitializerList.hpp"
 #include "StandardExceptions.hpp"
 #include "PlacementNew.hpp"
@@ -2398,8 +2398,10 @@ namespace wstl {
         template<typename T, typename U1, typename U2, size_t N>
         FixedList(U1, U2, T(&)[N]) -> FixedList<T, N>;
 
+        #ifndef __WSTL_NO_INITIALIZERLIST__
         template<typename T, size_t N>
         FixedList(InitializerList<T>, T(&)[N]) -> FixedList<T, N>;
+        #endif
         #endif
     }
 }
