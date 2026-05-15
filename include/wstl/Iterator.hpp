@@ -17,7 +17,7 @@
 #include "TypeTraits.hpp"
 
 #ifdef __WSTL_STD_ITERATORTRAITS_SUPPORT__
-#include <iterator>
+// #include <iterator>
 #endif
 
 
@@ -101,8 +101,15 @@ namespace wstl {
 
     // Iterator traits
 
-    #ifdef __WSTL_STD_ITERATORTRAITS_SUPPORT__
     namespace __private {
+        template<typename T>
+        static long __TestLibraryIterator(typename T::IteratorCategory*, typename T::ValueType*, 
+            typename T::DifferenceType*, typename T::PointerType*, typename RemoveReference<typename T::ReferenceType>::Type*);
+
+        template<typename>
+        static char __TestLibraryIterator(...);
+
+        #ifdef __WSTL_STD_ITERATORTRAITS_SUPPORT__
         template<typename T>
         struct __IteratorTraitsCategory;
 
@@ -122,14 +129,37 @@ namespace wstl {
         struct __IteratorTraitsCategory<std::random_access_iterator_tag> { typedef RandomAccessIteratorTag Type; };
 
         template<typename T>
-        static long __TestLibraryIterator(typename T::IteratorCategory* = 0, typename T::ValueType* = 0, 
-            typename T::DifferenceType* = 0, typename T::PointerType* = 0, typename RemoveReference<typename T::ReferenceType>::Type* = 0);
+        static long __TestSTDIterator(typename T::iterator_category*, typename T::value_type*,
+            typename T::difference_type*, typename T::pointer*, typename RemoveReference<typename T::reference>::Type*);
 
         template<typename>
-        static char __TestLibraryIterator(...);
+        static char __TestSTDIterator(...);
 
-        template<typename Iterator, bool IsLibraryIterator = sizeof(__TestLibraryIterator<Iterator>()) == sizeof(long)>
-        struct __IteratorTraits;
+        template<typename Iterator, bool __IsLibraryIterator = sizeof(__TestLibraryIterator<Iterator>(0, 0, 0, 0, 0)) == sizeof(long), 
+        bool __IsIterator = __IsLibraryIterator || (sizeof(__TestSTDIterator<Iterator>(0, 0, 0, 0, 0)) == sizeof(long))>
+        struct __IteratorTraits {};
+
+        template<typename Iterator>
+        struct __IteratorTraits<Iterator, true, true> {
+            typedef typename Iterator::IteratorCategory IteratorCategory;
+            typedef typename Iterator::ValueType ValueType;
+            typedef typename Iterator::DifferenceType DifferenceType;
+            typedef typename Iterator::PointerType PointerType;
+            typedef typename Iterator::ReferenceType ReferenceType;
+        };
+
+        template<typename Iterator>
+        struct __IteratorTraits<Iterator, false, true> {
+            typedef typename __IteratorTraitsCategory<typename Iterator::iterator_category>::Type IteratorCategory;
+            typedef typename Iterator::value_type ValueType;
+            typedef typename Iterator::difference_type DifferenceType;
+            typedef typename Iterator::pointer PointerType;
+            typedef typename Iterator::reference ReferenceType;
+        };
+
+        #else
+        template<typename Iterator, bool __IsIterator = sizeof(__TestLibraryIterator<Iterator>()) == sizeof(long)>
+        struct __IteratorTraits {};
 
         template<typename Iterator>
         struct __IteratorTraits<Iterator, true> {
@@ -139,15 +169,7 @@ namespace wstl {
             typedef typename Iterator::PointerType PointerType;
             typedef typename Iterator::ReferenceType ReferenceType;
         };
-
-        template<typename Iterator>
-        struct __IteratorTraits<Iterator, false> {
-            typedef typename __IteratorTraitsCategory<typename Iterator::iterator_category>::Type IteratorCategory;
-            typedef typename Iterator::value_type ValueType;
-            typedef typename Iterator::difference_type DifferenceType;
-            typedef typename Iterator::pointer PointerType;
-            typedef typename Iterator::reference ReferenceType;
-        };
+        #endif
     }
 
     /// @brief Provides uniform interface for accessing properties of an iterator
@@ -156,20 +178,6 @@ namespace wstl {
     /// @see https://en.cppreference.com/w/cpp/iterator/iterator_traits
     template<typename Iterator>
     struct IteratorTraits : __private::__IteratorTraits<Iterator> {};
-    #else
-    /// @brief Provides uniform interface for accessing properties of an iterator
-    /// @tparam Iterator Type of the iterator
-    /// @ingroup iterator
-    /// @see https://en.cppreference.com/w/cpp/iterator/iterator_traits
-    template<typename Iterator>
-    struct IteratorTraits {
-        typedef typename Iterator::IteratorCategory IteratorCategory;
-        typedef typename Iterator::ValueType ValueType;
-        typedef typename Iterator::DifferenceType DifferenceType;
-        typedef typename Iterator::PointerType PointerType;
-        typedef typename Iterator::ReferenceType ReferenceType;
-    };
-    #endif
     
     /// @brief Specialization of `IteratorTraits` for pointer types
     /// @tparam T Type of the element pointed to by the pointer
