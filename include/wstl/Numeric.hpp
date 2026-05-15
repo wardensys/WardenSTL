@@ -34,7 +34,7 @@ namespace wstl {
 
     // Accumulate
     
-    /// @brief Accumulates the values in a range
+    /// @brief Computes the sum of the given value and values in a range
     /// @param first Iterator to the initial position in the range
     /// @param last Iterator to the final position in the range
     /// @param initial Initial value to start with
@@ -47,12 +47,12 @@ namespace wstl {
         return initial;
     }
 
-    /// @brief Accumulates the values in a range
+    /// @brief Computes the result of applying a binary operation to the given value and values in a range
     /// @param first Iterator to the initial position in the range
     /// @param last Iterator to the final position in the range
     /// @param initial Initial value to start with
     /// @param operation Binary operation function object that will be applied
-    /// @return The sum of the values in the range
+    /// @return The result of applying the binary operation to the values in the range
     /// @ingroup numeric
     /// @see https://en.cppreference.com/w/cpp/algorithm/accumulate
     template<typename InputIterator, typename T, typename BinaryOperation>
@@ -77,13 +77,13 @@ namespace wstl {
         return initial;
     }
 
-    /// @brief Computes the inner product (sum of products) of two ranges
+    /// @brief Computes the inner product (sum of products) of two ranges using binary operations
     /// @param first1 Iterator to the initial position in the first range
     /// @param last1 Iterator to the final position in the first range
     /// @param first2 Iterator to the initial position in the second range
     /// @param initial Initial value to start with
     /// @param operation1 Binary operation function object that will be applied to the result
-    /// @param operation2 Binary operation function object that will be applied to the elements
+    /// @param operation2 Binary operation function object that will be applied to the range elements
     /// @return The inner product of the two ranges
     /// @ingroup numeric
     /// @see https://en.cppreference.com/w/cpp/algorithm/inner_product
@@ -107,12 +107,12 @@ namespace wstl {
     __WSTL_CONSTEXPR14__ OutputIterator AdjacentDifference(InputIterator first, InputIterator last, OutputIterator resultFirst) {
         if(first == last) return resultFirst;
 
-        typedef typename IteratorTraits<InputIterator>::ValueType Value;
-        Value accumulator = *first;
+        typedef typename IteratorTraits<InputIterator>::ValueType ValueType;
+        ValueType accumulator = *first;
         *resultFirst++ = *first++;
 
         for(; first != last; ++first, ++resultFirst) {
-            Value current = *first;
+            ValueType current = *first;
             *resultFirst = current - __WSTL_MOVE__(accumulator);
             accumulator = __WSTL_MOVE__(current);
         }
@@ -269,9 +269,7 @@ namespace wstl {
     __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__
     T GCD(T a, T b, Ts... rest) __WSTL_NOEXCEPT__ {
         T result = GCD(a, b);
-
-        if(result == 1) return 1;
-        else return GCD(result, rest...);
+        return (result == 1) ? 1 : GCD(result, rest...);
     }
     #endif
     #endif
@@ -353,7 +351,7 @@ namespace wstl {
 
     // Midpoint
 
-    /// @brief Computes the midpoint of two numbers
+    /// @brief Computes the midpoint of two floating-point numbers, handling overflow correctly
     /// @param a First number
     /// @param b Second number
     /// @return The midpoint of the two numbers
@@ -361,38 +359,72 @@ namespace wstl {
     /// @see https://en.cppreference.com/w/cpp/numeric/midpoint
     template<typename T>
     __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__
-    inline T Midpoint(T a, T b) __WSTL_NOEXCEPT__ {
-        WSTL_STATIC_ASSERT(IsArithmetic<T>::Value, "Arithmetic type required!");
-        return (a / 2) + (b / 2) + ((a % 2 + b % 2) / 2);
+    typename EnableIf<IsFloatingPoint<T>::Value, T>::Type Midpoint(T a, T b) __WSTL_NOEXCEPT__ {
+        T low = NumericLimits<T>::Min() * 2;
+        T high = NumericLimits<T>::Max() / 2;
+
+        return (abs(a) <= high) && (abs(b) <= high) ? // typical case
+            (a + b) / 2 :                   // always correctly rounded
+            abs(a) < low ? a + (b / 2) :    // not safe to halve b
+            abs(b) < low ? (a / 2) + b :    // not safe to have a
+            a / 2 + b / 2;                  // otherwise correctly rounded
     }
 
-    /// @brief Computes the midpoint of two pointers
-    /// @param a Pointer to the first element
-    /// @param b Pointer to the second element
-    /// @return Pointer to the midpoint of the two pointers
+    /// @brief Computes the midpoint of two integral numbers (signed or unsigned), handling overflow correctly
+    /// @param a First number
+    /// @param b Second number
+    /// @return The midpoint of the two numbers, biased towards first number if the distance is odd
     /// @ingroup numeric
     /// @see https://en.cppreference.com/w/cpp/numeric/midpoint
     template<typename T>
     __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__
-    inline T* Midpoint(T* a, T* b) {
-        WSTL_STATIC_ASSERT(IsArithmetic<T>::Value, "Arithmetic type required!");
-        return a + (b - a) / 2;
+    typename EnableIf<IsIntegral<T>::Value && !IsNullPointer<T>::Value, T>::Type Midpoint(T a, T b) __WSTL_NOEXCEPT__ {
+        typedef typename MakeUnsigned<T>::Type U;
+
+        if(a > b) return a - T(U(U(a) - U(b)) >> 1);
+        else return a + T((U(b) - U(a)) >> 1);
+    }
+    
+    /// @brief Computes the midpoint of two pointers, handling overflow correctly
+    /// @param a Pointer to the first element
+    /// @param b Pointer to the second element
+    /// @return Pointer to the midpoint of the two pointers, biased towards first pointer if the distance is odd
+    /// @ingroup numeric
+    /// @see https://en.cppreference.com/w/cpp/numeric/midpoint
+    template<typename T>
+    __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__
+    typename EnableIf<IsSame<typename IteratorTraits<T>::IteratorCategory, RandomAccessIteratorTag>::Value, T>::Type Midpoint(T a, T b) __WSTL_NOEXCEPT__ {
+        return a + Midpoint(ptrdiff_t(0), b - a);
+    }
+
+    /// @brief Computes the midpoint of two iterators, handling overflow correctly
+    /// @param a First iterator
+    /// @param b Second iterator
+    /// @return The midpoint of the two iterators, biased towards first iterator if the distance is odd
+    /// @note Only bidirectional and forward iterators are supported, and first iterator must be before or equal to the second iterator
+    /// @ingroup numeric
+    /// @see https://en.cppreference.com/w/cpp/numeric/midpoint
+    template<typename T>
+    __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__
+    typename EnableIf<IsSame<typename IteratorTraits<T>::IteratorCategory, ForwardIteratorTag>::Value || 
+    IsSame<typename IteratorTraits<T>::IteratorCategory, BidirectionalIteratorTag>::Value, T>::Type Midpoint(T a, T b) __WSTL_NOEXCEPT__ {
+        return Next(a, Distance(a, b) / 2);
     }
 
     // Compile-time equivalents
 
+    // GCD
+
     namespace __private {
         namespace __compile {
-            template<typename T, T A, T B, bool = (B == 0)>
+            template<typename T, T A, T B, bool = (B == 0), typename = typename EnableIf<IsIntegral<T>::Value>::Type>
             struct __GCD;
 
             template<typename T, T A, T B>
-            struct __GCD<T, A, B, true> {
-                static const __WSTL_CONSTEXPR__ T Value = (A < 0) ? -A : A;
-            };
+            struct __GCD<T, A, B, true, void> : compile::Absolute<T, A> {};
 
             template<typename T, T A, T B>
-            struct __GCD<T, A, B, false> : __GCD<T, B, A % B> {};
+            struct __GCD<T, A, B, false, void> : __GCD<T, B, A % B> {};
         }
     }
 
@@ -405,6 +437,13 @@ namespace wstl {
         /// @tparam ...Rest Remaining numbers
         /// @ingroup numeric
         template<typename T, T A, T B, T... Rest>
+        struct GCD;
+
+        template<typename T, T A, T B>
+        struct GCD<T, A, B> : __private::__compile::__GCD<T, A, B> {};
+
+        template<typename T, T A, T B, T... Rest>
+        struct GCD : GCD<T, GCD<T, A, B>::Value, Rest...> {};
         #else
         /// @brief Computes the greatest common divisor of two of numbers at compile time
         /// @tparam T Type of the input values
@@ -412,17 +451,7 @@ namespace wstl {
         /// @tparam B Second number
         /// @ingroup numeric
         template<typename T, T A, T B>
-        #endif
-        struct GCD;
-
-        template<typename T, T A, T B>
-        struct GCD<T, A, B> : __private::__compile::__GCD<T, A, B> {};
-
-        #ifdef __WSTL_CXX11__
-        template<typename T, T A, T B, T... Rest>
-        struct GCD {
-            static constexpr T Value = GCD<T, GCD<T, A, B>::Value, Rest...>::Value;
-        };
+        struct GCD : __private::__compile::__GCD<T, A, B> {};
         #endif
 
         #ifdef __WSTL_CXX17__
@@ -431,7 +460,27 @@ namespace wstl {
         template<typename T, T A, T B, T... Rest>
         inline constexpr T GCDValue = GCD<T, A, B, Rest...>::Value;
         #endif
+    }
 
+    // LCM
+
+    namespace __private {
+        namespace __compile {
+            template<typename T, T A, T B, bool = (A == 0 || B == 0), typename = typename EnableIf<IsIntegral<T>::Value>::Type>
+            struct __LCM;
+
+            template<typename T, T A, T B>
+            struct __LCM<T, A, B, true, void> : IntegralConstant<T, 0> {};
+
+            template<typename T, T A, T B>
+            struct __LCM<T, A, B, false, void> : IntegralConstant<
+                T, 
+                compile::Absolute<T, B>::Value * (compile::Absolute<T, A>::Value / __GCD<T, A, B>::Value)
+            > {};
+        }
+    }
+
+    namespace compile {
         #ifdef __WSTL_CXX11__
         /// @brief Computes the least common multiple of a list of numbers at compile time
         /// @tparam T Type of the input values
@@ -440,36 +489,20 @@ namespace wstl {
         /// @tparam ...Rest Remaining numbers
         /// @ingroup numeric
         template<typename T, T A, T B, T... Rest>
+        struct LCM;
+        
+        template<typename T, T A, T B>
+        struct LCM<T, A, B> : __private::__compile::__LCM<T, A, B> {};
+
+        template<typename T, T A, T B, T... Rest>
+        struct LCM : LCM<T, LCM<T, A, B>::Value, Rest...> {};
         #else
         /// @brief Computes the least common multiple of two of numbers at compile time 
         /// @tparam T Type of the input values
         /// @tparam A First number
         /// @tparam B Second number
         template<typename T, T A, T B>
-        #endif
-        struct LCM;
-
-        template<typename T, T A, T B>
-        #ifdef __WSTL_CXX11__
-        struct LCM<T, A, B> {
-        #else
-        struct LCM {
-        #endif
-        private:
-            static const __WSTL_CONSTEXPR__ T Product = ((A * B) < 0) ? -(A * B) : (A * B);
-
-        public:
-            static const __WSTL_CONSTEXPR__ T Value = Product / GCD<T, A, B>::Value;
-        };
-
-        template<typename T, T A, T B>
-        const __WSTL_CONSTEXPR__ T LCM<T, A, B>::Value;
-
-        #ifdef __WSTL_CXX11__
-        template<typename T, T A, T B, T... Rest>
-        struct LCM {
-            static constexpr T Value = LCM<T, LCM<T, A, B>::Value, Rest...>::Value;
-        };
+        struct LCM : __private::__compile::__LCM<T, A, B> {};
         #endif
 
         #ifdef __WSTL_CXX17__
@@ -478,19 +511,35 @@ namespace wstl {
         template<typename T, T A, T B, T... Rest>
         inline constexpr T LCMValue = LCM<T, A, B, Rest...>::Value;
         #endif
+    }
 
-        /// @brief Computes the midpoint of two numbers at compile time
+    namespace __private {
+        namespace __compile {
+            template<typename T, T A, T B, bool = (A > B), typename = typename EnableIf<IsIntegral<T>::Value>::Type>
+            struct __Midpoint;
+
+            template<typename T, T A, T B>
+            struct __Midpoint<T, A, B, true, void> : IntegralConstant<
+                T, 
+                A - T(typename MakeUnsigned<T>::Type(typename MakeUnsigned<T>::Type(A) - typename MakeUnsigned<T>::Type(B)) / 2)
+            > {};
+
+            template<typename T, T A, T B>
+            struct __Midpoint<T, A, B, false, void> : IntegralConstant<
+                T, 
+                A + T((typename MakeUnsigned<T>::Type(B) - typename MakeUnsigned<T>::Type(A)) / 2)
+            > {};
+        }
+    }
+
+    namespace compile {
+        /// @brief Computes the midpoint of two integral numbers at compile time, handling overflow correctly
         /// @tparam T Type of the input values
         /// @tparam A First number
         /// @tparam B Second number
         /// @ingroup numeric
         template<typename T, T A, T B>
-        struct Midpoint {
-            static const __WSTL_CONSTEXPR__ T Value = (A / 2) + (B / 2) + ((A % 2 + B % 2) / 2);
-        };
-
-        template<typename T, T A, T B>
-        const __WSTL_CONSTEXPR__ T Midpoint<T, A, B>::Value;
+        struct Midpoint : __private::__compile::__Midpoint<T, A, B> {};
 
         #ifdef __WSTL_CXX17__
         /// @copydoc Midpoint
