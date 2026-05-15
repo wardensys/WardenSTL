@@ -124,6 +124,12 @@ namespace wstl {
 #define __WSTL_SUPPORTED_COMPILER__
 #endif
 
+#if defined(__has_builtin)
+#define __WSTL_HAS_BUILTIN__(x) __has_builtin(x)
+#else
+#define __WSTL_HAS_BUILTIN__(x) 0
+#endif
+
 // C++11 features
 
 #if defined(__WSTL_CXX11__)

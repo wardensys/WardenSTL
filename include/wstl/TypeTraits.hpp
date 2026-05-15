@@ -2137,15 +2137,14 @@ namespace wstl {
     /// @see https://en.cppreference.com/w/cpp/types/is_destructible
     template<typename T>
     struct IsDestructible : BoolConstant<
-    #if defined(__WSTL_CXX11__) && defined(__WSTL_TYPETRAITS_NO_BUILTINS__)
-    decltype(__private::__TestDestructible<RemoveCVReferenceType<RemoveAllExtentsType<T>>>(0))::Value
-    #elif defined(__WSTL_GCC__) || defined(__WSTL_CLANG__) || defined(__WSTL_ICC__)
-    __is_destructible(T)
-    #elif defined(__WSTL_MSVC__)
-    __has_user_destructor(T)
-    #else
-    false
-    #endif
+        #if !defined(__WSTL_TYPETRAITS_NO_BUILTINS__) && (__WSTL_HAS_BUILTIN__(__is_destructible) \
+            || defined(__WSTL_ICC__) || defined(__WSTL_MSVC__))
+            __is_destructible(T)
+        #elif defined(__WSTL_CXX11__)
+            decltype(__private::__TestDestructible<RemoveCVReferenceType<RemoveAllExtentsType<T>>>(0))::Value
+        #else
+            false
+        #endif
     > {};
 
     #ifdef __WSTL_CXX17__
@@ -2166,21 +2165,11 @@ namespace wstl {
     template<typename T>
     struct IsTriviallyDestructible : BoolConstant<
         #ifdef __WSTL_TYPETRAITS_NO_BUILTINS__
-        false
-        #elif defined(__has_builtin)
-            #if __has_builtin(__is_trivially_destructible)
-                __is_trivially_destructible(T)
-            #elif __has_builtin(__has_trivial_destructor)
-                __has_trivial_destructor(T)
-            #else
-                false
-            #endif
-        #elif defined(__WSTL_MSVC__)
-            #ifdef __WSTL_CXX11__
-                __is_trivially_destructible(T)
-            #else
-                __is_pod(T)
-            #endif
+            false
+        #elif __WSTL_HAS_BUILTIN__(__is_trivially_destructible) || defined(__WSTL_MSVC__) || defined(__WSTL_ICC__)
+            __is_trivially_destructible(T)
+        #elif __WSTL_HAS_BUILTIN__(__has_trivial_destructor)
+            __has_trivial_destructor(T)
         #else
             false
         #endif
@@ -2215,13 +2204,14 @@ namespace wstl {
     /// @see https://en.cppreference.com/w/cpp/types/is_destructible
     template<typename T>
     struct IsNothrowDestructible : BoolConstant<
-    #if defined(__WSTL_CXX11__) && defined(__WSTL_TYPETRAITS_NO_BUILTINS__)
-    decltype(__private::__TestNothrowDestructible<T>(0))::Value
-    #elif defined(__WSTL_SUPPORTED_COMPILER__)
-    __is_nothrow_destructible(T)
-    #else
-    false
-    #endif
+        #if !defined(__WSTL_TYPETRAITS_NO_BUILTINS__) && (__WSTL_HAS_BUILTIN__(__is_nothrow_destructible) \
+            || defined(__WSTL_MSVC__) || defined(__WSTL_ICC__))
+            __is_nothrow_destructible(T)
+        #elif defined(__WSTL_CXX11__)
+            decltype(__private::__TestNothrowDestructible<T>(0))::Value
+        #else
+            false
+        #endif
     > {};
 
     #ifdef __WSTL_CXX17__
@@ -2243,23 +2233,13 @@ namespace wstl {
     template<typename T>
     struct IsTriviallyCopyable : BoolConstant<
         #ifdef __WSTL_TYPETRAITS_NO_BUILTINS__
-        false
-        #elif defined(__has_builtin)
-            #if __has_builtin(__is_trivially_copyable)
-                __is_trivially_copyable(T)
-            #elif __has_builtin(__has_trivial_constructor)
-                __has_trivial_constructor(T) && __has_trivial_assign(T) && __has_trivial_destructor(T) 
-            #else
-                false
-            #endif
-        #elif defined(__WSTL_MSVC__)
-            #ifdef __WSTL_CXX11__
-                __is_trivially_copyable(T)
-            #else
-                __is_pod(T)
-            #endif
+            false
+        #elif __WSTL_HAS_BUILTIN__(__is_trivially_copyable) || defined(__WSTL_MSVC__) || defined(__WSTL_ICC__)
+            __is_trivially_copyable(T)
+        #elif defined(__WSTL_CLANG__) || defined(__WSTL_GCC__)
+            __has_trivial_constructor(T) && __has_trivial_assign(T) && __has_trivial_destructor(T)
         #else
-        false
+            false
         #endif
     > {};
 
