@@ -12,6 +12,8 @@
 #include "private/Platform.hpp"
 #include "TypeTraits.hpp"
 #include "Limits.hpp"
+#include "ErrorHandler.hpp"
+#include "StandardExceptions.hpp"
 
 #include <stdint.h>
 #include <float.h>
@@ -34,6 +36,15 @@
 namespace wstl {
     // Absolute
 
+    namespace __private {
+        /// @brief Non-constexpr function that is never called with valid input, but 
+        /// if reached during constant evaluation, will cause a compile-time error. At runtime, it triggers the library's error handler
+        template<typename T>
+        inline T __SignedMinError() {
+            __WSTL_THROW_RETURNVALUE__(WSTL_MAKE_EXCEPTION(OverflowError, "Absolute value of minimum signed integer is undefined"), T(0));
+        }
+    }
+
     /// @brief Computes an absolute value of integral type
     /// @param value The value to compute the absolute value of
     /// @return The absolute value of the input value
@@ -41,7 +52,18 @@ namespace wstl {
     /// @see https://en.cppreference.com/w/c/numeric/math/abs
     template<typename T>
     __WSTL_NODISCARD__ __WSTL_CONSTEXPR__ 
-    inline typename EnableIf<IsSigned<T>::Value, T>::Type Absolute(T value) {
+    inline typename EnableIf<IsSigned<T>::Value && IsIntegral<T>::Value, T>::Type Absolute(T value) {
+        return (value == NumericLimits<T>::Min()) ? __private::__SignedMinError<T>() : static_cast<T>((value < T(0)) ? -value : value);
+    }
+
+    /// @brief Computes an absolute value of floating-point type
+    /// @param value The value to compute the absolute value of
+    /// @return The absolute value of the input value
+    /// @ingroup maths
+    /// @see https://en.cppreference.com/w/c/numeric/math/abs
+    template<typename T>
+    __WSTL_NODISCARD__ __WSTL_CONSTEXPR__ 
+    inline typename EnableIf<IsSigned<T>::Value && !IsIntegral<T>::Value, T>::Type Absolute(T value) __WSTL_NOEXCEPT__ {
         return (value < T(0)) ? -value : value;
     }
 
@@ -52,7 +74,7 @@ namespace wstl {
     /// @see https://en.cppreference.com/w/c/numeric/math/abs
     template<typename T>
     __WSTL_NODISCARD__ __WSTL_CONSTEXPR__ 
-    inline typename EnableIf<IsUnsigned<T>::Value, T>::Type Absolute(T value) {
+    inline typename EnableIf<IsUnsigned<T>::Value, T>::Type Absolute(T value) __WSTL_NOEXCEPT__ {
         return value;
     }
 
@@ -62,13 +84,11 @@ namespace wstl {
     /// @param value The value to compute the absolute value of
     /// @return The absolute value of the input value as unsigned type
     /// @ingroup maths
-    #ifdef __WSTL_CXX11__
-    template<typename T, typename Return = MakeUnsignedType<T>>
-    #else
-    template<typename T, typename Return>
-    #endif
+    template<typename T>
     __WSTL_NODISCARD__ __WSTL_CONSTEXPR__
-    inline typename EnableIf<IsSigned<T>::Value, Return>::Type AbsoluteUnsigned(T value) __WSTL_NOEXCEPT__ {
+    inline typename EnableIf<IsSigned<T>::Value, typename MakeUnsigned<T>::Type>::Type AbsoluteUnsigned(T value) __WSTL_NOEXCEPT__ {
+        typedef typename MakeUnsigned<T>::Type Return;
+
         return (value == NumericLimits<T>::Min()) ? (NumericLimits<Return>::Max() / 2U) + 1U : 
             (value < T(0)) ? Return(-value) : Return(value);
     }
@@ -85,33 +105,39 @@ namespace wstl {
 
     // Compile-time equivalent
 
+    namespace __private {
+        namespace __compile {
+            template<typename T, T N, typename Result, bool = IsSigned<T>::Value, typename = typename EnableIf<IsIntegral<T>::Value>::Type>
+            struct __Absolute;
+
+            template<typename T, T N, typename Result>
+            struct __Absolute<T, N, Result, false, void> {
+                typedef IntegralConstant<Result, N> Type;
+            };
+
+            template<typename T, T N, typename Result>
+            struct __Absolute<T, N, Result, true, void> {
+            private:
+                static const __WSTL_CONSTEXPR__ Result AbsoluteValue = (N < T(0) && (N >= NumericLimits<Result>::Min() || Result(-N) <= NumericLimits<Result>::Max())) 
+                    ? Result(-N) : Result(N);
+                static const __WSTL_CONSTEXPR__ bool Fallback = (AbsoluteValue != (N < 0 ? -N : N));
+
+                WSTL_STATIC_ASSERT(!Fallback, "Cannot represent the absolute value in the provided result type");
+
+            public:
+                typedef IntegralConstant<Result, AbsoluteValue> Type;
+            };
+        }
+    }
+
     namespace compile {
         /// @brief Computes an absolute value of integral type at compile time
         /// @tparam T Type of the input value
         /// @tparam Result Type of the output value
         /// @tparam N Value to compute the absolute value of
         /// @ingroup maths
-        template<typename T, T N, typename Result = T, bool = IsSigned<T>::Value>
-        class Absolute;
-
-        template<typename T, T N, typename Result>
-        class Absolute<T, N, Result, false> {
-        public:
-            static const __WSTL_CONSTEXPR__ Result Value = N;
-        };
-
-        template<typename T, T N, typename Result>
-        class Absolute<T, N, Result, true> {    
-        private:
-            static const __WSTL_CONSTEXPR__ Result AbsoluteValue = (N < T(0) && (N >= NumericLimits<Result>::Min() || Result(-N) <= NumericLimits<Result>::Max())) 
-                ? Result(-N) : Result(N);
-            static const __WSTL_CONSTEXPR__ bool Fallback = (AbsoluteValue != (N < 0 ? -N : N));
-
-            WSTL_STATIC_ASSERT(!Fallback, "Cannot represent the absolute value in the provided result type");
-
-        public:
-            static const __WSTL_CONSTEXPR__ Result Value = AbsoluteValue;
-        };
+        template<typename T, T N, typename Result = T>
+        struct Absolute : __private::__compile::__Absolute<T, N, Result>::Type {};
 
         #ifdef __WSTL_CXX17__
         /// @copydoc Absolute
@@ -135,7 +161,7 @@ namespace wstl {
         /// @tparam Result Type of the output value (default `unsigned T`)
         /// @ingroup maths
         template<typename T, T N, typename Result = typename MakeUnsigned<T>::Type>
-        class AbsoluteUnsigned : public Absolute<T, N, Result> {};
+        struct AbsoluteUnsigned : Absolute<T, N, Result> {};
         #endif
         
         #ifdef __WSTL_CXX17__
