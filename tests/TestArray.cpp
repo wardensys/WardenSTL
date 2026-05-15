@@ -28,16 +28,16 @@ TEST_SUITE("Array") {
     TEST_CASE("Constructor") {
         Data data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
         
-        CHECK(data.Size() == SIZE);
-        CHECK(data.MaxSize() == SIZE);
+        CHECK_EQ(data.Size(), SIZE);
+        CHECK_EQ(data.MaxSize(), SIZE);
     }
 
     TEST_CASE("Zero-sized constructor") {
         ZeroData data;
 
         CHECK(data.Empty());
-        CHECK(data.Size() == 0);
-        CHECK(data.MaxSize() == 0);
+        CHECK_EQ(data.Size(), 0UL);
+        CHECK_EQ(data.MaxSize(), 0UL);
     }
 
     TEST_CASE("Assignment") {
@@ -53,7 +53,7 @@ TEST_SUITE("Array") {
     TEST_CASE("At") {
         Data data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-        for(size_t i = 0; i < data.Size(); ++i) CHECK(data.At(i) == compareData.at(i));
+        for(size_t i = 0; i < data.Size(); ++i) CHECK_EQ(data.At(i), compareData.at(i));
 
         CHECK_THROWS_AS({ int i = data.At(data.Size()); (void) i; }, wstl::OutOfRange);
     }
@@ -61,7 +61,7 @@ TEST_SUITE("Array") {
     TEST_CASE("Index operator") {
         Data data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-        for(size_t i = 0; i < data.Size(); ++i) CHECK(data[i] == compareData[i]);
+        for(size_t i = 0; i < data.Size(); ++i) CHECK_EQ(data[i], compareData[i]);
 
         CHECK_THROWS_AS({ int i = data[data.Size()]; (void) i; }, wstl::OutOfRange);
     }
@@ -71,11 +71,11 @@ TEST_SUITE("Array") {
 
         int& ref = data.Front();
         const int& constRef = data.Front();
-        CHECK(ref == compareData.front());
-        CHECK(constRef == compareData.front());
+        CHECK_EQ(ref, compareData.front());
+        CHECK_EQ(constRef, compareData.front());
 
         ++ref;
-        CHECK(ref == compareData.front() + 1);
+        CHECK_EQ(ref, compareData.front() + 1);
     }
 
     TEST_CASE("Back") {
@@ -83,11 +83,11 @@ TEST_SUITE("Array") {
 
         int& ref = data.Back();
         const int& constRef = data.Back();
-        CHECK(ref == compareData.back());
-        CHECK(constRef == compareData.back());
+        CHECK_EQ(ref, compareData.back());
+        CHECK_EQ(constRef, compareData.back());
 
         ++ref;
-        CHECK(ref == compareData.back() + 1);
+        CHECK_EQ(ref, compareData.back() + 1);
     }
 
     TEST_CASE("Data") {
@@ -103,48 +103,48 @@ TEST_SUITE("Array") {
 
     TEST_CASE("Begin") {
         Data data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-        CHECK(data.Begin() == &data[0]);
+        CHECK_EQ(data.Begin(), &data[0]);
     }
 
     TEST_CASE("ConstBegin") {
         const Data data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-        CHECK(data.ConstBegin() == &data[0]);
+        CHECK_EQ(data.ConstBegin(), &data[0]);
     }
 
     TEST_CASE("End") {
         Data data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-        CHECK(data.End() == data.Data() + SIZE);
+        CHECK_EQ(data.End(), data.Data() + SIZE);
     }
 
     TEST_CASE("ConstEnd") {
         const Data data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-        CHECK(data.ConstEnd() == data.Data() + SIZE);
+        CHECK_EQ(data.ConstEnd(), data.Data() + SIZE);
     }
 
     TEST_CASE("ReverseBegin") {
         Data data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-        CHECK(data.ReverseBegin() == Data::ReverseIterator(data.Data() + SIZE));
+        CHECK_EQ(data.ReverseBegin(), Data::ReverseIterator(data.Data() + SIZE));
     }
 
     TEST_CASE("ConstReverseBegin") {
         const Data data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-        CHECK(data.ConstReverseBegin() == Data::ConstReverseIterator(data.Data() + SIZE));
+        CHECK_EQ(data.ConstReverseBegin(), Data::ConstReverseIterator(data.Data() + SIZE));
     }
 
     TEST_CASE("ReverseEnd") {
         Data data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-        CHECK(data.ReverseEnd() == Data::ReverseIterator(data.Data()));
+        CHECK_EQ(data.ReverseEnd(), Data::ReverseIterator(data.Data()));
     }
 
     TEST_CASE("ConstReverseEnd") {
         const Data data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-        CHECK(data.ConstReverseEnd() == Data::ConstReverseIterator(data.Data()));
+        CHECK_EQ(data.ConstReverseEnd(), Data::ConstReverseIterator(data.Data()));
     }
 
     TEST_CASE("Range support") {
         Data data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-        for(int& value : data) CHECK(value == compareData[size_t(&value - &data[0])]);
+        for(int& value : data) CHECK_EQ(value, compareData[size_t(&value - &data[0])]);
     }
 
     TEST_CASE("Iterator") {
@@ -177,17 +177,17 @@ TEST_SUITE("Array") {
 
     TEST_CASE("Empty") {
         Data data = {0};
-        CHECK(!data.Empty());
+        CHECK_FALSE(data.Empty());
     }
 
     TEST_CASE("Size") {
         Data data = {0};
-        CHECK(data.Size() == SIZE);
+        CHECK_EQ(data.Size(), SIZE);
     }
 
     TEST_CASE("MaxSize") {
         Data data = {0};
-        CHECK(data.MaxSize() == SIZE);
+        CHECK_EQ(data.MaxSize(), SIZE);
     }
 
     TEST_CASE("Fill") {
@@ -255,7 +255,7 @@ TEST_SUITE("Array") {
         // Single, begin
         data.Assign(std::begin(initial), std::end(initial));
         result = data.Insert(data.Begin(), 67);
-        CHECK(data[0] == *result);
+        CHECK_EQ(data[0], *result);
 
         bool equal = std::equal(data.Begin(), data.End(), std::begin(checkSingle1));
         CHECK(equal);
@@ -263,7 +263,7 @@ TEST_SUITE("Array") {
         // Single, middle
         data.Assign(std::begin(initial), std::end(initial));
         result = data.Insert(data.Begin() + 5, 67);
-        CHECK(data[5] == *result);
+        CHECK_EQ(data[5], *result);
 
         equal = std::equal(data.Begin(), data.End(), std::begin(checkSingle2));
         CHECK(equal);
@@ -271,7 +271,7 @@ TEST_SUITE("Array") {
         // Single, end
         data.Assign(std::begin(initial), std::end(initial));
         result = data.Insert(data.End() - 1, 67);
-        CHECK(data[9] == *result);
+        CHECK_EQ(data[9], *result);
 
         equal = std::equal(data.Begin(), data.End(), std::begin(checkSingle3));
         CHECK(equal);
@@ -282,7 +282,7 @@ TEST_SUITE("Array") {
         // Small range, begin
         data.Assign(std::begin(initial), std::end(initial));
         result = data.Insert(data.Begin(), std::begin(range1), std::end(range1));
-        CHECK(data[0] == *result);
+        CHECK_EQ(data[0], *result);
 
         equal = std::equal(data.Begin(), data.End(), std::begin(checkRange1));
         CHECK(equal);
@@ -290,7 +290,7 @@ TEST_SUITE("Array") {
         // Small range, middle
         data.Assign(std::begin(initial), std::end(initial));
         result = data.Insert(data.Begin() + 5, std::begin(range1), std::end(range1));
-        CHECK(data[5] == *result);
+        CHECK_EQ(data[5], *result);
 
         equal = std::equal(data.Begin(), data.End(), std::begin(checkRange2));
         CHECK(equal);
@@ -298,7 +298,7 @@ TEST_SUITE("Array") {
         // Small range, end
         data.Assign(std::begin(initial), std::end(initial));
         result = data.Insert(data.Begin() + 7, std::begin(range1), std::end(range1));
-        CHECK(data[7] == *result);
+        CHECK_EQ(data[7], *result);
 
         equal = std::equal(data.Begin(), data.End(), std::begin(checkRange3));
         CHECK(equal);
@@ -306,7 +306,7 @@ TEST_SUITE("Array") {
         // Large range, begin
         data.Assign(std::begin(initial), std::end(initial));
         result = data.Insert(data.Begin(), std::begin(range2), std::end(range2));
-        CHECK(data[0] == *result);
+        CHECK_EQ(data[0], *result);
 
         equal = std::equal(data.Begin(), data.End(), std::begin(checkRange4));
         CHECK(equal);
@@ -314,7 +314,7 @@ TEST_SUITE("Array") {
         // Large range, middle
         data.Assign(std::begin(initial), std::end(initial));
         result = data.Insert(data.Begin() + 5, std::begin(range2), std::end(range2));
-        CHECK(data[5] == *result);
+        CHECK_EQ(data[5], *result);
 
         equal = std::equal(data.Begin(), data.End(), std::begin(checkRange5));
         CHECK(equal);
@@ -342,14 +342,14 @@ TEST_SUITE("Array") {
         // Single, begin
         data.Assign(std::begin(initial), std::end(initial));
         result = data.Erase(data.Begin());
-        CHECK(data[0] == *result);
+        CHECK_EQ(data[0], *result);
 
         bool equal = std::equal(data.Begin(), data.End(), std::begin(checkSingle1));
         CHECK(equal);
 
         data.Assign(std::begin(initial), std::end(initial));
         result = data.Erase(data.Begin(), 67);
-        CHECK(data[0] == *result);
+        CHECK_EQ(data[0], *result);
 
         equal = std::equal(data.Begin(), data.End(), std::begin(checkSingle2));
         CHECK(equal);
@@ -357,14 +357,14 @@ TEST_SUITE("Array") {
         // Single, middle
         data.Assign(std::begin(initial), std::end(initial));
         result = data.Erase(data.Begin() + 5);
-        CHECK(data[5] == *result);
+        CHECK_EQ(data[5], *result);
 
         equal = std::equal(data.Begin(), data.End(), std::begin(checkSingle3));
         CHECK(equal);
 
         data.Assign(std::begin(initial), std::end(initial));
         result = data.Erase(data.Begin() + 5, 67);
-        CHECK(data[5] == *result);
+        CHECK_EQ(data[5], *result);
 
         equal = std::equal(data.Begin(), data.End(), std::begin(checkSingle4));
         CHECK(equal);
@@ -372,14 +372,14 @@ TEST_SUITE("Array") {
         // Single, end
         data.Assign(std::begin(initial), std::end(initial));
         result = data.Erase(data.End() - 1);
-        CHECK(data[9] == *result);
+        CHECK_EQ(data[9], *result);
 
         equal = std::equal(data.Begin(), data.End(), std::begin(checkSingle5));
         CHECK(equal);
 
         data.Assign(std::begin(initial), std::end(initial));
         result = data.Erase(data.End() - 1, 67);
-        CHECK(data[9] == *result);
+        CHECK_EQ(data[9], *result);
 
         equal = std::equal(data.Begin(), data.End(), std::begin(checkSingle6));
         CHECK(equal);
@@ -390,14 +390,14 @@ TEST_SUITE("Array") {
         // Range, begin
         data.Assign(std::begin(initial), std::end(initial));
         result = data.Erase(data.Begin(), data.Begin() + 4);
-        CHECK(data[0] == *result);
+        CHECK_EQ(data[0], *result);
 
         equal = std::equal(data.Begin(), data.End(), std::begin(checkRange1));
         CHECK(equal);
 
         data.Assign(std::begin(initial), std::end(initial));
         result = data.Erase(data.Begin(), data.Begin() + 4, 67);
-        CHECK(data[0] == *result);
+        CHECK_EQ(data[0], *result);
 
         equal = std::equal(data.Begin(), data.End(), std::begin(checkRange2));
         CHECK(equal);
@@ -405,14 +405,14 @@ TEST_SUITE("Array") {
         // Range, middle
         data.Assign(std::begin(initial), std::end(initial));
         result = data.Erase(data.Begin() + 4, data.Begin() + 7);
-        CHECK(data[4] == *result);
+        CHECK_EQ(data[4], *result);
 
         equal = std::equal(data.Begin(), data.End(), std::begin(checkRange3));
         CHECK(equal);
 
         data.Assign(std::begin(initial), std::end(initial));
         result = data.Erase(data.Begin() + 4, data.Begin() + 7, 67);
-        CHECK(data[4] == *result);
+        CHECK_EQ(data[4], *result);
 
         equal = std::equal(data.Begin(), data.End(), std::begin(checkRange4));
         CHECK(equal);
@@ -420,14 +420,14 @@ TEST_SUITE("Array") {
         // Range, end
         data.Assign(std::begin(initial), std::end(initial));
         result = data.Erase(data.End() - 3, data.End());
-        CHECK(data[7] == *result);
+        CHECK_EQ(data[7], *result);
 
         equal = std::equal(data.Begin(), data.End(), std::begin(checkRange5));
         CHECK(equal);
 
         data.Assign(std::begin(initial), std::end(initial));
         result = data.Erase(data.End() - 3, data.End(), 67);
-        CHECK(data[7] == *result);
+        CHECK_EQ(data[7], *result);
 
         equal = std::equal(data.Begin(), data.End(), std::begin(checkRange6));
         CHECK(equal);
@@ -443,8 +443,8 @@ TEST_SUITE("Array") {
         Data data1 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
         const Data data2 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-        CHECK(wstl::Get<3>(data1) == data1[3]);
-        CHECK(wstl::Get<5>(data2) == data2[5]);
+        CHECK_EQ(wstl::Get<3>(data1), data1[3]);
+        CHECK_EQ(wstl::Get<5>(data2), data2[5]);
 
         // The following line should fail with a compilation error
         // int i = wstl::Get<11>(data1);
@@ -454,7 +454,7 @@ TEST_SUITE("Array") {
         Data data1 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
         Data data2 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-        CHECK(data1 == data2);
+        CHECK_EQ(data1, data2);
 
         __WSTL_CONSTEXPR14__ Data data3 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
         __WSTL_CONSTEXPR14__ Data data4 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
@@ -605,65 +605,65 @@ TEST_SUITE("Array") {
         constexpr int i3 = data[3];
         constexpr int i4 = data[4];
         constexpr int i5 = data[5];
-        CHECK(i0 == data[0]);
-        CHECK(i1 == data[1]);
-        CHECK(i2 == data[2]);
-        CHECK(i3 == data[3]);
-        CHECK(i4 == data[4]);
-        CHECK(i5 == data[5]);
+        CHECK_EQ(i0, data[0]);
+        CHECK_EQ(i1, data[1]);
+        CHECK_EQ(i2, data[2]);
+        CHECK_EQ(i3, data[3]);
+        CHECK_EQ(i4, data[4]);
+        CHECK_EQ(i5, data[5]);
 
         // Front & Back
         constexpr int f0 = data.Front();
         constexpr int b5 = data.Back();
-        CHECK(f0 == data[0]);
-        CHECK(b5 == data[5]);
+        CHECK_EQ(f0, data[0]);
+        CHECK_EQ(b5, data[5]);
 
         // Begin, ConstBegin & End, ConstEnd
         constexpr int b0 = *data.Begin();
         constexpr int cb0 = *data.ConstBegin();
-        CHECK(b0 == data[0]);
-        CHECK(cb0 == data[0]);
+        CHECK_EQ(b0, data[0]);
+        CHECK_EQ(cb0, data[0]);
 
         constexpr int e5 = *(data.End() - 1);
         constexpr int ce5 = *(data.ConstEnd() - 1);
-        CHECK(e5 == data[5]);
-        CHECK(ce5 == data[5]);
+        CHECK_EQ(e5, data[5]);
+        CHECK_EQ(ce5, data[5]);
 
         // ReverseBegin, ConstReverseBegin & ReverseEnd, ConstReverseEnd
         constexpr int rb5 = *data.ReverseBegin();
         constexpr int crb5 = *data.ConstReverseBegin();
-        CHECK(rb5 == data[5]);
-        CHECK(crb5 == data[5]);
+        CHECK_EQ(rb5, data[5]);
+        CHECK_EQ(crb5, data[5]);
 
         constexpr int re0 = *(data.ReverseEnd() - 1);
         constexpr int cre0 = *(data.ConstReverseEnd() - 1);
-        CHECK(re0 == data[0]);
-        CHECK(cre0 == data[0]);
+        CHECK_EQ(re0, data[0]);
+        CHECK_EQ(cre0, data[0]);
 
         // Data
         constexpr int d0 = *data.Data();
-        CHECK(d0 == data[0]);
+        CHECK_EQ(d0, data[0]);
 
         // Empty
         constexpr bool e = data.Empty();
-        CHECK(!e);
+        CHECK_FALSE(e);
 
         // Size
         constexpr size_t s = data.Size();
-        CHECK(s == 6);
+        CHECK_EQ(s, 6UL);
 
         // MaxSize
         constexpr size_t ms = data.MaxSize();
-        CHECK(ms == 6);
+        CHECK_EQ(ms, 6UL);
 
         // Fill
         constexpr ArrayType a = FillArray(5);
-        CHECK(a[0] == 5);
-        CHECK(a[1] == 5);
-        CHECK(a[2] == 5);
-        CHECK(a[3] == 5);
-        CHECK(a[4] == 5);
-        CHECK(a[5] == 5);
+        CHECK_EQ(a[0], 5);
+        CHECK_EQ(a[1], 5);
+        CHECK_EQ(a[2], 5);
+        CHECK_EQ(a[3], 5);
+        CHECK_EQ(a[4], 5);
+        CHECK_EQ(a[5], 5);
 
         // Swap
         constexpr ArrayType data1{1, 2, 3, 4, 5, 6};

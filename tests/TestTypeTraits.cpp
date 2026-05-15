@@ -1,3 +1,14 @@
+// Part of WardenSTL - https://github.com/WardenHD/WardenSTL
+// Copyright (c) 2025 Artem Bezruchko (WardenHD)
+//
+// This file is based on the Embedded Template Library (ETL)'s test_type_traits.cpp
+// from https://github.com/ETLCPP/etl, licensed under the MIT License.
+//
+// Some tests have been adapted and extended by Artem Bezruchko (WardenHD)
+// to improve coverage and match WardenSTL's implementation.
+//
+// Licensed under the MIT License. See LICENSE file for details.
+
 #include <doctest.h>
 #include <wstl/TypeTraits.hpp>
 #include <type_traits>
@@ -171,7 +182,7 @@ typedef wstl::AlignedStorage<sizeof(uint16_t), wstl::AlignmentOf<uint32_t>::Valu
 TEST_SUITE("TypeTraits") {
     TEST_CASE("IntegralConstant") {
         #ifdef __WSTL_CXX17__
-        CHECK(wstl::IntegralConstantValue<int, 1> == 1);
+        CHECK_EQ(wstl::IntegralConstantValue<int, 1>, 1);
         CHECK(wstl::IsSameValue<int, wstl::IntegralConstant<int, 1>::ValueType>);
         
         CHECK(wstl::BoolConstantValue<true>);
@@ -181,7 +192,7 @@ TEST_SUITE("TypeTraits") {
         CHECK(wstl::NegationValue<wstl::BoolConstant<false>>);
         CHECK_FALSE(wstl::NegationValue<wstl::BoolConstant<true>>);
         #else
-        CHECK(wstl::IntegralConstant<int, 1>::Value == 1);
+        CHECK_EQ(wstl::IntegralConstant<int, 1>::Value, 1);
         CHECK(wstl::IsSame<int, wstl::IntegralConstant<int, 1>::ValueType>::Value);
         
         CHECK(wstl::BoolConstant<true>::Value);
@@ -323,31 +334,31 @@ TEST_SUITE("TypeTraits") {
             float c;
         };
 
-        CHECK(wstl::AlignmentOf<char>::Value == std::alignment_of<char>::value);
-        CHECK(wstl::AlignmentOf<unsigned char>::Value == std::alignment_of<unsigned char>::value);
-        CHECK(wstl::AlignmentOf<short>::Value == std::alignment_of<short>::value);
-        CHECK(wstl::AlignmentOf<unsigned short>::Value == std::alignment_of<unsigned short>::value);
-        CHECK(wstl::AlignmentOf<int>::Value == std::alignment_of<int>::value);
-        CHECK(wstl::AlignmentOf<unsigned int>::Value == std::alignment_of<unsigned int>::value);
-        CHECK(wstl::AlignmentOf<long>::Value == std::alignment_of<long>::value);
-        CHECK(wstl::AlignmentOf<unsigned long>::Value == std::alignment_of<unsigned long>::value);
-        CHECK(wstl::AlignmentOf<long long>::Value == std::alignment_of<long long>::value);
-        CHECK(wstl::AlignmentOf<unsigned long long>::Value == std::alignment_of<unsigned long long>::value);
-        CHECK(wstl::AlignmentOf<float>::Value == std::alignment_of<float>::value);
-        CHECK(wstl::AlignmentOf<double>::Value == std::alignment_of<double>::value);
-        CHECK(wstl::AlignmentOf<Object>::Value == std::alignment_of<Object>::value);
+        CHECK_EQ(wstl::AlignmentOf<char>::Value, std::alignment_of<char>::value);
+        CHECK_EQ(wstl::AlignmentOf<unsigned char>::Value, std::alignment_of<unsigned char>::value);
+        CHECK_EQ(wstl::AlignmentOf<short>::Value, std::alignment_of<short>::value);
+        CHECK_EQ(wstl::AlignmentOf<unsigned short>::Value, std::alignment_of<unsigned short>::value);
+        CHECK_EQ(wstl::AlignmentOf<int>::Value, std::alignment_of<int>::value);
+        CHECK_EQ(wstl::AlignmentOf<unsigned int>::Value, std::alignment_of<unsigned int>::value);
+        CHECK_EQ(wstl::AlignmentOf<long>::Value, std::alignment_of<long>::value);
+        CHECK_EQ(wstl::AlignmentOf<unsigned long>::Value, std::alignment_of<unsigned long>::value);
+        CHECK_EQ(wstl::AlignmentOf<long long>::Value, std::alignment_of<long long>::value);
+        CHECK_EQ(wstl::AlignmentOf<unsigned long long>::Value, std::alignment_of<unsigned long long>::value);
+        CHECK_EQ(wstl::AlignmentOf<float>::Value, std::alignment_of<float>::value);
+        CHECK_EQ(wstl::AlignmentOf<double>::Value, std::alignment_of<double>::value);
+        CHECK_EQ(wstl::AlignmentOf<Object>::Value, std::alignment_of<Object>::value);
     }
 
     TEST_CASE("Rank") {
-        CHECK(wstl::Rank<int>::Value == std::rank<int>::value);
-        CHECK(wstl::Rank<int[10]>::Value == std::rank<int[10]>::value);
-        CHECK(wstl::Rank<int[10][10]>::Value == std::rank<int[10][10]>::value);
+        CHECK_EQ(wstl::Rank<int>::Value, std::rank<int>::value);
+        CHECK_EQ(wstl::Rank<int[10]>::Value, std::rank<int[10]>::value);
+        CHECK_EQ(wstl::Rank<int[10][10]>::Value, std::rank<int[10][10]>::value);
     }
 
     TEST_CASE("Extent") {
-        CHECK(wstl::Extent<int>::Value == std::extent<int>::value);
-        CHECK(wstl::Extent<int[]>::Value == std::extent<int[]>::value);
-        CHECK(wstl::Extent<int[10]>::Value == std::extent<int[10]>::value);
+        CHECK_EQ(wstl::Extent<int>::Value, std::extent<int>::value);
+        CHECK_EQ(wstl::Extent<int[]>::Value, std::extent<int[]>::value);
+        CHECK_EQ(wstl::Extent<int[10]>::Value, std::extent<int[10]>::value);
     }
 
     TEST_CASE("Conditional") {
@@ -432,7 +443,7 @@ TEST_SUITE("TypeTraits") {
     }
 
     TEST_CASE("TypeIdentity") {
-        CHECK(TestTypeIdentity(1.5f, 2) == 3.5f);
+        CHECK_EQ(TestTypeIdentity(1.5f, 2), 3.5f);
     }
 
     TEST_CASE("IsConst") {
@@ -903,51 +914,51 @@ TEST_SUITE("TypeTraits") {
     }
 
     TEST_CASE("IsConstructible") {
-        CHECK(wstl::IsConstructible<TestData>::Value == std::is_constructible<TestData>::value);
-        CHECK(wstl::IsConstructible<NonTrivialData>::Value == std::is_constructible<NonTrivialData>::value);
-        CHECK(wstl::IsConstructible<Implicit, int>::Value == std::is_constructible<Implicit, int>::value);
-        CHECK(wstl::IsConstructible<NonTrivialData, int, int>::Value == std::is_constructible<NonTrivialData, int, int>::value);
-        CHECK(wstl::IsConstructible<const int&, int>::Value == std::is_constructible<const int&, int>::value);
-        CHECK(wstl::IsConstructible<Explicit>::Value == std::is_constructible<Explicit>::value);
-        CHECK(wstl::IsConstructible<Implicit>::Value == std::is_constructible<Implicit>::value);
-        CHECK(wstl::IsConstructible<NonTrivialData, int>::Value == std::is_constructible<NonTrivialData, int>::value);
-        CHECK(wstl::IsConstructible<PrivateDefaultConstructor>::Value == std::is_constructible<PrivateDefaultConstructor>::value);
-        CHECK(wstl::IsConstructible<int&, int>::Value == std::is_constructible<int&, int>::value);
-        CHECK(wstl::IsConstructible<void>::Value == std::is_constructible<void>::value);
+        CHECK_EQ(wstl::IsConstructible<TestData>::Value, std::is_constructible<TestData>::value);
+        CHECK_EQ(wstl::IsConstructible<NonTrivialData>::Value, std::is_constructible<NonTrivialData>::value);
+        CHECK_EQ(wstl::IsConstructible<Implicit, int>::Value, std::is_constructible<Implicit, int>::value);
+        CHECK_EQ(wstl::IsConstructible<NonTrivialData, int, int>::Value, std::is_constructible<NonTrivialData, int, int>::value);
+        CHECK_EQ(wstl::IsConstructible<const int&, int>::Value, std::is_constructible<const int&, int>::value);
+        CHECK_EQ(wstl::IsConstructible<Explicit>::Value, std::is_constructible<Explicit>::value);
+        CHECK_EQ(wstl::IsConstructible<Implicit>::Value, std::is_constructible<Implicit>::value);
+        CHECK_EQ(wstl::IsConstructible<NonTrivialData, int>::Value, std::is_constructible<NonTrivialData, int>::value);
+        CHECK_EQ(wstl::IsConstructible<PrivateDefaultConstructor>::Value, std::is_constructible<PrivateDefaultConstructor>::value);
+        CHECK_EQ(wstl::IsConstructible<int&, int>::Value, std::is_constructible<int&, int>::value);
+        CHECK_EQ(wstl::IsConstructible<void>::Value, std::is_constructible<void>::value);
     }
 
     TEST_CASE("IsTriviallyConstructible") {
-        CHECK(wstl::IsTriviallyConstructible<int>::Value == std::is_trivially_constructible<int>::value);
-        CHECK(wstl::IsTriviallyConstructible<A>::Value == std::is_trivially_constructible<A>::value);
-        CHECK(wstl::IsTriviallyConstructible<TestData>::Value == std::is_trivially_constructible<TestData>::value);
-        CHECK(wstl::IsTriviallyConstructible<void>::Value == std::is_trivially_constructible<void>::value);
-        CHECK(wstl::IsTriviallyConstructible<NonTrivialData>::Value == std::is_trivially_constructible<NonTrivialData>::value);
-        CHECK(wstl::IsTriviallyConstructible<Implicit>::Value == std::is_trivially_constructible<Implicit>::value);
-        CHECK(wstl::IsTriviallyConstructible<Explicit>::Value == std::is_trivially_constructible<Explicit>::value);
+        CHECK_EQ(wstl::IsTriviallyConstructible<int>::Value, std::is_trivially_constructible<int>::value);
+        CHECK_EQ(wstl::IsTriviallyConstructible<A>::Value, std::is_trivially_constructible<A>::value);
+        CHECK_EQ(wstl::IsTriviallyConstructible<TestData>::Value, std::is_trivially_constructible<TestData>::value);
+        CHECK_EQ(wstl::IsTriviallyConstructible<void>::Value, std::is_trivially_constructible<void>::value);
+        CHECK_EQ(wstl::IsTriviallyConstructible<NonTrivialData>::Value, std::is_trivially_constructible<NonTrivialData>::value);
+        CHECK_EQ(wstl::IsTriviallyConstructible<Implicit>::Value, std::is_trivially_constructible<Implicit>::value);
+        CHECK_EQ(wstl::IsTriviallyConstructible<Explicit>::Value, std::is_trivially_constructible<Explicit>::value);
     }
 
     TEST_CASE("IsNothrowConstructible") {
-        CHECK(wstl::IsNothrowConstructible<TestData>::Value == std::is_nothrow_constructible<TestData>::value);
-        CHECK(wstl::IsNothrowConstructible<int>::Value == std::is_nothrow_constructible<int>::value);
-        CHECK(wstl::IsNothrowConstructible<int*>::Value == std::is_nothrow_constructible<int*>::value);
-        CHECK(wstl::IsNothrowConstructible<A>::Value == std::is_nothrow_constructible<A>::value);
-        CHECK(wstl::IsNothrowConstructible<NothrowData>::Value == std::is_nothrow_constructible<NothrowData>::value);
-        CHECK(wstl::IsNothrowConstructible<void>::Value == std::is_nothrow_constructible<void>::value);
-        CHECK(wstl::IsNothrowConstructible<int&>::Value == std::is_nothrow_constructible<int&>::value);
-        CHECK(wstl::IsNothrowConstructible<int[]>::Value == std::is_nothrow_constructible<int[]>::value);
-        CHECK(wstl::IsNothrowConstructible<NonTrivialData>::Value == std::is_nothrow_constructible<NonTrivialData>::value);
-        CHECK(wstl::IsNothrowConstructible<Explicit>::Value == std::is_nothrow_constructible<Explicit>::value);
-        CHECK(wstl::IsNothrowConstructible<Implicit>::Value == std::is_nothrow_constructible<Implicit>::value);
+        CHECK_EQ(wstl::IsNothrowConstructible<TestData>::Value, std::is_nothrow_constructible<TestData>::value);
+        CHECK_EQ(wstl::IsNothrowConstructible<int>::Value, std::is_nothrow_constructible<int>::value);
+        CHECK_EQ(wstl::IsNothrowConstructible<int*>::Value, std::is_nothrow_constructible<int*>::value);
+        CHECK_EQ(wstl::IsNothrowConstructible<A>::Value, std::is_nothrow_constructible<A>::value);
+        CHECK_EQ(wstl::IsNothrowConstructible<NothrowData>::Value, std::is_nothrow_constructible<NothrowData>::value);
+        CHECK_EQ(wstl::IsNothrowConstructible<void>::Value, std::is_nothrow_constructible<void>::value);
+        CHECK_EQ(wstl::IsNothrowConstructible<int&>::Value, std::is_nothrow_constructible<int&>::value);
+        CHECK_EQ(wstl::IsNothrowConstructible<int[]>::Value, std::is_nothrow_constructible<int[]>::value);
+        CHECK_EQ(wstl::IsNothrowConstructible<NonTrivialData>::Value, std::is_nothrow_constructible<NonTrivialData>::value);
+        CHECK_EQ(wstl::IsNothrowConstructible<Explicit>::Value, std::is_nothrow_constructible<Explicit>::value);
+        CHECK_EQ(wstl::IsNothrowConstructible<Implicit>::Value, std::is_nothrow_constructible<Implicit>::value);
     }
 
     TEST_CASE("IsDefaultConstructible") {
-        CHECK(wstl::IsDefaultConstructible<TestData>::Value == std::is_default_constructible<TestData>::value);
-        CHECK(wstl::IsDefaultConstructible<int>::Value == std::is_default_constructible<int>::value);
-        CHECK(wstl::IsDefaultConstructible<NonTrivialConstructor>::Value == std::is_default_constructible<NonTrivialConstructor>::value);
-        CHECK(wstl::IsDefaultConstructible<PrivateDefaultConstructor>::Value == std::is_default_constructible<PrivateDefaultConstructor>::value);
-        CHECK(wstl::IsDefaultConstructible<void>::Value == std::is_default_constructible<void>::value);
-        CHECK(wstl::IsDefaultConstructible<Implicit>::Value == std::is_default_constructible<Implicit>::value);
-        CHECK(wstl::IsDefaultConstructible<Explicit>::Value == std::is_default_constructible<Explicit>::value);
+        CHECK_EQ(wstl::IsDefaultConstructible<TestData>::Value, std::is_default_constructible<TestData>::value);
+        CHECK_EQ(wstl::IsDefaultConstructible<int>::Value, std::is_default_constructible<int>::value);
+        CHECK_EQ(wstl::IsDefaultConstructible<NonTrivialConstructor>::Value, std::is_default_constructible<NonTrivialConstructor>::value);
+        CHECK_EQ(wstl::IsDefaultConstructible<PrivateDefaultConstructor>::Value, std::is_default_constructible<PrivateDefaultConstructor>::value);
+        CHECK_EQ(wstl::IsDefaultConstructible<void>::Value, std::is_default_constructible<void>::value);
+        CHECK_EQ(wstl::IsDefaultConstructible<Implicit>::Value, std::is_default_constructible<Implicit>::value);
+        CHECK_EQ(wstl::IsDefaultConstructible<Explicit>::Value, std::is_default_constructible<Explicit>::value);
     }
 
     TEST_CASE("IsImplicitlyDefaultConstructible") {
@@ -961,298 +972,298 @@ TEST_SUITE("TypeTraits") {
     }
 
     TEST_CASE("IsTriviallyDefaultConstructible") {
-        CHECK(wstl::IsTriviallyDefaultConstructible<int>::Value == std::is_trivially_default_constructible<int>::value);
-        CHECK(wstl::IsTriviallyDefaultConstructible<TestData>::Value == std::is_trivially_default_constructible<TestData>::value);
-        CHECK(wstl::IsTriviallyDefaultConstructible<NonTrivialConstructor>::Value == std::is_trivially_default_constructible<NonTrivialConstructor>::value);
-        CHECK(wstl::IsTriviallyDefaultConstructible<ExplicitDefault>::Value == std::is_trivially_default_constructible<ExplicitDefault>::value);
-        CHECK(wstl::IsTriviallyDefaultConstructible<Implicit>::Value == std::is_trivially_default_constructible<Implicit>::value);
-        CHECK(wstl::IsTriviallyDefaultConstructible<Explicit>::Value == std::is_trivially_default_constructible<Explicit>::value);
-        CHECK(wstl::IsTriviallyDefaultConstructible<PrivateDefaultConstructor>::Value == std::is_trivially_default_constructible<PrivateDefaultConstructor>::value);
+        CHECK_EQ(wstl::IsTriviallyDefaultConstructible<int>::Value, std::is_trivially_default_constructible<int>::value);
+        CHECK_EQ(wstl::IsTriviallyDefaultConstructible<TestData>::Value, std::is_trivially_default_constructible<TestData>::value);
+        CHECK_EQ(wstl::IsTriviallyDefaultConstructible<NonTrivialConstructor>::Value, std::is_trivially_default_constructible<NonTrivialConstructor>::value);
+        CHECK_EQ(wstl::IsTriviallyDefaultConstructible<ExplicitDefault>::Value, std::is_trivially_default_constructible<ExplicitDefault>::value);
+        CHECK_EQ(wstl::IsTriviallyDefaultConstructible<Implicit>::Value, std::is_trivially_default_constructible<Implicit>::value);
+        CHECK_EQ(wstl::IsTriviallyDefaultConstructible<Explicit>::Value, std::is_trivially_default_constructible<Explicit>::value);
+        CHECK_EQ(wstl::IsTriviallyDefaultConstructible<PrivateDefaultConstructor>::Value, std::is_trivially_default_constructible<PrivateDefaultConstructor>::value);
     }
 
     TEST_CASE("IsNothrowDefaultConstructible") {
-        CHECK(wstl::IsNothrowDefaultConstructible<int>::Value == std::is_nothrow_default_constructible<int>::value);
-        CHECK(wstl::IsNothrowDefaultConstructible<TestData>::Value == std::is_nothrow_default_constructible<TestData>::value);
-        CHECK(wstl::IsNothrowDefaultConstructible<NothrowData>::Value == std::is_nothrow_default_constructible<NothrowData>::value);
-        CHECK(wstl::IsNothrowDefaultConstructible<NonTrivialConstructor>::Value == std::is_nothrow_default_constructible<NonTrivialConstructor>::value);
-        CHECK(wstl::IsNothrowDefaultConstructible<ExplicitDefault>::Value == std::is_nothrow_default_constructible<ExplicitDefault>::value);
-        CHECK(wstl::IsNothrowDefaultConstructible<Implicit>::Value == std::is_nothrow_default_constructible<Implicit>::value);
-        CHECK(wstl::IsNothrowDefaultConstructible<Explicit>::Value == std::is_nothrow_default_constructible<Explicit>::value);
-        CHECK(wstl::IsNothrowDefaultConstructible<PrivateDefaultConstructor>::Value == std::is_nothrow_default_constructible<PrivateDefaultConstructor>::value);
+        CHECK_EQ(wstl::IsNothrowDefaultConstructible<int>::Value, std::is_nothrow_default_constructible<int>::value);
+        CHECK_EQ(wstl::IsNothrowDefaultConstructible<TestData>::Value, std::is_nothrow_default_constructible<TestData>::value);
+        CHECK_EQ(wstl::IsNothrowDefaultConstructible<NothrowData>::Value, std::is_nothrow_default_constructible<NothrowData>::value);
+        CHECK_EQ(wstl::IsNothrowDefaultConstructible<NonTrivialConstructor>::Value, std::is_nothrow_default_constructible<NonTrivialConstructor>::value);
+        CHECK_EQ(wstl::IsNothrowDefaultConstructible<ExplicitDefault>::Value, std::is_nothrow_default_constructible<ExplicitDefault>::value);
+        CHECK_EQ(wstl::IsNothrowDefaultConstructible<Implicit>::Value, std::is_nothrow_default_constructible<Implicit>::value);
+        CHECK_EQ(wstl::IsNothrowDefaultConstructible<Explicit>::Value, std::is_nothrow_default_constructible<Explicit>::value);
+        CHECK_EQ(wstl::IsNothrowDefaultConstructible<PrivateDefaultConstructor>::Value, std::is_nothrow_default_constructible<PrivateDefaultConstructor>::value);
     }
 
     TEST_CASE("IsCopyConstructible") {
-        CHECK(wstl::IsCopyConstructible<int>::Value == std::is_copy_constructible<int>::value);
-        CHECK(wstl::IsCopyConstructible<TestData>::Value == std::is_copy_constructible<TestData>::value);
-        CHECK(wstl::IsCopyConstructible<NonTrivialConstructor>::Value == std::is_copy_constructible<NonTrivialConstructor>::value);
-        CHECK(wstl::IsCopyConstructible<CustomCopyMoveConstructor>::Value == std::is_copy_constructible<CustomCopyMoveConstructor>::value);
-        CHECK(wstl::IsCopyConstructible<NoCopyConstructor>::Value == std::is_copy_constructible<NoCopyConstructor>::value);
-        CHECK(wstl::IsCopyConstructible<FakeCopyConstructor>::Value == std::is_copy_constructible<FakeCopyConstructor>::value);
+        CHECK_EQ(wstl::IsCopyConstructible<int>::Value, std::is_copy_constructible<int>::value);
+        CHECK_EQ(wstl::IsCopyConstructible<TestData>::Value, std::is_copy_constructible<TestData>::value);
+        CHECK_EQ(wstl::IsCopyConstructible<NonTrivialConstructor>::Value, std::is_copy_constructible<NonTrivialConstructor>::value);
+        CHECK_EQ(wstl::IsCopyConstructible<CustomCopyMoveConstructor>::Value, std::is_copy_constructible<CustomCopyMoveConstructor>::value);
+        CHECK_EQ(wstl::IsCopyConstructible<NoCopyConstructor>::Value, std::is_copy_constructible<NoCopyConstructor>::value);
+        CHECK_EQ(wstl::IsCopyConstructible<FakeCopyConstructor>::Value, std::is_copy_constructible<FakeCopyConstructor>::value);
     }
 
     TEST_CASE("IsTriviallyCopyConstructible") {
-        CHECK(wstl::IsTriviallyCopyConstructible<int>::Value == std::is_trivially_copy_constructible<int>::value);
-        CHECK(wstl::IsTriviallyCopyConstructible<TestData>::Value == std::is_trivially_copy_constructible<TestData>::value);
-        CHECK(wstl::IsTriviallyCopyConstructible<NonTrivialConstructor>::Value == std::is_trivially_copy_constructible<NonTrivialConstructor>::value);
-        CHECK(wstl::IsTriviallyCopyConstructible<CustomCopyMoveConstructor>::Value == std::is_trivially_copy_constructible<CustomCopyMoveConstructor>::value);
-        CHECK(wstl::IsTriviallyCopyConstructible<NoCopyConstructor>::Value == std::is_trivially_copy_constructible<NoCopyConstructor>::value);
-        CHECK(wstl::IsTriviallyCopyConstructible<FakeCopyConstructor>::Value == std::is_trivially_copy_constructible<FakeCopyConstructor>::value);
+        CHECK_EQ(wstl::IsTriviallyCopyConstructible<int>::Value, std::is_trivially_copy_constructible<int>::value);
+        CHECK_EQ(wstl::IsTriviallyCopyConstructible<TestData>::Value, std::is_trivially_copy_constructible<TestData>::value);
+        CHECK_EQ(wstl::IsTriviallyCopyConstructible<NonTrivialConstructor>::Value, std::is_trivially_copy_constructible<NonTrivialConstructor>::value);
+        CHECK_EQ(wstl::IsTriviallyCopyConstructible<CustomCopyMoveConstructor>::Value, std::is_trivially_copy_constructible<CustomCopyMoveConstructor>::value);
+        CHECK_EQ(wstl::IsTriviallyCopyConstructible<NoCopyConstructor>::Value, std::is_trivially_copy_constructible<NoCopyConstructor>::value);
+        CHECK_EQ(wstl::IsTriviallyCopyConstructible<FakeCopyConstructor>::Value, std::is_trivially_copy_constructible<FakeCopyConstructor>::value);
     }
 
     TEST_CASE("IsNothrowCopyConstructible") {
-        CHECK(wstl::IsNothrowCopyConstructible<int>::Value == std::is_nothrow_copy_constructible<int>::value);
-        CHECK(wstl::IsNothrowCopyConstructible<TestData>::Value == std::is_nothrow_copy_constructible<TestData>::value);
-        CHECK(wstl::IsNothrowCopyConstructible<NonTrivialConstructor>::Value == std::is_nothrow_copy_constructible<NonTrivialConstructor>::value);
-        CHECK(wstl::IsNothrowCopyConstructible<NothrowData>::Value == std::is_nothrow_copy_constructible<NothrowData>::value);
-        CHECK(wstl::IsNothrowCopyConstructible<CustomCopyMoveConstructor>::Value == std::is_nothrow_copy_constructible<CustomCopyMoveConstructor>::value);
-        CHECK(wstl::IsNothrowCopyConstructible<NoCopyConstructor>::Value == std::is_nothrow_copy_constructible<NoCopyConstructor>::value);
-        CHECK(wstl::IsNothrowCopyConstructible<FakeCopyConstructor>::Value == std::is_nothrow_copy_constructible<FakeCopyConstructor>::value);
+        CHECK_EQ(wstl::IsNothrowCopyConstructible<int>::Value, std::is_nothrow_copy_constructible<int>::value);
+        CHECK_EQ(wstl::IsNothrowCopyConstructible<TestData>::Value, std::is_nothrow_copy_constructible<TestData>::value);
+        CHECK_EQ(wstl::IsNothrowCopyConstructible<NonTrivialConstructor>::Value, std::is_nothrow_copy_constructible<NonTrivialConstructor>::value);
+        CHECK_EQ(wstl::IsNothrowCopyConstructible<NothrowData>::Value, std::is_nothrow_copy_constructible<NothrowData>::value);
+        CHECK_EQ(wstl::IsNothrowCopyConstructible<CustomCopyMoveConstructor>::Value, std::is_nothrow_copy_constructible<CustomCopyMoveConstructor>::value);
+        CHECK_EQ(wstl::IsNothrowCopyConstructible<NoCopyConstructor>::Value, std::is_nothrow_copy_constructible<NoCopyConstructor>::value);
+        CHECK_EQ(wstl::IsNothrowCopyConstructible<FakeCopyConstructor>::Value, std::is_nothrow_copy_constructible<FakeCopyConstructor>::value);
     }
 
     TEST_CASE("IsMoveConstructible") {
-        CHECK(wstl::IsMoveConstructible<int>::Value == std::is_move_constructible<int>::value);
-        CHECK(wstl::IsMoveConstructible<TestData>::Value == std::is_move_constructible<TestData>::value);
-        CHECK(wstl::IsMoveConstructible<NonTrivialConstructor>::Value == std::is_move_constructible<NonTrivialConstructor>::value);
-        CHECK(wstl::IsMoveConstructible<MovableData<int>>::Value == std::is_move_constructible<MovableData<int>>::value);
-        CHECK(wstl::IsMoveConstructible<NoMoveConstructor>::Value == std::is_move_constructible<NoMoveConstructor>::value);
-        CHECK(wstl::IsMoveConstructible<CustomCopyMoveConstructor>::Value == std::is_move_constructible<CustomCopyMoveConstructor>::value);
-        CHECK(wstl::IsMoveConstructible<NoCopyConstructor>::Value == std::is_move_constructible<NoCopyConstructor>::value);
-        CHECK(wstl::IsMoveConstructible<FakeCopyConstructor>::Value == std::is_move_constructible<FakeCopyConstructor>::value);
+        CHECK_EQ(wstl::IsMoveConstructible<int>::Value, std::is_move_constructible<int>::value);
+        CHECK_EQ(wstl::IsMoveConstructible<TestData>::Value, std::is_move_constructible<TestData>::value);
+        CHECK_EQ(wstl::IsMoveConstructible<NonTrivialConstructor>::Value, std::is_move_constructible<NonTrivialConstructor>::value);
+        CHECK_EQ(wstl::IsMoveConstructible<MovableData<int>>::Value, std::is_move_constructible<MovableData<int>>::value);
+        CHECK_EQ(wstl::IsMoveConstructible<NoMoveConstructor>::Value, std::is_move_constructible<NoMoveConstructor>::value);
+        CHECK_EQ(wstl::IsMoveConstructible<CustomCopyMoveConstructor>::Value, std::is_move_constructible<CustomCopyMoveConstructor>::value);
+        CHECK_EQ(wstl::IsMoveConstructible<NoCopyConstructor>::Value, std::is_move_constructible<NoCopyConstructor>::value);
+        CHECK_EQ(wstl::IsMoveConstructible<FakeCopyConstructor>::Value, std::is_move_constructible<FakeCopyConstructor>::value);
     }
 
     TEST_CASE("IsTriviallyMoveConstructible") {
-        CHECK(wstl::IsTriviallyMoveConstructible<int>::Value == std::is_trivially_move_constructible<int>::value);
-        CHECK(wstl::IsTriviallyMoveConstructible<TestData>::Value == std::is_trivially_move_constructible<TestData>::value);
-        CHECK(wstl::IsTriviallyMoveConstructible<NonTrivialConstructor>::Value == std::is_trivially_move_constructible<NonTrivialConstructor>::value);
-        CHECK(wstl::IsTriviallyMoveConstructible<MovableData<int>>::Value == std::is_trivially_move_constructible<MovableData<int>>::value);
-        CHECK(wstl::IsTriviallyMoveConstructible<NoMoveConstructor>::Value == std::is_trivially_move_constructible<NoMoveConstructor>::value);
-        CHECK(wstl::IsTriviallyMoveConstructible<CustomCopyMoveConstructor>::Value == std::is_trivially_move_constructible<CustomCopyMoveConstructor>::value);
-        CHECK(wstl::IsTriviallyMoveConstructible<NoCopyConstructor>::Value == std::is_trivially_move_constructible<NoCopyConstructor>::value);
-        CHECK(wstl::IsTriviallyMoveConstructible<FakeCopyConstructor>::Value == std::is_trivially_move_constructible<FakeCopyConstructor>::value);
+        CHECK_EQ(wstl::IsTriviallyMoveConstructible<int>::Value, std::is_trivially_move_constructible<int>::value);
+        CHECK_EQ(wstl::IsTriviallyMoveConstructible<TestData>::Value, std::is_trivially_move_constructible<TestData>::value);
+        CHECK_EQ(wstl::IsTriviallyMoveConstructible<NonTrivialConstructor>::Value, std::is_trivially_move_constructible<NonTrivialConstructor>::value);
+        CHECK_EQ(wstl::IsTriviallyMoveConstructible<MovableData<int>>::Value, std::is_trivially_move_constructible<MovableData<int>>::value);
+        CHECK_EQ(wstl::IsTriviallyMoveConstructible<NoMoveConstructor>::Value, std::is_trivially_move_constructible<NoMoveConstructor>::value);
+        CHECK_EQ(wstl::IsTriviallyMoveConstructible<CustomCopyMoveConstructor>::Value, std::is_trivially_move_constructible<CustomCopyMoveConstructor>::value);
+        CHECK_EQ(wstl::IsTriviallyMoveConstructible<NoCopyConstructor>::Value, std::is_trivially_move_constructible<NoCopyConstructor>::value);
+        CHECK_EQ(wstl::IsTriviallyMoveConstructible<FakeCopyConstructor>::Value, std::is_trivially_move_constructible<FakeCopyConstructor>::value);
     }
 
     TEST_CASE("IsNothrowMoveConstructible") {
-        CHECK(wstl::IsNothrowMoveConstructible<int>::Value == std::is_nothrow_move_constructible<int>::value);
-        CHECK(wstl::IsNothrowMoveConstructible<TestData>::Value == std::is_nothrow_move_constructible<TestData>::value);
-        CHECK(wstl::IsNothrowMoveConstructible<NonTrivialConstructor>::Value == std::is_nothrow_move_constructible<NonTrivialConstructor>::value);
-        CHECK(wstl::IsNothrowMoveConstructible<MovableData<int>>::Value == std::is_nothrow_move_constructible<MovableData<int>>::value);
-        CHECK(wstl::IsNothrowMoveConstructible<NoMoveConstructor>::Value == std::is_nothrow_move_constructible<NoMoveConstructor>::value);
-        CHECK(wstl::IsNothrowMoveConstructible<CustomCopyMoveConstructor>::Value == std::is_nothrow_move_constructible<CustomCopyMoveConstructor>::value);
-        CHECK(wstl::IsNothrowMoveConstructible<NoCopyConstructor>::Value == std::is_nothrow_move_constructible<NoCopyConstructor>::value);
-        CHECK(wstl::IsNothrowMoveConstructible<FakeCopyConstructor>::Value == std::is_nothrow_move_constructible<FakeCopyConstructor>::value);
+        CHECK_EQ(wstl::IsNothrowMoveConstructible<int>::Value, std::is_nothrow_move_constructible<int>::value);
+        CHECK_EQ(wstl::IsNothrowMoveConstructible<TestData>::Value, std::is_nothrow_move_constructible<TestData>::value);
+        CHECK_EQ(wstl::IsNothrowMoveConstructible<NonTrivialConstructor>::Value, std::is_nothrow_move_constructible<NonTrivialConstructor>::value);
+        CHECK_EQ(wstl::IsNothrowMoveConstructible<MovableData<int>>::Value, std::is_nothrow_move_constructible<MovableData<int>>::value);
+        CHECK_EQ(wstl::IsNothrowMoveConstructible<NoMoveConstructor>::Value, std::is_nothrow_move_constructible<NoMoveConstructor>::value);
+        CHECK_EQ(wstl::IsNothrowMoveConstructible<CustomCopyMoveConstructor>::Value, std::is_nothrow_move_constructible<CustomCopyMoveConstructor>::value);
+        CHECK_EQ(wstl::IsNothrowMoveConstructible<NoCopyConstructor>::Value, std::is_nothrow_move_constructible<NoCopyConstructor>::value);
+        CHECK_EQ(wstl::IsNothrowMoveConstructible<FakeCopyConstructor>::Value, std::is_nothrow_move_constructible<FakeCopyConstructor>::value);
     }
 
     TEST_CASE("IsAssignable") {
-        CHECK(wstl::IsAssignable<int, int>::Value == std::is_assignable<int, int>::value);
-        CHECK(wstl::IsAssignable<int&, int>::Value == std::is_assignable<int&, int>::value);
-        CHECK(wstl::IsAssignable<int&, double>::Value == std::is_assignable<int&, double>::value);
-        CHECK(wstl::IsAssignable<NothrowData&, NothrowData>::Value == std::is_assignable<NothrowData&, NothrowData>::value);
-        CHECK(wstl::IsAssignable<TestData&, TestData>::Value == std::is_assignable<TestData&, TestData>::value);
-        CHECK(wstl::IsAssignable<FakeCopyAssignment&, FakeCopyAssignment>::Value == std::is_assignable<FakeCopyAssignment&, FakeCopyAssignment>::value);
-        CHECK(wstl::IsAssignable<FakeCopyConstructor&, FakeCopyConstructor>::Value == std::is_assignable<FakeCopyConstructor&, FakeCopyConstructor>::value);
-        CHECK(wstl::IsAssignable<NoCopyAssignment&, NoCopyAssignment>::Value == std::is_assignable<NoCopyAssignment&, NoCopyAssignment>::value);
+        CHECK_EQ(wstl::IsAssignable<int, int>::Value, std::is_assignable<int, int>::value);
+        CHECK_EQ(wstl::IsAssignable<int&, int>::Value, std::is_assignable<int&, int>::value);
+        CHECK_EQ(wstl::IsAssignable<int&, double>::Value, std::is_assignable<int&, double>::value);
+        CHECK_EQ(wstl::IsAssignable<NothrowData&, NothrowData>::Value, std::is_assignable<NothrowData&, NothrowData>::value);
+        CHECK_EQ(wstl::IsAssignable<TestData&, TestData>::Value, std::is_assignable<TestData&, TestData>::value);
+        CHECK_EQ(wstl::IsAssignable<FakeCopyAssignment&, FakeCopyAssignment>::Value, std::is_assignable<FakeCopyAssignment&, FakeCopyAssignment>::value);
+        CHECK_EQ(wstl::IsAssignable<FakeCopyConstructor&, FakeCopyConstructor>::Value, std::is_assignable<FakeCopyConstructor&, FakeCopyConstructor>::value);
+        CHECK_EQ(wstl::IsAssignable<NoCopyAssignment&, NoCopyAssignment>::Value, std::is_assignable<NoCopyAssignment&, NoCopyAssignment>::value);
     }
 
     TEST_CASE("IsTriviallyAssignable") {
-        CHECK(wstl::IsTriviallyAssignable<int, int>::Value == std::is_trivially_assignable<int, int>::value);
-        CHECK(wstl::IsTriviallyAssignable<int&, int>::Value == std::is_trivially_assignable<int&, int>::value);
-        CHECK(wstl::IsTriviallyAssignable<int&, double>::Value == std::is_trivially_assignable<int&, double>::value);
-        CHECK(wstl::IsTriviallyAssignable<NothrowData&, NothrowData>::Value == std::is_trivially_assignable<NothrowData&, NothrowData>::value);
-        CHECK(wstl::IsTriviallyAssignable<TestData&, TestData>::Value == std::is_trivially_assignable<TestData&, TestData>::value);
-        CHECK(wstl::IsTriviallyAssignable<FakeCopyAssignment&, FakeCopyAssignment>::Value == std::is_trivially_assignable<FakeCopyAssignment&, FakeCopyAssignment>::value);
-        CHECK(wstl::IsTriviallyAssignable<FakeCopyConstructor&, FakeCopyConstructor>::Value == std::is_trivially_assignable<FakeCopyConstructor&, FakeCopyConstructor>::value);
-        CHECK(wstl::IsTriviallyAssignable<NoCopyAssignment&, NoCopyAssignment>::Value == std::is_trivially_assignable<NoCopyAssignment&, NoCopyAssignment>::value);
+        CHECK_EQ(wstl::IsTriviallyAssignable<int, int>::Value, std::is_trivially_assignable<int, int>::value);
+        CHECK_EQ(wstl::IsTriviallyAssignable<int&, int>::Value, std::is_trivially_assignable<int&, int>::value);
+        CHECK_EQ(wstl::IsTriviallyAssignable<int&, double>::Value, std::is_trivially_assignable<int&, double>::value);
+        CHECK_EQ(wstl::IsTriviallyAssignable<NothrowData&, NothrowData>::Value, std::is_trivially_assignable<NothrowData&, NothrowData>::value);
+        CHECK_EQ(wstl::IsTriviallyAssignable<TestData&, TestData>::Value, std::is_trivially_assignable<TestData&, TestData>::value);
+        CHECK_EQ(wstl::IsTriviallyAssignable<FakeCopyAssignment&, FakeCopyAssignment>::Value, std::is_trivially_assignable<FakeCopyAssignment&, FakeCopyAssignment>::value);
+        CHECK_EQ(wstl::IsTriviallyAssignable<FakeCopyConstructor&, FakeCopyConstructor>::Value, std::is_trivially_assignable<FakeCopyConstructor&, FakeCopyConstructor>::value);
+        CHECK_EQ(wstl::IsTriviallyAssignable<NoCopyAssignment&, NoCopyAssignment>::Value, std::is_trivially_assignable<NoCopyAssignment&, NoCopyAssignment>::value);
     }
 
     TEST_CASE("IsNothrowAssignable") {
-        CHECK(wstl::IsNothrowAssignable<int, int>::Value == std::is_nothrow_assignable<int, int>::value);
-        CHECK(wstl::IsNothrowAssignable<int&, int>::Value == std::is_nothrow_assignable<int&, int>::value);
-        CHECK(wstl::IsNothrowAssignable<int&, double>::Value == std::is_nothrow_assignable<int&, double>::value);
-        CHECK(wstl::IsNothrowAssignable<NothrowData&, NothrowData>::Value == std::is_nothrow_assignable<NothrowData&, NothrowData>::value);
-        CHECK(wstl::IsNothrowAssignable<TestData&, TestData>::Value == std::is_nothrow_assignable<TestData&, TestData>::value);
-        CHECK(wstl::IsNothrowAssignable<FakeCopyAssignment&, FakeCopyAssignment>::Value == std::is_nothrow_assignable<FakeCopyAssignment&, FakeCopyAssignment>::value);
-        CHECK(wstl::IsNothrowAssignable<FakeCopyConstructor&, FakeCopyConstructor>::Value == std::is_nothrow_assignable<FakeCopyConstructor&, FakeCopyConstructor>::value);
-        CHECK(wstl::IsNothrowAssignable<NoCopyAssignment&, NoCopyAssignment>::Value == std::is_nothrow_assignable<NoCopyAssignment&, NoCopyAssignment>::value);
+        CHECK_EQ(wstl::IsNothrowAssignable<int, int>::Value, std::is_nothrow_assignable<int, int>::value);
+        CHECK_EQ(wstl::IsNothrowAssignable<int&, int>::Value, std::is_nothrow_assignable<int&, int>::value);
+        CHECK_EQ(wstl::IsNothrowAssignable<int&, double>::Value, std::is_nothrow_assignable<int&, double>::value);
+        CHECK_EQ(wstl::IsNothrowAssignable<NothrowData&, NothrowData>::Value, std::is_nothrow_assignable<NothrowData&, NothrowData>::value);
+        CHECK_EQ(wstl::IsNothrowAssignable<TestData&, TestData>::Value, std::is_nothrow_assignable<TestData&, TestData>::value);
+        CHECK_EQ(wstl::IsNothrowAssignable<FakeCopyAssignment&, FakeCopyAssignment>::Value, std::is_nothrow_assignable<FakeCopyAssignment&, FakeCopyAssignment>::value);
+        CHECK_EQ(wstl::IsNothrowAssignable<FakeCopyConstructor&, FakeCopyConstructor>::Value, std::is_nothrow_assignable<FakeCopyConstructor&, FakeCopyConstructor>::value);
+        CHECK_EQ(wstl::IsNothrowAssignable<NoCopyAssignment&, NoCopyAssignment>::Value, std::is_nothrow_assignable<NoCopyAssignment&, NoCopyAssignment>::value);
     }
 
     TEST_CASE("IsCopyAssignable") {
-        CHECK(wstl::IsCopyAssignable<int>::Value == std::is_copy_assignable<int>::value);
-        CHECK(wstl::IsCopyAssignable<NothrowData>::Value == std::is_copy_assignable<NothrowData>::value);
-        CHECK(wstl::IsCopyAssignable<TestData>::Value == std::is_copy_assignable<TestData>::value);
-        CHECK(wstl::IsCopyAssignable<FakeCopyAssignment>::Value == std::is_copy_assignable<FakeCopyAssignment>::value);
-        CHECK(wstl::IsCopyAssignable<FakeCopyConstructor>::Value == std::is_copy_assignable<FakeCopyConstructor>::value);
-        CHECK(wstl::IsCopyAssignable<TrivialConstructor>::Value == std::is_copy_assignable<TrivialConstructor>::value);
-        CHECK(wstl::IsCopyAssignable<NoCopyAssignment>::Value == std::is_copy_assignable<NoCopyAssignment>::value);
+        CHECK_EQ(wstl::IsCopyAssignable<int>::Value, std::is_copy_assignable<int>::value);
+        CHECK_EQ(wstl::IsCopyAssignable<NothrowData>::Value, std::is_copy_assignable<NothrowData>::value);
+        CHECK_EQ(wstl::IsCopyAssignable<TestData>::Value, std::is_copy_assignable<TestData>::value);
+        CHECK_EQ(wstl::IsCopyAssignable<FakeCopyAssignment>::Value, std::is_copy_assignable<FakeCopyAssignment>::value);
+        CHECK_EQ(wstl::IsCopyAssignable<FakeCopyConstructor>::Value, std::is_copy_assignable<FakeCopyConstructor>::value);
+        CHECK_EQ(wstl::IsCopyAssignable<TrivialConstructor>::Value, std::is_copy_assignable<TrivialConstructor>::value);
+        CHECK_EQ(wstl::IsCopyAssignable<NoCopyAssignment>::Value, std::is_copy_assignable<NoCopyAssignment>::value);
     }
 
     TEST_CASE("IsTriviallyCopyAssignable") {
-        CHECK(wstl::IsTriviallyCopyAssignable<int>::Value == std::is_trivially_copy_assignable<int>::value);
-        CHECK(wstl::IsTriviallyCopyAssignable<NothrowData>::Value == std::is_trivially_copy_assignable<NothrowData>::value);
-        CHECK(wstl::IsTriviallyCopyAssignable<TestData>::Value == std::is_trivially_copy_assignable<TestData>::value);
-        CHECK(wstl::IsTriviallyCopyAssignable<FakeCopyAssignment>::Value == std::is_trivially_copy_assignable<FakeCopyAssignment>::value);
-        CHECK(wstl::IsTriviallyCopyAssignable<FakeCopyConstructor>::Value == std::is_trivially_copy_assignable<FakeCopyConstructor>::value);
-        CHECK(wstl::IsTriviallyCopyAssignable<TrivialConstructor>::Value == std::is_trivially_copy_assignable<TrivialConstructor>::value);
-        CHECK(wstl::IsTriviallyCopyAssignable<NoCopyAssignment>::Value == std::is_trivially_copy_assignable<NoCopyAssignment>::value);
+        CHECK_EQ(wstl::IsTriviallyCopyAssignable<int>::Value, std::is_trivially_copy_assignable<int>::value);
+        CHECK_EQ(wstl::IsTriviallyCopyAssignable<NothrowData>::Value, std::is_trivially_copy_assignable<NothrowData>::value);
+        CHECK_EQ(wstl::IsTriviallyCopyAssignable<TestData>::Value, std::is_trivially_copy_assignable<TestData>::value);
+        CHECK_EQ(wstl::IsTriviallyCopyAssignable<FakeCopyAssignment>::Value, std::is_trivially_copy_assignable<FakeCopyAssignment>::value);
+        CHECK_EQ(wstl::IsTriviallyCopyAssignable<FakeCopyConstructor>::Value, std::is_trivially_copy_assignable<FakeCopyConstructor>::value);
+        CHECK_EQ(wstl::IsTriviallyCopyAssignable<TrivialConstructor>::Value, std::is_trivially_copy_assignable<TrivialConstructor>::value);
+        CHECK_EQ(wstl::IsTriviallyCopyAssignable<NoCopyAssignment>::Value, std::is_trivially_copy_assignable<NoCopyAssignment>::value);
     }
 
     TEST_CASE("IsNothrowCopyAssignable") {
-        CHECK(wstl::IsNothrowCopyAssignable<int>::Value == std::is_nothrow_copy_assignable<int>::value);
-        CHECK(wstl::IsNothrowCopyAssignable<NothrowData>::Value == std::is_nothrow_copy_assignable<NothrowData>::value);
-        CHECK(wstl::IsNothrowCopyAssignable<TestData>::Value == std::is_nothrow_copy_assignable<TestData>::value);
-        CHECK(wstl::IsNothrowCopyAssignable<FakeCopyAssignment>::Value == std::is_nothrow_copy_assignable<FakeCopyAssignment>::value);
-        CHECK(wstl::IsNothrowCopyAssignable<FakeCopyConstructor>::Value == std::is_nothrow_copy_assignable<FakeCopyConstructor>::value);
-        CHECK(wstl::IsNothrowCopyAssignable<TrivialConstructor>::Value == std::is_nothrow_copy_assignable<TrivialConstructor>::value);
-        CHECK(wstl::IsNothrowCopyAssignable<NoCopyAssignment>::Value == std::is_nothrow_copy_assignable<NoCopyAssignment>::value);
+        CHECK_EQ(wstl::IsNothrowCopyAssignable<int>::Value, std::is_nothrow_copy_assignable<int>::value);
+        CHECK_EQ(wstl::IsNothrowCopyAssignable<NothrowData>::Value, std::is_nothrow_copy_assignable<NothrowData>::value);
+        CHECK_EQ(wstl::IsNothrowCopyAssignable<TestData>::Value, std::is_nothrow_copy_assignable<TestData>::value);
+        CHECK_EQ(wstl::IsNothrowCopyAssignable<FakeCopyAssignment>::Value, std::is_nothrow_copy_assignable<FakeCopyAssignment>::value);
+        CHECK_EQ(wstl::IsNothrowCopyAssignable<FakeCopyConstructor>::Value, std::is_nothrow_copy_assignable<FakeCopyConstructor>::value);
+        CHECK_EQ(wstl::IsNothrowCopyAssignable<TrivialConstructor>::Value, std::is_nothrow_copy_assignable<TrivialConstructor>::value);
+        CHECK_EQ(wstl::IsNothrowCopyAssignable<NoCopyAssignment>::Value, std::is_nothrow_copy_assignable<NoCopyAssignment>::value);
     }
 
     TEST_CASE("IsMoveAssignable") {
-        CHECK(wstl::IsMoveAssignable<int>::Value == std::is_move_assignable<int>::value);
-        CHECK(wstl::IsMoveAssignable<NothrowData>::Value == std::is_move_assignable<NothrowData>::value);
-        CHECK(wstl::IsMoveAssignable<TestData>::Value == std::is_move_assignable<TestData>::value);
-        CHECK(wstl::IsMoveAssignable<FakeCopyAssignment>::Value == std::is_move_assignable<FakeCopyAssignment>::value);
-        CHECK(wstl::IsMoveAssignable<FakeCopyConstructor>::Value == std::is_move_assignable<FakeCopyConstructor>::value);
-        CHECK(wstl::IsMoveAssignable<TrivialConstructor>::Value == std::is_move_assignable<TrivialConstructor>::value);
-        CHECK(wstl::IsMoveAssignable<NoCopyAssignment>::Value == std::is_move_assignable<NoCopyAssignment>::value);
-        CHECK(wstl::IsMoveAssignable<MovableData<int>>::Value == std::is_move_assignable<MovableData<int>>::value);
-        CHECK(wstl::IsMoveAssignable<NoMoveAssignment>::Value == std::is_move_assignable<NoMoveAssignment>::value);
-        CHECK(wstl::IsMoveAssignable<CustomCopyMoveConstructor>::Value == std::is_move_assignable<CustomCopyMoveConstructor>::value);
+        CHECK_EQ(wstl::IsMoveAssignable<int>::Value, std::is_move_assignable<int>::value);
+        CHECK_EQ(wstl::IsMoveAssignable<NothrowData>::Value, std::is_move_assignable<NothrowData>::value);
+        CHECK_EQ(wstl::IsMoveAssignable<TestData>::Value, std::is_move_assignable<TestData>::value);
+        CHECK_EQ(wstl::IsMoveAssignable<FakeCopyAssignment>::Value, std::is_move_assignable<FakeCopyAssignment>::value);
+        CHECK_EQ(wstl::IsMoveAssignable<FakeCopyConstructor>::Value, std::is_move_assignable<FakeCopyConstructor>::value);
+        CHECK_EQ(wstl::IsMoveAssignable<TrivialConstructor>::Value, std::is_move_assignable<TrivialConstructor>::value);
+        CHECK_EQ(wstl::IsMoveAssignable<NoCopyAssignment>::Value, std::is_move_assignable<NoCopyAssignment>::value);
+        CHECK_EQ(wstl::IsMoveAssignable<MovableData<int>>::Value, std::is_move_assignable<MovableData<int>>::value);
+        CHECK_EQ(wstl::IsMoveAssignable<NoMoveAssignment>::Value, std::is_move_assignable<NoMoveAssignment>::value);
+        CHECK_EQ(wstl::IsMoveAssignable<CustomCopyMoveConstructor>::Value, std::is_move_assignable<CustomCopyMoveConstructor>::value);
     }
 
     TEST_CASE("IsTriviallyMoveAssignable") {
-        CHECK(wstl::IsTriviallyMoveAssignable<int>::Value == std::is_trivially_move_assignable<int>::value);
-        CHECK(wstl::IsTriviallyMoveAssignable<NothrowData>::Value == std::is_trivially_move_assignable<NothrowData>::value);
-        CHECK(wstl::IsTriviallyMoveAssignable<TestData>::Value == std::is_trivially_move_assignable<TestData>::value);
-        CHECK(wstl::IsTriviallyMoveAssignable<FakeCopyAssignment>::Value == std::is_trivially_move_assignable<FakeCopyAssignment>::value);
-        CHECK(wstl::IsTriviallyMoveAssignable<FakeCopyConstructor>::Value == std::is_trivially_move_assignable<FakeCopyConstructor>::value);
-        CHECK(wstl::IsTriviallyMoveAssignable<TrivialConstructor>::Value == std::is_trivially_move_assignable<TrivialConstructor>::value);
-        CHECK(wstl::IsTriviallyMoveAssignable<NoCopyAssignment>::Value == std::is_trivially_move_assignable<NoCopyAssignment>::value);
-        CHECK(wstl::IsTriviallyMoveAssignable<MovableData<int>>::Value == std::is_trivially_move_assignable<MovableData<int>>::value);
-        CHECK(wstl::IsTriviallyMoveAssignable<NoMoveAssignment>::Value == std::is_trivially_move_assignable<NoMoveAssignment>::value);
-        CHECK(wstl::IsTriviallyMoveAssignable<CustomCopyMoveConstructor>::Value == std::is_trivially_move_assignable<CustomCopyMoveConstructor>::value);
+        CHECK_EQ(wstl::IsTriviallyMoveAssignable<int>::Value, std::is_trivially_move_assignable<int>::value);
+        CHECK_EQ(wstl::IsTriviallyMoveAssignable<NothrowData>::Value, std::is_trivially_move_assignable<NothrowData>::value);
+        CHECK_EQ(wstl::IsTriviallyMoveAssignable<TestData>::Value, std::is_trivially_move_assignable<TestData>::value);
+        CHECK_EQ(wstl::IsTriviallyMoveAssignable<FakeCopyAssignment>::Value, std::is_trivially_move_assignable<FakeCopyAssignment>::value);
+        CHECK_EQ(wstl::IsTriviallyMoveAssignable<FakeCopyConstructor>::Value, std::is_trivially_move_assignable<FakeCopyConstructor>::value);
+        CHECK_EQ(wstl::IsTriviallyMoveAssignable<TrivialConstructor>::Value, std::is_trivially_move_assignable<TrivialConstructor>::value);
+        CHECK_EQ(wstl::IsTriviallyMoveAssignable<NoCopyAssignment>::Value, std::is_trivially_move_assignable<NoCopyAssignment>::value);
+        CHECK_EQ(wstl::IsTriviallyMoveAssignable<MovableData<int>>::Value, std::is_trivially_move_assignable<MovableData<int>>::value);
+        CHECK_EQ(wstl::IsTriviallyMoveAssignable<NoMoveAssignment>::Value, std::is_trivially_move_assignable<NoMoveAssignment>::value);
+        CHECK_EQ(wstl::IsTriviallyMoveAssignable<CustomCopyMoveConstructor>::Value, std::is_trivially_move_assignable<CustomCopyMoveConstructor>::value);
     }
 
     TEST_CASE("IsNothrowMoveAssignable") {
-        CHECK(wstl::IsNothrowMoveAssignable<int>::Value == std::is_nothrow_move_assignable<int>::value);
-        CHECK(wstl::IsNothrowMoveAssignable<NothrowData>::Value == std::is_nothrow_move_assignable<NothrowData>::value);
-        CHECK(wstl::IsNothrowMoveAssignable<TestData>::Value == std::is_nothrow_move_assignable<TestData>::value);
-        CHECK(wstl::IsNothrowMoveAssignable<FakeCopyAssignment>::Value == std::is_nothrow_move_assignable<FakeCopyAssignment>::value);
-        CHECK(wstl::IsNothrowMoveAssignable<FakeCopyConstructor>::Value == std::is_nothrow_move_assignable<FakeCopyConstructor>::value);
-        CHECK(wstl::IsNothrowMoveAssignable<TrivialConstructor>::Value == std::is_nothrow_move_assignable<TrivialConstructor>::value);
-        CHECK(wstl::IsNothrowMoveAssignable<NoCopyAssignment>::Value == std::is_nothrow_move_assignable<NoCopyAssignment>::value);
-        CHECK(wstl::IsNothrowMoveAssignable<MovableData<int>>::Value == std::is_nothrow_move_assignable<MovableData<int>>::value);
-        CHECK(wstl::IsNothrowMoveAssignable<NoMoveAssignment>::Value == std::is_nothrow_move_assignable<NoMoveAssignment>::value);
-        CHECK(wstl::IsNothrowMoveAssignable<CustomCopyMoveConstructor>::Value == std::is_nothrow_move_assignable<CustomCopyMoveConstructor>::value);
+        CHECK_EQ(wstl::IsNothrowMoveAssignable<int>::Value, std::is_nothrow_move_assignable<int>::value);
+        CHECK_EQ(wstl::IsNothrowMoveAssignable<NothrowData>::Value, std::is_nothrow_move_assignable<NothrowData>::value);
+        CHECK_EQ(wstl::IsNothrowMoveAssignable<TestData>::Value, std::is_nothrow_move_assignable<TestData>::value);
+        CHECK_EQ(wstl::IsNothrowMoveAssignable<FakeCopyAssignment>::Value, std::is_nothrow_move_assignable<FakeCopyAssignment>::value);
+        CHECK_EQ(wstl::IsNothrowMoveAssignable<FakeCopyConstructor>::Value, std::is_nothrow_move_assignable<FakeCopyConstructor>::value);
+        CHECK_EQ(wstl::IsNothrowMoveAssignable<TrivialConstructor>::Value, std::is_nothrow_move_assignable<TrivialConstructor>::value);
+        CHECK_EQ(wstl::IsNothrowMoveAssignable<NoCopyAssignment>::Value, std::is_nothrow_move_assignable<NoCopyAssignment>::value);
+        CHECK_EQ(wstl::IsNothrowMoveAssignable<MovableData<int>>::Value, std::is_nothrow_move_assignable<MovableData<int>>::value);
+        CHECK_EQ(wstl::IsNothrowMoveAssignable<NoMoveAssignment>::Value, std::is_nothrow_move_assignable<NoMoveAssignment>::value);
+        CHECK_EQ(wstl::IsNothrowMoveAssignable<CustomCopyMoveConstructor>::Value, std::is_nothrow_move_assignable<CustomCopyMoveConstructor>::value);
     }
 
     TEST_CASE("IsDestructible") {
-        CHECK(wstl::IsDestructible<int>::Value == std::is_destructible<int>::value);
-        CHECK(wstl::IsDestructible<int&>::Value == std::is_destructible<int&>::value);
-        CHECK(wstl::IsDestructible<TestData>::Value == std::is_destructible<TestData>::value);
-        CHECK(wstl::IsDestructible<NothrowData>::Value == std::is_destructible<NothrowData>::value);
-        CHECK(wstl::IsDestructible<NoDestructor>::Value == std::is_destructible<NoDestructor>::value);
-        CHECK(wstl::IsDestructible<void>::Value == std::is_destructible<void>::value);
-        CHECK(wstl::IsDestructible<Abstract>::Value == std::is_destructible<Abstract>::value);
-        CHECK(wstl::IsDestructible<PrivateDestructor>::Value == std::is_destructible<PrivateDestructor>::value);
+        CHECK_EQ(wstl::IsDestructible<int>::Value, std::is_destructible<int>::value);
+        CHECK_EQ(wstl::IsDestructible<int&>::Value, std::is_destructible<int&>::value);
+        CHECK_EQ(wstl::IsDestructible<TestData>::Value, std::is_destructible<TestData>::value);
+        CHECK_EQ(wstl::IsDestructible<NothrowData>::Value, std::is_destructible<NothrowData>::value);
+        CHECK_EQ(wstl::IsDestructible<NoDestructor>::Value, std::is_destructible<NoDestructor>::value);
+        CHECK_EQ(wstl::IsDestructible<void>::Value, std::is_destructible<void>::value);
+        CHECK_EQ(wstl::IsDestructible<Abstract>::Value, std::is_destructible<Abstract>::value);
+        CHECK_EQ(wstl::IsDestructible<PrivateDestructor>::Value, std::is_destructible<PrivateDestructor>::value);
     }
 
     TEST_CASE("IsTriviallyDestructible") {
-        CHECK(wstl::IsTriviallyDestructible<int>::Value == std::is_trivially_destructible<int>::value);
-        CHECK(wstl::IsTriviallyDestructible<int&>::Value == std::is_trivially_destructible<int&>::value);
-        CHECK(wstl::IsTriviallyDestructible<TestData>::Value == std::is_trivially_destructible<TestData>::value);
-        CHECK(wstl::IsTriviallyDestructible<NothrowData>::Value == std::is_trivially_destructible<NothrowData>::value);
-        CHECK(wstl::IsTriviallyDestructible<NoDestructor>::Value == std::is_trivially_destructible<NoDestructor>::value);
-        CHECK(wstl::IsTriviallyDestructible<void>::Value == std::is_trivially_destructible<void>::value);
-        CHECK(wstl::IsTriviallyDestructible<Abstract>::Value == std::is_trivially_destructible<Abstract>::value);
-        CHECK(wstl::IsTriviallyDestructible<PrivateDestructor>::Value == std::is_trivially_destructible<PrivateDestructor>::value);
+        CHECK_EQ(wstl::IsTriviallyDestructible<int>::Value, std::is_trivially_destructible<int>::value);
+        CHECK_EQ(wstl::IsTriviallyDestructible<int&>::Value, std::is_trivially_destructible<int&>::value);
+        CHECK_EQ(wstl::IsTriviallyDestructible<TestData>::Value, std::is_trivially_destructible<TestData>::value);
+        CHECK_EQ(wstl::IsTriviallyDestructible<NothrowData>::Value, std::is_trivially_destructible<NothrowData>::value);
+        CHECK_EQ(wstl::IsTriviallyDestructible<NoDestructor>::Value, std::is_trivially_destructible<NoDestructor>::value);
+        CHECK_EQ(wstl::IsTriviallyDestructible<void>::Value, std::is_trivially_destructible<void>::value);
+        CHECK_EQ(wstl::IsTriviallyDestructible<Abstract>::Value, std::is_trivially_destructible<Abstract>::value);
+        CHECK_EQ(wstl::IsTriviallyDestructible<PrivateDestructor>::Value, std::is_trivially_destructible<PrivateDestructor>::value);
     }
 
     TEST_CASE("IsNothrowDestructible") {
-        CHECK(wstl::IsNothrowDestructible<int>::Value == std::is_nothrow_destructible<int>::value);
-        CHECK(wstl::IsNothrowDestructible<int&>::Value == std::is_nothrow_destructible<int&>::value);
-        CHECK(wstl::IsNothrowDestructible<TestData>::Value == std::is_nothrow_destructible<TestData>::value);
-        CHECK(wstl::IsNothrowDestructible<NothrowData>::Value == std::is_nothrow_destructible<NothrowData>::value);
-        CHECK(wstl::IsNothrowDestructible<NoDestructor>::Value == std::is_nothrow_destructible<NoDestructor>::value);
-        CHECK(wstl::IsNothrowDestructible<void>::Value == std::is_nothrow_destructible<void>::value);
-        CHECK(wstl::IsNothrowDestructible<Abstract>::Value == std::is_nothrow_destructible<Abstract>::value);
-        CHECK(wstl::IsNothrowDestructible<PrivateDestructor>::Value == std::is_nothrow_destructible<PrivateDestructor>::value);
+        CHECK_EQ(wstl::IsNothrowDestructible<int>::Value, std::is_nothrow_destructible<int>::value);
+        CHECK_EQ(wstl::IsNothrowDestructible<int&>::Value, std::is_nothrow_destructible<int&>::value);
+        CHECK_EQ(wstl::IsNothrowDestructible<TestData>::Value, std::is_nothrow_destructible<TestData>::value);
+        CHECK_EQ(wstl::IsNothrowDestructible<NothrowData>::Value, std::is_nothrow_destructible<NothrowData>::value);
+        CHECK_EQ(wstl::IsNothrowDestructible<NoDestructor>::Value, std::is_nothrow_destructible<NoDestructor>::value);
+        CHECK_EQ(wstl::IsNothrowDestructible<void>::Value, std::is_nothrow_destructible<void>::value);
+        CHECK_EQ(wstl::IsNothrowDestructible<Abstract>::Value, std::is_nothrow_destructible<Abstract>::value);
+        CHECK_EQ(wstl::IsNothrowDestructible<PrivateDestructor>::Value, std::is_nothrow_destructible<PrivateDestructor>::value);
     }
 
     TEST_CASE("IsTriviallyCopyable") {
-        CHECK(wstl::IsTriviallyCopyable<int>::Value == std::is_trivially_copyable<int>::value);
-        CHECK(wstl::IsTriviallyCopyable<TestData>::Value == std::is_trivially_copyable<TestData>::value);
-        CHECK(wstl::IsTriviallyCopyable<NonTrivialConstructor>::Value == std::is_trivially_copyable<NonTrivialConstructor>::value);
-        CHECK(wstl::IsTriviallyCopyable<CustomCopyMoveConstructor>::Value == std::is_trivially_copyable<CustomCopyMoveConstructor>::value);
-        CHECK(wstl::IsTriviallyCopyable<NoCopyConstructor>::Value == std::is_trivially_copyable<NoCopyConstructor>::value);
-        CHECK(wstl::IsTriviallyCopyable<FakeCopyConstructor>::Value == std::is_trivially_copyable<FakeCopyConstructor>::value);
+        CHECK_EQ(wstl::IsTriviallyCopyable<int>::Value, std::is_trivially_copyable<int>::value);
+        CHECK_EQ(wstl::IsTriviallyCopyable<TestData>::Value, std::is_trivially_copyable<TestData>::value);
+        CHECK_EQ(wstl::IsTriviallyCopyable<NonTrivialConstructor>::Value, std::is_trivially_copyable<NonTrivialConstructor>::value);
+        CHECK_EQ(wstl::IsTriviallyCopyable<CustomCopyMoveConstructor>::Value, std::is_trivially_copyable<CustomCopyMoveConstructor>::value);
+        CHECK_EQ(wstl::IsTriviallyCopyable<NoCopyConstructor>::Value, std::is_trivially_copyable<NoCopyConstructor>::value);
+        CHECK_EQ(wstl::IsTriviallyCopyable<FakeCopyConstructor>::Value, std::is_trivially_copyable<FakeCopyConstructor>::value);
     }
 
     TEST_CASE("IsSigned") {
-        CHECK(wstl::IsSigned<bool>::Value == std::is_signed<bool>::value);
-        CHECK(wstl::IsSigned<char>::Value == std::is_signed<char>::value);
-        CHECK(wstl::IsSigned<signed char>::Value == std::is_signed<signed char>::value);
-        CHECK(wstl::IsSigned<unsigned char>::Value == std::is_signed<unsigned char>::value);
-        CHECK(wstl::IsSigned<wchar_t>::Value == std::is_signed<wchar_t>::value);
-        CHECK(wstl::IsSigned<short>::Value == std::is_signed<short>::value);
-        CHECK(wstl::IsSigned<signed short>::Value == std::is_signed<signed short>::value);
-        CHECK(wstl::IsSigned<unsigned short>::Value == std::is_signed<unsigned short>::value);
-        CHECK(wstl::IsSigned<int>::Value == std::is_signed<int>::value);
-        CHECK(wstl::IsSigned<signed int>::Value == std::is_signed<signed int>::value);
-        CHECK(wstl::IsSigned<unsigned int>::Value == std::is_signed<unsigned int>::value);
-        CHECK(wstl::IsSigned<long>::Value == std::is_signed<long>::value);
-        CHECK(wstl::IsSigned<signed long>::Value == std::is_signed<signed long>::value);
-        CHECK(wstl::IsSigned<unsigned long>::Value == std::is_signed<unsigned long>::value);
-        CHECK(wstl::IsSigned<long long>::Value == std::is_signed<long long>::value);
-        CHECK(wstl::IsSigned<signed long long>::Value == std::is_signed<signed long long>::value);
-        CHECK(wstl::IsSigned<unsigned long long>::Value == std::is_signed<unsigned long long>::value);
-        CHECK(wstl::IsSigned<const int>::Value == std::is_signed<const int>::value);
-        CHECK(wstl::IsSigned<volatile int>::Value == std::is_signed<volatile int>::value);
-        CHECK(wstl::IsSigned<const int>::Value == std::is_signed<const int>::value);
-        CHECK(wstl::IsSigned<const volatile int>::Value == std::is_signed<const volatile int>::value);
-        CHECK(wstl::IsSigned<float>::Value == std::is_signed<float>::value);
-        CHECK(wstl::IsSigned<double>::Value == std::is_signed<double>::value);
-        CHECK(wstl::IsSigned<long double>::Value == std::is_signed<long double>::value);
-        CHECK(wstl::IsSigned<TestData>::Value == std::is_signed<TestData>::value);
+        CHECK_EQ(wstl::IsSigned<bool>::Value, std::is_signed<bool>::value);
+        CHECK_EQ(wstl::IsSigned<char>::Value, std::is_signed<char>::value);
+        CHECK_EQ(wstl::IsSigned<signed char>::Value, std::is_signed<signed char>::value);
+        CHECK_EQ(wstl::IsSigned<unsigned char>::Value, std::is_signed<unsigned char>::value);
+        CHECK_EQ(wstl::IsSigned<wchar_t>::Value, std::is_signed<wchar_t>::value);
+        CHECK_EQ(wstl::IsSigned<short>::Value, std::is_signed<short>::value);
+        CHECK_EQ(wstl::IsSigned<signed short>::Value, std::is_signed<signed short>::value);
+        CHECK_EQ(wstl::IsSigned<unsigned short>::Value, std::is_signed<unsigned short>::value);
+        CHECK_EQ(wstl::IsSigned<int>::Value, std::is_signed<int>::value);
+        CHECK_EQ(wstl::IsSigned<signed int>::Value, std::is_signed<signed int>::value);
+        CHECK_EQ(wstl::IsSigned<unsigned int>::Value, std::is_signed<unsigned int>::value);
+        CHECK_EQ(wstl::IsSigned<long>::Value, std::is_signed<long>::value);
+        CHECK_EQ(wstl::IsSigned<signed long>::Value, std::is_signed<signed long>::value);
+        CHECK_EQ(wstl::IsSigned<unsigned long>::Value, std::is_signed<unsigned long>::value);
+        CHECK_EQ(wstl::IsSigned<long long>::Value, std::is_signed<long long>::value);
+        CHECK_EQ(wstl::IsSigned<signed long long>::Value, std::is_signed<signed long long>::value);
+        CHECK_EQ(wstl::IsSigned<unsigned long long>::Value, std::is_signed<unsigned long long>::value);
+        CHECK_EQ(wstl::IsSigned<const int>::Value, std::is_signed<const int>::value);
+        CHECK_EQ(wstl::IsSigned<volatile int>::Value, std::is_signed<volatile int>::value);
+        CHECK_EQ(wstl::IsSigned<const int>::Value, std::is_signed<const int>::value);
+        CHECK_EQ(wstl::IsSigned<const volatile int>::Value, std::is_signed<const volatile int>::value);
+        CHECK_EQ(wstl::IsSigned<float>::Value, std::is_signed<float>::value);
+        CHECK_EQ(wstl::IsSigned<double>::Value, std::is_signed<double>::value);
+        CHECK_EQ(wstl::IsSigned<long double>::Value, std::is_signed<long double>::value);
+        CHECK_EQ(wstl::IsSigned<TestData>::Value, std::is_signed<TestData>::value);
 
-        CHECK(wstl::IsSigned<char16_t>::Value == std::is_signed<char16_t>::value);
-        CHECK(wstl::IsSigned<char32_t>::Value == std::is_signed<char32_t>::value);
+        CHECK_EQ(wstl::IsSigned<char16_t>::Value, std::is_signed<char16_t>::value);
+        CHECK_EQ(wstl::IsSigned<char32_t>::Value, std::is_signed<char32_t>::value);
 
         #ifdef __WSTL_CXX20__
-        CHECK(wstl::IsSigned<char8_t>::Value == std::is_signed<char8_t>::value);
+        CHECK_EQ(wstl::IsSigned<char8_t>::Value, std::is_signed<char8_t>::value);
         #endif
     }
 
     TEST_CASE("IsUnsigned") {
-        CHECK(wstl::IsUnsigned<bool>::Value == std::is_unsigned<bool>::value);
-        CHECK(wstl::IsUnsigned<char>::Value == std::is_unsigned<char>::value);
-        CHECK(wstl::IsUnsigned<signed char>::Value == std::is_unsigned<signed char>::value);
-        CHECK(wstl::IsUnsigned<unsigned char>::Value == std::is_unsigned<unsigned char>::value);
-        CHECK(wstl::IsUnsigned<wchar_t>::Value == std::is_unsigned<wchar_t>::value);
-        CHECK(wstl::IsUnsigned<short>::Value == std::is_unsigned<short>::value);
-        CHECK(wstl::IsUnsigned<signed short>::Value == std::is_unsigned<signed short>::value);
-        CHECK(wstl::IsUnsigned<unsigned short>::Value == std::is_unsigned<unsigned short>::value);
-        CHECK(wstl::IsUnsigned<int>::Value == std::is_unsigned<int>::value);
-        CHECK(wstl::IsUnsigned<signed int>::Value == std::is_unsigned<signed int>::value);
-        CHECK(wstl::IsUnsigned<unsigned int>::Value == std::is_unsigned<unsigned int>::value);
-        CHECK(wstl::IsUnsigned<long>::Value == std::is_unsigned<long>::value);
-        CHECK(wstl::IsUnsigned<signed long>::Value == std::is_unsigned<signed long>::value);
-        CHECK(wstl::IsUnsigned<unsigned long>::Value == std::is_unsigned<unsigned long>::value);
-        CHECK(wstl::IsUnsigned<long long>::Value == std::is_unsigned<long long>::value);
-        CHECK(wstl::IsUnsigned<signed long long>::Value == std::is_unsigned<signed long long>::value);
-        CHECK(wstl::IsUnsigned<unsigned long long>::Value == std::is_unsigned<unsigned long long>::value);
-        CHECK(wstl::IsUnsigned<const int>::Value == std::is_unsigned<const int>::value);
-        CHECK(wstl::IsUnsigned<volatile int>::Value == std::is_unsigned<volatile int>::value);
-        CHECK(wstl::IsUnsigned<const int>::Value == std::is_unsigned<const int>::value);
-        CHECK(wstl::IsUnsigned<const volatile int>::Value == std::is_unsigned<const volatile int>::value);
-        CHECK(wstl::IsUnsigned<float>::Value == std::is_unsigned<float>::value);
-        CHECK(wstl::IsUnsigned<double>::Value == std::is_unsigned<double>::value);
-        CHECK(wstl::IsUnsigned<long double>::Value == std::is_unsigned<long double>::value);
-        CHECK(wstl::IsUnsigned<TestData>::Value == std::is_unsigned<TestData>::value);
+        CHECK_EQ(wstl::IsUnsigned<bool>::Value, std::is_unsigned<bool>::value);
+        CHECK_EQ(wstl::IsUnsigned<char>::Value, std::is_unsigned<char>::value);
+        CHECK_EQ(wstl::IsUnsigned<signed char>::Value, std::is_unsigned<signed char>::value);
+        CHECK_EQ(wstl::IsUnsigned<unsigned char>::Value, std::is_unsigned<unsigned char>::value);
+        CHECK_EQ(wstl::IsUnsigned<wchar_t>::Value, std::is_unsigned<wchar_t>::value);
+        CHECK_EQ(wstl::IsUnsigned<short>::Value, std::is_unsigned<short>::value);
+        CHECK_EQ(wstl::IsUnsigned<signed short>::Value, std::is_unsigned<signed short>::value);
+        CHECK_EQ(wstl::IsUnsigned<unsigned short>::Value, std::is_unsigned<unsigned short>::value);
+        CHECK_EQ(wstl::IsUnsigned<int>::Value, std::is_unsigned<int>::value);
+        CHECK_EQ(wstl::IsUnsigned<signed int>::Value, std::is_unsigned<signed int>::value);
+        CHECK_EQ(wstl::IsUnsigned<unsigned int>::Value, std::is_unsigned<unsigned int>::value);
+        CHECK_EQ(wstl::IsUnsigned<long>::Value, std::is_unsigned<long>::value);
+        CHECK_EQ(wstl::IsUnsigned<signed long>::Value, std::is_unsigned<signed long>::value);
+        CHECK_EQ(wstl::IsUnsigned<unsigned long>::Value, std::is_unsigned<unsigned long>::value);
+        CHECK_EQ(wstl::IsUnsigned<long long>::Value, std::is_unsigned<long long>::value);
+        CHECK_EQ(wstl::IsUnsigned<signed long long>::Value, std::is_unsigned<signed long long>::value);
+        CHECK_EQ(wstl::IsUnsigned<unsigned long long>::Value, std::is_unsigned<unsigned long long>::value);
+        CHECK_EQ(wstl::IsUnsigned<const int>::Value, std::is_unsigned<const int>::value);
+        CHECK_EQ(wstl::IsUnsigned<volatile int>::Value, std::is_unsigned<volatile int>::value);
+        CHECK_EQ(wstl::IsUnsigned<const int>::Value, std::is_unsigned<const int>::value);
+        CHECK_EQ(wstl::IsUnsigned<const volatile int>::Value, std::is_unsigned<const volatile int>::value);
+        CHECK_EQ(wstl::IsUnsigned<float>::Value, std::is_unsigned<float>::value);
+        CHECK_EQ(wstl::IsUnsigned<double>::Value, std::is_unsigned<double>::value);
+        CHECK_EQ(wstl::IsUnsigned<long double>::Value, std::is_unsigned<long double>::value);
+        CHECK_EQ(wstl::IsUnsigned<TestData>::Value, std::is_unsigned<TestData>::value);
 
-        CHECK(wstl::IsUnsigned<char16_t>::Value == std::is_unsigned<char16_t>::value);
-        CHECK(wstl::IsUnsigned<char32_t>::Value == std::is_unsigned<char32_t>::value);
+        CHECK_EQ(wstl::IsUnsigned<char16_t>::Value, std::is_unsigned<char16_t>::value);
+        CHECK_EQ(wstl::IsUnsigned<char32_t>::Value, std::is_unsigned<char32_t>::value);
 
         #ifdef __WSTL_CXX20__
-        CHECK(wstl::IsUnsigned<char8_t>::Value == std::is_unsigned<char8_t>::value);
+        CHECK_EQ(wstl::IsUnsigned<char8_t>::Value, std::is_unsigned<char8_t>::value);
         #endif
     }
 
@@ -1321,7 +1332,7 @@ TEST_SUITE("TypeTraits") {
         CHECK(wstl::IsSame<wstl::MakeSigned<size_t>::Type, std::make_signed<size_t>::type>::Value);
 
         CHECK(wstl::IsSigned<wstl::MakeSigned<wchar_t>::Type>::Value);
-        CHECK(sizeof(wchar_t) == sizeof(wstl::MakeSigned<wchar_t>::Type));
+        CHECK_EQ(sizeof(wchar_t), sizeof(wstl::MakeSigned<wchar_t>::Type));
 
         enum class UnsignedEnum : unsigned int {};
         enum class SignedEnum : int {};
@@ -1353,7 +1364,7 @@ TEST_SUITE("TypeTraits") {
         CHECK(wstl::IsSame<wstl::MakeUnsigned<size_t>::Type, std::make_unsigned<size_t>::type>::Value);
 
         CHECK(wstl::IsUnsigned<wstl::MakeUnsigned<wchar_t>::Type>::Value);
-        CHECK(sizeof(wchar_t) == sizeof(wstl::MakeUnsigned<wchar_t>::Type));
+        CHECK_EQ(sizeof(wchar_t), sizeof(wstl::MakeUnsigned<wchar_t>::Type));
 
         enum class UnsignedEnum : unsigned int {};
         enum class SignedEnum : int {};
@@ -1363,13 +1374,13 @@ TEST_SUITE("TypeTraits") {
     }
 
     TEST_CASE("TypeWithAlignment") {
-        CHECK(alignof(wstl::TypeWithAlignmentType<1>) == 1);
-        CHECK(alignof(wstl::TypeWithAlignmentType<2>) == 2);
-        CHECK(alignof(wstl::TypeWithAlignmentType<4>) == 4);
-        CHECK(alignof(wstl::TypeWithAlignmentType<8>) == 8);
-        CHECK(alignof(wstl::TypeWithAlignmentType<16>) == 16);
-        CHECK(alignof(wstl::TypeWithAlignmentType<32>) == 32);
-        CHECK(alignof(wstl::TypeWithAlignmentType<64>) == 64);
+        CHECK_EQ(alignof(wstl::TypeWithAlignmentType<1UL>), 1UL);
+        CHECK_EQ(alignof(wstl::TypeWithAlignmentType<2UL>), 2UL);
+        CHECK_EQ(alignof(wstl::TypeWithAlignmentType<4UL>), 4UL);
+        CHECK_EQ(alignof(wstl::TypeWithAlignmentType<8UL>), 8UL);
+        CHECK_EQ(alignof(wstl::TypeWithAlignmentType<16UL>), 16UL);
+        CHECK_EQ(alignof(wstl::TypeWithAlignmentType<32UL>), 32UL);
+        CHECK_EQ(alignof(wstl::TypeWithAlignmentType<64UL>), 64UL);
     }
 
     TEST_CASE("IsTypeAligned") {
@@ -1386,10 +1397,10 @@ TEST_SUITE("TypeTraits") {
 
         size_t alignment = wstl::AlignmentOf<StorageType>::Value;
         size_t expected = std::alignment_of<uint32_t>::value;
-        CHECK(alignment == expected);
+        CHECK_EQ(alignment, expected);
 
         // Test alignment of each element
-        for(int i = 0; i < 10; ++i) CHECK((size_t(&data[i]) % expected) == 0);
+        for(int i = 0; i < 10; ++i) CHECK_EQ((size_t(&data[i]) % expected), 0UL);
     }
 
     TEST_CASE("AlignedStorage conversion operators") {
@@ -1398,23 +1409,23 @@ TEST_SUITE("TypeTraits") {
 
         uint32_t& ref = data;
         const uint32_t& cref = data;
-        CHECK(&ref == ptrData);
-        CHECK(&cref == ptrData);
+        CHECK_EQ(&ref, ptrData);
+        CHECK_EQ(&cref, ptrData);
 
         uint32_t* ptr = data;
         const uint32_t* cptr = data;
-        CHECK(ptr == ptrData);
-        CHECK(cptr == ptrData);
+        CHECK_EQ(ptr, ptrData);
+        CHECK_EQ(cptr, ptrData);
 
         uint32_t& ref2 = data.GetReference<uint32_t>();
         const uint32_t& cref2 = data.GetReference<uint32_t>();
-        CHECK(&ref2 == ptrData);
-        CHECK(&cref2 == ptrData);
+        CHECK_EQ(&ref2, ptrData);
+        CHECK_EQ(&cref2, ptrData);
 
         uint32_t* ptr2 = data.GetPointer<uint32_t>();
         const uint32_t* cptr2 = data.GetPointer<uint32_t>();
-        CHECK(ptr2 == ptrData);
-        CHECK(cptr2 == ptrData);
+        CHECK_EQ(ptr2, ptrData);
+        CHECK_EQ(cptr2, ptrData);
     }
 
     TEST_CASE("IsAligned") {

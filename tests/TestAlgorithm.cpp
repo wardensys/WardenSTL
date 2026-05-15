@@ -44,7 +44,7 @@ TEST_SUITE("algorithm") {
         int* it1 = std::find(std::begin(dataA), std::end(dataA), 3);
         int* it2 = wstl::Find(std::begin(dataA), std::end(dataA), 3);
 
-        CHECK(it1 == it2);
+        CHECK_EQ(it1, it2);
     }
 
     TEST_CASE("FindIf") {
@@ -53,7 +53,7 @@ TEST_SUITE("algorithm") {
         int* it1 = std::find_if(std::begin(dataA), std::end(dataA), predicate);
         int* it2 = wstl::FindIf(std::begin(dataA), std::end(dataA), predicate);
 
-        CHECK(it1 == it2);
+        CHECK_EQ(it1, it2);
     }
 
     TEST_CASE("FindIfNot") {
@@ -62,7 +62,7 @@ TEST_SUITE("algorithm") {
         int* it1 = std::find_if_not(std::begin(dataA), std::end(dataA), predicate);
         int* it2 = wstl::FindIfNot(std::begin(dataA), std::end(dataA), predicate);
 
-        CHECK(it1 == it2);
+        CHECK_EQ(it1, it2);
     }
 
     TEST_CASE("AllOf") {
@@ -72,12 +72,12 @@ TEST_SUITE("algorithm") {
         bool expected = std::all_of(std::begin(dataA), std::end(dataA), truePredicate);
         bool result = wstl::AllOf(std::begin(dataA), std::end(dataA), truePredicate);
 
-        CHECK(expected == result);
+        CHECK_EQ(expected, result);
 
         expected = std::all_of(std::begin(dataA), std::end(dataA), falsePredicate);
         result = wstl::AllOf(std::begin(dataA), std::end(dataA), falsePredicate);
 
-        CHECK(expected == result);
+        CHECK_EQ(expected, result);
     }
 
     TEST_CASE("AnyOf") {
@@ -87,12 +87,12 @@ TEST_SUITE("algorithm") {
         bool expected = std::any_of(std::begin(dataA), std::end(dataA), truePredicate);
         bool result = wstl::AnyOf(std::begin(dataA), std::end(dataA), truePredicate);
 
-        CHECK(expected == result);
+        CHECK_EQ(expected, result);
 
         expected = std::any_of(std::begin(dataA), std::end(dataA), falsePredicate);
         result = wstl::AnyOf(std::begin(dataA), std::end(dataA), falsePredicate);
 
-        CHECK(expected == result);
+        CHECK_EQ(expected, result);
     }
 
     TEST_CASE("NoneOf") {
@@ -102,12 +102,12 @@ TEST_SUITE("algorithm") {
         bool expected = std::none_of(std::begin(dataA), std::end(dataA), truePredicate);
         bool result = wstl::NoneOf(std::begin(dataA), std::end(dataA), truePredicate);
 
-        CHECK(expected == result);
+        CHECK_EQ(expected, result);
 
         expected = std::none_of(std::begin(dataA), std::end(dataA), falsePredicate);
         result = wstl::NoneOf(std::begin(dataA), std::end(dataA), falsePredicate);
 
-        CHECK(expected == result);
+        CHECK_EQ(expected, result);
     }
 
     TEST_CASE("ForEach") {
@@ -132,7 +132,7 @@ TEST_SUITE("algorithm") {
         ptrdiff_t c1 = wstl::Count(std::begin(dataA), std::end(dataA), 7);
         ptrdiff_t c2 = std::count(std::begin(dataA), std::end(dataA), 7);
 
-        CHECK(c1 == c2);
+        CHECK_EQ(c1, c2);
     }
 
     TEST_CASE("CountIf") {
@@ -141,7 +141,7 @@ TEST_SUITE("algorithm") {
         ptrdiff_t c1 = wstl::CountIf(std::begin(dataA), std::end(dataA), predicate);
         ptrdiff_t c2 = std::count_if(std::begin(dataA), std::end(dataA), predicate);
 
-        CHECK(c1 == c2);
+        CHECK_EQ(c1, c2);
     }
 
     TEST_CASE("Mismatch") {
@@ -153,33 +153,33 @@ TEST_SUITE("algorithm") {
         auto result = wstl::Mismatch(std::begin(data1), std::end(data1), std::begin(data2));
         auto expected = std::mismatch(std::begin(data1), std::end(data1), std::begin(data2));
 
-        CHECK(result.First == expected.first);
-        CHECK(result.Second == expected.second);
+        CHECK_EQ(result.First, expected.first);
+        CHECK_EQ(result.Second, expected.second);
 
         result = wstl::Mismatch(std::begin(data1), std::end(data1), std::begin(data2), predicate);
         expected = std::mismatch(std::begin(data1), std::end(data1), std::begin(data2), predicate);
 
-        CHECK(result.First == expected.first);
-        CHECK(result.Second == expected.second);
+        CHECK_EQ(result.First, expected.first);
+        CHECK_EQ(result.Second, expected.second);
 
         result = wstl::Mismatch(std::begin(data2), std::end(data2), std::begin(data3));
         expected = std::mismatch(std::begin(data2), std::end(data2), std::begin(data3));
 
-        CHECK(result.First == expected.first);
-        CHECK(result.Second == expected.second);
+        CHECK_EQ(result.First, expected.first);
+        CHECK_EQ(result.Second, expected.second);
 
         #ifdef __WSTL_CXX14__
         result = wstl::Mismatch(std::begin(data2), std::end(data2), std::begin(data3), std::end(data3));
         expected = std::mismatch(std::begin(data2), std::end(data2), std::begin(data3), std::end(data3));
 
-        CHECK(result.First == expected.first);
-        CHECK(result.Second == expected.second);
+        CHECK_EQ(result.First, expected.first);
+        CHECK_EQ(result.Second, expected.second);
 
         result = wstl::Mismatch(std::begin(data2), std::end(data2), std::begin(data3), std::end(data3), predicate);
         expected = std::mismatch(std::begin(data2), std::end(data2), std::begin(data3), std::end(data3), predicate);
 
-        CHECK(result.First == expected.first);
-        CHECK(result.Second == expected.second);
+        CHECK_EQ(result.First, expected.first);
+        CHECK_EQ(result.Second, expected.second);
         #endif
     }
 
@@ -190,12 +190,12 @@ TEST_SUITE("algorithm") {
         std::string::iterator it1 = wstl::Search(alphabet.begin(), alphabet.end(), sequence.begin(), sequence.end());
         std::string::iterator it2 = std::search(alphabet.begin(), alphabet.end(), sequence.begin(), sequence.end());
 
-        CHECK(it1 == it2);
+        CHECK_EQ(it1, it2);
 
         it1 = wstl::Search(alphabet.begin(), alphabet.end(), sequence.begin(), sequence.end(), std::equal_to<char>());
         it2 = std::search(alphabet.begin(), alphabet.end(), sequence.begin(), sequence.end(), std::equal_to<char>());
 
-        CHECK(it1 == it2);
+        CHECK_EQ(it1, it2);
     }
 
     TEST_CASE("SearchInRange") {
@@ -204,12 +204,12 @@ TEST_SUITE("algorithm") {
         std::string::iterator it1 = wstl::SearchInRange(str.begin(), str.end(), 2, 'D');
         std::string::iterator it2 = std::search_n(str.begin(), str.end(), 2, 'D');
 
-        CHECK(it1 == it2);
+        CHECK_EQ(it1, it2);
 
         it1 = wstl::SearchInRange(str.begin(), str.end(), 2, 'E', std::equal_to<char>());
         it2 = std::search_n(str.begin(), str.end(), 2, 'E', std::equal_to<char>());
 
-        CHECK(it1 == it2);
+        CHECK_EQ(it1, it2);
     }
 
     TEST_CASE("FindEnd") {
@@ -219,12 +219,12 @@ TEST_SUITE("algorithm") {
         std::string::iterator it1 = wstl::FindEnd(str.begin(), str.end(), sequence.begin(), sequence.end());
         std::string::iterator it2 = std::find_end(str.begin(), str.end(), sequence.begin(), sequence.end());
 
-        CHECK(it1 == it2);
+        CHECK_EQ(it1, it2);
 
         it1 = wstl::FindEnd(str.begin(), str.end(), sequence.begin(), sequence.end(), std::equal_to<char>());
         it2 = std::find_end(str.begin(), str.end(), sequence.begin(), sequence.end(), std::equal_to<char>());
 
-        CHECK(it1 == it2);
+        CHECK_EQ(it1, it2);
     }
 
     TEST_CASE("FindFirstOf") {
@@ -234,12 +234,12 @@ TEST_SUITE("algorithm") {
         std::string::iterator it1 = wstl::FindFirstOf(alphabet.begin(), alphabet.end(), sequence.begin(), sequence.end());
         std::string::iterator it2 = std::find_first_of(alphabet.begin(), alphabet.end(), sequence.begin(), sequence.end());
 
-        CHECK(it1 == it2);
+        CHECK_EQ(it1, it2);
 
         it1 = wstl::FindFirstOf(alphabet.begin(), alphabet.end(), sequence.begin(), sequence.end(), std::equal_to<char>());
         it2 = std::find_first_of(alphabet.begin(), alphabet.end(), sequence.begin(), sequence.end(), std::equal_to<char>());
 
-        CHECK(it1 == it2);
+        CHECK_EQ(it1, it2);
     }
 
     TEST_CASE("AdjacentFind") {
@@ -248,12 +248,12 @@ TEST_SUITE("algorithm") {
         int* it1 = wstl::AdjacentFind(std::begin(dataA), std::end(dataA));
         int* it2 = std::adjacent_find(std::begin(dataA), std::end(dataA));
 
-        CHECK(it1 == it2);
+        CHECK_EQ(it1, it2);
 
         it1 = wstl::AdjacentFind(std::begin(dataA), std::end(dataA), predicate);
         it2 = std::adjacent_find(std::begin(dataA), std::end(dataA), predicate);
 
-        CHECK(it1 == it2);
+        CHECK_EQ(it1, it2);
     }
 
     TEST_CASE("Copy") {
@@ -266,7 +266,7 @@ TEST_SUITE("algorithm") {
 
         ptrdiff_t d1 = std::distance(buffer1, p1);
         ptrdiff_t d2 = std::distance(buffer2, p2);
-        CHECK(d1 == d2);
+        CHECK_EQ(d1, d2);
 
         bool result = std::equal(std::begin(buffer1), std::end(buffer1), std::begin(buffer2));
         CHECK(result);
@@ -280,7 +280,7 @@ TEST_SUITE("algorithm") {
 
         d1 = std::distance(bufferN1, pn1);
         d2 = std::distance(bufferN2, pn2);
-        CHECK(d1 == d2);
+        CHECK_EQ(d1, d2);
 
         result = std::equal(std::begin(bufferN1), std::end(bufferN1), std::begin(bufferN2));
         CHECK(result);
@@ -294,7 +294,7 @@ TEST_SUITE("algorithm") {
 
         d1 = std::distance(list1.begin(), pl1);
         d2 = std::distance(list2.begin(), pl2);
-        CHECK(d1 == d2);
+        CHECK_EQ(d1, d2);
 
         result = std::equal(std::begin(list1), std::end(list1), std::begin(list2));
         CHECK(result);
@@ -312,7 +312,7 @@ TEST_SUITE("algorithm") {
 
         ptrdiff_t d1 = std::distance(buffer1, p1);
         ptrdiff_t d2 = std::distance(buffer2, p2);
-        CHECK(d1 == d2);
+        CHECK_EQ(d1, d2);
 
         bool result = std::equal(std::begin(buffer1), std::end(buffer1), std::begin(buffer2));
         CHECK(result);
@@ -328,7 +328,7 @@ TEST_SUITE("algorithm") {
 
         d1 = std::distance(bufferN1, pn1);
         d2 = std::distance(bufferN2, pn2);
-        CHECK(d1 == d2);
+        CHECK_EQ(d1, d2);
 
         result = std::equal(std::begin(bufferN1), std::end(bufferN1), std::begin(bufferN2));
         CHECK(result);
@@ -342,7 +342,7 @@ TEST_SUITE("algorithm") {
 
         d1 = std::distance(list1.begin(), pl1);
         d2 = std::distance(list2.begin(), pl2);
-        CHECK(d1 == d2);
+        CHECK_EQ(d1, d2);
 
         result = std::equal(std::begin(list1), std::end(list1), std::begin(list2));
         CHECK(result);
@@ -358,7 +358,7 @@ TEST_SUITE("algorithm") {
 
         ptrdiff_t d1 = std::distance(buffer1, p1);
         ptrdiff_t d2 = std::distance(buffer2, p2);
-        CHECK(d1 == d2);
+        CHECK_EQ(d1, d2);
 
         bool result = std::equal(std::begin(buffer1), std::end(buffer1), std::begin(buffer2));
         CHECK(result);
@@ -372,7 +372,7 @@ TEST_SUITE("algorithm") {
 
         d1 = std::distance(bufferN1, pn1);
         d2 = std::distance(bufferN2, pn2);
-        CHECK(d1 == d2);
+        CHECK_EQ(d1, d2);
 
         result = std::equal(std::begin(bufferN1), std::end(bufferN1), std::begin(bufferN2));
         CHECK(result);
@@ -386,7 +386,7 @@ TEST_SUITE("algorithm") {
 
         d1 = std::distance(list1.begin(), pl1);
         d2 = std::distance(list2.begin(), pl2);
-        CHECK(d1 == d2);
+        CHECK_EQ(d1, d2);
 
         result = std::equal(std::begin(list1), std::end(list1), std::begin(list2));
         CHECK(result);
@@ -402,7 +402,7 @@ TEST_SUITE("algorithm") {
 
         ptrdiff_t d1 = std::distance(buffer1, p1);
         ptrdiff_t d2 = std::distance(buffer2, p2);
-        CHECK(d1 == d2);
+        CHECK_EQ(d1, d2);
 
         bool result = std::equal(std::begin(buffer1), std::end(buffer1), std::begin(buffer2));
         CHECK(result);
@@ -416,7 +416,7 @@ TEST_SUITE("algorithm") {
 
         d1 = std::distance(bufferN1, pn1);
         d2 = std::distance(bufferN2, pn2);
-        CHECK(d1 == d2);
+        CHECK_EQ(d1, d2);
 
         result = std::equal(std::begin(bufferN1), std::end(bufferN1), std::begin(bufferN2));
         CHECK(result);
@@ -430,7 +430,7 @@ TEST_SUITE("algorithm") {
 
         d1 = std::distance(list1.begin(), pl1);
         d2 = std::distance(list2.begin(), pl2);
-        CHECK(d1 == d2);
+        CHECK_EQ(d1, d2);
 
         result = std::equal(std::begin(list1), std::end(list1), std::begin(list2));
         CHECK(result);
@@ -463,11 +463,11 @@ TEST_SUITE("algorithm") {
         CHECK(!p4);
         CHECK(!p5);
 
-        CHECK(*data2[0] == 1U);
-        CHECK(*data2[1] == 2U);
-        CHECK(*data2[2] == 3U);
-        CHECK(*data2[3] == 4U);
-        CHECK(*data2[4] == 5U);
+        CHECK_EQ(*data2[0], 1U);
+        CHECK_EQ(*data2[1], 2U);
+        CHECK_EQ(*data2[2], 3U);
+        CHECK_EQ(*data2[3], 4U);
+        CHECK_EQ(*data2[4], 5U);
     }
 
     TEST_CASE("MoveBackward") {
@@ -497,11 +497,11 @@ TEST_SUITE("algorithm") {
         CHECK(!p4);
         CHECK(!p5);
 
-        CHECK(*data2[0] == 1U);
-        CHECK(*data2[1] == 2U);
-        CHECK(*data2[2] == 3U);
-        CHECK(*data2[3] == 4U);
-        CHECK(*data2[4] == 5U);
+        CHECK_EQ(*data2[0], 1U);
+        CHECK_EQ(*data2[1], 2U);
+        CHECK_EQ(*data2[2], 3U);
+        CHECK_EQ(*data2[3], 4U);
+        CHECK_EQ(*data2[4], 5U);
     }
 
     TEST_CASE("Fill") {
@@ -664,8 +664,8 @@ TEST_SUITE("algorithm") {
         int b = 2;
 
         wstl::IteratorSwap(&a, &b);
-        CHECK(a == 2);
-        CHECK(b == 1);
+        CHECK_EQ(a, 2);
+        CHECK_EQ(b, 1);
     }
 
     TEST_CASE("SwapRanges") {
@@ -674,12 +674,12 @@ TEST_SUITE("algorithm") {
 
         wstl::SwapRanges(std::begin(data1), std::end(data1), std::begin(data2));
 
-        CHECK(data1[0] == 4);
-        CHECK(data1[1] == 5);
-        CHECK(data1[2] == 6);
-        CHECK(data2[0] == 1);
-        CHECK(data2[1] == 2);
-        CHECK(data2[2] == 3);
+        CHECK_EQ(data1[0], 4);
+        CHECK_EQ(data1[1], 5);
+        CHECK_EQ(data1[2], 6);
+        CHECK_EQ(data2[0], 1);
+        CHECK_EQ(data2[1], 2);
+        CHECK_EQ(data2[2], 3);
     }
 
     TEST_CASE("Reverse") {
@@ -701,7 +701,7 @@ TEST_SUITE("algorithm") {
         
         ptrdiff_t d1 = std::distance(result, ptr1);
         ptrdiff_t d2 = std::distance(expected, ptr2);
-        CHECK(d1 == d2);
+        CHECK_EQ(d1, d2);
 
         bool equal = std::equal(std::begin(expected), std::end(expected), result);
         CHECK(equal);
@@ -806,13 +806,13 @@ TEST_SUITE("algorithm") {
 
         bool expected = std::is_partitioned(std::begin(data), std::end(data), predicate);
         bool result = wstl::IsPartitioned(std::begin(data), std::end(data), predicate);
-        CHECK(expected == result);
+        CHECK_EQ(expected, result);
 
         std::partition(std::begin(data), std::end(data), predicate);
 
         expected = std::is_partitioned(std::begin(data), std::end(data), predicate);
         result = wstl::IsPartitioned(std::begin(data), std::end(data), predicate);
-        CHECK(expected == result);
+        CHECK_EQ(expected, result);
     }
 
     TEST_CASE("Partition") {
@@ -831,8 +831,8 @@ TEST_SUITE("algorithm") {
             auto distance1 = std::distance(data1.begin(), pivot1);
             auto distance2 = std::distance(expected1.begin(), pivot2);
 
-            CHECK(distance1 == distance2);
-            CHECK(*pivot1 == *pivot2);
+            CHECK_EQ(distance1, distance2);
+            CHECK_EQ(*pivot1, *pivot2);
 
             bool result = std::equal(expected1.begin(), expected1.end(), data1.begin());
             CHECK(result);
@@ -856,8 +856,8 @@ TEST_SUITE("algorithm") {
             auto distance1 = std::distance(data2.begin(), pivot1);
             auto distance2 = std::distance(expected2.begin(), pivot2);
 
-            CHECK(distance1 == distance2);
-            CHECK(*pivot1 == *pivot2);
+            CHECK_EQ(distance1, distance2);
+            CHECK_EQ(*pivot1, *pivot2);
 
             bool result = std::equal(expected2.begin(), expected2.end(), data2.begin());
             CHECK(result);
@@ -905,93 +905,93 @@ TEST_SUITE("algorithm") {
 
         int* p1 = wstl::PartitionPoint(std::begin(data), std::end(data), std::bind(std::greater<int>(), std::placeholders::_1, 4));
         int* p2 = std::partition_point(std::begin(data), std::end(data), std::bind(std::greater<int>(), std::placeholders::_1, 4));
-        CHECK(p1 == p2);
+        CHECK_EQ(p1, p2);
 
         std::partition(std::begin(data), std::end(data), std::bind(std::greater<int>(), std::placeholders::_1, 8));
 
         p1 = wstl::PartitionPoint(std::begin(data), std::end(data), std::bind(std::greater<int>(), std::placeholders::_1, 8));
         p2 = std::partition_point(std::begin(data), std::end(data), std::bind(std::greater<int>(), std::placeholders::_1, 8));
-        CHECK(p1 == p2);
+        CHECK_EQ(p1, p2);
     }
 
     TEST_CASE("MinElement") {
         // Normal
         int* expected = std::min_element(std::begin(dataA), std::end(dataA));
         int* result = wstl::MinElement(std::begin(dataA), std::end(dataA));
-        CHECK(expected == result);
+        CHECK_EQ(expected, result);
 
         // Compare
         expected = std::min_element(std::begin(dataA), std::end(dataA), std::greater<int>());
         result = wstl::MinElement(std::begin(dataA), std::end(dataA), std::greater<int>());
-        CHECK(expected == result);
+        CHECK_EQ(expected, result);
 
         // Empty
         std::array<int, 0> empty;
 
         expected = std::min_element(std::begin(empty), std::end(empty), std::greater<int>());
         result = wstl::MinElement(std::begin(empty), std::end(empty), std::greater<int>());
-        CHECK(expected == result);
+        CHECK_EQ(expected, result);
     }
 
     TEST_CASE("Min") {
         int a = 1;
         int b = 2;
 
-        CHECK(wstl::Min(a, b) == 1);
-        CHECK(wstl::Min(a, b, std::greater<int>()) == 2);
-        CHECK(wstl::compile::Min<int, 1, 2>::Value == 1);
-        CHECK(wstl::compile::Min<int, 1, 2, wstl::compile::Greater<int>>::Value == 2);
+        CHECK_EQ(wstl::Min(a, b), 1);
+        CHECK_EQ(wstl::Min(a, b, std::greater<int>()), 2);
+        CHECK_EQ(wstl::compile::Min<int, 1, 2>::Value, 1);
+        CHECK_EQ(wstl::compile::Min<int, 1, 2, wstl::compile::Greater<int>>::Value, 2);
     }
 
     TEST_CASE("MaxElement") {
         // Normal
         int* expected = std::max_element(std::begin(dataA), std::end(dataA));
         int* result = wstl::MaxElement(std::begin(dataA), std::end(dataA));
-        CHECK(expected == result);
+        CHECK_EQ(expected, result);
 
         // Compare
         expected = std::max_element(std::begin(dataA), std::end(dataA), std::greater<int>());
         result = wstl::MaxElement(std::begin(dataA), std::end(dataA), std::greater<int>());
-        CHECK(expected == result);
+        CHECK_EQ(expected, result);
 
         // Empty
         std::array<int, 0> empty;
 
         expected = std::max_element(std::begin(empty), std::end(empty), std::greater<int>());
         result = wstl::MaxElement(std::begin(empty), std::end(empty), std::greater<int>());
-        CHECK(expected == result);
+        CHECK_EQ(expected, result);
     }
 
     TEST_CASE("Max") {
         int a = 1;
         int b = 2;
 
-        CHECK(wstl::Max(a, b) == 2);
-        CHECK(wstl::Max(a, b, std::greater<int>()) == 1);
-        CHECK(wstl::compile::Max<int, 1, 2>::Value == 2);
-        CHECK(wstl::compile::Max<int, 1, 2, wstl::compile::Greater<int>>::Value == 1);
+        CHECK_EQ(wstl::Max(a, b), 2);
+        CHECK_EQ(wstl::Max(a, b, std::greater<int>()), 1);
+        CHECK_EQ(wstl::compile::Max<int, 1, 2>::Value, 2);
+        CHECK_EQ(wstl::compile::Max<int, 1, 2, wstl::compile::Greater<int>>::Value, 1);
     }
 
     TEST_CASE("MinMaxElement") {
         // Normal
         std::pair<int*, int*> expected = std::minmax_element(std::begin(dataA), std::end(dataA));
         wstl::Pair<int*, int*> result = wstl::MinMaxElement(std::begin(dataA), std::end(dataA));
-        CHECK(expected.first == result.First);
-        CHECK(expected.second == result.Second);
+        CHECK_EQ(expected.first, result.First);
+        CHECK_EQ(expected.second, result.Second);
 
         // Compare
         expected = std::minmax_element(std::begin(dataA), std::end(dataA), std::greater<int>());
         result = wstl::MinMaxElement(std::begin(dataA), std::end(dataA), std::greater<int>());
-        CHECK(expected.first == result.First);
-        CHECK(expected.second == result.Second);
+        CHECK_EQ(expected.first, result.First);
+        CHECK_EQ(expected.second, result.Second);
 
         // Empty
         std::array<int, 0> empty;
 
         expected = std::minmax_element(std::begin(empty), std::end(empty), std::greater<int>());
         result = wstl::MinMaxElement(std::begin(empty), std::end(empty), std::greater<int>());
-        CHECK(expected.first == result.First);
-        CHECK(expected.second == result.Second);
+        CHECK_EQ(expected.first, result.First);
+        CHECK_EQ(expected.second, result.Second);
     }
 
     TEST_CASE("MinMax") {
@@ -1002,31 +1002,31 @@ TEST_SUITE("algorithm") {
         int resultMin = wstl::compile::MinMax<int, 1, 2>::Min;
         int resultMax = wstl::compile::MinMax<int, 1, 2>::Max;
 
-        CHECK(result.First == 1);
-        CHECK(result.Second == 2);
-        CHECK(resultMin == 1);
-        CHECK(resultMax == 2);
+        CHECK_EQ(result.First, 1);
+        CHECK_EQ(result.Second, 2);
+        CHECK_EQ(resultMin, 1);
+        CHECK_EQ(resultMax, 2);
     }
 
     TEST_CASE("Clamp") {
         // Runtime
-        CHECK(wstl::Clamp(5, 0, 10) == 5);
-        CHECK(wstl::Clamp(-5, 0, 10) == 0);
-        CHECK(wstl::Clamp(15, 0, 10) == 10);
+        CHECK_EQ(wstl::Clamp(5, 0, 10), 5);
+        CHECK_EQ(wstl::Clamp(-5, 0, 10), 0);
+        CHECK_EQ(wstl::Clamp(15, 0, 10), 10);
 
         // Compile-time
-        CHECK(wstl::compile::Clamp<int, 5, 0, 10>::Value == 5);
-        CHECK(wstl::compile::Clamp<int, -5, 0, 10>::Value == 0);
-        CHECK(wstl::compile::Clamp<int, 15, 0, 10>::Value == 10);
+        CHECK_EQ(wstl::compile::Clamp<int, 5, 0, 10>::Value, 5);
+        CHECK_EQ(wstl::compile::Clamp<int, -5, 0, 10>::Value, 0);
+        CHECK_EQ(wstl::compile::Clamp<int, 15, 0, 10>::Value, 10);
 
         // Constexpr
         constexpr int result1 = wstl::Clamp(5, 0, 10);
         constexpr int result2 = wstl::Clamp(-5, 0, 10);
         constexpr int result3 = wstl::Clamp(15, 0, 10);
 
-        CHECK(result1 == 5);
-        CHECK(result2 == 0);
-        CHECK(result3 == 10);
+        CHECK_EQ(result1, 5);
+        CHECK_EQ(result2, 0);
+        CHECK_EQ(result3, 10);
     }
 
     TEST_CASE("Equal") {
@@ -1044,11 +1044,11 @@ TEST_SUITE("algorithm") {
 
         bool expected = std::lexicographical_compare(text1.begin(), text1.end(), text2.begin(), text2.end());
         bool result = wstl::LexicographicalCompare(text1.begin(), text1.end(), text2.begin(), text2.end());
-        CHECK(expected == result);
+        CHECK_EQ(expected, result);
 
         expected = std::lexicographical_compare(text1.begin(), text1.end(), text2.begin(), text2.end(), std::greater<char>());
         result = wstl::LexicographicalCompare(text1.begin(), text1.end(), text2.begin(), text2.end(), std::greater<char>());
-        CHECK(expected == result);
+        CHECK_EQ(expected, result);
     }
 
     TEST_CASE("Heap") {
@@ -1060,7 +1060,7 @@ TEST_SUITE("algorithm") {
 
         CHECK(std::is_heap(data1.begin(), data1.end()));
         CHECK(std::is_heap(data2.begin(), data2.end()));
-        CHECK(data1.size() == data2.size());
+        CHECK_EQ(data1.size(), data2.size());
 
         bool equal = std::equal(data1.begin(), data1.end(), data2.begin());
         CHECK(equal);
@@ -1098,7 +1098,7 @@ TEST_SUITE("algorithm") {
         std::vector<uint32_t>::iterator result1 = wstl::IsHeapUntil(data1.begin(), data1.end());
         std::vector<uint32_t>::iterator result2 = std::is_heap_until(data2.begin(), data2.end());
 
-        CHECK(std::distance(data1.begin(), result1) == std::distance(data2.begin(), result2));
+        CHECK_EQ(std::distance(data1.begin(), result1), std::distance(data2.begin(), result2));
 
         equal = std::equal(data1.begin(), data1.end(), data2.begin());
         CHECK(equal);
@@ -1147,7 +1147,7 @@ TEST_SUITE("algorithm") {
 
         CHECK(std::is_heap(data1.begin(), data1.end()));
         CHECK(std::is_heap(data2.begin(), data2.end()));
-        CHECK(data1.size() == data2.size());
+        CHECK_EQ(data1.size(), data2.size());
 
         bool equal = std::equal(data1.begin(), data1.end(), data2.begin());
         CHECK(equal);
@@ -1185,7 +1185,7 @@ TEST_SUITE("algorithm") {
         Data::iterator result1 = wstl::IsHeapUntil(data1.begin(), data1.end());
         Data::iterator result2 = std::is_heap_until(data2.begin(), data2.end());
 
-        CHECK(std::distance(data1.begin(), result1) == std::distance(data2.begin(), result2));
+        CHECK_EQ(std::distance(data1.begin(), result1), std::distance(data2.begin(), result2));
 
         equal = std::equal(data1.begin(), data1.end(), data2.begin());
         CHECK(equal);
@@ -1208,11 +1208,11 @@ TEST_SUITE("algorithm") {
 
         int* p1 = wstl::IsSortedUntil(std::begin(data1), std::end(data1));
         int* p2 = std::is_sorted_until(std::begin(data1), std::end(data1));
-        CHECK(p1 == p2);
+        CHECK_EQ(p1, p2);
 
         p1 = wstl::IsSortedUntil(std::begin(data2), std::end(data2));
         p2 = std::is_sorted_until(std::begin(data2), std::end(data2));
-        CHECK(p1 == p2); 
+        CHECK_EQ(p1, p2); 
     }
 
     TEST_CASE("IsSorted") {
@@ -1477,7 +1477,7 @@ TEST_SUITE("algorithm") {
                 std::sort(compare.begin(), compare.end(), std::greater<int>());
                 wstl::NthElement(data.begin(), data.begin() + i, data.end(), std::greater<int>());
 
-                CHECK(compare[i] == data[i]);
+                CHECK_EQ(compare[i], data[i]);
             }
 
             complete = !std::next_permutation(initial.begin(), initial.end());
@@ -1541,12 +1541,12 @@ TEST_SUITE("algorithm") {
             // Random access iterator
             int* expected1 = std::lower_bound(std::begin(dataA), std::end(dataA), i);
             int* result1 = wstl::LowerBound(std::begin(dataA), std::end(dataA), i);
-            CHECK(expected1 == result1);
+            CHECK_EQ(expected1, result1);
 
             // Non-random access iterator
             std::list<int>::iterator expected2 = std::lower_bound(std::begin(dataLA), std::end(dataLA), i);
             std::list<int>::iterator result2 = wstl::LowerBound(std::begin(dataLA), std::end(dataLA), i);
-            CHECK(expected2 == result2);
+            CHECK_EQ(expected2, result2);
         }
     }
 
@@ -1555,12 +1555,12 @@ TEST_SUITE("algorithm") {
             // Random access iterator
             int* expected1 = std::upper_bound(std::begin(dataA), std::end(dataA), i);
             int* result1 = wstl::UpperBound(std::begin(dataA), std::end(dataA), i);
-            CHECK(expected1 == result1);
+            CHECK_EQ(expected1, result1);
 
             // Non-random access iterator
             std::list<int>::iterator expected2 = std::upper_bound(std::begin(dataLA), std::end(dataLA), i);
             std::list<int>::iterator result2 = wstl::UpperBound(std::begin(dataLA), std::end(dataLA), i);
-            CHECK(expected2 == result2);
+            CHECK_EQ(expected2, result2);
         }
     }
 
@@ -1571,12 +1571,12 @@ TEST_SUITE("algorithm") {
         bool expected = std::binary_search(std::begin(data1), std::end(data1), 5);
         bool result = wstl::BinarySearch(std::begin(data1), std::end(data1), 5);
 
-        CHECK(expected == result);
+        CHECK_EQ(expected, result);
 
         expected = std::binary_search(std::begin(data2), std::end(data2), 5, std::greater<int>());
         result = wstl::BinarySearch(std::begin(data2), std::end(data2), 5, std::greater<int>());
 
-        CHECK(expected == result);
+        CHECK_EQ(expected, result);
     }
 
     TEST_CASE("EqualRange") {
@@ -1585,16 +1585,16 @@ TEST_SUITE("algorithm") {
             std::pair<int*, int*> expected1 = std::equal_range(std::begin(dataA), std::end(dataA), i);
             wstl::Pair<int*, int*> result1 = wstl::EqualRange(std::begin(dataA), std::end(dataA), i);
 
-            CHECK(expected1.first == result1.First);
-            CHECK(expected1.second == result1.Second);
+            CHECK_EQ(expected1.first, result1.First);
+            CHECK_EQ(expected1.second, result1.Second);
 
             // Non-random access iterator
             typedef std::list<int>::iterator Iterator;
             std::pair<Iterator, Iterator> expected2 = std::equal_range(std::begin(dataLA), std::end(dataLA), i);
             wstl::Pair<Iterator, Iterator> result2 = wstl::EqualRange(std::begin(dataLA), std::end(dataLA), i);
             
-            CHECK(expected2.first == result2.First);
-            CHECK(expected2.second == result2.Second);
+            CHECK_EQ(expected2.first, result2.First);
+            CHECK_EQ(expected2.second, result2.Second);
         }
     }
 
@@ -1605,12 +1605,12 @@ TEST_SUITE("algorithm") {
         int* it1 = std::find(std::begin(data1), std::end(data1), 3);
         int* it2 = wstl::BinaryFind(std::begin(data1), std::end(data1), 3);
 
-        CHECK(it1 == it2);
+        CHECK_EQ(it1, it2);
 
         it1 = std::find(std::begin(data2), std::end(data2), 5);
         it2 = wstl::BinaryFind(std::begin(data2), std::end(data2), 5, std::greater<int>(), std::less_equal<int>());
 
-        CHECK(it1 == it2);
+        CHECK_EQ(it1, it2);
     }
 
     TEST_CASE("Includes") {
@@ -1801,9 +1801,9 @@ TEST_SUITE("algorithm") {
             CHECK(equal);
         }
 
-        CHECK(complete1 == complete2);
-        CHECK(complete2 == complete3);
-        CHECK(complete3 == complete4);
+        CHECK_EQ(complete1, complete2);
+        CHECK_EQ(complete2, complete3);
+        CHECK_EQ(complete3, complete4);
     }
 
     TEST_CASE("PreviousPermutation") {
@@ -1833,9 +1833,9 @@ TEST_SUITE("algorithm") {
             CHECK(equal);
         }
 
-        CHECK(complete1 == complete2);
-        CHECK(complete2 == complete3);
-        CHECK(complete3 == complete4);
+        CHECK_EQ(complete1, complete2);
+        CHECK_EQ(complete2, complete3);
+        CHECK_EQ(complete3, complete4);
     }
 
     TEST_CASE("CopySafe") {
@@ -1858,7 +1858,7 @@ TEST_SUITE("algorithm") {
         // Random access iterator
         std::fill(std::begin(out1), std::end(out1), 0);
         result = wstl::CopySafe(std::begin(data1), std::end(data1), std::begin(out1), std::end(out1));
-        CHECK(std::end(out1) == result);
+        CHECK_EQ(std::end(out1), result);
 
         bool equal = std::equal(std::begin(out1), std::end(out1), std::begin(check1));
         CHECK(equal);
@@ -1866,7 +1866,7 @@ TEST_SUITE("algorithm") {
         // Non-random access iterator
         std::fill(std::begin(out1), std::end(out1), 0);
         result = wstl::CopySafe(std::begin(data3), std::end(data3), std::begin(out1), std::end(out1));
-        CHECK(std::end(out1) == result);
+        CHECK_EQ(std::end(out1), result);
 
         equal = std::equal(std::begin(out1), std::end(out1), std::begin(check1));
         CHECK(equal);
@@ -1876,7 +1876,7 @@ TEST_SUITE("algorithm") {
         // Random access iterator
         std::fill(std::begin(out2), std::end(out2), 0);
         result = wstl::CopySafe(std::begin(data1), std::end(data1), std::begin(out2), std::end(out2));
-        CHECK(std::end(out2) == result);
+        CHECK_EQ(std::end(out2), result);
 
         equal = std::equal(std::begin(out2), std::end(out2), std::begin(check2));
         CHECK(equal);
@@ -1884,7 +1884,7 @@ TEST_SUITE("algorithm") {
         // Non-random access iterator
         std::fill(std::begin(out2), std::end(out2), 0);
         result = wstl::CopySafe(std::begin(data3), std::end(data3), std::begin(out2), std::end(out2));
-        CHECK(std::end(out2) == result);
+        CHECK_EQ(std::end(out2), result);
 
         equal = std::equal(std::begin(out2), std::end(out2), std::begin(check2));
         CHECK(equal);
@@ -1894,7 +1894,7 @@ TEST_SUITE("algorithm") {
         // Random access iterator
         std::fill(std::begin(out1), std::end(out1), 0);
         result = wstl::CopySafe(std::begin(data4), std::end(data4), std::begin(out1), std::end(out1));
-        CHECK(std::begin(out1) + 5 == result);
+        CHECK_EQ(std::begin(out1) + 5, result);
 
         equal = std::equal(std::begin(out1), std::end(out1), std::begin(check3));
         CHECK(equal);
@@ -1902,7 +1902,7 @@ TEST_SUITE("algorithm") {
         // Non-random access iterator
         std::fill(std::begin(out1), std::end(out1), 0);
         result = wstl::CopySafe(std::begin(data4), std::end(data4), std::begin(out1), std::end(out1));
-        CHECK(std::begin(out1) + 5 == result);
+        CHECK_EQ(std::begin(out1) + 5, result);
 
         equal = std::equal(std::begin(out1), std::end(out1), std::begin(check3));
         CHECK(equal);
@@ -1986,7 +1986,7 @@ TEST_SUITE("algorithm") {
         out1.clear();
         out1.resize(8);
         std::vector<Item>::iterator result = wstl::MoveSafe(std::make_move_iterator(data1.begin()), std::make_move_iterator(data1.end()), out1.begin(), out1.end());
-        CHECK(out1.end() == result);
+        CHECK_EQ(out1.end(), result);
 
         bool equal = std::equal(out1.begin(), out1.end(), check1.begin());
         CHECK(equal);
@@ -1995,7 +1995,7 @@ TEST_SUITE("algorithm") {
         out1.clear();
         out1.resize(8);
         result = wstl::MoveSafe(std::make_move_iterator(data3.begin()), std::make_move_iterator(data3.end()), out1.begin(), out1.end());
-        CHECK(out1.end() == result);
+        CHECK_EQ(out1.end(), result);
 
         equal = std::equal(out1.begin(), out1.end(), check1.begin());
         CHECK(equal);
@@ -2006,7 +2006,7 @@ TEST_SUITE("algorithm") {
         out1.clear();
         out1.resize(5);
         result = wstl::MoveSafe(std::make_move_iterator(data1.begin()), std::make_move_iterator(data1.end()), out2.begin(), out2.end());
-        CHECK(out2.end() == result);
+        CHECK_EQ(out2.end(), result);
 
         equal = std::equal(out2.begin(), out2.end(), check2.begin());
         CHECK(equal);
@@ -2015,7 +2015,7 @@ TEST_SUITE("algorithm") {
         out1.clear();
         out1.resize(5);
         result = wstl::MoveSafe(std::make_move_iterator(data3.begin()), std::make_move_iterator(data3.end()), out2.begin(), out2.end());
-        CHECK(out2.end() == result);
+        CHECK_EQ(out2.end(), result);
 
         equal = std::equal(out2.begin(), out2.end(), check2.begin());
         CHECK(equal);
@@ -2026,7 +2026,7 @@ TEST_SUITE("algorithm") {
         out1.clear();
         out1.resize(10);
         result = wstl::MoveSafe(std::make_move_iterator(data4.begin()), std::make_move_iterator(data4.end()), out1.begin(), out1.end());
-        CHECK(out1.begin() + 5 == result);
+        CHECK_EQ(out1.begin() + 5, result);
 
         equal = std::equal(out1.begin(), out1.end(), check3.begin());
         CHECK(equal);
@@ -2035,7 +2035,7 @@ TEST_SUITE("algorithm") {
         out1.clear();
         out1.resize(10);
         result = wstl::MoveSafe(std::make_move_iterator(data4.begin()), std::make_move_iterator(data4.end()), out1.begin(), out1.end());
-        CHECK(out1.begin() + 5 == result);
+        CHECK_EQ(out1.begin() + 5, result);
 
         equal = std::equal(out1.begin(), out1.end(), check3.begin());
         CHECK(equal);
