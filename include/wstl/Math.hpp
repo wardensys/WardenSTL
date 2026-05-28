@@ -18,6 +18,10 @@
 #include <stdint.h>
 #include <float.h>
 
+#ifndef __USE_C99_MATH
+#define __USE_C99_MATH
+#endif
+
 #ifdef __WSTL_MATH_SUPPORT__
 #include <math.h>
 #include <stdlib.h>
@@ -90,7 +94,7 @@ namespace wstl {
         typedef typename MakeUnsigned<T>::Type Return;
 
         return (value == NumericLimits<T>::Min()) ? (NumericLimits<Return>::Max() / 2U) + 1U : 
-            (value < T(0)) ? Return(-value) : Return(value);
+            ((value < T(0)) ? Return(-value) : Return(value));
     }
 
     /// @brief Computes an absolute value of integral type and returns the result as unsigned type
@@ -100,75 +104,67 @@ namespace wstl {
     template<typename T>
     __WSTL_NODISCARD__ __WSTL_CONSTEXPR__
     inline typename EnableIf<!IsSigned<T>::Value, T>::Type AbsoluteUnsigned(T value) __WSTL_NOEXCEPT__ {
-        return Absolute(value);
+        return value;
     }
 
     // Compile-time equivalent
 
     namespace __private {
-        namespace __compile {
-            template<typename T, T N, typename Result, bool = IsSigned<T>::Value, typename = typename EnableIf<IsIntegral<T>::Value>::Type>
-            struct __Absolute;
+        template<typename T, T N, bool = IsSigned<T>::Value, typename = typename EnableIf<IsIntegral<T>::Value>::Type>
+        struct __Absolute;
 
-            template<typename T, T N, typename Result>
-            struct __Absolute<T, N, Result, false, void> {
-                typedef IntegralConstant<Result, N> Type;
-            };
+        template<typename T, T N>
+        struct __Absolute<T, N, false, void> : IntegralConstant<T, N> {};
 
-            template<typename T, T N, typename Result>
-            struct __Absolute<T, N, Result, true, void> {
-            private:
-                static const __WSTL_CONSTEXPR__ Result AbsoluteValue = (N < T(0) && (N >= NumericLimits<Result>::Min() || Result(-N) <= NumericLimits<Result>::Max())) 
-                    ? Result(-N) : Result(N);
-                static const __WSTL_CONSTEXPR__ bool Fallback = (AbsoluteValue != (N < 0 ? -N : N));
+        template<typename T, T N>
+        struct __Absolute<T, N, true, void> : IntegralConstant<T, ((N < T(0)) ? -N : N)> {
+            WSTL_STATIC_ASSERT(N != NumericLimits<T>::Min(), "Absolute value of minimum signed integer is undefined");
+        };
 
-                WSTL_STATIC_ASSERT(!Fallback, "Cannot represent the absolute value in the provided result type");
+        template<typename T, T N, bool = IsSigned<T>::Value, typename = typename EnableIf<IsIntegral<T>::Value>::Type>
+        struct __AbsoluteUnsigned;
 
-            public:
-                typedef IntegralConstant<Result, AbsoluteValue> Type;
-            };
-        }
+        template<typename T, T N>
+        struct __AbsoluteUnsigned<T, N, true, void> {
+            typedef typename MakeUnsigned<T>::Type Return;
+
+            typedef IntegralConstant<Return, (N == NumericLimits<T>::Min()) ? 
+                (NumericLimits<Return>::Max() / 2U) + 1U : ((N < T(0)) ? (Return(0) - Return(N)) : Return(N))> Type;
+        };
+
+        template<typename T, T N>
+        struct __AbsoluteUnsigned<T, N, false, void> {
+            typedef IntegralConstant<T, N> Type;
+        };
     }
 
     namespace compile {
         /// @brief Computes an absolute value of integral type at compile time
         /// @tparam T Type of the input value
-        /// @tparam Result Type of the output value
         /// @tparam N Value to compute the absolute value of
         /// @ingroup maths
-        template<typename T, T N, typename Result = T>
-        struct Absolute : __private::__compile::__Absolute<T, N, Result>::Type {};
+        template<typename T, T N>
+        struct Absolute : __private::__Absolute<T, N> {};
 
         #ifdef __WSTL_CXX17__
         /// @copydoc Absolute
         /// @since C++17
-        template<typename T, T N, typename Result = T>
-        inline constexpr Result AbsoluteValue = Absolute<T, N, Result>::Value;
+        template<typename T, T N>
+        inline constexpr T AbsoluteValue = Absolute<T, N>::Value;
         #endif
 
-        #ifdef __WSTL_CXX11__
         /// @brief Computes an absolute value of integral type at compile time and holds the result as unsigned type
         /// @tparam T Type of the input value
         /// @tparam N Value to compute the absolute value of
-        /// @tparam Result Type of the output value (default `unsigned T`)
         /// @ingroup maths
-        template<typename T, T N, typename Result = typename MakeUnsigned<T>::Type>
-        using AbsoluteUnsigned = Absolute<T, N, Result>;
-        #else
-        /// @brief Computes an absolute value of integral type at compile time and holds the result as unsigned type
-        /// @tparam T Type of the input value
-        /// @tparam N Value to compute the absolute value of
-        /// @tparam Result Type of the output value (default `unsigned T`)
-        /// @ingroup maths
-        template<typename T, T N, typename Result = typename MakeUnsigned<T>::Type>
-        struct AbsoluteUnsigned : Absolute<T, N, Result> {};
-        #endif
+        template<typename T, T N>
+        struct AbsoluteUnsigned : __private::__AbsoluteUnsigned<T, N>::Type {};
         
         #ifdef __WSTL_CXX17__
         /// @copydoc AbsoluteUnsigned
         /// @since C++17
-        template<typename T, T N, typename Result = typename MakeUnsigned<T>::Type>
-        inline constexpr Result AbsoluteUnsignedValue = AbsoluteUnsigned<T, N, Result>::Value;
+        template<typename T, T N>
+        inline constexpr T AbsoluteUnsignedValue = AbsoluteUnsigned<T, N>::Value;
         #endif
     }
     
@@ -197,280 +193,381 @@ namespace wstl {
 
     // Power
 
-    /// @brief Raises a number of integral type to the given power
-    /// @tparam N Number to raise
-    /// @tparam POWER Power to raise to
-    /// @tparam UT Unsigned type to use for storing the result (default is `uint64_t`)
-    /// @note Only positive exponents are supported
-    /// @ingroup maths
-    template<size_t N, size_t POWER, typename UT = uint64_t>
-    struct Power {
-        static const __WSTL_CONSTEXPR__ UT Value = N * Power<N, POWER - 1, UT>::Value;
-    };
+    namespace compile {
+        /// @brief Raises a number of integral type to the given power
+        /// @tparam T Type of the input value
+        /// @tparam N Number to raise
+        /// @tparam POWER Power to raise to
+        /// @tparam R Type to use for storing the result (default is unsigned version of `T`)
+        /// @ingroup maths
+        template<typename T, T N, size_t POWER, typename R = typename MakeUnsigned<T>::Type>
+        struct Power : IntegralConstant<R, N * Power<T, N, POWER - 1, R>::Value> {};
 
-    /// @brief Raises a number of integral type to the given power - specialization for exponent 0
-    /// @tparam N Number to raise
-    /// @tparam UT Unsigned type to use for storing the result (default is `uint64_t`)
-    /// @note Only positive exponents are supported
-    /// @ingroup maths
-    template<size_t N, typename UT>
-    struct Power<N, 0, UT> {
-        static const __WSTL_CONSTEXPR__ UT Value = 1;
-    };
+        /// @brief Raises a number of integral type to the given power - specialization for exponent 0
+        /// @tparam T Type of the input value
+        /// @tparam N Number to raise
+        /// @tparam R Type to use for storing the result (default is unsigned version of `T`)
+        /// @ingroup maths
+        template<typename T, T N, typename R>
+        struct Power<T, N, 0, R> : IntegralConstant<R, (N == 0) ? 0 : 1> {};
 
-    template<size_t N, typename UT>
-    const __WSTL_CONSTEXPR__ UT Power<N, 0, UT>::Value;
+        #ifdef __WSTL_CXX17__
+        /// @copydoc Power
+        /// @ingroup maths
+        template<typename T, T N, size_t POWER, typename R = typename MakeUnsigned<T>::Type>
+        inline constexpr R PowerValue = Power<T, N, POWER, R>::Value;
+        #endif
+    }
 
-    #ifdef __WSTL_CXX17__
-    /// @copydoc Power
-    /// @ingroup maths
-    template<size_t N, size_t POWER, typename UT = uint64_t>
-    inline constexpr UT PowerValue = Power<N, POWER, UT>::Value;
-    #endif
+    // Log
+
+    namespace __private {
+        template<typename T, T N, size_t BASE, bool = (N <= 1 || N < T(BASE))>
+        struct __Log;
+
+        template<typename T, T N, size_t BASE>
+        struct __Log<T, N, BASE, false> : IntegralConstant<T, 1 + __Log<T, N / BASE, BASE>::Value> {};
+
+        template<typename T, T N, size_t BASE>
+        struct __Log<T, N, BASE, true> : IntegralConstant<T, 0> {};
+    }
+
+    namespace compile {
+        /// @brief Computes floor logarithm of a number of integral type
+        /// @tparam T Type of the input value
+        /// @tparam N Number to compute the logarithm of
+        /// @tparam BASE Base of the logarithm
+        /// @ingroup maths
+        template<typename T, T N, size_t BASE>
+        struct Log : __private::__Log<T, N, BASE> {};
+
+        #ifdef __WSTL_CXX17__
+        /// @copydoc Log
+        /// @ingroup maths
+        template<typename T, T N, size_t BASE>
+        inline constexpr T LogValue = Log<T, N, BASE>::Value;
+        #endif
+
+        /// @brief Computes ceil logarithm of a number of integral type
+        /// @tparam T Type of the input value
+        /// @tparam N Number to compute the logarithm of
+        /// @tparam BASE Base of the logarithm
+        /// @ingroup maths
+        template<typename T, T N, size_t BASE>
+        struct LogCeil : IntegralConstant<T, ((N > 1) ? Log<T, N - 1, BASE>::Value + 1 : 0)> {};
+
+        #ifdef __WSTL_CXX17__
+        /// @copydoc LogCeil
+        /// @ingroup maths
+        template<typename T, T N, size_t BASE>
+        inline constexpr T LogCeilValue = LogCeil<T, N, BASE>::Value;
+        #endif
+
+        /// @brief Computes floor logarithm of a number of integral type with base 2
+        /// @tparam T Type of the input value
+        /// @tparam N Number to compute the logarithm of
+        /// @ingroup maths
+        template<typename T, T N>
+        struct Log2 : Log<T, N, 2> {};
+
+        #ifdef __WSTL_CXX17__
+        /// @copydoc Log2
+        /// @ingroup maths
+        template<typename T, T N>
+        inline constexpr T Log2Value = Log2<T, N>::Value;
+        #endif
+
+        /// @brief Computes ceil logarithm of a number of integral type with base 2
+        /// @tparam T Type of the input value
+        /// @tparam N Number to compute the logarithm of
+        /// @ingroup maths
+        template<typename T, T N>
+        struct Log2Ceil : LogCeil<T, N, 2> {};
+
+        #ifdef __WSTL_CXX17__
+        /// @copydoc Log2Ceil
+        /// @ingroup maths
+        template<typename T, T N>
+        inline constexpr T Log2CeilValue = Log2Ceil<T, N>::Value;
+        #endif
+
+        /// @brief Computes floor logarithm of a number of integral type with base 10
+        /// @tparam T Type of the input value
+        /// @tparam N Number to compute the logarithm of
+        /// @ingroup maths
+        template<typename T, T N>
+        struct Log10 : Log<T, N, 10> {};
+
+        #ifdef __WSTL_CXX17__
+        /// @copydoc Log10
+        /// @ingroup maths
+        template<typename T, T N>
+        inline constexpr T Log10Value = Log10<N>::Value;
+        #endif
+
+        /// @brief Computes ceil logarithm of a number of integral type with base 10
+        /// @tparam T Type of the input value
+        /// @tparam N Number to compute the logarithm of
+        /// @ingroup maths
+        template<typename T, T N>
+        struct Log10Ceil : LogCeil<T, N, 10> {};
+
+        #ifdef __WSTL_CXX17__
+        /// @copydoc Log10Ceil
+        /// @ingroup maths
+        template<typename T, T N>
+        inline constexpr T Log10CeilValue = Log10Ceil<N>::Value;
+        #endif
+    }
 
     // Nth root
 
-    /// @brief Computes nth root of a number of integral type
-    /// @tparam N Number to compute the root of
-    /// @tparam ROOT Root to compute
-    /// @ingroup maths
-    template<size_t N, size_t ROOT, size_t I = 1, typename Enable = typename EnableIf<(ROOT >= 2)>::Type>
-    class NthRoot {
-    private:
-        typedef typename Conditional<(Power<I, ROOT>::Value > N), IntegralConstant<intmax_t, I - 1>, 
-        NthRoot<N, ROOT, I + 1, Enable>>::Type Type;
+    namespace __private {
+        // Forward declaration of the main search struct
 
-    public:
-        #ifdef __WSTL_CXX11__
-        static constexpr size_t Value = Type::Value;
-        #else
-        enum {
-            Value = Type::Value;
-        }
+        template<typename T, T N, size_t ROOT, 
+            typename U = typename MakeUnsigned<T>::Type, 
+            U ABS_N = compile::AbsoluteUnsigned<T, N>::Value, 
+            U LOW = 1, 
+            U HIGH = 1 << (compile::Log2Ceil<U, ABS_N>::Value + 3) / ROOT, // optimization
+            bool = (LOW > HIGH)
+        >
+        struct __NthRootSearch;
+
+        // Recursive Branch (executed when LOW < HIGH)
+
+        template<typename T, T N, size_t ROOT, typename U, U ABS_N, U LOW, U HIGH>
+        struct __NthRootSearch<T, N, ROOT, U, ABS_N, LOW, HIGH, false> {
+        private:
+            static const __WSTL_CONSTEXPR__ U Mid = LOW + (HIGH - LOW) / 2;
+            static const __WSTL_CONSTEXPR__ U MidPower = compile::Power<U, Mid, ROOT>::Value;
+
+        public:
+            static const __WSTL_CONSTEXPR__ U Value = wstl::Conditional<(MidPower == ABS_N), 
+                IntegralConstant<U, Mid>, typename wstl::Conditional<
+                    (MidPower > ABS_N),
+                    __NthRootSearch<T, N, ROOT, U, ABS_N, LOW, Mid - 1>,
+                    __NthRootSearch<T, N, ROOT, U, ABS_N, Mid + 1, HIGH> 
+                >::Type>::Type::Value;
+        };
+
+        template<typename T, T N, size_t ROOT, typename U, U ABS_N, U LOW, U HIGH>
+        const __WSTL_CONSTEXPR__ U __NthRootSearch<T, N, ROOT, U, ABS_N, LOW, HIGH, false>::Value;
+
+        // Recursive Branch (executed when LOW < HIGH)
+
+        template<typename T, T N, size_t ROOT, typename U, U ABS_N, U LOW, U HIGH>
+        struct __NthRootSearch<T, N, ROOT, U, ABS_N, LOW, HIGH, true> {
+            static const __WSTL_CONSTEXPR__ U Value = HIGH;
+        };
+
+        template<typename T, T N, size_t ROOT, typename U, U ABS_N, U LOW, U HIGH>
+        const __WSTL_CONSTEXPR__ U __NthRootSearch<T, N, ROOT, U, ABS_N, LOW, HIGH, true>::Value;
+
+        template<typename T, T N, size_t ROOT, bool = (N == 0), bool = (N == 1)>
+        struct __NthRoot;
+        
+        template<typename T, T N, size_t ROOT>
+        struct __NthRoot<T, N, ROOT, false, false> {
+        private:
+            static const __WSTL_CONSTEXPR__ T SearchValue = static_cast<T>(__NthRootSearch<T, N, ROOT>::Value);
+
+        public:
+            static const T Value = (N < 0) ? -SearchValue : SearchValue;
+        };
+
+        template<typename T, T N, size_t ROOT>
+        const __WSTL_CONSTEXPR__ T __NthRoot<T, N, ROOT, false, false>::Value;
+
+        template<typename T, T N, size_t ROOT>
+        struct __NthRoot<T, N, ROOT, true, false> {
+            static const T Value = 0;
+        };
+
+        template<typename T, T N, size_t ROOT>
+        const __WSTL_CONSTEXPR__ T __NthRoot<T, N, ROOT, true, false>::Value;
+
+        template<typename T, T N, size_t ROOT>
+        struct __NthRoot<T, N, ROOT, false, true> {
+            static const T Value = 1;
+        };
+
+        template<typename T, T N, size_t ROOT>
+        const __WSTL_CONSTEXPR__ T __NthRoot<T, N, ROOT, false, true>::Value;
+    }
+
+    namespace compile {
+        /// @brief Computes nth root of a number of integral type
+        /// @tparam T Type of the input value
+        /// @tparam N Number to compute the root of
+        /// @tparam ROOT Root to compute
+        /// @note For even roots, `N` must be non-negative. `ROOT` must be at least 2.
+        /// @ingroup maths
+        template<typename T, T N, size_t ROOT, typename = typename EnableIf<(ROOT >= 2) && !(ROOT % 2 == 0 && N < 0)>::Type>
+        struct NthRoot : IntegralConstant<T, __private::__NthRoot<T, N, ROOT>::Value> {};
+
+        #ifdef __WSTL_CXX17__
+        /// @copydoc NthRoot
+        /// @ingroup maths
+        template<typename T, T N, size_t ROOT>
+        inline constexpr T NthRootValue = NthRoot<T, N, ROOT>::Value;
         #endif
-    };
-
-    #ifdef __WSTL_CXX11__
-    template<size_t N, size_t ROOT, size_t I, typename Enable>
-    constexpr size_t NthRoot<N, ROOT, I, Enable>::Value;
-    #endif
-
-    #ifdef __WSTL_CXX17__
-    /// @copydoc NthRoot
-    /// @ingroup maths
-    template<size_t N, size_t ROOT, size_t I = 1>
-    inline constexpr size_t NthRootValue = NthRoot<N, ROOT, I>::Value;
-    #endif
+    }
 
     // Square root
 
-    /// @brief Computes square root of a number of integral type
-    /// @tparam N Number to compute the square root of
-    /// @ingroup maths
-    template<size_t N, size_t I = 1>
-    struct SquareRoot : NthRoot<N, 2, I> {};
+    namespace compile {
+        /// @brief Computes square root of a number of integral type
+        /// @tparam T Type of the input value
+        /// @tparam N Number to compute the square root of
+        /// @ingroup maths
+        template<typename T, T N>
+        struct SquareRoot : NthRoot<T, N, 2> {};
 
-    #ifdef __WSTL_CXX17__
-    /// @copydoc SquareRoot
-    /// @ingroup maths
-    template<size_t N, size_t I = 1>
-    inline constexpr size_t SquareRootValue = SquareRoot<N, I>::Value;
-    #endif
-
-    // Logarithm
-
-    /// @brief Computes logarithm of a number of integral type
-    /// @tparam N Number to compute the logarithm of
-    /// @tparam BASE Base of the logarithm
-    /// @ingroup maths
-    template<size_t N, size_t BASE>
-    struct Logarithm {
-        #ifdef __WSTL_CXX11__
-        static constexpr size_t Value = (N >= BASE) ? 1 + Logarithm<N / BASE, BASE>::Value : 0;
-        #else
-        enum {
-            Value = (N >= BASE) ? 1 + Logarithm<N / BASE, BASE>::Value : 0;
-        }
+        #ifdef __WSTL_CXX17__
+        /// @copydoc SquareRoot
+        /// @ingroup maths
+        template<typename T, T N>
+        inline constexpr T SquareRootValue = SquareRoot<T, N>::Value;
         #endif
-    };
-
-    /// @brief Computes logarithm of a number of integral type - specialization for N = 1
-    /// @tparam BASE Base of the logarithm
-    /// @ingroup maths
-    template<size_t BASE>
-    struct Logarithm<1, BASE> {
-        #ifdef __WSTL_CXX11__
-        static constexpr size_t Value = 0;
-        #else
-        enum {
-            Value = 0;
-        }
-        #endif
-    };
-
-    /// @brief Computes logarithm of a number of integral type - specialization for N = 0
-    /// @tparam BASE Base of the logarithm
-    /// @ingroup maths
-    template<size_t BASE>
-    struct Logarithm<0, BASE> {
-        #ifdef __WSTL_CXX11__
-        static constexpr size_t Value = 0;
-        #else
-        enum {
-            Value = 0;
-        }
-        #endif
-    };
-
-    #ifdef __WSTL_CXX11__
-    template<size_t N, size_t BASE>
-    constexpr size_t Logarithm<N, BASE>::Value;
-    #endif
-
-    #ifdef __WSTL_CXX17__
-    /// @copydoc Logarithm
-    /// @ingroup maths
-    template<size_t N, size_t BASE>
-    inline constexpr size_t LogarithmValue = Logarithm<N, BASE>::Value;
-    #endif
-
-    /// @brief Computes logarithm of a number of integral type with base 2
-    /// @tparam N Number to compute the logarithm of
-    /// @ingroup maths
-    template<size_t N>
-    struct Logarithm2 : Logarithm<N, 2> {};
-
-    #ifdef __WSTL_CXX17__
-    /// @copydoc Logarithm2
-    /// @ingroup maths
-    template<size_t N>
-    inline constexpr size_t Logarithm2Value = Logarithm2<N>::Value;
-    #endif
-
-    /// @brief Computes logarithm of a number of integral type with base 10
-    /// @tparam N Number to compute the logarithm of
-    /// @ingroup maths
-    template<size_t N>
-    struct Logarithm10 : Logarithm<N, 10> {};
-
-    #ifdef __WSTL_CXX17__
-    /// @copydoc Logarithm10
-    /// @ingroup maths
-    template<size_t N>
-    inline constexpr size_t Logarithm10Value = Logarithm10<N>::Value;
-    #endif
+    }
 
     // Factorial
 
-    /// @brief Computes factorial of a number of integral type
-    /// @tparam N Number to compute the factorial of
-    /// @ingroup maths
-    template<size_t N>
-    struct Factorial {
-        static const __WSTL_CONSTEXPR__ size_t Value = N * Factorial<N - 1>::Value;
-    };
+    namespace __private {
+        template<typename T, T N, bool = (N == 0)>
+        struct __Factorial;
 
-    /// @brief Computes factorial of a number of integral type - specialization for N = 0
-    /// @ingroup maths
-    template<>
-    struct Factorial<0> {
-        static const __WSTL_CONSTEXPR__ size_t Value = 1;
-    };
+        template<typename T, T N>
+        struct __Factorial<T, N, false> : IntegralConstant<T, N * __Factorial<T, N - 1>::Value> {};
 
-    template<size_t N>
-    const __WSTL_CONSTEXPR__ size_t Factorial<N>::Value;
+        template<typename T, T N>
+        struct __Factorial<T, N, true> : IntegralConstant<T, 1> {};
+    }
 
-    #ifdef __WSTL_CXX17__
-    /// @copydoc Factorial
-    /// @ingroup maths
-    template<size_t N>
-    inline constexpr size_t FactorialValue = Factorial<N>::Value;
-    #endif
+    namespace compile {
+        /// @brief Computes factorial of a number of integral type
+        /// @tparam T Type of the input value
+        /// @tparam N Number to compute the factorial of
+        /// @ingroup maths
+        template<typename T, T N>
+        struct Factorial : __private::__Factorial<T, N> {};
+
+        #ifdef __WSTL_CXX17__
+        /// @copydoc Factorial
+        /// @ingroup maths
+        template<typename T, T N>
+        inline constexpr T FactorialValue = Factorial<N>::Value;
+        #endif
+    }
 
     // Fibonacci
 
-    /// @brief Computes Fibonacci sequence for nth number
-    /// @tparam N Nth number in the Fibonacci sequence
-    /// @ingroup maths
-    template<size_t N>
-    struct Fibonacci {
-        static const __WSTL_CONSTEXPR__ size_t Value = Fibonacci<N - 1>::Value + Fibonacci<N - 2>::Value;
-    };
+    namespace __private {
+        template<typename T, T N, bool = (N <= 1)>
+        struct __Fibonacci;
 
-    /// @brief Computes Fibonacci sequence for nth number - specialization for N = 1
-    /// @ingroup maths
-    template<>
-    struct Fibonacci<1> {
-        static const __WSTL_CONSTEXPR__ size_t Value = 1;
-    };
+        template<typename T, T N>
+        struct __Fibonacci<T, N, false> : IntegralConstant<T, __Fibonacci<T, N - 1>::Value + __Fibonacci<T, N - 2>::Value> {};
 
-    /// @brief Computes Fibonacci sequence for nth number - specialization for N = 0
-    /// @ingroup maths
-    template<>
-    struct Fibonacci<0> {
-        static const __WSTL_CONSTEXPR__ size_t Value = 0;
-    };
+        template<typename T, T N>
+        struct __Fibonacci<T, N, true> : IntegralConstant<T, N> {};
+    }
 
-    template<size_t N>
-    const __WSTL_CONSTEXPR__ size_t Fibonacci<N>::Value;
+    namespace compile {
+        /// @brief Computes Fibonacci sequence for nth number
+        /// @tparam T Type of the input value
+        /// @tparam N Nth number in the Fibonacci sequence
+        /// @ingroup maths
+        template<typename T, T N>
+        struct Fibonacci : __private::__Fibonacci<T, N> {};
 
-    #ifdef __WSTL_CXX17__
-    /// @copydoc Fibonacci
-    /// @ingroup maths
-    template<size_t N>
-    inline constexpr size_t FibonacciValue = Fibonacci<N>::Value;
-    #endif
+        #ifdef __WSTL_CXX17__
+        /// @copydoc Fibonacci
+        /// @ingroup maths
+        template<typename T, T N>
+        inline constexpr T FibonacciValue = Fibonacci<T, N>::Value;
+        #endif
+    }
 
     // Permutations
 
-    /// @brief Computes permutations of N taken R at a time
-    /// @tparam N Total number of elements
-    /// @tparam R Number of elements selected
-    /// @ingroup maths
-    template<size_t N, size_t R>
-    struct Permutations {
-        static const __WSTL_CONSTEXPR__ size_t Value = N * Permutations<N - 1, R - 1>::Value;
-    };
+    namespace __private {
+        template<typename T, T N, T R, bool = (R == 0)>
+        struct __Permutations;
 
-    template<size_t N, size_t R>
-    const __WSTL_CONSTEXPR__ size_t Permutations<N, R>::Value;
+        template<typename T, T N, T R>
+        struct __Permutations<T, N, R, false> : IntegralConstant<T, N * __Permutations<T, N - 1, R - 1>::Value> {};
 
-    /// @brief Computes permutations of N taken R at a time - specialization for R = 0
-    /// @tparam N Total number of elements
-    /// @ingroup maths
-    template<size_t N>
-    struct Permutations<N, 0> {
-        static const __WSTL_CONSTEXPR__ size_t Value = 1;
-    };
+        template<typename T, T N, T R>
+        struct __Permutations<T, N, R, true> : IntegralConstant<T, 1> {};
+    }
 
-    template<size_t N>
-    const __WSTL_CONSTEXPR__ size_t Permutations<N, 0>::Value;
+    namespace compile {
+        /// @brief Computes permutations of `N` taken `R` at a time
+        /// @tparam T Type of the input values
+        /// @tparam N Total number of elements
+        /// @tparam R Number of elements selected
+        /// @note `R` must be less than or equal to `N`, and both `N` and `R` must be non-negative.
+        /// @ingroup maths
+        template<typename T, T N, T R, typename = typename EnableIf<(R <= N) && (R >= 0 && N >= 0)>::Type>
+        struct Permutations : __private::__Permutations<T, N, R> {};
 
-    #ifdef __WSTL_CXX17__
-    /// @copydoc Permutations
-    /// @ingroup maths
-    template<size_t N, size_t R>
-    inline constexpr size_t PermutationsValue = Permutations<N, R>::Value;
-    #endif
+        #ifdef __WSTL_CXX17__
+        /// @copydoc Permutations
+        /// @ingroup maths
+        template<typename T, T N, T R>
+        inline constexpr T PermutationsValue = Permutations<T, N, R>::Value;
+        #endif
+    }
 
     // Combinations
 
-    /// @brief Computes combinations of N taken R at a time
-    /// @ingroup maths
-    template<size_t N, size_t R>
-    struct Combinations {
-        static const __WSTL_CONSTEXPR__ size_t Value = Permutations<N, R>::Value / Factorial<R>::Value;
-    };
+    namespace compile {
+        /// @brief Computes combinations of `N` taken `R` at a time
+        /// @tparam T Type of the input values
+        /// @tparam N Total number of elements
+        /// @tparam R Number of elements selected
+        /// @note `R` must be less than or equal to `N`, and both `N` and `R` must be non-negative.
+        /// @ingroup maths
+        template<typename T, T N, T R, typename = typename EnableIf<(R <= N) && (R >= 0 && N >= 0)>::Type>
+        struct Combinations : IntegralConstant<T, Permutations<T, N, R>::Value / Factorial<T, R>::Value> {};
 
-    template<size_t N, size_t R>
-    const __WSTL_CONSTEXPR__ size_t Combinations<N, R>::Value;
+        #ifdef __WSTL_CXX17__
+        /// @copydoc Combinations
+        /// @ingroup maths
+        template<typename T, T N, T R>
+        inline constexpr T CombinationsValue = Combinations<T, N, R>::Value;
+        #endif
+    }
 
-    #ifdef __WSTL_CXX17__
-    /// @copydoc Combinations
-    /// @ingroup maths
-    template<size_t N, size_t R>
-    inline constexpr size_t CombinationsValue = Combinations<N, R>::Value;
-    #endif
+    // Divide floor
+
+    template<typename T>
+    __WSTL_NODISCARD__ __WSTL_CONSTEXPR__ 
+    inline typename EnableIf<IsIntegral<T>::Value && IsUnsigned<T>::Value, T>::Type DivideFloor(T a, T b) {
+        return a / b;
+    }
+
+    template<typename T>
+    __WSTL_NODISCARD__ __WSTL_CONSTEXPR__ 
+    inline typename EnableIf<IsIntegral<T>::Value && IsSigned<T>::Value, T>::Type DivideFloor(T a, T b) {
+        return (a / b) - ((a % b != 0) && (a < 0) != (b < 0));
+    }
+
+    // Divide ceil
+
+    template<typename T>
+    __WSTL_NODISCARD__ __WSTL_CONSTEXPR__ 
+    inline typename EnableIf<IsIntegral<T>::Value && IsUnsigned<T>::Value, T>::Type DivideCeil(T a, T b) {
+        return (a + b - 1) / b;
+    }
+
+    template<typename T>
+    __WSTL_NODISCARD__ __WSTL_CONSTEXPR__ 
+    inline typename EnableIf<IsIntegral<T>::Value && IsSigned<T>::Value, T>::Type DivideCeil(T a, T b) {
+        return (a / b) + ((a % b != 0) && (a > 0) == (b > 0));
+    }
 
     // Is NaN
 
