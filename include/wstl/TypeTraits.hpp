@@ -68,7 +68,7 @@ namespace wstl {
     };
 
     template<typename T, T V>
-    const T IntegralConstant<T, V>::Value;
+    const __WSTL_CONSTEXPR__ T IntegralConstant<T, V>::Value;
 
     #ifdef __WSTL_CXX17__
     /// @copydoc IntegralConstant
