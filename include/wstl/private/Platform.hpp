@@ -45,14 +45,9 @@
 namespace wstl {
     /// @brief Namespace with private functions. DO NOT use it directly!
     /// @ingroup wstl
-    namespace __private {
-        /// @brief Namespace with private compile-time equivalents of functions functions. 
-        /// DO NOT use it directly!
-        /// @ingroup wstl
-        namespace __compile {}
-    }
+    namespace __private {}
 
-    /// @brief Namespace that holds compile-time equivalents of functions
+    /// @brief Namespace that holds compile-time utilities and equivalents of functions
     /// @ingroup wstl
     namespace compile {}
 

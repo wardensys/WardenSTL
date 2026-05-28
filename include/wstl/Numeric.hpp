@@ -416,16 +416,14 @@ namespace wstl {
     // GCD
 
     namespace __private {
-        namespace __compile {
-            template<typename T, T A, T B, bool = (B == 0), typename = typename EnableIf<IsIntegral<T>::Value>::Type>
-            struct __GCD;
+        template<typename T, T A, T B, bool = (B == 0), typename = typename EnableIf<IsIntegral<T>::Value>::Type>
+        struct __GCD;
 
-            template<typename T, T A, T B>
-            struct __GCD<T, A, B, true, void> : compile::Absolute<T, A> {};
+        template<typename T, T A, T B>
+        struct __GCD<T, A, B, true, void> : compile::Absolute<T, A> {};
 
-            template<typename T, T A, T B>
-            struct __GCD<T, A, B, false, void> : __GCD<T, B, A % B> {};
-        }
+        template<typename T, T A, T B>
+        struct __GCD<T, A, B, false, void> : __GCD<T, B, A % B> {};
     }
 
     namespace compile {
@@ -440,7 +438,7 @@ namespace wstl {
         struct GCD;
 
         template<typename T, T A, T B>
-        struct GCD<T, A, B> : __private::__compile::__GCD<T, A, B> {};
+        struct GCD<T, A, B> : __private::__GCD<T, A, B> {};
 
         template<typename T, T A, T B, T... Rest>
         struct GCD : GCD<T, GCD<T, A, B>::Value, Rest...> {};
@@ -451,7 +449,7 @@ namespace wstl {
         /// @tparam B Second number
         /// @ingroup numeric
         template<typename T, T A, T B>
-        struct GCD : __private::__compile::__GCD<T, A, B> {};
+        struct GCD : __private::__GCD<T, A, B> {};
         #endif
 
         #ifdef __WSTL_CXX17__
@@ -465,19 +463,17 @@ namespace wstl {
     // LCM
 
     namespace __private {
-        namespace __compile {
-            template<typename T, T A, T B, bool = (A == 0 || B == 0), typename = typename EnableIf<IsIntegral<T>::Value>::Type>
-            struct __LCM;
+        template<typename T, T A, T B, bool = (A == 0 || B == 0), typename = typename EnableIf<IsIntegral<T>::Value>::Type>
+        struct __LCM;
 
-            template<typename T, T A, T B>
-            struct __LCM<T, A, B, true, void> : IntegralConstant<T, 0> {};
+        template<typename T, T A, T B>
+        struct __LCM<T, A, B, true, void> : IntegralConstant<T, 0> {};
 
-            template<typename T, T A, T B>
-            struct __LCM<T, A, B, false, void> : IntegralConstant<
-                T, 
-                compile::Absolute<T, B>::Value * (compile::Absolute<T, A>::Value / __GCD<T, A, B>::Value)
-            > {};
-        }
+        template<typename T, T A, T B>
+        struct __LCM<T, A, B, false, void> : IntegralConstant<
+            T, 
+            compile::Absolute<T, B>::Value * (compile::Absolute<T, A>::Value / __GCD<T, A, B>::Value)
+        > {};
     }
 
     namespace compile {
@@ -492,7 +488,7 @@ namespace wstl {
         struct LCM;
         
         template<typename T, T A, T B>
-        struct LCM<T, A, B> : __private::__compile::__LCM<T, A, B> {};
+        struct LCM<T, A, B> : __private::__LCM<T, A, B> {};
 
         template<typename T, T A, T B, T... Rest>
         struct LCM : LCM<T, LCM<T, A, B>::Value, Rest...> {};
@@ -502,7 +498,7 @@ namespace wstl {
         /// @tparam A First number
         /// @tparam B Second number
         template<typename T, T A, T B>
-        struct LCM : __private::__compile::__LCM<T, A, B> {};
+        struct LCM : __private::__LCM<T, A, B> {};
         #endif
 
         #ifdef __WSTL_CXX17__
@@ -514,22 +510,20 @@ namespace wstl {
     }
 
     namespace __private {
-        namespace __compile {
-            template<typename T, T A, T B, bool = (A > B), typename = typename EnableIf<IsIntegral<T>::Value>::Type>
-            struct __Midpoint;
+        template<typename T, T A, T B, bool = (A > B), typename = typename EnableIf<IsIntegral<T>::Value>::Type>
+        struct __Midpoint;
 
-            template<typename T, T A, T B>
-            struct __Midpoint<T, A, B, true, void> : IntegralConstant<
-                T, 
-                A - T(typename MakeUnsigned<T>::Type(typename MakeUnsigned<T>::Type(A) - typename MakeUnsigned<T>::Type(B)) / 2)
-            > {};
+        template<typename T, T A, T B>
+        struct __Midpoint<T, A, B, true, void> : IntegralConstant<
+            T, 
+            A - T(typename MakeUnsigned<T>::Type(typename MakeUnsigned<T>::Type(A) - typename MakeUnsigned<T>::Type(B)) / 2)
+        > {};
 
-            template<typename T, T A, T B>
-            struct __Midpoint<T, A, B, false, void> : IntegralConstant<
-                T, 
-                A + T((typename MakeUnsigned<T>::Type(B) - typename MakeUnsigned<T>::Type(A)) / 2)
-            > {};
-        }
+        template<typename T, T A, T B>
+        struct __Midpoint<T, A, B, false, void> : IntegralConstant<
+            T, 
+            A + T((typename MakeUnsigned<T>::Type(B) - typename MakeUnsigned<T>::Type(A)) / 2)
+        > {};
     }
 
     namespace compile {
@@ -539,7 +533,7 @@ namespace wstl {
         /// @tparam B Second number
         /// @ingroup numeric
         template<typename T, T A, T B>
-        struct Midpoint : __private::__compile::__Midpoint<T, A, B> {};
+        struct Midpoint : __private::__Midpoint<T, A, B> {};
 
         #ifdef __WSTL_CXX17__
         /// @copydoc Midpoint

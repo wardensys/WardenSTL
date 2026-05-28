@@ -15,8 +15,6 @@
 #include <list>
 #include <forward_list>
 
-#include "Utils.hpp"
-
 
 TEST_SUITE("Numeric") {
     TEST_CASE("Iota") {
