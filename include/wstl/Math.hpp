@@ -302,7 +302,7 @@ namespace wstl {
         /// @copydoc Log10
         /// @ingroup maths
         template<typename T, T N>
-        inline constexpr T Log10Value = Log10<N>::Value;
+        inline constexpr T Log10Value = Log10<T, N>::Value;
         #endif
 
         /// @brief Computes ceil logarithm of a number of integral type with base 10
@@ -316,7 +316,7 @@ namespace wstl {
         /// @copydoc Log10Ceil
         /// @ingroup maths
         template<typename T, T N>
-        inline constexpr T Log10CeilValue = Log10Ceil<N>::Value;
+        inline constexpr T Log10CeilValue = Log10Ceil<T, N>::Value;
         #endif
     }
 
@@ -457,7 +457,7 @@ namespace wstl {
         /// @copydoc Factorial
         /// @ingroup maths
         template<typename T, T N>
-        inline constexpr T FactorialValue = Factorial<N>::Value;
+        inline constexpr T FactorialValue = Factorial<T, N>::Value;
         #endif
     }
 
