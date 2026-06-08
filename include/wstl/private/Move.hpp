@@ -54,9 +54,9 @@ namespace wstl {
     template<typename T>
     /// @brief Converts an object to rvalue reference if the move constructor is noexcept
     /// @param t Object to convert
-    /// @return Rvalue reference to the object if 
+    /// @return Rvalue reference to the object if the move constructor is noexcept, otherwise const lvalue reference
     /// @ingroup utility
-    /// @since C++11. 
+    /// @since C++11
     /// @note Requires `__WSTL_EXCEPTIONS__` to be defined
     /// @see https://en.cppreference.com/w/cpp/utility/move_if_noexcept
     constexpr EnableIfType<IsNothrowMoveConstructible<T>::Value || !IsCopyConstructible<T>::Value, T&&> MoveIfNoexcept(T& t) __WSTL_NOEXCEPT__ {
@@ -65,7 +65,7 @@ namespace wstl {
 
     template<typename T>
     /// @copydoc MoveIfNoexcept(T&)
-    constexpr EnableIfType<!IsNothrowMoveConstructible<T>::Value || IsCopyConstructible<T>::Value, const T&> MoveIfNoexcept(T& t) __WSTL_NOEXCEPT__ {
+    constexpr EnableIfType<!IsNothrowMoveConstructible<T>::Value && IsCopyConstructible<T>::Value, const T&> MoveIfNoexcept(T& t) __WSTL_NOEXCEPT__ {
         return t;
     }
     #endif
@@ -83,32 +83,32 @@ namespace wstl {
     /// @since C++11
     /// @see https://en.cppreference.com/w/cpp/utility/forward_like
     template<typename T, typename U>
-    constexpr EnableIfType<IsConst<RemoveReferenceType<T>>::Value && IsLValueReference<T>::Value, const RemoveReferenceType<T>&> ForwardLike(U&& u) __WSTL_NOEXCEPT__ {
-        return static_cast<const RemoveReferenceType<T>&>(u);
+    constexpr EnableIfType<IsConst<RemoveReferenceType<T>>::Value && IsLValueReference<T>::Value, const RemoveReferenceType<U>&> ForwardLike(U&& u) __WSTL_NOEXCEPT__ {
+        return static_cast<const RemoveReferenceType<U>&>(u);
     }
 
     // T is const & rvalue
 
     /// @copydoc ForwardLike(U&&)
     template<typename T, typename U>
-    constexpr EnableIfType<IsConst<RemoveReferenceType<T>>::Value && !IsLValueReference<T>::Value, const RemoveReferenceType<T>&&> ForwardLike(U&& u) __WSTL_NOEXCEPT__ {
-        return static_cast<const RemoveReferenceType<T>&&>(u);
+    constexpr EnableIfType<IsConst<RemoveReferenceType<T>>::Value && !IsLValueReference<T>::Value, const RemoveReferenceType<U>&&> ForwardLike(U&& u) __WSTL_NOEXCEPT__ {
+        return static_cast<const RemoveReferenceType<U>&&>(u);
     }
 
     // T is not const & lvalue
 
     /// @copydoc ForwardLike(U&&)
     template<typename T, typename U>
-    constexpr EnableIfType<IsConst<RemoveReferenceType<T>>::Value && IsLValueReference<T>::Value, RemoveReferenceType<T>&> ForwardLike(U&& u) __WSTL_NOEXCEPT__ {
-        return static_cast<RemoveReferenceType<T>&>(u);
+    constexpr EnableIfType<!IsConst<RemoveReferenceType<T>>::Value && IsLValueReference<T>::Value, RemoveReferenceType<U>&> ForwardLike(U&& u) __WSTL_NOEXCEPT__ {
+        return static_cast<RemoveReferenceType<U>&>(u);
     }
 
     // T is not const & rvalue
 
     /// @copydoc ForwardLike(U&&)
     template<typename T, typename U>
-    constexpr EnableIfType<!IsConst<RemoveReferenceType<T>>::Value && !IsLValueReference<T>::Value, RemoveReferenceType<T>&&> ForwardLike(U&& u) __WSTL_NOEXCEPT__ {
-        return static_cast<RemoveReferenceType<T>&&>(u);
+    constexpr EnableIfType<!IsConst<RemoveReferenceType<T>>::Value && !IsLValueReference<T>::Value, RemoveReferenceType<U>&&> ForwardLike(U&& u) __WSTL_NOEXCEPT__ {
+        return static_cast<RemoveReferenceType<U>&&>(u);
     }
 
     /// @brief Determines the type resulting from forwarding an object like `T` with a value of type `U`
