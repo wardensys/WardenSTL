@@ -39,7 +39,7 @@ constexpr size_t NONTRIVIAL_SIZE = 7;
 
 NonTrivialData dataN[NONTRIVIAL_SIZE] = {{1, 2}, {3, 4}, {5, 6}, {7, 8}, {9, 10}, {11, 12}, {13, 14}};
 
-TEST_SUITE("algorithm") {
+TEST_SUITE("Algorithm") {
     TEST_CASE("Find") {
         int* it1 = std::find(std::begin(dataA), std::end(dataA), 3);
         int* it2 = wstl::Find(std::begin(dataA), std::end(dataA), 3);

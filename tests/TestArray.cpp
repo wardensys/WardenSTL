@@ -205,7 +205,7 @@ TEST_SUITE("Array") {
         Data data1 = { 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };
         Data data2 = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
-        wstl::Swap(data1, data2);
+        wstl::Swap(data1, data2); // Effectively calls data1.Swap(data2);
 
         CHECK(std::equal(compareData.begin(), compareData.end(), data1.Begin()));
         CHECK(std::equal(swapData.begin(), swapData.end(), data2.Begin()));
@@ -437,6 +437,21 @@ TEST_SUITE("Array") {
 
         // Range, first greater than last
         CHECK_THROWS_AS({ result = data.Erase(data.Begin() + 1, data.Begin(), 67); }, wstl::OutOfRange);
+    }
+
+    TEST_CASE("TupleElement") {
+        CHECK(wstl::IsSame<wstl::TupleElementType<0, Data>, int>::Value);
+        CHECK(wstl::IsSame<wstl::TupleElementType<3, Data>, int>::Value);
+        CHECK(wstl::IsSame<wstl::TupleElementType<9, Data>, int>::Value);
+
+        // The following line should fail with a compilation error
+        // CHECK(wstl::IsSame<wstl::TupleElementType<10, Data>, int>::Value);
+    }
+
+    TEST_CASE("TupleSize") {
+        CHECK_EQ(wstl::TupleSize<Data>::Value, SIZE);
+        CHECK_EQ(wstl::TupleSize<wstl::Array<std::string, 5>>::Value, 5UL);
+        CHECK_EQ(wstl::TupleSize<ZeroData>::Value, 0UL);
     }
 
     TEST_CASE("Get") {

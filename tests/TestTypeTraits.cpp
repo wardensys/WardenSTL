@@ -98,14 +98,6 @@ struct ToBool {
     operator bool() const;
 };
 
-struct From {
-    From();
-};
-
-struct To {
-    To(const From&);
-};
-
 struct TrivialConstructor {
     int M;
 };
@@ -1715,4 +1707,22 @@ TEST_SUITE("TypeTraits") {
         CHECK_FALSE(wstl::IsInvocableReturn<TestData, Functor2, int, char>::Value);
         CHECK_FALSE(wstl::IsInvocableReturn<int, Functor2, int, TestData>::Value);
     }
+
+    #if !defined(__WSTL_TYPETRAITS_NO_BUILTINS__) && defined(__WSTL_SUPPORTED_COMPILER__)
+    TEST_CASE("UnderlyingType") {
+        enum Enum1 : int {};
+        enum Enum2 : unsigned long {};
+        enum Enum3 : char {};
+        enum class Enum4 : wchar_t {};
+        enum class Enum5 : long long {};
+        enum class Enum6 : unsigned char {};
+
+        CHECK(wstl::IsSame<wstl::UnderlyingType<Enum1>::Type, std::underlying_type<Enum1>::type>::Value);
+        CHECK(wstl::IsSame<wstl::UnderlyingType<Enum2>::Type, std::underlying_type<Enum2>::type>::Value);
+        CHECK(wstl::IsSame<wstl::UnderlyingType<Enum3>::Type, std::underlying_type<Enum3>::type>::Value);
+        CHECK(wstl::IsSame<wstl::UnderlyingType<Enum4>::Type, std::underlying_type<Enum4>::type>::Value);
+        CHECK(wstl::IsSame<wstl::UnderlyingType<Enum5>::Type, std::underlying_type<Enum5>::type>::Value);
+        CHECK(wstl::IsSame<wstl::UnderlyingType<Enum6>::Type, std::underlying_type<Enum6>::type>::Value);
+    }
+    #endif
 }
