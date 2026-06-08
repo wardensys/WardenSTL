@@ -10,12 +10,60 @@
 #include <algorithm>
 
 
+struct NonDefaultConstructible {
+    NonDefaultConstructible(int value) : Value(value) {}
+
+    int Value;
+};
+
+struct ExplicitConstructible {
+    explicit ExplicitConstructible() : Value(0) {}
+    explicit ExplicitConstructible(int value) : Value(value) {}
+    
+    int Value;
+};
+
 struct NonTrivialData {
     NonTrivialData() : A(0), B(0) {}
     NonTrivialData(int a, int b) : A(a), B(b) {}
 
     int A;
     int B;
+};
+
+struct Dummy {};
+struct Dummy2 {};
+
+struct FakeInteger {
+    int Value;
+};
+
+struct From {
+    From(int x) : Value(x) {};
+
+    int Value;
+};
+
+struct To {
+    To(const From& from) : Value(from.Value) {};
+    
+    To& operator=(const From& from) {
+        Value = from.Value;
+        return *this;
+    }
+
+    int Value;
+};
+
+struct ToExplicit {
+    explicit ToExplicit(const From& from) : Value(from.Value) {};
+    
+    ToExplicit& operator=(const From& from) {
+        Value = from.Value;
+        return *this;
+    }
+
+    int Value;
 };
 
 inline bool operator==(const NonTrivialData& a, const NonTrivialData& b) {
@@ -53,7 +101,17 @@ struct MovableData {
         other.Valid = false;
     }
 
+    template<typename U>
+    MovableData(MovableData<U>&& other) noexcept : Value(std::move(other.Value)), Valid(true) {
+        other.Valid = false;
+    }
+
     MovableData(const MovableData&& other) noexcept : Value(std::move(other.Value)), Valid(true) {
+        other.Valid = false;
+    }
+
+    template<typename U>
+    MovableData(const MovableData<U>&& other) noexcept : Value(std::move(other.Value)), Valid(true) {
         other.Valid = false;
     }
 

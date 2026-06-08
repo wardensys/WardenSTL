@@ -22,7 +22,7 @@ namespace wstl {
     // Tuple
 
     /// @brief Fixed size container that holds elements of different types
-    /// @tparam ...Types 
+    /// @tparam ...Types Types of the elements in the tuple
     /// @ingroup tuple
     /// @see https://en.cppreference.com/w/cpp/utility/tuple
     template<typename... Types>
@@ -30,6 +30,7 @@ namespace wstl {
 
     // Forward declaration for Pair
 
+    /// @warning Include `Utility.hpp` to use it
     template<typename T1, typename T2>
     struct Pair;
 
@@ -101,6 +102,7 @@ namespace wstl {
         };
     }
 
+    /// @brief Empty tuple specialization, NO-OP
     template<>
     class Tuple<> {
     public:
@@ -114,12 +116,12 @@ namespace wstl {
         /// @brief Default constructor
         template<template<typename> class __Default = IsDefaultConstructible, template<typename> class __Implicit = IsImplicitlyDefaultConstructible,
         EnableIfType<Conjunction<__Implicit<Head>, __Implicit<Tail>...>::Value && Conjunction<__Default<Head>, __Default<Tail>...>::Value, int> = 0>
-        __WSTL_CONSTEXPR14__ Tuple() {};
+        __WSTL_CONSTEXPR14__ Tuple() : m_Head(), m_Tail() {};
 
         /// @brief Default constructor
         template<template<typename> class __Default = IsDefaultConstructible, template<typename> class __Implicit = IsImplicitlyDefaultConstructible,
         EnableIfType<!Conjunction<__Implicit<Head>, __Implicit<Tail>...>::Value && Conjunction<__Default<Head>, __Default<Tail>...>::Value, int> = 0>
-        explicit __WSTL_CONSTEXPR14__ Tuple() {};
+        explicit __WSTL_CONSTEXPR14__ Tuple() : m_Head(), m_Tail() {};
 
         /// @brief Copy constructor - copies from tuple of the same types
         /// @param other Tuple to copy from
@@ -185,13 +187,13 @@ namespace wstl {
         /// @param other Tuple to copy from
         template<typename UHead, typename... UTail, EnableIfType<(sizeof...(Tail) == sizeof...(UTail)) && 
         Conjunction<IsConvertible<UHead, Head>, IsConvertible<UTail, Tail>...>::Value, int> = 0>
-        __WSTL_CONSTEXPR14__ Tuple(const Tuple<UHead, UTail...>&& other) : m_Head(other.m_Head), m_Tail(other.m_Tail) {}
+        __WSTL_CONSTEXPR14__ Tuple(const Tuple<UHead, UTail...>&& other) : m_Head(Forward<const UHead>(other.m_Head)), m_Tail(Forward<const Tuple<UTail...>>(other.m_Tail)) {}
 
         /// @brief Templated converting constructor - copies from tuple with potentially different types 
         /// @param other Tuple to copy from
         template<typename UHead, typename... UTail, EnableIfType<(sizeof...(Tail) == sizeof...(UTail)) && 
         !Conjunction<IsConvertible<UHead, Head>, IsConvertible<UTail, Tail>...>::Value, int> = 0>
-        explicit __WSTL_CONSTEXPR14__ Tuple(const Tuple<UHead, UTail...>&& other) : m_Head(other.m_Head), m_Tail(other.m_Tail) {}
+        explicit __WSTL_CONSTEXPR14__ Tuple(const Tuple<UHead, UTail...>&& other) : m_Head(Forward<const UHead>(other.m_Head)), m_Tail(Forward<const Tuple<UTail...>>(other.m_Tail)) {}
 
         /// @brief Templated parameterized constructor - initializes head and recursively the rest 
         /// with potentially different types
@@ -260,14 +262,14 @@ namespace wstl {
         template<typename U1, typename U2, EnableIfType<(sizeof...(Tail) == 1) && IsConstructible<Head, U1>::Value && 
         IsConstructible<typename __private::__TupleTailFirst<Tail...>::Type, U2>::Value && IsConvertible<U1, Head>::Value && 
         IsConvertible<U2, typename __private::__TupleTailFirst<Tail...>::Type>::Value, int> = 0>
-        __WSTL_CONSTEXPR14__ Tuple(const Pair<U1, U2>&& pair) : m_Head(Forward<U1>(pair.First)), m_Tail(Forward<U2>(pair.Second)) {}
+        __WSTL_CONSTEXPR14__ Tuple(const Pair<U1, U2>&& pair) : m_Head(Forward<const U1>(pair.First)), m_Tail(Forward<const U2>(pair.Second)) {}
 
         /// @brief Pair const rvalue converting constructor
         /// @param pair Pair to forward from
         template<typename U1, typename U2, EnableIfType<(sizeof...(Tail) == 1) && IsConstructible<Head, U1>::Value && 
         IsConstructible<typename __private::__TupleTailFirst<Tail...>::Type, U2>::Value && (!IsConvertible<U1, Head>::Value || 
         !IsConvertible<U2, typename __private::__TupleTailFirst<Tail...>::Type>::Value), int> = 0>
-        explicit __WSTL_CONSTEXPR14__ Tuple(const Pair<U1, U2>&& pair) : m_Head(Forward<U1>(pair.First)), m_Tail(Forward<U2>(pair.Second)) {}
+        explicit __WSTL_CONSTEXPR14__ Tuple(const Pair<U1, U2>&& pair) : m_Head(Forward<const U1>(pair.First)), m_Tail(Forward<const U2>(pair.Second)) {}
 
         /// @brief Assignment operator - assigns with the same types
         /// @param other Tuple to assign from
@@ -295,14 +297,14 @@ namespace wstl {
         Conjunction<IsAssignable<Head&, UHead>, IsAssignable<Tail&, UTail>...>::Value, int> = 0>
         __WSTL_CONSTEXPR14__ Tuple& operator=(Tuple<UHead, UTail...>&& other) __WSTL_NOEXCEPT__ {
             m_Head = Forward<UHead>(other.m_Head);
-            m_Tail = Forward<UTail...>(other.m_Tail);
+            m_Tail = Forward<Tuple<UTail...>>(other.m_Tail);
             return *this;
         }
         
         /// @brief Assignment operator - assigns from pair 
         /// @param pair Pair to assign from
         template<typename E1, typename E2, EnableIfType<sizeof...(Tail) == 1 && IsAssignable<const Head&, const E1&>::Value &&
-        IsAssignable<AddLValueReferenceType<typename __private::__TupleTailFirst<Tail...>::Type>, const E2&>::Value, int> = 0>
+        IsAssignable<AddConstType<AddLValueReferenceType<typename __private::__TupleTailFirst<Tail...>::Type>>, const E2&>::Value, int> = 0>
         __WSTL_CONSTEXPR14__ Tuple& operator=(const Pair<E1, E2>& pair) {
             m_Head = pair.First;
             m_Tail.m_Head = pair.Second;
@@ -311,8 +313,8 @@ namespace wstl {
         
         /// @brief Move assignment operator - assigns from pair using move semantics
         /// @param pair Pair to move from
-        template<typename E1, typename E2, EnableIfType<sizeof...(Tail) == 1 && IsAssignable<const Head&, const E1&>::Value &&
-        IsAssignable<AddLValueReferenceType<typename __private::__TupleTailFirst<Tail...>::Type>, const E2&>::Value, int> = 0>
+        template<typename E1, typename E2, EnableIfType<sizeof...(Tail) == 1 && IsAssignable<Head&, E1&>::Value &&
+        IsAssignable<AddLValueReferenceType<typename __private::__TupleTailFirst<Tail...>::Type>, E2&>::Value, int> = 0>
         __WSTL_CONSTEXPR14__ Tuple& operator=(Pair<E1, E2>&& pair) {
             m_Head = Forward<E1>(pair.First);
             m_Tail.m_Head = Forward<E2>(pair.Second);
@@ -372,6 +374,8 @@ namespace wstl {
 
     // Get specialization
 
+    /// TODO: Add selection by type
+
     /// @brief Gets an element from tuple
     /// @tparam Index Index of element
     /// @param tuple Tuple from which to get element
@@ -386,7 +390,7 @@ namespace wstl {
 
     /// @copydoc Get(Tuple<Types...>&)
     template<size_t Index, typename... Types>
-    __WSTL_CONSTEXPR14__ inline TupleElementType<Index, Tuple<Types...>>& Get(const Tuple<Types...>& tuple) __WSTL_NOEXCEPT__ {
+    __WSTL_CONSTEXPR14__ inline const TupleElementType<Index, Tuple<Types...>>& Get(const Tuple<Types...>& tuple) __WSTL_NOEXCEPT__ {
         WSTL_STATIC_ASSERT(Index < sizeof...(Types), "Index out of bounds");
         return __private::__TupleGet<Index>::Get(tuple);
     }
@@ -463,7 +467,7 @@ namespace wstl {
     /// @ingroup tuple
     /// @see https://en.cppreference.com/w/cpp/utility/tuple/make_tuple
     template<typename... Types>
-    __WSTL_CONSTEXPR14__
+    __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__
     inline Tuple<UnwrapReferenceDecayType<Types>...> MakeTuple(Types&&... args) {
         return Tuple<UnwrapReferenceDecayType<Types>...>(Forward<Types>(args)...);
     }
@@ -476,9 +480,8 @@ namespace wstl {
     /// @ingroup tuple
     /// @see https://en.cppreference.com/w/cpp/utility/tuple/tie
     template<typename... Types>
-    __WSTL_CONSTEXPR14__
-    inline Tuple<Types&...> Tie(Types&... args) __WSTL_NOEXCEPT__ {
-        return Tuple<Types&...>(args...);
+    constexpr Tuple<Types&...> Tie(Types&... args) __WSTL_NOEXCEPT__ {
+        return {args...};
     }
 
     // Forward as tuple
@@ -489,7 +492,7 @@ namespace wstl {
     /// @ingroup tuple
     /// @see https://en.cppreference.com/w/cpp/utility/tuple/forward_as_tuple
     template<typename... Types>
-    __WSTL_CONSTEXPR14__
+    __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__
     inline Tuple<Types&&...> ForwardAsTuple(Types&&... args) __WSTL_NOEXCEPT__ {
         return Tuple<Types&&...>(Forward<Types>(args)...);
     }
@@ -518,105 +521,42 @@ namespace wstl {
     /// @ingroup tuple
     /// @see https://en.cppreference.com/w/cpp/utility/tuple/tuple_cat
     template<typename Tuple>
-    __WSTL_CONSTEXPR14__
-    Tuple TupleConcatenate(Tuple&& tuple) {
+    __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__
+    auto TupleConcatenate(Tuple&& tuple) -> Tuple {
         return Forward<Tuple>(tuple);
     }
 
-    #ifdef __WSTL_CXX14__
     namespace __private {
         template<typename Tuple1, typename Tuple2, size_t... Indices1, size_t... Indices2>
-        constexpr auto __TupleConcatenate(Tuple1&& t1, Tuple2&& t2, IndexSequence<Indices1...>, IndexSequence<Indices2...>) {
+        constexpr auto __TupleConcatenate(Tuple1&& t1, Tuple2&& t2, IndexSequence<Indices1...>, IndexSequence<Indices2...>) ->
+        Tuple<TupleElementType<Indices1, DecayType<Tuple1>>..., TupleElementType<Indices2, DecayType<Tuple2>>...> {
             return Tuple<TupleElementType<Indices1, DecayType<Tuple1>>..., 
                          TupleElementType<Indices2, DecayType<Tuple2>>...>(
                 Get<Indices1>(Forward<Tuple1>(t1))..., 
                 Get<Indices2>(Forward<Tuple2>(t2))...
             );
         }
-    }
+    }       
 
     /// @brief Constructs a tuple that is a concatenation of other tuples
     /// @param t1 First tuple
     /// @param t2 Second tuple
+    /// @param ...ts Other tuples to concatenate
     /// @return Concatenated tuple
     /// @ingroup tuple
     /// @see https://en.cppreference.com/w/cpp/utility/tuple/tuple_cat
-    template<typename Tuple1, typename Tuple2>
-    constexpr decltype(auto) 
-    TupleConcatenate(Tuple1&& t1, Tuple2&& t2) {
+    template<typename Tuple1, typename Tuple2, typename... Tuples>
+    constexpr auto TupleConcatenate(Tuple1&& t1, Tuple2&& t2, Tuples&&... ts) -> decltype(TupleConcatenate(
+    __private::__TupleConcatenate(Forward<Tuple1>(t1), Forward<Tuple2>(t2), MakeIndexSequence<TupleSize<DecayType<Tuple1>>::Value>{}, 
+    MakeIndexSequence<TupleSize<DecayType<Tuple2>>::Value>{}), Forward<Tuples>(ts)...)) {
         using Indices1 = MakeIndexSequence<TupleSize<DecayType<Tuple1>>::Value>;
         using Indices2 = MakeIndexSequence<TupleSize<DecayType<Tuple2>>::Value>;
 
-        return __private::__TupleConcatenate(
-            Forward<Tuple1>(t1), 
-            Forward<Tuple2>(t2), 
-            Indices1{}, 
-            Indices2{}
-        );
-    }               
-
-    /// @brief Constructs a tuple that is a concatenation of other tuples
-    /// @param t1 First tuple
-    /// @param t2 Second tuple
-    /// @param ...ts Other tuples to concatenate
-    /// @return Concatenated tuple
-    /// @ingroup tuple
-    /// @see https://en.cppreference.com/w/cpp/utility/tuple/tuple_cat
-    template<typename Tuple1, typename Tuple2, typename... Tuples>
-    constexpr decltype(auto) TupleConcatenate(Tuple1&& t1, Tuple2&& t2, Tuples&&... ts) {
         return TupleConcatenate(
-            TupleConcatenate(Forward<Tuple1>(t1), Forward<Tuple2>(t2)), 
+            __private::__TupleConcatenate(Forward<Tuple1>(t1), Forward<Tuple2>(t2), Indices1{}, Indices2{}), 
             Forward<Tuples>(ts)...
         );
     }
-    #else
-    namespace __private {
-        template<typename Tuple1, typename Tuple2, size_t... Indices1, size_t... Indices2>
-        Tuple<TupleElementType<Indices1, DecayType<Tuple1>>..., TupleElementType<Indices2, DecayType<Tuple2>>...> 
-        __TupleConcatenate(Tuple1&& t1, Tuple2&& t2, IndexSequence<Indices1...>, IndexSequence<Indices2...>) {
-            return Tuple<TupleElementType<Indices1, DecayType<Tuple1>>..., 
-                         TupleElementType<Indices2, DecayType<Tuple2>>...>(
-                Get<Indices1>(Forward<Tuple1>(t1))..., 
-                Get<Indices2>(Forward<Tuple2>(t2))...
-            );
-        }
-    }
-
-    /// @brief Constructs a tuple that is a concatenation of other tuples
-    /// @param t1 First tuple
-    /// @param t2 Second tuple
-    /// @return Concatenated tuple
-    /// @ingroup tuple
-    /// @see https://en.cppreference.com/w/cpp/utility/tuple/tuple_cat
-    template<typename... Types1, typename... Types2> 
-    Tuple<Types1..., Types2...> TupleConcatenate(Tuple<Types1...>& t1, Tuple<Types2...>& t2) {
-        using Indices1 = MakeIndexSequence<TupleSize<DecayType<Tuple<Types1...>>>::Value>;
-        using Indices2 = MakeIndexSequence<TupleSize<DecayType<Tuple<Types2...>>>::Value>;
-
-        return __private::__TupleConcatenate(
-            Forward<Tuple<Types1...>>(t1), 
-            Forward<Tuple<Types2...>>(t2), 
-            Indices1{}, 
-            Indices2{}
-        );
-    }               
-
-    template<typename Tuple1, typename Tuple2, typename... Tuples>
-    /// @brief Constructs a tuple that is a concatenation of other tuples
-    /// @param t1 First tuple
-    /// @param t2 Second tuple
-    /// @param ...ts Other tuples to concatenate
-    /// @return Concatenated tuple
-    /// @ingroup tuple
-    /// @see https://en.cppreference.com/w/cpp/utility/tuple/tuple_cat
-    decltype(TupleConcatenate(TupleConcatenate(DeclareValue<Tuple1>(), DeclareValue<Tuple2>()), DeclareValue<Tuples>()...))
-    TupleConcatenate(Tuple1&& t1, Tuple2&& t2, Tuples&&... ts) {
-        return TupleConcatenate(
-            TupleConcatenate(Forward<Tuple1>(t1), Forward<Tuple2>(t2)), 
-            Forward<Tuples>(ts)...
-        );
-    }
-    #endif
 
     // Make from tuple
 
@@ -638,27 +578,19 @@ namespace wstl {
     template<typename T, typename Tuple>
     __WSTL_CONSTEXPR14__ 
     inline T MakeFromTuple(Tuple&& tuple) {
-        return __private::__MakeFromTuple(Forward<Tuple>(tuple), 
+        return __private::__MakeFromTuple<T>(Forward<Tuple>(tuple), 
             MakeIndexSequence<TupleSize<RemoveReferenceType<Tuple>>::Value>{});
     }
 
     // Apply
 
     namespace __private {
-        #ifdef __WSTL_CXX14__
         template<typename Callable, typename Tuple, size_t... Indices>
-        constexpr decltype(auto) __Apply(Callable&& callable, Tuple&& tuple, IndexSequence<Indices...>) {
-            return Forward<Callable>(callable)(Get<Indices>(Forward<Tuple>(tuple))...);
+        constexpr InvokeResultType<Callable, TupleElementType<Indices, RemoveReferenceType<Tuple>>...> __Apply(Callable&& callable, Tuple&& tuple, IndexSequence<Indices...>) {
+            return wstl::__private::__Invoke(Forward<Callable>(callable), Get<Indices>(Forward<Tuple>(tuple))...);
         }
-        #else
-        template<typename Callable, typename Tuple, size_t... Indices>
-        inline ResultOfType<Callable(TupleElementType<Indices, Tuple>...)> __Apply(Callable&& callable, Tuple&& tuple, IndexSequence<Indices...>) {
-            return Forward<Callable>(callable)(Get<Indices>(Forward<Tuple>(tuple))...);
-        }
-        #endif
     }
 
-    #ifdef __WSTL_CXX14__
     /// @brief Calls an object with arguments from tuple
     /// @param callable Object to invoke
     /// @param tuple Tuple whose elements will be used as arguments
@@ -666,24 +598,11 @@ namespace wstl {
     /// @ingroup tuple
     /// @see https://en.cppreference.com/w/cpp/utility/tuple/apply
     template<typename Callable, typename Tuple>
-    constexpr decltype(auto) Apply(Callable&& callable, Tuple&& tuple) {
+    constexpr auto Apply(Callable&& callable, Tuple&& tuple) -> decltype(__private::__Apply(Forward<Callable>(callable), 
+    Forward<Tuple>(tuple), MakeIndexSequence<TupleSize<RemoveReferenceType<Tuple>>::Value>{})) {
         return __private::__Apply(Forward<Callable>(callable), Forward<Tuple>(tuple),
             MakeIndexSequence<TupleSize<RemoveReferenceType<Tuple>>::Value>{});
     }
-    #else
-    /// @brief Calls an object with arguments from tuple
-    /// @param callable Object to invoke
-    /// @param tuple Tuple whose elements will be used as arguments
-    /// @return The value return by callable object
-    /// @ingroup tuple
-    /// @see https://en.cppreference.com/w/cpp/utility/tuple/apply
-    template<typename Callable, typename... Types>
-    inline ResultOfType<Callable(Types...)> Apply(Callable&& callable, Tuple<Types...>& tuple) {
-        return __private::__Apply(Forward<Callable>(callable), Forward<Tuple<Types...>>(tuple), 
-            IndexSequenceFor<Types...>{});
-    }
-    #endif
-
     #endif
 }
 
