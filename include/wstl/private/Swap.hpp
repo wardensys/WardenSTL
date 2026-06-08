@@ -7,6 +7,7 @@
 #define __WSTL_SWAP_HPP__
 
 #include "Platform.hpp"
+#include "Move.hpp"
 #include "../TypeTraits.hpp"
 
 
@@ -47,6 +48,7 @@ namespace wstl {
     
     template<typename T>
     /// @brief Swaps the values of two objects
+    /// @details Also has the ability to handle types with defined `.Swap()` method by effectively calling it
     /// @tparam T Type of the objects to swap
     /// @param a First object to swap
     /// @param b Second object to swap
