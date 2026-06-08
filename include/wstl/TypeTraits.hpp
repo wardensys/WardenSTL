@@ -2767,7 +2767,7 @@ namespace wstl {
     #ifdef __WSTL_CXX11__
     // Invoke result
 
-    // Include `Functional.hpp` to use it
+    /// @warning Include `Functional.hpp` to use it
     template<typename T>
     class ReferenceWrapper;
 
@@ -2921,6 +2921,47 @@ namespace wstl {
     template<typename Result, typename Function, typename... Args>
     inline constexpr bool IsInvocableReturnValue = IsInvocableReturn<Result, Function, Args...>::Value;
     #endif
+    #endif
+
+    // Underlying type
+
+    #if !defined(__WSTL_TYPETRAITS_NO_BUILTINS__) && defined(__WSTL_CXX11__) && defined(__WSTL_SUPPORTED_COMPILER__)
+    /// @brief Extracts underlying type from enumeration type
+    /// @tparam T Enumeration type to extract from
+    /// @ingroup type_traits
+    /// @since C++11
+    /// @note This trait uses `__underlying_type` builtin, but if it's not available, 
+    /// it will fall back to a less accurate implementation that may not work correctly in all cases
+    /// and return `int` as underlying type for all enums. Besides C++11, also requires supported compiler.
+    /// @see https://en.cppreference.com/w/cpp/types/underlying_type
+    template<typename T, bool = IsEnum<T>::Value>
+    struct UnderlyingType;
+
+    template<typename T>
+    struct UnderlyingType<T, false> {
+        WSTL_STATIC_ASSERT(IsEnum<T>::Value, "Provided type must be enumeration type");
+    };
+
+    template<typename T>
+    struct UnderlyingType<T, true> {
+        typedef __underlying_type(T) Type;
+    };
+    #else
+    /// @brief Extracts underlying type from enumeration type, less accurate fallback implementation
+    /// @tparam T Enumeration type to extract from
+    /// @ingroup type_traits
+    /// @see https://en.cppreference.com/w/cpp/types/underlying_type
+    template<typename T>
+    struct UnderlyingType {
+        typedef int Type;
+    };
+    #endif
+
+    #ifdef __WSTL_CXX11__
+    /// @copydoc UnderlyingType
+    /// @since C++11
+    template<typename T>
+    using UnderlyingTypeType = typename UnderlyingType<T>::Type;
     #endif
 }
 

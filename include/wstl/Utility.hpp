@@ -33,8 +33,7 @@ namespace wstl {
     /// @return Const reference to the object
     /// @ingroup utility
     /// @see https://en.cppreference.com/w/cpp/utility/as_const
-    __WSTL_CONSTEXPR__ 
-    inline typename AddConst<T>::Type& AsConst(T& t) __WSTL_NOEXCEPT__ {
+    __WSTL_CONSTEXPR__ inline typename AddConst<T>::Type& AsConst(T& t) __WSTL_NOEXCEPT__ {
         return t;
     }
 
@@ -49,10 +48,10 @@ namespace wstl {
     // Exchange
 
     #ifdef __WSTL_CXX11__
-    /// @brief Replaces the value of object, returning its old value
+    /// @brief Replaces the value of an object, returning its old value
     /// @param object Object whose value to replace
     /// @param newValue Value to assign
-    /// @return The old value of object
+    /// @return The old value of the object
     /// @ingroup utility
     /// @see https://en.cppreference.com/w/cpp/utility/exchange
     template<typename T, typename U = T>
@@ -62,10 +61,10 @@ namespace wstl {
         return old;
     }
     #else
-    /// @brief Replaces the value of object, returning its old value
+    /// @brief Replaces the value of an object, returning its old value
     /// @param object Object whose value to replace
     /// @param newValue Value to assign
-    /// @return The old value of object
+    /// @return The old value of the object
     /// @ingroup utility
     /// @see https://en.cppreference.com/w/cpp/utility/exchange
     template<typename T>
@@ -137,7 +136,7 @@ namespace wstl {
         __WSTL_CONSTEXPR14__ Pair(const Pair<U1, U2>& other) : First(other.First), Second(other.Second) {}
 
         #ifdef __WSTL_CXX11__
-        /// @brief Templated parameterized constructor - with forwarding for both members
+        /// @brief Move constructor from parameters - constructs members by moving from parameters
         /// @param first Value for the first object
         /// @param second Value for the second object
         /// @since C++11
@@ -200,7 +199,7 @@ namespace wstl {
         /// @brief Move assignment operator - assigns using move semantics with the same types
         /// @param other Pair to move from
         /// @since C++11
-        __WSTL_CONSTEXPR14__ Pair& operator=(const Pair&& other) __WSTL_NOEXCEPT_EXPR__(IsNothrowMoveAssignable<T1>::Value && IsNothrowMoveAssignable<T2>::Value) {
+        __WSTL_CONSTEXPR14__ Pair& operator=(Pair&& other) __WSTL_NOEXCEPT_EXPR__(IsNothrowMoveAssignable<T1>::Value && IsNothrowMoveAssignable<T2>::Value) {
             if(this != &other) {
                 First = Move(other.First);
                 Second = Move(other.Second);
@@ -216,7 +215,7 @@ namespace wstl {
         /// @param other Pair to move from
         /// @since C++11
         template<typename U1, typename U2>
-        __WSTL_CONSTEXPR14__ Pair& operator=(const Pair<U1, U2>&& other) {
+        __WSTL_CONSTEXPR14__ Pair& operator=(Pair<U1, U2>&& other) {
             First = Move(other.First);
             Second = Move(other.Second);
             return *this;
@@ -321,39 +320,39 @@ namespace wstl {
 
     // Comparison operators for Pair
 
-    template<typename T1, typename T2>
+    template<typename T1, typename T2, typename U1, typename U2>
     __WSTL_CONSTEXPR14__
-    inline bool operator==(const Pair<T1, T2>& a, const Pair<T1, T2>& b) {
-        return (a.First == b.First) && !(a.Second < b.Second) && !(a.Second > b.Second);
+    inline bool operator==(const Pair<T1, T2>& a, const Pair<U1, U2>& b) {
+        return (a.First == b.First) && (a.Second == b.Second);
     }
 
-    template<typename T1, typename T2>
+    template<typename T1, typename T2, typename U1, typename U2>
     __WSTL_CONSTEXPR14__
-    inline bool operator!=(const Pair<T1, T2>& a, const Pair<T1, T2>& b) {
+    inline bool operator!=(const Pair<T1, T2>& a, const Pair<U1, U2>& b) {
         return !(a == b);
     }
 
-    template<typename T1, typename T2>
+    template<typename T1, typename T2, typename U1, typename U2>
     __WSTL_CONSTEXPR14__
-    inline bool operator<(const Pair<T1, T2>& a, const Pair<T1, T2>& b) {
+    inline bool operator<(const Pair<T1, T2>& a, const Pair<U1, U2>& b) {
         return (a.First < b.First) || (!(b.First < a.First) && (a.Second < b.Second));
     }
 
-    template<typename T1, typename T2>
+    template<typename T1, typename T2, typename U1, typename U2>
     __WSTL_CONSTEXPR14__
-    inline bool operator>(const Pair<T1, T2>& a, const Pair<T1, T2>& b) {
+    inline bool operator>(const Pair<T1, T2>& a, const Pair<U1, U2>& b) {
         return (b < a);
     }
 
-    template<typename T1, typename T2>
+    template<typename T1, typename T2, typename U1, typename U2>
     __WSTL_CONSTEXPR14__ 
-    inline bool operator<=(const Pair<T1, T2>& a, const Pair<T1, T2>& b) {
+    inline bool operator<=(const Pair<T1, T2>& a, const Pair<U1, U2>& b) {
         return !(b < a);
     }
 
-    template<typename T1, typename T2>
+    template<typename T1, typename T2, typename U1, typename U2>
     __WSTL_CONSTEXPR14__ 
-    inline bool operator>=(const Pair<T1, T2>& a, const Pair<T1, T2>& b) {
+    inline bool operator>=(const Pair<T1, T2>& a, const Pair<U1, U2>& b) {
         return !(a < b);
     }
 
@@ -435,6 +434,21 @@ namespace wstl {
     template<size_t Index>
     __WSTL_INLINE_VARIABLE__ constexpr InPlaceForIndexType<Index> InPlaceForIndex {};
     #endif
+
+    // To underlying
+
+    /// @brief Converts an enum value to its underlying type
+    /// @param e Enum value to convert
+    /// @return The underlying value of the enum
+    /// @ingroup utility
+    /// @note This trait uses `__underlying_type` builtin, but if it's not available, 
+    /// it will fall back to a less accurate implementation that may not work correctly in all cases
+    /// and convert everything to `int`. Besides C++11, also requires supported compiler.
+    /// @see https://en.cppreference.com/w/cpp/utility/to_underlying
+    template<typename Enum>
+    __WSTL_CONSTEXPR__ typename UnderlyingType<Enum>::Type ToUnderlying(Enum e) __WSTL_NOEXCEPT__ {
+        return static_cast<typename UnderlyingType<Enum>::Type>(e); 
+    }
 }
 
 #endif

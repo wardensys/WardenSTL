@@ -88,34 +88,17 @@ namespace wstl {
         }
     };
 
-    /// @brief Helper alias for IntegerSequence with `size_t` as type
-    /// @tparam ...Indices Sequence of indices
-    /// @ingroup utility
-    /// @see https://en.cppreference.com/w/cpp/utility/integer_sequence
-    template<size_t... Indices>
-    using IndexSequence = IntegerSequence<size_t, Indices...>;
-
     namespace __private {
-        template<size_t N, size_t... Indices>
-        struct __MakeIndexSequence {
-            typedef typename __MakeIndexSequence<N - 1, N - 1, Indices...>::Type Type;
+        template<typename T, T I, T N, T... Integers>
+        struct __MakeIntegerSequence {
+            using Type = typename __MakeIntegerSequence<T, I + 1, N, Integers..., I>::Type;
         };
 
-        template<size_t... Indices>
-        struct __MakeIndexSequence<0, Indices...> {
-            typedef IndexSequence<Indices...> Type;
+        template<typename T, T N, T... Integers>
+        struct __MakeIntegerSequence<T, N, N, Integers...> {
+            using Type = IntegerSequence<T, Integers...>;
         };
-
-        template<typename T, size_t... Indices>
-        static constexpr IntegerSequence<T, static_cast<T>(Indices)...> __Generate(IndexSequence<Indices...>);
     }
-
-    /// @brief Makes compile-time sequence of indices (from 0 to N - 1)
-    /// @tparam N Number of indices to generate
-    /// @ingroup utility
-    /// @see https://en.cppreference.com/w/cpp/utility/integer_sequence
-    template<size_t N>
-    using MakeIndexSequence = typename __private::__MakeIndexSequence<N>::Type;
     
     /// @brief Makes compile-time sequence of integers (from 0 to N - 1)
     /// @tparam T Integer type
@@ -123,7 +106,21 @@ namespace wstl {
     /// @ingroup utility
     /// @see https://en.cppreference.com/w/cpp/utility/integer_sequence
     template<typename T, T N>
-    using MakeIntegerSequence = decltype(__private::__Generate<T>(MakeIndexSequence<N>()));
+    using MakeIntegerSequence = typename __private::__MakeIntegerSequence<T, 0, N>::Type;
+
+    /// @brief Helper alias for `IntegerSequence` with `size_t` as type
+    /// @tparam ...Indices Sequence of indices
+    /// @ingroup utility
+    /// @see https://en.cppreference.com/w/cpp/utility/integer_sequence
+    template<size_t... Indices>
+    using IndexSequence = IntegerSequence<size_t, Indices...>;
+
+    /// @brief Makes compile-time sequence of indices (from 0 to N - 1)
+    /// @tparam N Number of indices to generate
+    /// @ingroup utility
+    /// @see https://en.cppreference.com/w/cpp/utility/integer_sequence
+    template<size_t N>
+    using MakeIndexSequence = MakeIntegerSequence<size_t, N>;
 
     /// @brief Makes compile-time sequence of integers (from 0 to N - 1) of the length of T
     /// @tparam T... Parameter pack to use
