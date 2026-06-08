@@ -600,8 +600,11 @@ namespace wstl {
 
     // Tuple element specialization
 
-    template<size_t I, typename T, size_t N>
-    struct TupleElement<I, Array<T, N>> { typedef T Type; };
+    template<size_t Index, typename T, size_t N>
+    struct TupleElement<Index, Array<T, N>> {
+        WSTL_STATIC_ASSERT(Index < N, "Index out of bounds");
+        typedef T Type;
+    };
 
     // Tuple size specialization
 
