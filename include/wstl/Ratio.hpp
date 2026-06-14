@@ -11,7 +11,6 @@
 
 #include "private/Platform.hpp"
 #include "Numeric.hpp"
-#include <stdint.h>
 
 
 /// @defgroup ratio Ratio
@@ -26,10 +25,13 @@ namespace wstl {
     /// @see https://en.cppreference.com/w/cpp/numeric/ratio/ratio
     template<intmax_t NUMERATOR, intmax_t DENOMINATOR = 1>
     struct Ratio {
-        static const __WSTL_CONSTEXPR__ intmax_t Numerator = NUMERATOR;
-        static const __WSTL_CONSTEXPR__ intmax_t Denominator = DENOMINATOR;
+        WSTL_STATIC_ASSERT(DENOMINATOR != 0, "Denominator cannot be zero");
 
-        typedef Ratio<NUMERATOR, DENOMINATOR> Type;
+        static const __WSTL_CONSTEXPR__ intmax_t Numerator = NUMERATOR / wstl::compile::GCD<intmax_t, NUMERATOR, DENOMINATOR>::Value;
+        static const __WSTL_CONSTEXPR__ intmax_t Denominator = DENOMINATOR / wstl::compile::GCD<intmax_t, NUMERATOR, DENOMINATOR>::Value;
+
+        /// @brief Rational type after reduction
+        typedef Ratio<Numerator, Denominator> Type;
     };
 
     template<intmax_t NUMERATOR, intmax_t DENOMINATOR>
@@ -37,38 +39,50 @@ namespace wstl {
 
     template<intmax_t NUMERATOR, intmax_t DENOMINATOR>
     const __WSTL_CONSTEXPR__ intmax_t Ratio<NUMERATOR, DENOMINATOR>::Denominator;
-    
-    #if INT_MAX > INT32_MAX 
+
+    #if INTMAX_MAX > INT64_MAX
     typedef Ratio<1, 1000000000000000000000000> Yocto;
     typedef Ratio<1, 1000000000000000000000> Zepto;
+    #endif
+    
+    #if INTMAX_MAX >= INT64_MAX 
     typedef Ratio<1, 1000000000000000000> Atto;
     typedef Ratio<1, 1000000000000000> Femto;
     typedef Ratio<1, 1000000000000> Pico;
     #endif
 
-    #if (INT_MAX >= INT32_MAX)
+    #if (INTMAX_MAX >= INT32_MAX)
     typedef Ratio<1, 1000000000> Nano;
     typedef Ratio<1, 1000000> Micro;
     #endif
 
-    #if (INT_MAX >= INT16_MAX)
+    #if INTMAX_MAX >= INT16_MAX
     typedef Ratio<1, 1000> Milli;
+    #endif
+
+    #if INTMAX_MAX >= INT8_MAX
     typedef Ratio<1, 100> Centi;
     typedef Ratio<1, 10> Deci;
     typedef Ratio<10, 1> Deca;
     typedef Ratio<100, 1> Hecto;
+    #endif
+
+    #if INTMAX_MAX >= INT16_MAX
     typedef Ratio<1000, 1> Kilo;
     #endif
 
-    #if (INT_MAX >= INT32_MAX)
+    #if INT_MAX >= INT32_MAX
     typedef Ratio<1000000, 1> Mega;
     typedef Ratio<1000000000, 1> Giga;
     #endif
 
-    #if INT_MAX > INT32_MAX
+    #if INTMAX_MAX >= INT64_MAX
     typedef Ratio<1000000000000, 1> Tera;
-    typedef Ratio<1000000000000000, 1> Peta
+    typedef Ratio<1000000000000000, 1> Peta;
     typedef Ratio<1000000000000000000, 1> Exa;
+    #endif
+
+    #if INTMAX_MAX > INT64_MAX
     typedef Ratio<1000000000000000000000, 1> Zetta;
     typedef Ratio<1000000000000000000000000, 1> Yotta;
     #endif
