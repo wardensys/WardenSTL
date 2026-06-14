@@ -50,7 +50,9 @@ namespace wstl {
         virtual ~Exception() __WSTL_NOEXCEPT__ {}
 
         /// @brief Returns the name of the exception
-        __WSTL_CONSTEXPR20__ virtual StringType Name() const __WSTL_NOEXCEPT__ = 0;
+        __WSTL_CONSTEXPR20__ virtual StringType Name() const __WSTL_NOEXCEPT__ {
+            return "Exception";
+        }
 
         /// @brief Gets the exception message
         __WSTL_CONSTEXPR__ StringType What() const __WSTL_NOEXCEPT__ {
