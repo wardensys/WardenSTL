@@ -53,6 +53,19 @@ namespace wstl {
         /// @brief Frees a block of memory at the specified address
         /// @param address The address to free
         virtual void Free(void* address) = 0;
+
+    protected:
+        /// @brief Protected default constructor
+        Allocator() {}
+        
+        /// @brief Protected virtual destructor
+        virtual ~Allocator() __WSTL_NOEXCEPT__ {}
+
+    private:
+        /// @brief Deleted copy constructor to prevent copying of allocators
+        Allocator(const Allocator&) __WSTL_DELETE__;
+        /// @brief Deleted copy assignment operator to prevent copying of allocators
+        Allocator& operator=(const Allocator&) __WSTL_DELETE__;
     };
 }
 

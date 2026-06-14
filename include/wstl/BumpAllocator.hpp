@@ -13,7 +13,10 @@
 
 
 namespace wstl {
-    class BumpAllocator : public Allocator {
+    /// @brief A simple bump allocator that allocates memory in a contiguous block
+    /// @note Does not support free operation
+    /// @ingroup allocator
+    class BumpAllocator __WSTL_FINAL__ : public Allocator {
     public:
         /// @brief Constructor
         /// @param base The base address of the memory block
@@ -33,6 +36,21 @@ namespace wstl {
         /// @brief Frees a block of memory at the specified address - does not do anything
         virtual void Free(void*) __WSTL_OVERRIDE__ {
             // Does not do anything, not operational
+        }
+
+        /// @brief Gets the total size of the memory block
+        size_t MemorySize() const __WSTL_NOEXCEPT__ {
+            return m_Limit;
+        }
+
+        /// @brief Gets the remaining available memory
+        size_t Available() const __WSTL_NOEXCEPT__ {
+            return m_Limit - m_Allocated;
+        }
+
+        /// @brief Gets the total allocated memory
+        size_t Used() const __WSTL_NOEXCEPT__ {
+            return m_Allocated;
         }
     
     private:
