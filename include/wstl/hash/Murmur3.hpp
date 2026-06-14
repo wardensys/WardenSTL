@@ -7,10 +7,9 @@
 #define __WSTL_MURMUR3_HPP__
 
 #include "../private/Platform.hpp"
-#include "../private/Error.hpp"
+#include "../private/ns/hash.hpp"
 #include "../Bit.hpp"
 #include "../HasherBase.hpp"
-#include "../StandardExceptions.hpp"
 #include <stdint.h>
 
 

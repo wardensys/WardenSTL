@@ -8,7 +8,6 @@
 
 #include "private/Platform.hpp"
 #include "Deque.hpp"
-#include <stddef.h>
 
 
 /// @defgroup queue Queue

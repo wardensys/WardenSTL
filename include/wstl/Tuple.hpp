@@ -9,7 +9,6 @@
 #include "private/Platform.hpp"
 #include "private/TupleUtils.hpp"
 #include "private/Swap.hpp"
-#include "private/Move.hpp"
 
 
 /// @defgroup tuple Tuple

@@ -11,11 +11,8 @@
 
 #include "private/Platform.hpp"
 #include "CharacterTraits.hpp"
-#include "Limits.hpp"
 #include "Container.hpp"
-#include "StandardExceptions.hpp"
 #include "StringView.hpp"
-#include "Memory.hpp"
 
 
 // Defines introduced

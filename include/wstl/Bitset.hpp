@@ -10,9 +10,9 @@
 #define __WSTL_BITSET_HPP__
 
 #include "private/Platform.hpp"
+#include "private/ns/external.hpp"
 #include "Limits.hpp"
 #include "Span.hpp"
-#include "BasicString.hpp"
 #include "String.hpp"
 
 #include <stddef.h>

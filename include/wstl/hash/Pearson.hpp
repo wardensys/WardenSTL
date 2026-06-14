@@ -7,6 +7,7 @@
 #define __WSTL_PEARSON_HPP__
 
 #include "../private/Platform.hpp"
+#include "../private/ns/hash.hpp"
 #include "../HasherBase.hpp"
 #include <stdint.h>
 

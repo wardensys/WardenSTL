@@ -7,11 +7,9 @@
 #define __WSTL_FUNCTIONAL_HPP__
 
 #include "private/Platform.hpp"
+#include "private/ns/compile.hpp"
 #include "private/Error.hpp"
-#include "private/Swap.hpp"
-#include "private/Move.hpp"
 #include "Tuple.hpp"
-#include "TypeTraits.hpp"
 
 
 /// @defgroup functional Functional

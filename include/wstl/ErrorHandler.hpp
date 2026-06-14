@@ -14,7 +14,6 @@
 #include "Exception.hpp"
 #include "Functional.hpp"
 #include "Utility.hpp"
-#include "private/Error.hpp"
 
 
 /// @defgroup error_handler Error Handler

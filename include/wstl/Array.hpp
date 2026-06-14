@@ -11,7 +11,6 @@
 
 #include "private/Platform.hpp"
 #include "private/Error.hpp"
-#include "Iterator.hpp"
 #include "Algorithm.hpp"
 #include "StandardExceptions.hpp"
 #include <stddef.h>

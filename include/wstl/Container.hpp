@@ -8,8 +8,6 @@
 
 #include "private/Platform.hpp"
 #include "private/ParameterType.hpp"
-#include "TypeTraits.hpp"
-#include "StaticAssert.hpp"
 
 
 namespace wstl {

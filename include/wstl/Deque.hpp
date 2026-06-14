@@ -10,14 +10,11 @@
 #define __WSTL_DEQUE_HPP__
 
 #include "private/Platform.hpp"
+#include "private/ns/external.hpp"
 #include "Container.hpp"
-#include "Iterator.hpp"
 #include "CircularIterator.hpp"
-#include "InitializerList.hpp"
-#include "StandardExceptions.hpp"
 #include "PlacementNew.hpp"
 #include "Algorithm.hpp"
-#include "ErrorHandler.hpp"
 
 
 /// @defgroup deque Deque

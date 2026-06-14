@@ -7,10 +7,8 @@
 #define __WSTL_LIST_HPP__
 
 #include "private/Platform.hpp"
-#include "TypeTraits.hpp"
+#include "private/ns/external.hpp"
 #include "Container.hpp"
-#include "NullPointer.hpp"
-#include "InitializerList.hpp"
 #include "StandardExceptions.hpp"
 #include "PlacementNew.hpp"
 #include "Iterator.hpp"

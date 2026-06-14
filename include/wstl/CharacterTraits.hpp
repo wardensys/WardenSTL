@@ -10,7 +10,7 @@
 #define __WSTL_CHARACTERTRAITS_HPP__
 
 #include "private/Platform.hpp"
-#include "NullPointer.hpp"
+#include "private/ns/string.hpp"
 #include "Algorithm.hpp"
 
 

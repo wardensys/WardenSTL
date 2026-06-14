@@ -13,7 +13,6 @@
 
 #include "private/Platform.hpp"
 #include "Numeric.hpp"
-#include "Iterator.hpp"
 
 
 namespace wstl {

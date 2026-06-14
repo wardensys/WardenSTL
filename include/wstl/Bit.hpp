@@ -11,7 +11,6 @@
 #define __WSTL_BIT_HPP__
 
 #include "private/Platform.hpp"
-#include "TypeTraits.hpp"
 #include "Memory.hpp"
 #include "Byte.hpp"
 #include "Array.hpp"

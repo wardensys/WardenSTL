@@ -14,7 +14,6 @@
 #include "private/Platform.hpp"
 #include "private/AddressOf.hpp"
 #include "private/Move.hpp"
-#include "TypeTraits.hpp"
 
 #ifdef __WSTL_STD_ITERATORTRAITS_SUPPORT__
 // #include <iterator>

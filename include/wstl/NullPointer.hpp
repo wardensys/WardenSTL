@@ -12,6 +12,7 @@
 #define __WSTL_NULLPOINTER_HPP__
 
 #include "private/Platform.hpp"
+
 #ifdef __WSTL_CXX11__
 #include <stddef.h>
 #endif

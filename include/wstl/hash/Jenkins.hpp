@@ -7,6 +7,7 @@
 #define __WSTL_JENKINS_HPP__
 
 #include "../private/Platform.hpp"
+#include "../private/ns/hash.hpp"
 #include "../HasherBase.hpp"
 #include "../private/Error.hpp"
 #include "../StandardExceptions.hpp"

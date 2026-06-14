@@ -7,7 +7,7 @@
 #define __WSTL_PLATFORM_HPP__
 
 
-// Doxygen groups and namespaces
+// Doxygen groups and main namespace
 
 /// @defgroup wstl WardenSTL
 /// @brief Main WardenSTL library group
@@ -40,33 +40,10 @@
 /// @brief A set of string templates
 /// @ingroup containers
 
+
 /// @brief Main namespace of WardenSTL library
 /// @ingroup wstl
-namespace wstl {
-    /// @brief Namespace with private functions. DO NOT use it directly!
-    /// @ingroup wstl
-    namespace __private {}
-
-    /// @brief Namespace that holds compile-time utilities and equivalents of functions
-    /// @ingroup wstl
-    namespace compile {}
-
-    /// @brief Namespace that holds hash functions
-    /// @ingroup hash
-    namespace hash {}
-
-    /// @brief Namespace that holds string-related functions and constants
-    /// @ingroup string
-    namespace string {}
-
-    // /// @brief Namespace that holds variations of CRC functions
-    // /// @ingroup crc
-    // namespace crc {}
-
-    /// @brief Namespace that holds containers that use externally defined storage
-    /// @ingroup containers
-    namespace external {}
-}
+namespace wstl {}
 
 // C++ version defines
 

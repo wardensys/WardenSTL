@@ -11,7 +11,6 @@
 
 #include "Platform.hpp"
 #include "../TypeTraits.hpp"
-#include "../StaticAssert.hpp"
 
 
 namespace wstl {

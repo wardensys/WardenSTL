@@ -10,12 +10,13 @@
 #define __WSTL_STATICASSERT_HPP__
 
 #include "private/Platform.hpp"
+#include "private/ns/private.hpp"
 
 
+#ifdef __WSTL_CXX11__
+#define WSTL_STATIC_ASSERT static_assert
+#else
 namespace wstl {
-    #ifdef __WSTL_CXX11__
-    #define WSTL_STATIC_ASSERT static_assert
-    #else
     namespace __private {
         template<bool Condition>
         class __StaticAssert;
@@ -23,10 +24,10 @@ namespace wstl {
         template<>
         class __StaticAssert<true> {};    
     }
-    
-    #define WSTL_STATIC_ASSERT(condition, ...) \
-        enum { __StaticAssertion = sizeof(__private::__StaticAssert<static_cast<bool>( (condition) )>) }
-    #endif
 }
+
+#define WSTL_STATIC_ASSERT(condition, ...) \
+    enum { __StaticAssertion = sizeof(__private::__StaticAssert<static_cast<bool>( (condition) )>) }
+#endif
 
 #endif

@@ -12,12 +12,9 @@
 #define __WSTL_SPAN_HPP__
 
 #include "private/Platform.hpp"
-#include "TypeTraits.hpp"
 #include "Limits.hpp"
-#include "Iterator.hpp"
 #include "CircularIterator.hpp"
 #include "Byte.hpp"
-#include "StandardExceptions.hpp"
 #include "Hash.hpp"
 #include <stddef.h>
 

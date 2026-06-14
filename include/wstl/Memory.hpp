@@ -12,12 +12,8 @@
 #define __WSTL_MEMORY_HPP__
 
 #include "private/Platform.hpp"
-#include "private/AddressOf.hpp"
 #include "PlacementNew.hpp"
-#include "Iterator.hpp"
-#include "Utility.hpp"
 #include "Algorithm.hpp"
-#include "NullPointer.hpp"
 
 #ifdef __WSTL_MEMOPS_USE_LIBC__
 #include <string.h>

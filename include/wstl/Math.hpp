@@ -10,7 +10,7 @@
 #define __WSTL_MATH_HPP__
 
 #include "private/Platform.hpp"
-#include "TypeTraits.hpp"
+#include "private/ns/compile.hpp"
 #include "Limits.hpp"
 #include "ErrorHandler.hpp"
 #include "StandardExceptions.hpp"
