@@ -18,6 +18,7 @@
 #include <numeric>
 #include <random>
 #include <memory>
+#include <array>
 
 #include <wstl/Algorithm.hpp>
 #include <wstl/Bit.hpp>
