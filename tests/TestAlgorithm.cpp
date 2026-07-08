@@ -17,6 +17,7 @@
 #include <forward_list>
 #include <numeric>
 #include <random>
+#include <memory>
 
 #include <wstl/Algorithm.hpp>
 #include <wstl/Bit.hpp>
@@ -24,20 +25,22 @@
 #include "Utils.hpp"
 
 
-std::random_device rd;
-std::mt19937 urng(rd());
+namespace {
+    std::random_device rd;
+    std::mt19937 urng(rd());
 
-constexpr size_t SIZE = 9;
+    constexpr size_t SIZE = 9;
 
-int dataA[SIZE] = {4, 5, 7, 1, 10, 6, 3, 7, 7};
-int dataB[SIZE] = {1, 60, 4, 3, 9, 10, 5, 4, 10};
+    int dataA[SIZE] = {4, 5, 7, 1, 10, 6, 3, 7, 7};
+    int dataB[SIZE] = {1, 60, 4, 3, 9, 10, 5, 4, 10};
 
-std::list<int> dataLA(std::begin(dataA), std::end(dataA));
-std::list<int> dataLB(std::begin(dataB), std::end(dataB));
+    std::list<int> dataLA(std::begin(dataA), std::end(dataA));
+    std::list<int> dataLB(std::begin(dataB), std::end(dataB));
 
-constexpr size_t NONTRIVIAL_SIZE = 7;
+    constexpr size_t NONTRIVIAL_SIZE = 7;
 
-NonTrivialData dataN[NONTRIVIAL_SIZE] = {{1, 2}, {3, 4}, {5, 6}, {7, 8}, {9, 10}, {11, 12}, {13, 14}};
+    NonTrivialData dataN[NONTRIVIAL_SIZE] = {{1, 2}, {3, 4}, {5, 6}, {7, 8}, {9, 10}, {11, 12}, {13, 14}};
+}
 
 TEST_SUITE("Algorithm") {
     TEST_CASE("Find") {
