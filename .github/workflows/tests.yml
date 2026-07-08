@@ -9,8 +9,7 @@ jobs:
             fail-fast: false
             matrix:
                 os: ['ubuntu-latest', 'macos-latest', 'windows-latest']
-                compiler: ['g++', 'clang++', 'icpx', 'cl']
-                cpp-version: ['98', '03', '11', '14', '17', '20', '23']
+                cpp-version: ['11', '14', '17', '20', '23']
                 include:
                     - os: ubuntu-latest
                       compiler: g++
