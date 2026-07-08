@@ -16,7 +16,7 @@
 #include "private/Move.hpp"
 
 #ifdef __WSTL_STD_ITERATORTRAITS_SUPPORT__
-// #include <iterator>
+#include <iterator>
 #endif
 
 
@@ -157,7 +157,7 @@ namespace wstl {
         };
 
         #else
-        template<typename Iterator, bool __IsIterator = sizeof(__TestLibraryIterator<Iterator>()) == sizeof(long)>
+        template<typename Iterator, bool __IsIterator = sizeof(__TestLibraryIterator<Iterator>(0, 0, 0, 0, 0)) == sizeof(long)>
         struct __IteratorTraits {};
 
         template<typename Iterator>
@@ -210,13 +210,13 @@ namespace wstl {
         template<typename Iterator, typename Distance>
         __WSTL_CONSTEXPR14__ 
         inline void __Advance(Iterator& iterator, Distance count, OutputIteratorTag) {
-            while(count--) ++iterator;
+            while(count-- > 0) ++iterator;
         }
 
         template<typename Iterator, typename Distance>
         __WSTL_CONSTEXPR14__ 
         inline void __Advance(Iterator& iterator, Distance count, ForwardIteratorTag) {
-            while(count--) ++iterator;
+            while(count-- > 0) ++iterator;
         }
 
         template<typename Iterator, typename Distance>
@@ -233,7 +233,6 @@ namespace wstl {
         }
     }
 
-    
     template<typename Iterator, typename Distance> 
     /// @brief Advances the given iterator by the specified number of steps
     /// @param iterator Reference to the iterator to be advanced
@@ -363,9 +362,11 @@ namespace wstl {
         typename IteratorTraits<T>::ReferenceType
     > {
     public:
-        typedef T PointerType;
+        typedef typename IteratorTraits<T>::PointerType PointerType;
         typedef typename IteratorTraits<T>::DifferenceType DifferenceType;
         typedef typename IteratorTraits<T>::ReferenceType ReferenceType;
+
+        WSTL_STATIC_ASSERT(IsBidirectionalIterator<T>::Value, "ReverseIterator requires bidirectional iterator");
 
         /// @brief Type of the underlying iterator
         typedef T IteratorType;
@@ -478,6 +479,9 @@ namespace wstl {
 
     protected:
         IteratorType m_Current;
+
+        template<typename>
+        friend class ReverseIterator;
     };
 
     // Comparison operators for ReverseIterator
@@ -585,7 +589,7 @@ namespace wstl {
 
         /// @brief Parameterized constructor
         /// @param iterator Base iterator to adapt
-        __WSTL_CONSTEXPR14__ explicit MoveIterator(IteratorType iterator) : m_Current(iterator) {}
+        __WSTL_CONSTEXPR14__ explicit MoveIterator(IteratorType iterator) : m_Current(wstl::Move(iterator)) {}
 
         /// @brief Templated copy constructor - copies from move iterator of potentially different type
         /// @param other Move iterator to copy from
@@ -692,6 +696,9 @@ namespace wstl {
     
     private:
         IteratorType m_Current;
+
+        template<typename>
+        friend class MoveIterator;
     };
 
     // Comparison operators for MoveIterator
@@ -757,7 +764,7 @@ namespace wstl {
     /// @see https://en.cppreference.com/w/cpp/iterator/make_move_iterator
     template<typename T>
     __WSTL_CONSTEXPR14__ MoveIterator<T> MakeMoveIterator(T iterator) {
-        return MoveIterator<T>(iterator);
+        return MoveIterator<T>(wstl::Move(iterator));
     }
     #endif
 
@@ -839,7 +846,6 @@ namespace wstl {
     }
 
     // Front insert iterator
-
 
     /// @brief An output iterator that inserts elements at the front of a container
     /// This iterator is primarily used with containers that support `PushFront`
@@ -1207,7 +1213,7 @@ namespace wstl {
     template<typename T, size_t N>
     char(&ArraySize(T(&array)[N]))[N];
 
-    #define ARRAY_SIZE(a) sizeof(ArraySize(a))
+    #define ARRAY_SIZE(a) sizeof(wstl::ArraySize(a))
     
     /// @brief Returns the number of elements in a raw array
     /// @param array A reference to the array
