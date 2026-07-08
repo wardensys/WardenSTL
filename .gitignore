@@ -1,4 +1,3 @@
-docs/
 build/
 .sconsign.dblite
-.DS_Store
+**/.DS_Store

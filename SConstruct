@@ -1,19 +1,63 @@
-from SCons.Environment import *
-from SCons.Builder import *
-from SCons.Node.FS import *
-from SCons.Action import *
+from SCons.Environment import Environment
+from SCons.Script import AddOption, GetOption
+from SCons.Builder import Node
 import webbrowser
+import os
 
+
+# Command line options and compiler flags
+
+AddOption(
+    "--compiler",
+    dest="compiler",
+    type="string",
+    default=None,
+    help="Compiler name to use: g++, clang++, cl, icpx (default is what SCons determines)"
+)
+
+AddOption(
+    "--cppstd",
+    dest="cppstd",
+    type="string",
+    default="11",
+    help="C++ standard to use: 98, 03, 11, 14, 17, 20 (default is C++11)"
+)
+
+compiler = GetOption('compiler')
+cppstd = GetOption('cppstd')
+
+print(f"Using {compiler if compiler is not None else 'default'} compiler.")
+print(f"Using C++{cppstd} standard.")
+
+GNU_COMPILER_FLAGS = [
+    f'-std=c++{cppstd}', 
+    '-Wall', 
+    '-Wextra', 
+    '-Wpedantic', 
+    '-Wconversion', 
+    '-Wshadow', 
+    '-Werror'
+]
+
+COMPILER_FLAGS = {
+    'g++': GNU_COMPILER_FLAGS,
+    'clang++': GNU_COMPILER_FLAGS,
+    'icpx': GNU_COMPILER_FLAGS,
+    "cl": [f"/std:c++{cppstd}", "/W4", "/WX", "/permissive-", "/Zc:__cplusplus"]
+}
 
 # Environment
 
 env = Environment(
-    CXX = 'clang++', # or your compiler of choice
-    CXXFLAGS = ['-std=c++11', '-Wall', '-Wextra', '-Wpedantic', '-Wconversion', 
-                '-Wshadow', '-Werror']
+    CXXCOMSTR = 'Compiling [$SOURCE]',
+    LINKCOMSTR = 'Linking [$TARGET]'
 )
 
+if compiler is not None: 
+    env['CXX'] = compiler
+
 env.Append(
+    CXXFLAGS = COMPILER_FLAGS[env['CXX']],
     CPPDEFINES = [
         'DOCTEST_CONFIG_SUPER_FAST_ASSERTS',
         '__WSTL_NO_INITIALIZERLIST__',
@@ -32,29 +76,26 @@ env.Append(
 
 # Doxygen
 
-def OpenDoxygen(target: str, source: str, env: Environment) -> None:
+def OpenDoxygen(target: list[Node], source: list[Node], env: Environment) -> None:
     '''
     Opens the Doxygen documentation in the default browser
     '''
-    index_path = 'docs/html/index.html'
-    print(f"Opening documentation {index_path}...")
+    webbrowser.open('file://' + source[0].get_abspath())
 
-    webbrowser.open('file://' + os.path.realpath(index_path))
-
-doxygen_builder = Builder(
-    action=Action('doxygen ${SOURCE}', cmdstr='Generating Doxygen documentation...'),
-    target_factory=Dir,
-    source_factory=File,
+doxygen = env.Command(
+    'build/docs/html/index.html', 
+    'Doxyfile', 
+    env.Action('doxygen ${SOURCE}', cmdstr='Generating Doxygen documentation...')
 )
 
-env.Append(BUILDERS={'Doxygen': doxygen_builder})
+env.Alias('docs', doxygen)
+env.Clean(doxygen, 'build/docs')
 
-doxygen = env.Doxygen('docs', 'Doxyfile')
-
-env.Alias('open', doxygen, OpenDoxygen)
-
-env.Clean(doxygen, 'docs')
-env.AlwaysBuild(doxygen)
+env.AlwaysBuild(env.Alias(
+    'open', 
+    doxygen, 
+    env.Action(OpenDoxygen, cmdstr="Opening documentation in default browser...")
+))
 
 # Unit tests
 
@@ -74,7 +115,7 @@ def GlobRecursive(env: Environment, pattern, node='.'):
 
     return globs
 
-env.VariantDir('build', 'tests', duplicate=0)
-tests = env.Program('build/test', GlobRecursive(env, 'build/*.cpp'))
+env.VariantDir('build/tests', 'tests', duplicate=0)
+tests = env.Program('build/tests/test', GlobRecursive(env, 'build/tests/*.cpp'))
 
-env.AlwaysBuild(env.Alias('test', tests, 'build/test'))
+env.AlwaysBuild(env.Alias('test', tests, './${SOURCE}'))
