@@ -12,6 +12,7 @@
 #include <doctest.h>
 #include <wstl/Limits.hpp>
 #include <limits>
+#include <cmath>
 
 
 TEST_SUITE("Limits") {
