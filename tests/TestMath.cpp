@@ -6,6 +6,7 @@
 #include <doctest.h>
 #include <wstl/Math.hpp>
 #include <limits>
+#include <math.h>
 
 
 TEST_SUITE("Math") {
