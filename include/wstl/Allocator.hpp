@@ -27,11 +27,11 @@ namespace wstl {
         /// @param file File where the exception occurred
         /// @param line Line number where the exception occurred
         /// @param message The exception message, default is `Bad allocation`
-        __WSTL_CONSTEXPR__ BadAllocation(StringType file, NumericType line, StringType message = "Bad allocation") __WSTL_NOEXCEPT__ : Exception(file, line, message) {}
+        __WSTL_CONSTEXPR20__ BadAllocation(StringType file, NumericType line, StringType message = "Bad allocation") __WSTL_NOEXCEPT__ : Exception(file, line, message) {}
         #else
         /// @brief Constructor
         /// @param message The exception message, default is `Bad allocation`
-        __WSTL_CONSTEXPR__ BadAllocation(StringType message = "Bad allocation") __WSTL_NOEXCEPT__ : Exception(message) {}
+        __WSTL_CONSTEXPR20__ BadAllocation(StringType message = "Bad allocation") __WSTL_NOEXCEPT__ : Exception(message) {}
         #endif
 
         /// @copydoc Exception::Name()
@@ -53,6 +53,14 @@ namespace wstl {
         /// @brief Frees a block of memory at the specified address
         /// @param address The address to free
         virtual void Free(void* address) = 0;
+
+        /// @brief Frees a block of memory at the specified address with the given count, by default size is ignored
+        /// @param address The address to free
+        /// @param size The number of bytes to free
+        virtual void Free(void* address, size_t size) {
+            WSTL_UNUSED(size);
+            Free(address);
+        };
 
     protected:
         /// @brief Protected default constructor
