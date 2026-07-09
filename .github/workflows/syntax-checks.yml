@@ -57,12 +57,8 @@ jobs:
               shell: bash
               run: |
                 source /opt/intel/oneapi/setvars.sh
-                cat /opt/intel/oneapi/setvars.sh
-                echo "$PATH" >> "$GITHUB_PATH"
-                echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH" >> "$GITHUB_ENV"
-                echo "LIBRARY_PATH=$LIBRARY_PATH" >> "$GITHUB_ENV"
-                echo "CPATH=$CPATH" >> "$GITHUB_ENV"
-                icpx --version
+                printenv
+                printenv >> "$GITHUB_ENV"
             
             - name: Install MSVC
               if: matrix.compiler == 'cl'
