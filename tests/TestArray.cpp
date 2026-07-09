@@ -43,7 +43,7 @@ TEST_SUITE("Array") {
 
     TEST_CASE("Assignment") {
         Data data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-        Data otherData;
+        Data otherData = {};
 
         data = otherData;
 
