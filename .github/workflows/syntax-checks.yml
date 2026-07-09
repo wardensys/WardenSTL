@@ -52,10 +52,10 @@ jobs:
               with:
                 components: cpp
 
-            - name: Check icpx folder
+            - name: Setup oneAPI
               if: matrix.compiler == 'icpx'
               run: |
-                ls -R /opt/intel || true
+                source /opt/intel/oneapi/setvars.sh
                 icpx --version
             
             - name: Install MSVC
