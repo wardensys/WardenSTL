@@ -9,20 +9,28 @@ jobs:
             fail-fast: false
             matrix:
                 cpp-version: ['11', '14', '17', '20', '23']
-                include:
-                    - os: ubuntu-latest
-                      compiler: g++
+                os: ['ubuntu-latest', 'macos-latest', 'windows-latest']
+                compiler: ['g++', 'clang++', 'cl', 'icpx']
 
-                    - os: ubuntu-latest
+                exclude:
+                    # macOS
+                    - os: macos-latest
+                      compiler: g++
+                    - os: macos-latest
+                      compiler: icpx
+                    - os: macos-latest
+                      compiler: cl
+
+                    # Windows
+                    - os: windows-latest
+                      compiler: g++
+                    - os: windows-latest
+                      compiler: clang++
+                    - os: windows-latest
                       compiler: icpx
 
+                    # Ubuntu
                     - os: ubuntu-latest
-                      compiler: clang++
-
-                    - os: macos-latest
-                      compiler: clang++
-
-                    - os: windows-latest
                       compiler: cl
         
         steps:
