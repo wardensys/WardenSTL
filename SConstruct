@@ -56,6 +56,7 @@ SYNTAX_CHECKS_FLAG = {
 # Environment
 
 env = Environment(
+    ENV = os.environ,
     CXXCOMSTR = 'Compiling [$SOURCE]',
     LINKCOMSTR = 'Linking [$TARGET]'
 )
