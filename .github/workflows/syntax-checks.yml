@@ -54,7 +54,14 @@ jobs:
 
             - name: Setup oneAPI
               if: matrix.compiler == 'icpx'
-              run: echo "source /opt/intel/oneapi/setvars.sh" >> ~/.bashrc
+              shell: bash
+              run: |
+                source /opt/intel/oneapi/setvars.sh
+                echo "$PATH" >> "$GITHUB_PATH"
+                echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH" >> "$GITHUB_ENV"
+                echo "LIBRARY_PATH=$LIBRARY_PATH" >> "$GITHUB_ENV"
+                echo "CPATH=$CPATH" >> "$GITHUB_ENV"
+                icpx --version
             
             - name: Install MSVC
               if: matrix.compiler == 'cl'
@@ -71,6 +78,4 @@ jobs:
                 python -m pip install scons
 
             - name: Run syntax checks
-              run: |
-                icpx --version
-                scons syntax-checks --compiler=${{ matrix.compiler }} --cppstd=${{ matrix.cpp-version }}
+              run: scons syntax-checks --compiler=${{ matrix.compiler }} --cppstd=${{ matrix.cpp-version }}
