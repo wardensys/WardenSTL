@@ -51,6 +51,10 @@ jobs:
               uses: neelravi/intel-oneapi-github-actions@latest
               with:
                 components: cpp
+
+            - name: Setup oneAPI
+              if: matrix.compiler == 'icpx'
+              run: echo "source /opt/intel/oneapi/setvars.sh" >> ~/.bashrc
             
             - name: Install MSVC
               if: matrix.compiler == 'cl'
