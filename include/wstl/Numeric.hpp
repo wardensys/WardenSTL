@@ -363,10 +363,10 @@ namespace wstl {
         T low = NumericLimits<T>::Min() * 2;
         T high = NumericLimits<T>::Max() / 2;
 
-        return (abs(a) <= high) && (abs(b) <= high) ? // typical case
+        return (fabs(a) <= high) && (fabs(b) <= high) ? // typical case
             (a + b) / 2 :                   // always correctly rounded
-            abs(a) < low ? a + (b / 2) :    // not safe to halve b
-            abs(b) < low ? (a / 2) + b :    // not safe to have a
+            fabs(a) < low ? a + (b / 2) :    // not safe to halve b
+            fabs(b) < low ? (a / 2) + b :    // not safe to have a
             a / 2 + b / 2;                  // otherwise correctly rounded
     }
 
