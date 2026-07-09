@@ -191,7 +191,7 @@ namespace wstl {}
         #define __WSTL_FALLTHROUGH__ __attribute__((fallthrough))
     #elif defined(__WSTL_MSVC__)
         #define __WSTL_UNUSED__ __pragma(warning(suppress: 4100))
-        #define __WSTL_NODISCARD__ __declspec(warn_unused_result)
+        #define __WSTL_NODISCARD__
         #define __WSTL_FALLTHROUGH__ /* fallthrough */
     #else
         #define __WSTL_UNUSED__
