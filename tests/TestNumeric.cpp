@@ -14,6 +14,7 @@
 #include <numeric>
 #include <list>
 #include <forward_list>
+#include <limits>
 
 
 TEST_SUITE("Numeric") {
