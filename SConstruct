@@ -1,5 +1,5 @@
 from SCons.Environment import Environment
-from SCons.Script import AddOption, GetOption
+from SCons.Script import AddOption, GetOption, COMMAND_LINE_TARGETS
 from SCons.Builder import Node
 import webbrowser
 import os
@@ -44,6 +44,13 @@ COMPILER_FLAGS = {
     'clang++': GNU_COMPILER_FLAGS,
     'icpx': GNU_COMPILER_FLAGS,
     "cl": [f"/std:c++{cppstd}", "/W4", "/WX", "/permissive-", "/Zc:__cplusplus"]
+}
+
+SYNTAX_CHECKS_FLAG = {
+    'g++': '-fsyntax-only',
+    'clang++': '-fsyntax-only',
+    'icpx': '-fsyntax-only',
+    'cl': '/Zs',
 }
 
 # Environment
@@ -99,23 +106,20 @@ env.AlwaysBuild(env.Alias(
 
 # Unit tests
 
-def GlobRecursive(env: Environment, pattern, node='.'):
-    src = str(env.Dir(node).srcnode())
-    cwd = str(env.Dir('.').srcnode())
-
-    dir_list = [src]
-    for root, directories, _ in os.walk(src):
-        for d in directories:
-            dir_list.append(os.path.join(root, d))
-
-    globs = []
-    for d in dir_list:
-        glob = env.Glob(os.path.join(os.path.relpath(d, cwd), pattern))
-        globs.append(glob)
-
-    return globs
-
 env.VariantDir('build/tests', 'tests', duplicate=0)
-tests = env.Program('build/tests/test', GlobRecursive(env, 'build/tests/*.cpp'))
+tests = env.Program('build/tests/test', env.Glob('build/tests/*.cpp'))
 
 env.AlwaysBuild(env.Alias('test', tests, './${SOURCE}'))
+
+# Syntax checks
+
+if 'syntax-checks' in COMMAND_LINE_TARGETS:
+    syntaxEnv = env.Clone(
+        CXXCOMSTR = 'Syntax checking [$SOURCE]'
+    )
+
+    syntaxEnv.Append(CXXFLAGS = SYNTAX_CHECKS_FLAG[syntaxEnv['CXX']])
+
+    syntaxChecks = syntaxEnv.Object(syntaxEnv.Glob('build/tests/syntax_checks/*.t.cpp'))
+
+    env.Alias('syntax-checks', syntaxChecks)

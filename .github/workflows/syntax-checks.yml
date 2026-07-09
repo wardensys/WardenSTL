@@ -1,10 +1,9 @@
-name: Unit tests
+name: Syntax checks
 on:
-    workflow_run:
-        workflows: ["Syntax checks"]
-        types: completed
+    push:
+        branches: [dev]
 jobs:
-    test:
+    syntax-check:
         runs-on: ${{ matrix.os }}
         strategy:
             fail-fast: false
@@ -36,12 +35,10 @@ jobs:
                     # Ubuntu
                     - os: ubuntu-latest
                       compiler: cl
-        
+
         steps:
             - name: Checkout repository
               uses: actions/checkout@v6
-              with:
-                submodules: recursive
 
             - name: Show configuration
               run: |
@@ -51,7 +48,11 @@ jobs:
 
             - name: Install Intel oneAPI
               if: matrix.compiler == 'icpx'
-              uses: neelravi/intel-oneapi-github-actions@latest
+              run: |
+                sudo wget -qO /etc/apt/trusted.gpg.d/intel-oneapi.asc https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
+                echo "deb https://apt.repos.intel.com/oneapi all main" | sudo tee /etc/apt/sources.list.d/intel-oneapi.list
+                source /opt/intel/oneapi/setvars.sh
+                icpx --version
             
             - name: Install MSVC
               if: matrix.compiler == 'cl'
@@ -67,6 +68,5 @@ jobs:
                 python -m pip install --upgrade pip
                 python -m pip install scons
 
-            - name: Run test
-              run: scons test --compiler=${{ matrix.compiler }} --cppstd=${{ matrix.cpp-version }}
-             
+            - name: Run syntax checks
+              run: scons syntax-checks --compiler=${{ matrix.compiler }} --cppstd=${{ matrix.cpp-version }}
