@@ -67,4 +67,6 @@ jobs:
                 python -m pip install scons
 
             - name: Run syntax checks
-              run: scons syntax-checks --compiler=${{ matrix.compiler }} --cppstd=${{ matrix.cpp-version }}
+              run: |
+                icpx --version
+                scons syntax-checks --compiler=${{ matrix.compiler }} --cppstd=${{ matrix.cpp-version }}
