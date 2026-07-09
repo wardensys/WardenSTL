@@ -1,6 +1,7 @@
 #include <doctest.h>
 #include <wstl/Iterator.hpp>
 #include <iterator>
+#include <vector>
 #include <wstl/Deque.hpp>
 #include <wstl/Array.hpp>
 
