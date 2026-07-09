@@ -1199,7 +1199,7 @@ namespace wstl {
                 for(size_t i = 0; i < count; ++i) to[i] = from[i];
             }
             else if(destination > source) {
-                for(size_t i = count - 1; i >= 0; --i) to[i] = from[i];
+                while(--count > 0) to[count] = from[count];
             }
 
             return destination;
