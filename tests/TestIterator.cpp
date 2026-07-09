@@ -573,7 +573,7 @@ TEST_SUITE("Iterator") {
         // Practical test
         std::vector<int> data = {1, 2, 3, 4, 5};
 
-        CHECK(std::equal(wstl::MakeReverseIterator(data.end()), wstl::MakeReverseIterator(data.begin()), data.rbegin()));
+        CHECK(wstl::Equal(wstl::MakeReverseIterator(data.end()), wstl::MakeReverseIterator(data.begin()), data.rbegin()));
     }
 
 
@@ -771,7 +771,7 @@ TEST_SUITE("Iterator") {
         
         std::copy(data.begin(), data.end(), wstl::Inserter(result, result.Begin() + 1));
 
-        CHECK(std::equal(expected.begin(), expected.end(), result.Begin()));
+        CHECK(wstl::Equal(expected.begin(), expected.end(), result.Begin()));
     }
 
     TEST_CASE("FrontInsertIterator") {
@@ -781,7 +781,7 @@ TEST_SUITE("Iterator") {
         
         std::copy(data.begin(), data.end(), wstl::FrontInserter(result));
 
-        CHECK(std::equal(expected.begin(), expected.end(), result.Begin()));
+        CHECK(wstl::Equal(expected.begin(), expected.end(), result.Begin()));
     }
 
     TEST_CASE("BackInsertIterator") {
@@ -791,7 +791,7 @@ TEST_SUITE("Iterator") {
         
         std::copy(data.begin(), data.end(), wstl::BackInserter(result));
 
-        CHECK(std::equal(expected.begin(), expected.end(), result.Begin()));
+        CHECK(wstl::Equal(expected.begin(), expected.end(), result.Begin()));
     }
 
     TEST_CASE("Range access functions") {
