@@ -50,7 +50,13 @@ jobs:
               if: matrix.compiler == 'icpx'
               uses: neelravi/intel-oneapi-github-actions@latest
               with:
-                  components: cpp
+                components: cpp
+
+            - name: Check icpx folder
+              if: matrix.compiler == 'icpx'
+              run: |
+                ls -R /opt/intel || true
+                icpx --version
             
             - name: Install MSVC
               if: matrix.compiler == 'cl'
