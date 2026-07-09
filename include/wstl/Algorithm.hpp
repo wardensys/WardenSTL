@@ -2242,7 +2242,7 @@ namespace wstl {
     // Sort
 
     /// @brief Sorts a range using a comparator. Uses quick sort algorithm internally
-    /// @details Time complexity: O(N log N) on average, O(N^2) in the worst case (N = last - first);\
+    /// @details Time complexity: O(N log N) on average, O(N^2) in the worst case (N = last - first);
     /// space complexity: O(log N) on average, O(N) in the worst case
     /// @param first Iterator to the beginning of the range
     /// @param last Iterator to the end of the range

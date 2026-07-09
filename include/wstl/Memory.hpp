@@ -603,7 +603,7 @@ namespace wstl {
         return UniquePointer<T>(::new T(Forward<Args>(args)...));
     }
 
-    /// @brief Creation of a `UniquePointer` for known bound array types is deleted\
+    /// @brief Creation of a `UniquePointer` for known bound array types is deleted
     /// @ingroup memory
     /// @since C++11
     /// @see https://en.cppreference.com/w/cpp/memory/make_unique

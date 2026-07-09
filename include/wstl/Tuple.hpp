@@ -115,12 +115,12 @@ namespace wstl {
         /// @brief Default constructor
         template<template<typename> class __Default = IsDefaultConstructible, template<typename> class __Implicit = IsImplicitlyDefaultConstructible,
         EnableIfType<Conjunction<__Implicit<Head>, __Implicit<Tail>...>::Value && Conjunction<__Default<Head>, __Default<Tail>...>::Value, int> = 0>
-        __WSTL_CONSTEXPR14__ Tuple() : m_Head(), m_Tail() {};
+        __WSTL_CONSTEXPR14__ Tuple() : m_Head(), m_Tail() {}
 
         /// @brief Default constructor
         template<template<typename> class __Default = IsDefaultConstructible, template<typename> class __Implicit = IsImplicitlyDefaultConstructible,
         EnableIfType<!Conjunction<__Implicit<Head>, __Implicit<Tail>...>::Value && Conjunction<__Default<Head>, __Default<Tail>...>::Value, int> = 0>
-        explicit __WSTL_CONSTEXPR14__ Tuple() : m_Head(), m_Tail() {};
+        explicit __WSTL_CONSTEXPR14__ Tuple() : m_Head(), m_Tail() {}
 
         /// @brief Copy constructor - copies from tuple of the same types
         /// @param other Tuple to copy from
