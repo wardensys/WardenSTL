@@ -151,28 +151,28 @@ TEST_SUITE("Array") {
     TEST_CASE("Iterator") {
         Data data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-        bool result = std::equal(data.Begin(), data.End(), compareData.begin());
+        bool result = wstl::Equal(data.Begin(), data.End(), compareData.begin());
         CHECK(result);
     }
 
     TEST_CASE("ConstIterator") {
         Data data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-        bool result = std::equal(data.ConstBegin(), data.ConstEnd(), compareData.cbegin());
+        bool result = wstl::Equal(data.ConstBegin(), data.ConstEnd(), compareData.cbegin());
         CHECK(result);
     }
 
     TEST_CASE("ReverseIterator") {
         Data data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-        bool result = std::equal(data.ReverseBegin(), data.ReverseEnd(), compareData.rbegin());
+        bool result = wstl::Equal(data.ReverseBegin(), data.ReverseEnd(), compareData.rbegin());
         CHECK(result);
     }
 
     TEST_CASE("ConstReverseIterator") {
         Data data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-        bool result = std::equal(data.ConstReverseBegin(), data.ConstReverseEnd(), compareData.crbegin());
+        bool result = wstl::Equal(data.ConstReverseBegin(), data.ConstReverseEnd(), compareData.crbegin());
         CHECK(result);
     }
 
