@@ -26,11 +26,11 @@ namespace wstl {
         /// @param file File where the exception occurred
         /// @param line Line number where the exception occurred
         /// @param message Message describing the exception, default is `Logic error`
-        __WSTL_CONSTEXPR__ LogicError(StringType file, NumericType line, StringType message = "Logic error") __WSTL_NOEXCEPT__ : Exception(file, line, message) {}
+        __WSTL_CONSTEXPR20__ LogicError(StringType file, NumericType line, StringType message = "Logic error") __WSTL_NOEXCEPT__ : Exception(file, line, message) {}
         #else
         /// @brief Constructor
         /// @param message Message describing the exception, default is `Logic error`
-        __WSTL_CONSTEXPR__ LogicError(StringType message = "Logic error") __WSTL_NOEXCEPT__ : Exception(message) {}
+        __WSTL_CONSTEXPR20__ LogicError(StringType message = "Logic error") __WSTL_NOEXCEPT__ : Exception(message) {}
         #endif
 
         /// @copydoc Exception::Name()
@@ -49,11 +49,11 @@ namespace wstl {
         /// @param file File where the exception occurred
         /// @param line Line number where the exception occurred
         /// @param message Message describing the exception, default is `Length error`
-        __WSTL_CONSTEXPR__ LengthError(StringType file, NumericType line, StringType message = "Length error") __WSTL_NOEXCEPT__ : LogicError(file, line, message) {}
+        __WSTL_CONSTEXPR20__ LengthError(StringType file, NumericType line, StringType message = "Length error") __WSTL_NOEXCEPT__ : LogicError(file, line, message) {}
         #else
         /// @brief Constructor with message
         /// @param message Message describing the exception, default is `Length error`
-        __WSTL_CONSTEXPR__ LengthError(StringType message = "Length error") __WSTL_NOEXCEPT__ : LogicError(message) {}
+        __WSTL_CONSTEXPR20__ LengthError(StringType message = "Length error") __WSTL_NOEXCEPT__ : LogicError(message) {}
         #endif
 
         /// @copydoc Exception::Name()
@@ -72,11 +72,11 @@ namespace wstl {
         /// @param file File where the exception occurred
         /// @param line Line number where the exception occurred
         /// @param message Message describing the exception, default is `Out of range`
-        __WSTL_CONSTEXPR__ OutOfRange(StringType file, NumericType line, StringType message = "Out of range") __WSTL_NOEXCEPT__ : LogicError(file, line, message) {}
+        __WSTL_CONSTEXPR20__ OutOfRange(StringType file, NumericType line, StringType message = "Out of range") __WSTL_NOEXCEPT__ : LogicError(file, line, message) {}
         #else
         /// @brief Constructor
         /// @param message Message describing the exception, default is `Out of range`
-        __WSTL_CONSTEXPR__ OutOfRange(StringType message = "Out of range") __WSTL_NOEXCEPT__ : LogicError(message) {}
+        __WSTL_CONSTEXPR20__ OutOfRange(StringType message = "Out of range") __WSTL_NOEXCEPT__ : LogicError(message) {}
         #endif
 
         /// @copydoc Exception::Name()
@@ -95,11 +95,11 @@ namespace wstl {
         /// @param file File where the exception occurred
         /// @param line Line number where the exception occurred
         /// @param message Message describing the exception, default is `Bad cast`
-        __WSTL_CONSTEXPR__ BadCast(StringType file, NumericType line, StringType message = "Bad cast") __WSTL_NOEXCEPT__ : Exception(file, line, message) {}
+        __WSTL_CONSTEXPR20__ BadCast(StringType file, NumericType line, StringType message = "Bad cast") __WSTL_NOEXCEPT__ : Exception(file, line, message) {}
         #else
         /// @brief Constructor with a message
         /// @param message Message describing the exception, default is `Bad cast`
-        __WSTL_CONSTEXPR__ BadCast(StringType message = "Bad cast") __WSTL_NOEXCEPT__ : Exception(message) {}
+        __WSTL_CONSTEXPR20__ BadCast(StringType message = "Bad cast") __WSTL_NOEXCEPT__ : Exception(message) {}
         #endif
 
         /// @copydoc Exception::Name()
@@ -118,11 +118,11 @@ namespace wstl {
         /// @param file File where the exception occurred
         /// @param line Line number where the exception occurred
         /// @param message Message describing the exception, default is `Runtime error`
-        __WSTL_CONSTEXPR__ RuntimeError(StringType file, NumericType line, StringType message = "Runtime error") __WSTL_NOEXCEPT__ : Exception(file, line, message) {}
+        __WSTL_CONSTEXPR20__ RuntimeError(StringType file, NumericType line, StringType message = "Runtime error") __WSTL_NOEXCEPT__ : Exception(file, line, message) {}
         #else
         /// @brief Constructor with a message
         /// @param message Message describing the exception, default is `Runtime error`
-        __WSTL_CONSTEXPR__ RuntimeError(StringType message = "Runtime error") __WSTL_NOEXCEPT__ : Exception(message) {}
+        __WSTL_CONSTEXPR20__ RuntimeError(StringType message = "Runtime error") __WSTL_NOEXCEPT__ : Exception(message) {}
         #endif
 
         /// @copydoc Exception::Name()
@@ -141,11 +141,11 @@ namespace wstl {
         /// @param file File where the exception occurred
         /// @param line Line number where the exception occurred
         /// @param message Message describing the exception, default is `Runtime error`
-        __WSTL_CONSTEXPR__ OverflowError(StringType file, NumericType line, StringType message = "Overflow error") __WSTL_NOEXCEPT__ : RuntimeError(file, line, message) {}
+        __WSTL_CONSTEXPR20__ OverflowError(StringType file, NumericType line, StringType message = "Overflow error") __WSTL_NOEXCEPT__ : RuntimeError(file, line, message) {}
         #else
         /// @brief Constructor with a message
         /// @param message Message describing the exception, default is `Runtime error`
-        __WSTL_CONSTEXPR__ OverflowError(StringType message = "Overflow error") __WSTL_NOEXCEPT__ : RuntimeError(message) {}
+        __WSTL_CONSTEXPR20__ OverflowError(StringType message = "Overflow error") __WSTL_NOEXCEPT__ : RuntimeError(message) {}
         #endif
 
         /// @copydoc Exception::Name()

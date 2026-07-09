@@ -109,7 +109,7 @@ namespace wstl {}
     #define __WSTL_CONSTEXPR11__ constexpr
     #define __WSTL_FINAL__ final
     #define __WSTL_DELETE__ = delete
-    #define __WSTL_DEFAULT__ = default
+    #define __WSTL_DEFAULT__ = default;
     #define __WSTL_OVERRIDE__ override
     #define __WSTL_MOVE__(x) wstl::Move(x)
     #define __WSTL_ENUM_CLASS__(name) enum class name
@@ -142,7 +142,7 @@ namespace wstl {}
     #define __WSTL_CONSTEXPR11__
     #define __WSTL_FINAL__
     #define __WSTL_DELETE__
-    #define __WSTL_DEFAULT__
+    #define __WSTL_DEFAULT__ {}
     #define __WSTL_OVERRIDE__
     #define __WSTL_NOEXCEPT_EXPR__(...)
     #define __WSTL_MOVE__(x) x
@@ -223,34 +223,82 @@ namespace wstl {}
 // Pragma diagnostic macros
 
 #ifdef __WSTL_CLANG__
+    /// @brief Pushes the current diagnostic state onto the stack
+    /// @ingroup utilities
     #define WSTL_DIAGNOSTIC_PUSH _Pragma("clang diagnostic push")
+
+    /// @brief Pops the diagnostic state from the stack
+    /// @ingroup utilities
     #define WSTL_DIAGNOSTIC_POP _Pragma("clang diagnostic pop")
+
+    /// @brief Ignores a specific diagnostic warning
+    /// @param w The warning to ignore (as a string)
+    /// @ingroup utilities
     #define WSTL_DIAGNOSTIC_IGNORE(w) _Pragma(WSTL_STRINGIFY(clang diagnostic ignored w))
 #elif defined(__WSTL_GCC__)
+    /// @brief Pushes the current diagnostic state onto the stack
+    /// @ingroup utilities
     #define WSTL_DIAGNOSTIC_PUSH _Pragma("GCC diagnostic push")
+
+    /// @brief Pops the diagnostic state from the stack
+    /// @ingroup utilities
     #define WSTL_DIAGNOSTIC_POP _Pragma("GCC diagnostic pop")
+
+    /// @brief Ignores a specific diagnostic warning
+    /// @param w The warning to ignore (as a string)
+    /// @ingroup utilities
     #define WSTL_DIAGNOSTIC_IGNORE(w) _Pragma(WSTL_STRINGIFY(GCC diagnostic ignored w))
 #elif defined(__WSTL_MSVC__) || defined(__WSTL_ICC__)
+    /// @brief Pushes the current diagnostic state onto the stack
+    /// @ingroup utilities
     #define WSTL_DIAGNOSTIC_PUSH _Pragma(warning(push))
+
+    /// @brief Pops the diagnostic state from the stack
+    /// @ingroup utilities
     #define WSTL_DIAGNOSTIC_POP _Pragma(warning(pop))
+
+    /// @brief Ignores a specific diagnostic warning
+    /// @param w The warning to ignore (as a string)
+    /// @ingroup utilities
     #define WSTL_DIAGNOSTIC_IGNORE(w) _Pragma(warning(disable: w))
 #else
+    /// @brief Pushes the current diagnostic state onto the stack (no-op for unsupported compilers)
+    /// @ingroup utilities
     #define WSTL_DIAGNOSTIC_PUSH
+
+    /// @brief Pops the diagnostic state from the stack (no-op for unsupported compilers)
+    /// @ingroup utilities
     #define WSTL_DIAGNOSTIC_POP
+
+    /// @brief Ignores a specific diagnostic warning (no-op for unsupported compilers)
+    /// @param w The warning to ignore (as a string)
+    /// @ingroup utilities
     #define WSTL_DIAGNOSTIC_IGNORE(w)
 #endif
 
 // General macro utilities
 
 #define __WSTL_STRINGIFY_IMPL__(s) #s
+
+/// @brief A macro to convert a token into a string literal
+/// @param s The token to convert
+/// @ingroup utilities
 #define WSTL_STRINGIFY(s) __WSTL_STRINGIFY_IMPL__(s)
 
 #define __WSTL_CONCATENATE_IMPL__(a, b) a##b
+
+/// @brief A macro to concatenate two tokens into a single token
+/// @param a First token
+/// @param b Second token
+/// @ingroup utilities
 #define WSTL_CONCATENATE(a, b) __WSTL_CONCATENATE_IMPL__(a, b)
 
 #define __WSTL_COUNT_ARGS_IMPL__(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, N,...) N
 
 #ifdef __WSTL_CXX20__
+    /// @brief A macro to count the number of arguments passed to it (up to 10)
+    /// @param ... The arguments to count
+    /// @ingroup utilities
     #define WSTL_COUNT_ARGS(...) __WSTL_COUNT_ARGS_IMPL__(dummy __VA_OPT__(,) __VA_ARGS__, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
 #elif defined(__WSTL_GCC__) || defined(__WSTL_CLANG__) || defined(__WSTL_ICC__)
     WSTL_DIAGNOSTIC_PUSH
@@ -258,10 +306,21 @@ namespace wstl {}
         WSTL_DIAGNOSTIC_IGNORE("-Wgnu-zero-variadic-macro-arguments")
     #endif
 
+    /// @brief A macro to count the number of arguments passed to it (up to 10)
+    /// @param ... The arguments to count
+    /// @ingroup utilities
     #define WSTL_COUNT_ARGS(...) __WSTL_COUNT_ARGS_IMPL__(dummy, ##__VA_ARGS__, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
     WSTL_DIAGNOSTIC_POP
 #else
+    /// @brief A macro to count the number of arguments passed to it (up to 10)
+    /// @param ... The arguments to count
+    /// @ingroup utilities
     #define WSTL_COMMA_IF_ARGS(...) __WSTL_COUNT_ARGS_IMPL__(dummy, __VA_ARGS__, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
 #endif
+
+/// @brief A macro to mark a variable as unused, preventing compiler warnings about unused variables
+/// @param x The variable to mark as unused
+/// @ingroup utilities
+#define WSTL_UNUSED(x) ((void) x)
 
 #endif

@@ -37,13 +37,13 @@ namespace wstl {
         /// @param line Line number (usually __LINE__)
         /// @param message The exception message
         /// @note This is only available if __WSTL_EXCEPTION_LOCATION__ is defined
-        __WSTL_CONSTEXPR__ Exception(StringType file, NumericType line, StringType message) __WSTL_NOEXCEPT__
+        __WSTL_CONSTEXPR20__ Exception(StringType file, NumericType line, StringType message) __WSTL_NOEXCEPT__
             : m_Message(message), m_Line(line), m_Filename(file) {}
 
         #else 
         /// @brief Constructor
         /// @param message The exception message
-        __WSTL_CONSTEXPR__ Exception(StringType message) __WSTL_NOEXCEPT__ : m_Message(message) {}
+        __WSTL_CONSTEXPR20__ Exception(StringType message) __WSTL_NOEXCEPT__ : m_Message(message) {}
         #endif
 
         /// @brief Virtual destructor
@@ -55,20 +55,20 @@ namespace wstl {
         }
 
         /// @brief Gets the exception message
-        __WSTL_CONSTEXPR__ StringType What() const __WSTL_NOEXCEPT__ {
+        __WSTL_CONSTEXPR20__ StringType What() const __WSTL_NOEXCEPT__ {
             return m_Message;
         }
 
         #ifdef __WSTL_EXCEPTION_LOCATION__
         /// @brief Gets the file for the exception
         /// @note This is only available if __WSTL_EXCEPTION_LOCATION__ is defined
-        __WSTL_CONSTEXPR__ StringType Filename() const __WSTL_NOEXCEPT__ {
+        __WSTL_CONSTEXPR20__ StringType Filename() const __WSTL_NOEXCEPT__ {
             return m_Filename;
         }
 
         /// @brief Gets the line number for the exception
         /// @note This is only available if __WSTL_EXCEPTION_LOCATION__ is defined
-        __WSTL_CONSTEXPR__ NumericType Line() const __WSTL_NOEXCEPT__ {
+        __WSTL_CONSTEXPR20__ NumericType Line() const __WSTL_NOEXCEPT__ {
             return m_Line;
         }
         #endif

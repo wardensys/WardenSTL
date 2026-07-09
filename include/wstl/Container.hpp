@@ -205,10 +205,10 @@ namespace wstl {
     protected:
         /// @brief Protected default constructor
         /// @details Only available if Storage is default-constructible
-        ContainerBase() : m_Storage(), m_CurrentSize(0) {}
+        __WSTL_CONSTEXPR__ ContainerBase() : m_Storage(), m_CurrentSize(0) {}
 
         /// @brief Protected destructor
-        ~ContainerBase() {}
+        ~ContainerBase() __WSTL_DEFAULT__
 
         Storage m_Storage;
         SizeType m_CurrentSize;
@@ -256,10 +256,10 @@ namespace wstl {
         /// @brief Protected constructor with storage parameter
         /// @details Only available if Storage is not default-constructible
         /// @param storage The storage to use for the container
-        ContainerBase(const Storage& storage) : m_Storage(storage), m_CurrentSize(0) {}
+        __WSTL_CONSTEXPR__ ContainerBase(const Storage& storage) : m_Storage(storage), m_CurrentSize(0) {}
 
         /// @brief Protected destructor
-        ~ContainerBase() {}
+        ~ContainerBase() __WSTL_DEFAULT__
 
         Storage m_Storage;
         SizeType m_CurrentSize;
@@ -302,10 +302,10 @@ namespace wstl {
     protected:
         /// @brief Protected constructor
         /// @param capacity The maximum number of elements container can hold
-        ContainerBase(SizeType capacity) : m_CurrentSize(0), m_Capacity(capacity) {}
+        __WSTL_CONSTEXPR__ ContainerBase(SizeType capacity) : m_CurrentSize(0), m_Capacity(capacity) {}
 
         /// @brief Protected destructor
-        ~ContainerBase() {}
+        ~ContainerBase() __WSTL_DEFAULT__
 
         SizeType m_CurrentSize;
         const SizeType m_Capacity;
