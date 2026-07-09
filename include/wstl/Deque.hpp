@@ -86,12 +86,12 @@ namespace wstl {
 
             /// @brief Const dereference operator
             ReferenceType operator*() const {
-                return m_Deque->m_Storage.Data[m_Deque->PhysicalIndex(m_CurrentIndex)];
+                return m_Deque->m_Storage.Data[m_Deque->PhysicalIndex(SizeType(m_CurrentIndex))];
             }
 
             /// @brief Const arrow operator
             PointerType operator->() const {
-                return m_Deque->m_Storage.Data + m_Deque->PhysicalIndex(m_CurrentIndex);
+                return m_Deque->m_Storage.Data + m_Deque->PhysicalIndex(SizeType(m_CurrentIndex));
             }
 
             /// @brief Pre-increment operator - moves the iterator forward by one element
@@ -143,7 +143,7 @@ namespace wstl {
             /// @param i Index of the element to access
             /// @return Reference to the element at the given index
             ReferenceType operator[](SizeType i) const {
-                return m_Deque->m_Storage.Data[m_Deque->PhysicalIndex(i + m_CurrentIndex)];
+                return m_Deque->m_Storage.Data[m_Deque->PhysicalIndex(i + SizeType(m_CurrentIndex))];
             }
 
             /// @brief Addition operator - allows adding an offset to the iterator
@@ -237,12 +237,12 @@ namespace wstl {
 
         private:
             const BasicDeque* m_Deque;
-            SizeType m_CurrentIndex;
+            DifferenceType m_CurrentIndex;
 
             /// @brief Private constructor
             /// @param deque The deque to create the iterator for
             /// @param start Index of the starting element
-            ConstIterator(const BasicDeque* deque, SizeType start) : m_Deque(deque), m_CurrentIndex(start) {}
+            ConstIterator(const BasicDeque* deque, DifferenceType start) : m_Deque(deque), m_CurrentIndex(start) {}
         };
 
         /// @brief Circular iterator type for the deque
@@ -272,12 +272,12 @@ namespace wstl {
 
             /// @brief Dereference operator
             ReferenceType operator*() const {
-                return m_Deque->m_Storage.Data[m_Deque->PhysicalIndex(m_CurrentIndex)];
+                return m_Deque->m_Storage.Data[m_Deque->PhysicalIndex(SizeType(m_CurrentIndex))];
             }
 
             /// @brief Arrow operator
             PointerType operator->() const {
-                return m_Deque->m_Storage.Data + m_Deque->PhysicalIndex(m_CurrentIndex);
+                return m_Deque->m_Storage.Data + m_Deque->PhysicalIndex(SizeType(m_CurrentIndex));
             }
 
             /// @brief Pre-increment operator - moves the iterator forward by one element
@@ -422,12 +422,12 @@ namespace wstl {
 
         private:
             BasicDeque* m_Deque;
-            SizeType m_CurrentIndex;
+            DifferenceType m_CurrentIndex;
 
             /// @brief Private constructor
             /// @param deque The deque to create the iterator for
             /// @param start Index of the starting element
-            Iterator(BasicDeque* deque, SizeType start) : m_Deque(deque), m_CurrentIndex(start) {}
+            Iterator(BasicDeque* deque, DifferenceType start) : m_Deque(deque), m_CurrentIndex(start) {}
         };
 
         typedef wstl::ReverseIterator<Iterator> ReverseIterator;
@@ -500,7 +500,7 @@ namespace wstl {
         /// @throws `LengthError` if the range size exceeds the deque's capacity
         template<typename InputIterator>
         BasicDeque(InputIterator first, InputIterator last, typename EnableIf<!IsIntegral<InputIterator>::Value, int>::Type = 0) : Base(), m_StartIndex(0) {
-            __WSTL_ASSERT_RETURN__(Distance(first, last) <= this->Capacity(), WSTL_MAKE_EXCEPTION(LengthError, "Deque overflow"));
+            __WSTL_ASSERT_RETURN__(Distance(first, last) <= DifferenceType(this->Capacity()), WSTL_MAKE_EXCEPTION(LengthError, "Deque overflow"));
             for(; first != last; ++first) CreateBack(*first);
         }
 
@@ -512,7 +512,7 @@ namespace wstl {
         /// @throws `LengthError` if the range size exceeds the deque's capacity
         template<typename InputIterator>
         BasicDeque(InputIterator first, InputIterator last, const StorageType& storage, typename EnableIf<!IsIntegral<InputIterator>::Value, int>::Type = 0) : Base(storage), m_StartIndex(0) {
-            __WSTL_ASSERT_RETURN__(Distance(first, last) <= this->Capacity(), WSTL_MAKE_EXCEPTION(LengthError, "Deque overflow"));
+            __WSTL_ASSERT_RETURN__(Distance(first, last) <= DifferenceType(this->Capacity()), WSTL_MAKE_EXCEPTION(LengthError, "Deque overflow"));
             for(; first != last; ++first) CreateBack(*first);
         }
 
@@ -623,7 +623,7 @@ namespace wstl {
         /// @throws `LengthError` if the deque's capacity is exceeded
         template<typename InputIterator>
         typename EnableIf<!IsIntegral<InputIterator>::Value, void>::Type Assign(InputIterator first, InputIterator last) {
-            __WSTL_ASSERT_RETURN__(Distance(first, last) <= this->Capacity(), WSTL_MAKE_EXCEPTION(LengthError, "Deque overflow"));
+            __WSTL_ASSERT_RETURN__(Distance(first, last) <= DifferenceType(this->Capacity()), WSTL_MAKE_EXCEPTION(LengthError, "Deque overflow"));
 
             Initialize<ValueType>();
             for(; first != last; ++first) CreateBack(*first);
@@ -738,17 +738,17 @@ namespace wstl {
 
         /// @brief Gets iterator to the end of the deque
         Iterator End() {
-            return Iterator(this, this->m_CurrentSize);
+            return Iterator(this, DifferenceType(this->m_CurrentSize));
         }
 
         /// @brief Gets const iterator to the end of the deque
         ConstIterator End() const {
-            return ConstIterator(this, this->m_CurrentSize);
+            return ConstIterator(this, DifferenceType(this->m_CurrentSize));
         }
 
         /// @brief Gets const iterator to the end of the deque
         ConstIterator ConstEnd() const {
-            return ConstIterator(this, this->m_CurrentSize);
+            return ConstIterator(this, DifferenceType(this->m_CurrentSize));
         }
 
         /// @brief Gets reverse iterator to the beginning of the deque
@@ -1878,7 +1878,7 @@ namespace wstl {
         /// @param first Iterator to the first element in the range
         /// @param last Iterator to the element following the last element in the range
         template<typename InputIterator>
-        Deque(InputIterator first, InputIterator last) : Base(first, last) {}
+        Deque(InputIterator first, InputIterator last, typename EnableIf<!IsIntegral<InputIterator>::Value, int>::Type = 0) : Base(first, last) {}
 
         /// @brief Constructor that initializes the deque with a number of copies of a value
         /// @param count The number of elements to create
@@ -1950,7 +1950,7 @@ namespace wstl {
     /// @ingroup deque
     /// @since C++11
     template<typename T, typename First, typename... Rest>
-    constexpr auto MakeDeque(First&& first, Rest&&... rest) {
+    constexpr auto MakeDeque(First&& first, Rest&&... rest) -> Deque<T, sizeof...(rest) + 1> {
         return Deque<T, sizeof...(rest) + 1>({ Forward<First>(first), Forward<Rest>(rest)... });
     }
 
@@ -1960,7 +1960,7 @@ namespace wstl {
     /// @ingroup deque
     /// @since C++11
     template<typename First, typename... Rest>
-    constexpr auto MakeDeque(First&& first, Rest&&... rest) {
+    constexpr auto MakeDeque(First&& first, Rest&&... rest) -> Deque<CommonTypeType<First, Rest...>, sizeof...(rest) + 1> {
         using T = CommonTypeType<First, Rest...>;
         return Deque<T, sizeof...(rest) + 1>({ Forward<First>(first), Forward<Rest>(rest)... });
     }
@@ -1991,20 +1991,20 @@ namespace wstl {
             /// @brief Constructor that uses external buffer
             /// @param buffer Pointer to the external buffer
             /// @param capacity Capacity of the external buffer
-            Deque(T* buffer, SizeType capacity) : Base(ExternalStorage(buffer, capacity)) {}
+            Deque(T* buffer, SizeType capacity) : Base(ExternalStorage<T>(buffer, capacity)) {}
 
             /// @brief Copy constructor that uses external buffer
             /// @param other The deque to copy from
             /// @param buffer Pointer to the external buffer
             /// @param capacity Capacity of the external buffer
-            Deque(const Deque& other, T* buffer, SizeType capacity) : Base(other, ExternalStorage(buffer, capacity)) {}
+            Deque(const Deque& other, T* buffer, SizeType capacity) : Base(other, ExternalStorage<T>(buffer, capacity)) {}
 
             #ifdef __WSTL_CXX11__
             /// @brief Move constructor that uses external buffer
             /// @param other The deque to move from
             /// @param buffer Pointer to the external buffer
             /// @param capacity Capacity of the external buffer
-            Deque(Deque&& other, T* buffer, SizeType capacity) : Base(Move(other), ExternalStorage(buffer, capacity)) {}
+            Deque(Deque&& other, T* buffer, SizeType capacity) : Base(Move(other), ExternalStorage<T>(buffer, capacity)) {}
             #endif
 
             /// @brief Constructor that initializes the deque with a range of elements
@@ -2013,20 +2013,20 @@ namespace wstl {
             /// @param buffer Pointer to the external buffer
             /// @param capacity Capacity of the external buffer
             template<typename InputIterator>
-            Deque(InputIterator first, InputIterator last, T* buffer, SizeType capacity) : Base(first, last, ExternalStorage(buffer, capacity)) {}
+            Deque(InputIterator first, InputIterator last, T* buffer, SizeType capacity, typename EnableIf<!IsIntegral<InputIterator>::Value, int>::Type = 0) : Base(first, last, ExternalStorage<T>(buffer, capacity)) {}
 
             /// @brief Constructor that initializes the deque with a number of copies of a value
             /// @param count The number of elements to create
             /// @param buffer Pointer to the external buffer
             /// @param capacity Capacity of the external buffer
-            explicit Deque(SizeType count, T* buffer, SizeType capacity) : Base(count, ExternalStorage(buffer, capacity)) {}
+            explicit Deque(SizeType count, T* buffer, SizeType capacity) : Base(count, ExternalStorage<T>(buffer, capacity)) {}
 
             /// @brief Constructor that initializes the deque with a number of copies of a value
             /// @param count The number of elements to create
             /// @param value The value to fill the deque with
             /// @param buffer Pointer to the external buffer
             /// @param capacity Capacity of the external buffer
-            Deque(SizeType count, ConstReferenceType value, T* buffer, SizeType capacity) : Base(count, value, ExternalStorage(buffer, capacity)) {}
+            Deque(SizeType count, ConstReferenceType value, T* buffer, SizeType capacity) : Base(count, value, ExternalStorage<T>(buffer, capacity)) {}
 
             #if defined(__WSTL_CXX11__) && !defined(__WSTL_NO_INITIALIZERLIST__)
             /// @brief Constructor that initializes the deque with an initializer list
@@ -2034,7 +2034,7 @@ namespace wstl {
             /// @param buffer Pointer to the external buffer
             /// @param capacity Capacity of the external buffer
             /// @since C++11
-            Deque(InitializerList<ValueType> list, T* buffer, SizeType capacity) : Base(list, ExternalStorage(buffer, capacity)) {}
+            Deque(InitializerList<ValueType> list, T* buffer, SizeType capacity) : Base(list, ExternalStorage<T>(buffer, capacity)) {}
             #endif
 
             /// @brief Copy assignment operator
@@ -2115,7 +2115,7 @@ namespace wstl {
             /// @param last Iterator to the element following the last element in the range
             /// @param buffer Pointer to the external buffer
             template<typename InputIterator>
-            FixedDeque(InputIterator first, InputIterator last, T* buffer) : Base(first, last, StorageType(buffer)) {}
+            FixedDeque(InputIterator first, InputIterator last, T* buffer, typename EnableIf<!IsIntegral<InputIterator>::Value, int>::Type = 0) : Base(first, last, StorageType(buffer)) {}
 
             /// @brief Constructor that initializes the deque with a number of copies of a value
             /// @param count The number of elements to create
