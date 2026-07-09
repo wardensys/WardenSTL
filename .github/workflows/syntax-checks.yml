@@ -48,11 +48,9 @@ jobs:
 
             - name: Install Intel oneAPI
               if: matrix.compiler == 'icpx'
-              run: |
-                sudo wget -qO /etc/apt/trusted.gpg.d/intel-oneapi.asc https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
-                echo "deb https://apt.repos.intel.com/oneapi all main" | sudo tee /etc/apt/sources.list.d/intel-oneapi.list
-                source /opt/intel/oneapi/setvars.sh
-                icpx --version
+              uses: neelravi/intel-oneapi-github-actions@latest
+              with:
+                  components: cpp
             
             - name: Install MSVC
               if: matrix.compiler == 'cl'
