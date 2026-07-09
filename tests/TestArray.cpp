@@ -11,6 +11,7 @@
 
 #include <doctest.h>
 #include <wstl/Array.hpp>
+#include <array>
 
 #include "Utils.hpp"
 
