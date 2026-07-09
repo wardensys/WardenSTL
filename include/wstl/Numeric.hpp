@@ -363,11 +363,11 @@ namespace wstl {
         T low = NumericLimits<T>::Min() * 2;
         T high = NumericLimits<T>::Max() / 2;
 
-        return (fabs(a) <= high) && (fabs(b) <= high) ? // typical case
-            (a + b) / 2 :                   // always correctly rounded
-            fabs(a) < low ? a + (b / 2) :    // not safe to halve b
-            fabs(b) < low ? (a / 2) + b :    // not safe to have a
-            a / 2 + b / 2;                  // otherwise correctly rounded
+        return (Absolute(a) <= high) && (Absolute(b) <= high) ? // typical case
+            (a + b) / 2 :                                       // always correctly rounded
+            Absolute(a) < low ? a + (b / 2) :                   // not safe to halve b
+            Absolute(b) < low ? (a / 2) + b :                   // not safe to have a
+            a / 2 + b / 2;                                      // otherwise correctly rounded
     }
 
     /// @brief Computes the midpoint of two integral numbers (signed or unsigned), handling overflow correctly

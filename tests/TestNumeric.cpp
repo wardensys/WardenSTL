@@ -15,6 +15,8 @@
 #include <list>
 #include <forward_list>
 #include <limits>
+#include <vector>
+#include <deque>
 
 
 TEST_SUITE("Numeric") {
