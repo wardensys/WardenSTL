@@ -11,6 +11,7 @@
 
 #include <doctest.h>
 #include <wstl/Limits.hpp>
+#include <limits>
 
 
 TEST_SUITE("Limits") {
