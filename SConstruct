@@ -77,8 +77,8 @@ env.Append(
         '__WSTL_CHECK_INDEXOPERATOR__'
     ],
     CPPPATH = [
-        env.Dir('doctest/doctest').srcnode(),
-        env.Dir('include').srcnode()
+        env.Dir('#/doctest/doctest').srcnode(),
+        env.Dir('#/include').srcnode()
     ]
 )
 
