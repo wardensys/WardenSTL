@@ -42,7 +42,7 @@ GNU_COMPILER_FLAGS = [
 COMPILER_FLAGS = {
     'g++': GNU_COMPILER_FLAGS,
     'clang++': [*GNU_COMPILER_FLAGS, '-Wno-unused-command-line-argument'],
-    'icpx': GNU_COMPILER_FLAGS,
+    'icpx': [*GNU_COMPILER_FLAGS, '-Wno-unused-command-line-argument'],
     "cl": [f"/std:c++{cppstd}", "/W4", "/WX", "/permissive-", "/Zc:__cplusplus"]
 }
 

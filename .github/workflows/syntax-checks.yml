@@ -51,14 +51,6 @@ jobs:
               uses: neelravi/intel-oneapi-github-actions@latest
               with:
                 components: cpp
-
-            - name: Setup oneAPI
-              if: matrix.compiler == 'icpx'
-              shell: bash
-              run: |
-                source /opt/intel/oneapi/setvars.sh
-                printenv
-                printenv >> "$GITHUB_ENV"
             
             - name: Install MSVC
               if: matrix.compiler == 'cl'
