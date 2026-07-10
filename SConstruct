@@ -121,6 +121,8 @@ if 'syntax-checks' in COMMAND_LINE_TARGETS:
     )
 
     syntaxEnv.Append(CXXFLAGS = SYNTAX_CHECKS_FLAG[syntaxEnv['CXX']])
+
+    print([str(n) for n in syntaxEnv['CPPPATH']])
     
     testSource = syntaxEnv.Glob('tests/*.cpp')
     syntaxSource = syntaxEnv.Glob('tests/syntax_checks/*.t.cpp')
