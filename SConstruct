@@ -108,6 +108,7 @@ env.AlwaysBuild(env.Alias(
 # Unit tests
 
 env.VariantDir('build/tests', 'tests', duplicate=0)
+
 tests = env.Program('build/tests/test', env.Glob('build/tests/*.cpp'))
 
 env.AlwaysBuild(env.Alias('test', tests, './${SOURCE}'))
@@ -120,7 +121,10 @@ if 'syntax-checks' in COMMAND_LINE_TARGETS:
     )
 
     syntaxEnv.Append(CXXFLAGS = SYNTAX_CHECKS_FLAG[syntaxEnv['CXX']])
+    
+    testSource = syntaxEnv.Glob('tests/*.cpp')
+    syntaxSource = syntaxEnv.Glob('tests/syntax_checks/*.t.cpp')
 
-    syntaxChecks = syntaxEnv.Object(syntaxEnv.Glob('build/tests/syntax_checks/*.t.cpp'))
+    syntaxChecks = syntaxEnv.Object([*syntaxSource, *testSource])
 
     env.Alias('syntax-checks', syntaxChecks)
