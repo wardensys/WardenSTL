@@ -5,6 +5,7 @@
 
 #include <doctest.h>
 #include <wstl/private/Swap.hpp>
+#include <algorithm>
 
 
 struct MemberSwappable {
