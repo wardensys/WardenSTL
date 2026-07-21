@@ -102,6 +102,10 @@ namespace wstl {}
 #define __WSTL_HAS_BUILTIN__(x) 0
 #endif
 
+#if defined(__STDC_HOSTED__) && (__STDC_HOSTED__ == 0)
+#define __WSTL_FREESTANDING__
+#endif
+
 // C++11 features
 
 #if defined(__WSTL_CXX11__)

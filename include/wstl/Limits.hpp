@@ -78,7 +78,7 @@
     #endif
 #endif
 
-#ifndef HUGE_VAL
+#if !defined(HUGE_VAL) && defined(__WSTL_FREESTANDING__)
     #define HUGE_VALF FLT_MAX
     #define HUGE_VAL DBL_MAX
     #define HUGE_VALL LDBL_MAX
