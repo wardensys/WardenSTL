@@ -138,7 +138,7 @@ namespace wstl {
 
     // Typedef test macro
 
-    #define __WSTL_TYPEDEF_PARAMS__(...) WSTL_EXPAND(WSTL_CONCATENATE(__WSTL_TYPEDEF, WSTL_COUNT_ARGS(__VA_ARGS__))(__VA_ARGS__))
+    #define __WSTL_TYPEDEF_PARAMS__(...) WSTL_EXPAND(WSTL_CONCATENATE(__WSTL_TYPEDEF, WSTL_EXPAND(WSTL_COUNT_ARGS(__VA_ARGS__)))(__VA_ARGS__))
 
     #define __WSTL_TYPEDEF1(A) \
         typename RemoveReference<typename T::A>::Type*
