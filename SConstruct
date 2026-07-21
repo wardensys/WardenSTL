@@ -89,6 +89,8 @@ env.Tool('compilation_db')
 env.NoClean('.vscode/compile_commands.json')
 cdb = env.CompilationDatabase('.vscode/compile_commands.json')
 
+env.AlwaysBuild(env.Alias('cdb', cdb))
+
 # Doxygen
 
 def OpenDoxygen(target: list[Node], source: list[Node], env: Environment) -> None:
