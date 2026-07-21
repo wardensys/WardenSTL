@@ -2330,7 +2330,7 @@ namespace wstl {
     struct IsSigned : FalseType {};
 
     template<> struct IsSigned<signed char> : TrueType {};
-    template<> struct IsSigned<char> : BoolConstant<(char(255) < char(0))> {};
+    template<> struct IsSigned<char> : BoolConstant<(char(-1) < char(0))> {};
     template<> struct IsSigned<wchar_t> : BoolConstant<(wchar_t(-1) < wchar_t(0))> {};
     template<> struct IsSigned<short> : TrueType {};
     template<> struct IsSigned<int> : TrueType {};
@@ -2373,7 +2373,7 @@ namespace wstl {
     struct IsUnsigned : FalseType {};
 
     template<> struct IsUnsigned<bool> : TrueType {};
-    template<> struct IsUnsigned<char> : BoolConstant<(char(255) > char(0))> {};
+    template<> struct IsUnsigned<char> : BoolConstant<(char(-1) > char(0))> {};
     template<> struct IsUnsigned<wchar_t> : BoolConstant<(wchar_t(-1) > wchar_t(0))> {};
     template<> struct IsUnsigned<unsigned char> : TrueType {};
     template<> struct IsUnsigned<unsigned short> : TrueType {};

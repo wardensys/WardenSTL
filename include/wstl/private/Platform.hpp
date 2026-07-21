@@ -251,16 +251,16 @@ namespace wstl {}
 #elif defined(__WSTL_MSVC__) || defined(__WSTL_ICC__)
     /// @brief Pushes the current diagnostic state onto the stack
     /// @ingroup utilities
-    #define WSTL_DIAGNOSTIC_PUSH _Pragma(warning(push))
+    #define WSTL_DIAGNOSTIC_PUSH _Pragma(warning( push ))
 
     /// @brief Pops the diagnostic state from the stack
     /// @ingroup utilities
-    #define WSTL_DIAGNOSTIC_POP _Pragma(warning(pop))
+    #define WSTL_DIAGNOSTIC_POP _Pragma(warning( pop ))
 
     /// @brief Ignores a specific diagnostic warning
     /// @param w The warning to ignore (as a string)
     /// @ingroup utilities
-    #define WSTL_DIAGNOSTIC_IGNORE(w) _Pragma(warning(disable: w))
+    #define WSTL_DIAGNOSTIC_IGNORE(w) _Pragma(warning( disable : w ))
 #else
     /// @brief Pushes the current diagnostic state onto the stack (no-op for unsupported compilers)
     /// @ingroup utilities
