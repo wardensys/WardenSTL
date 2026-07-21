@@ -2150,7 +2150,8 @@ namespace wstl {
     #ifdef __WSTL_CXX11__
     /// @brief Makes a list out of the given values, with specified type
     /// @tparam T Type of the elements
-    /// @param ...values Values to create the list with
+    /// @param first First value to make the list with
+    /// @param ...rest Rest values to make the list with
     /// @return A list containing the given values
     /// @ingroup list
     /// @since C++11
@@ -2160,7 +2161,8 @@ namespace wstl {
     }
 
     /// @brief Makes a list out of the given values
-    /// @param ...values Values to create the list with
+    /// @param first First value to make the list with
+    /// @param ...rest Rest values to make the list with
     /// @return A list containing the given values
     /// @ingroup list
     /// @since C++11

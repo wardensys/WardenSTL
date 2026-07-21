@@ -594,7 +594,7 @@ namespace wstl {
     #endif
 
     /// @brief Checks if a number is Not a Number
-    /// @param value Value to check
+    /// @param - Value to check
     /// @return `true` if the value is NaN, `false` otherwise
     /// @ingroup maths
     template<typename T>
@@ -628,7 +628,7 @@ namespace wstl {
     #endif
 
     /// @brief Checks whether a floating point value is infinity
-    /// @param value Value to check
+    /// @param - Value to check
     /// @return `true` if the value is infinity, `false` otherwise
     /// @ingroup maths
     template<typename T>

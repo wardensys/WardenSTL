@@ -68,13 +68,13 @@ namespace wstl {
 
         /// @brief Constructor with iterator and size
         /// @param first Iterator to the first element
-        /// @param count Number of elements in the span
+        /// @param - Number of elements in the span
         template<typename Iterator>
         __WSTL_CONSTEXPR__ explicit Span(Iterator first, SizeType /* count */) : m_Begin(ToAddress(first)) {}
 
         /// @brief Constructor with two iterators
         /// @param first Iterator to the first element
-        /// @param last Iterator to the last element
+        /// @param - Iterator to the last element
         template<typename Iterator>
         __WSTL_CONSTEXPR__ explicit Span(Iterator first, Iterator /* last */) : m_Begin(ToAddress(first)) {}
 

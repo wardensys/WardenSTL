@@ -75,12 +75,12 @@ namespace wstl {
 
             template<typename Head, typename... Tail>
             static inline __WSTL_CONSTEXPR14__ Head&& Get(Tuple<Head, Tail...>&& tuple) __WSTL_NOEXCEPT__ {
-                return Move(tuple.m_Head);
+                return Forward<Head>(tuple.m_Head);
             }
 
             template<typename Head, typename... Tail>
             static inline __WSTL_CONSTEXPR14__ const Head&& Get(const Tuple<Head, Tail...>&& tuple) __WSTL_NOEXCEPT__ {
-                return Move(tuple.m_Head);
+                return Forward<const Head>(tuple.m_Head);
             }
         };
 
@@ -387,21 +387,36 @@ namespace wstl {
         return __private::__TupleGet<Index>::Get(tuple);
     }
 
-    /// @copydoc Get(Tuple<Types...>&)
+    /// @brief Gets an element from tuple
+    /// @tparam Index Index of element
+    /// @param tuple Tuple from which to get element
+    /// @return The element at the specified index
+    /// @ingroup tuple
+    /// @see https://en.cppreference.com/w/cpp/utility/tuple/get
     template<size_t Index, typename... Types>
     __WSTL_CONSTEXPR14__ inline const TupleElementType<Index, Tuple<Types...>>& Get(const Tuple<Types...>& tuple) __WSTL_NOEXCEPT__ {
         WSTL_STATIC_ASSERT(Index < sizeof...(Types), "Index out of bounds");
         return __private::__TupleGet<Index>::Get(tuple);
     }
 
-    /// @copydoc Get(Tuple<Types...>&)
+    /// @brief Gets an element from tuple
+    /// @tparam Index Index of element
+    /// @param tuple Tuple from which to get element
+    /// @return The element at the specified index
+    /// @ingroup tuple
+    /// @see https://en.cppreference.com/w/cpp/utility/tuple/get
     template<size_t Index, typename... Types>
     __WSTL_CONSTEXPR14__ inline TupleElementType<Index, Tuple<Types...>>&& Get(Tuple<Types...>&& tuple) __WSTL_NOEXCEPT__ {
         WSTL_STATIC_ASSERT(Index < sizeof...(Types), "Index out of bounds");
         return __private::__TupleGet<Index>::Get(Move(tuple));
     }
 
-    /// @copydoc Get(Tuple<Types...>&)
+    /// @brief Gets an element from tuple
+    /// @tparam Index Index of element
+    /// @param tuple Tuple from which to get element
+    /// @return The element at the specified index
+    /// @ingroup tuple
+    /// @see https://en.cppreference.com/w/cpp/utility/tuple/get
     template<size_t Index, typename... Types>
     __WSTL_CONSTEXPR14__ inline const TupleElementType<Index, Tuple<Types...>>&& Get(const Tuple<Types...>&& tuple) __WSTL_NOEXCEPT__ {
         WSTL_STATIC_ASSERT(Index < sizeof...(Types), "Index out of bounds");

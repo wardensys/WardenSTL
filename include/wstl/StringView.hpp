@@ -45,7 +45,7 @@ namespace wstl {
 
         /// @brief Copy constructor
         /// @param other String view to copy from
-        __WSTL_CONSTEXPR__ BasicStringView(const BasicStringView& other) : m_Data(other.m_Data), m_Size(other.m_Size) __WSTL_NOEXCEPT__ {}
+        __WSTL_CONSTEXPR__ BasicStringView(const BasicStringView& other) __WSTL_NOEXCEPT__ : m_Data(other.m_Data), m_Size(other.m_Size) {}
 
         /// @brief Constuctor from C-style string and length
         /// @param string C-style string pointer

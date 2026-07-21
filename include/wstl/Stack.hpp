@@ -312,6 +312,7 @@ namespace wstl {
         Stack(Stack&& other) : Base(Move(other)) {}
 
         /// @brief Constructor that initializes the stack with a given container with provided arguments in-place
+        /// @param tag The in-place construction tag
         /// @param ...args Arguments to forward to the constructor of the container
         template<typename... Args>
         explicit Stack(InPlaceType tag, Args&&... args) : Base(tag, Forward<Args>(args)...) {}
@@ -319,6 +320,7 @@ namespace wstl {
         #ifndef __WSTL_NO_INITIALIZERLIST__
         /// @brief Constructor that initializes the stack with a given container with provided arguments 
         // in-place and an initializer list
+        /// @param tag The in-place construction tag
         /// @param list The initializer list to initialize the container with
         /// @param ...args Arguments to forward to the constructor of the container
         /// @since C++11
@@ -327,20 +329,24 @@ namespace wstl {
         #endif
         #else
         /// @brief Constructor that initializes the stack with a given container with provided arguments in-place
+        /// @param - The in-place construction tag
         explicit Stack(InPlaceType) : Base() {}
 
         /// @brief Constructor that initializes the stack with a given container with provided arguments in-place
+        /// @param tag The in-place construction tag
         /// @param arg Argument to forward to the constructor of the container
         template<typename Arg>
         explicit Stack(InPlaceType tag, const Arg& arg) : Base(tag, arg) {}
 
         /// @brief Constructor that initializes the stack with a given container with provided arguments in-place
+        /// @param tag The in-place construction tag
         /// @param arg1 First argument to pass to the constructor of the container
         /// @param arg2 Second argument to pass to the constructor of the container
         template<typename Arg1, typename Arg2>
         explicit Stack(InPlaceType tag, const Arg1& arg1, const Arg2& arg2) : Base(tag, arg1, arg2) {}
         
         /// @brief Constructor that initializes the stack with a given container with provided arguments in-place
+        /// @param tag The in-place construction tag
         /// @param arg1 First argument to pass to the constructor of the container
         /// @param arg2 Second argument to pass to the constructor of the container
         /// @param arg3 Third argument to pass to the constructor of the container
@@ -408,6 +414,7 @@ namespace wstl {
             Stack(Stack&& other) : Base(Move(other)) {}
 
             /// @brief Constructor that initializes the stack with a given container with provided arguments in-place
+            /// @param tag The in-place construction tag
             /// @param ...args Arguments to forward to the constructor of the container
             template<typename... Args>
             explicit Stack(InPlaceType tag, Args&&... args) : Base(tag, Forward<Args>(args)...) {}
@@ -415,6 +422,7 @@ namespace wstl {
             #ifndef __WSTL_NO_INITIALIZERLIST__
             /// @brief Constructor that initializes the stack with a given container with provided arguments 
             // in-place and an initializer list
+            /// @param tag The in-place construction tag
             /// @param list The initializer list to initialize the container with
             /// @param ...args Arguments to forward to the constructor of the container
             /// @since C++11
@@ -423,20 +431,24 @@ namespace wstl {
             #endif
             #else
             /// @brief Constructor that initializes the stack with a given container with provided arguments in-place
+            /// @param - The in-place construction tag
             explicit Stack(InPlaceType) : Base() {}
 
             /// @brief Constructor that initializes the stack with a given container with provided arguments in-place
+            /// @param tag The in-place construction tag
             /// @param arg Argument to forward to the constructor of the container
             template<typename Arg>
             explicit Stack(InPlaceType tag, const Arg& arg) : Base(tag, arg) {}
 
             /// @brief Constructor that initializes the stack with a given container with provided arguments in-place
+            /// @param tag The in-place construction tag
             /// @param arg1 First argument to pass to the constructor of the container
             /// @param arg2 Second argument to pass to the constructor of the container
             template<typename Arg1, typename Arg2>
             explicit Stack(InPlaceType tag, const Arg1& arg1, const Arg2& arg2) : Base(tag, arg1, arg2) {}
             
             /// @brief Constructor that initializes the stack with a given container with provided arguments in-place
+            /// @param tag The in-place construction tag
             /// @param arg1 First argument to pass to the constructor of the container
             /// @param arg2 Second argument to pass to the constructor of the container
             /// @param arg3 Third argument to pass to the constructor of the container
@@ -506,13 +518,15 @@ namespace wstl {
             FixedStack(FixedStack&& other) : Base(Move(other.m_Container)) {}
 
             /// @brief Constructor that initializes the stack with a given container with provided arguments in-place
+            /// @param tag The in-place construction tag
             /// @param ...args Arguments to forward to the constructor of the container
             template<typename... Args>
             explicit FixedStack(InPlaceType tag, Args&&... args) : Base(tag, Forward<Args>(args)...) {}
 
             #ifndef __WSTL_NO_INITIALIZERLIST__
             /// @brief Constructor that initializes the stack with a given container with provided arguments
-            // in-place and an initializer list
+            /// in-place and an initializer list
+            /// @param tag The in-place construction tag
             /// @param list The initializer list to initialize the container with
             /// @param ...args Arguments to forward to the constructor of the container
             template<typename U, typename... Args>
@@ -520,20 +534,25 @@ namespace wstl {
             #endif
             #else
             /// @brief Constructor that initializes the stack with a given container with provided arguments in-place
+            /// @param tag The in-place construction tag
+            /// @param - The in-place construction tag
             explicit FixedStack(InPlaceType) : Base() {}
 
             /// @brief Constructor that initializes the stack with a given container with provided arguments in-place
+            /// @param tag The in-place construction tag
             /// @param arg Argument to forward to the constructor of the container
             template<typename Arg>
             explicit FixedStack(InPlaceType tag, const Arg& arg) : Base(tag, arg) {}
 
             /// @brief Constructor that initializes the stack with a given container with provided arguments in-place
+            /// @param tag The in-place construction tag
             /// @param arg1 First argument to pass to the constructor of the container
             /// @param arg2 Second argument to pass to the constructor of the container
             template<typename Arg1, typename Arg2>
             explicit FixedStack(InPlaceType tag, const Arg1& arg1, const Arg2& arg2) : Base(tag, arg1, arg2) {}
             
             /// @brief Constructor that initializes the stack with a given container with provided arguments in-place
+            /// @param tag The in-place construction tag
             /// @param arg1 First argument to pass to the constructor of the container
             /// @param arg2 Second argument to pass to the constructor of the container
             /// @param arg3 Third argument to pass to the constructor of the container

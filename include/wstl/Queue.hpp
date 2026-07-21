@@ -318,6 +318,7 @@ namespace wstl {
         Queue(Queue&& other) : Base(Move(other.m_Container)) {}
 
         /// @brief Constructor that initializes the queue with a given container with provided arguments in-place
+        /// @param tag The in-place construction tag
         /// @param ...args Arguments to forward to the constructor of the container
         template<typename... Args>
         explicit Queue(InPlaceType tag, Args&&... args) : Base(tag, Forward<Args>(args)...) {}
@@ -325,6 +326,7 @@ namespace wstl {
         #ifndef __WSTL_NO_INITIALIZERLIST__
         /// @brief Constructor that initializes the queue with a given container with provided arguments
         // in-place and an initializer list
+        /// @param tag The in-place construction tag
         /// @param list The initializer list to initialize the container with
         /// @param ...args Arguments to forward to the constructor of the container
         /// @since C++11
@@ -333,20 +335,24 @@ namespace wstl {
         #endif
         #else
         /// @brief Constructor that initializes the queue with a given container with provided arguments in-place
+        /// @param - The in-place construction tag
         explicit Queue(InPlaceType) : Base() {}
         
         /// @brief Constructor that initializes the queue with a given container with provided arguments in-place
+        /// @param tag The in-place construction tag
         /// @param arg Argument to forward to the constructor of the container
         template<typename Arg>
         explicit Queue(InPlaceType tag, const Arg& arg) : Base(tag) {}
 
         /// @brief Constructor that initializes the queue with a given container with provided arguments in-place
+        /// @param tag The in-place construction tag
         /// @param arg1 First argument to forward to the constructor of the container
         /// @param arg2 Second argument to forward to the constructor of the container
         template<typename Arg1, typename Arg2>
         explicit Queue(InPlaceType tag, const Arg1& arg1, const Arg2& arg2) : Base(tag, arg1, arg2) {}
 
         /// @brief Constructor that initializes the queue with a given container with provided arguments in-place
+        /// @param tag The in-place construction tag
         /// @param arg1 First argument to forward to the constructor of the container
         /// @param arg2 Second argument to forward to the constructor of the container
         /// @param arg3 Third argument to forward to the constructor of the container
@@ -417,6 +423,7 @@ namespace wstl {
             Queue(Queue&& other) : Base(Move(other.m_Container)) {}
 
             /// @brief Constructor that initializes the queue with a given container with provided arguments in-place
+            /// @param tag The in-place construction tag
             /// @param ...args Arguments to forward to the constructor of the container
             template<typename... Args>
             explicit Queue(InPlaceType tag, Args&&... args) : Base(tag, Forward<Args>(args)...) {}
@@ -424,6 +431,7 @@ namespace wstl {
             #ifndef __WSTL_NO_INITIALIZERLIST__
             /// @brief Constructor that initializes the queue with a given container with provided arguments
             // in-place and an initializer list
+            /// @param tag The in-place construction tag
             /// @param list The initializer list to initialize the container with
             /// @param ...args Arguments to forward to the constructor of the container
             /// @since C++11
@@ -432,20 +440,24 @@ namespace wstl {
             #endif
             #else
             /// @brief Constructor that initializes the queue with a given container with provided arguments in-place
+            /// @param - The in-place construction tag
             explicit Queue(InPlaceType) : Base() {}
 
             /// @brief Constructor that initializes the queue with a given container with provided arguments in-place
+            /// @param tag The in-place construction tag
             /// @param arg Argument to forward to the constructor of the container
             template<typename Arg>
             explicit Queue(InPlaceType tag, const Arg& arg) : Base(tag) {}
 
             /// @brief Constructor that initializes the queue with a given container with provided arguments in-place
+            /// @param tag The in-place construction tag
             /// @param arg1 First argument to forward to the constructor of the container
             /// @param arg2 Second argument to forward to the constructor of the container
             template<typename Arg1, typename Arg2>
             explicit Queue(InPlaceType tag, const Arg1& arg1, const Arg2& arg2) : Base(tag, arg1, arg2) {}
 
             /// @brief Constructor that initializes the queue with a given container with provided arguments in-place
+            /// @param tag The in-place construction tag
             /// @param arg1 First argument to forward to the constructor of the container
             /// @param arg2 Second argument to forward to the constructor of the container
             /// @param arg3 Third argument to forward to the constructor of the container
@@ -515,6 +527,7 @@ namespace wstl {
             FixedQueue(FixedQueue&& other) : Base(Move(other.m_Container)) {}
 
             /// @brief Constructor that initializes the queue with a given container with provided arguments in-place
+            /// @param tag The in-place construction tag
             /// @param ...args Arguments to forward to the constructor of the container
             template<typename... Args>
             explicit FixedQueue(InPlaceType tag, Args&&... args) : Base(tag, Forward<Args>(args)...) {}
@@ -522,6 +535,7 @@ namespace wstl {
             #ifndef __WSTL_NO_INITIALIZERLIST__
             /// @brief Constructor that initializes the queue with a given container with provided arguments
             // in-place and an initializer list
+            /// @param tag The in-place construction tag
             /// @param list The initializer list to initialize the container with
             /// @param ...args Arguments to forward to the constructor of the container
             /// @since C++11
@@ -530,20 +544,24 @@ namespace wstl {
             #endif
             #else
             /// @brief Constructor that initializes the queue with a given container with provided arguments in-place
+            /// @param - The in-place construction tag
             explicit FixedQueue(InPlaceType) : Base() {}
 
             /// @brief Constructor that initializes the queue with a given container with provided arguments in-place
+            /// @param tag The in-place construction tag
             /// @param arg Argument to forward to the constructor of the container
             template<typename Arg>
             explicit FixedQueue(InPlaceType tag, const Arg& arg) : Base(tag) {}
 
             /// @brief Constructor that initializes the queue with a given container with provided arguments in-place
+            /// @param tag The in-place construction tag
             /// @param arg1 First argument to forward to the constructor of the container
             /// @param arg2 Second argument to forward to the constructor of the container
             template<typename Arg1, typename Arg2>
             explicit FixedQueue(InPlaceType tag, const Arg1& arg1, const Arg2& arg2) : Base(tag, arg1, arg2) {}
 
             /// @brief Constructor that initializes the queue with a given container with provided arguments in-place
+            /// @param tag The in-place construction tag
             /// @param arg1 First argument to forward to the constructor of the container
             /// @param arg2 Second argument to forward to the constructor of the container
             /// @param arg3 Third argument to forward to the constructor of the container

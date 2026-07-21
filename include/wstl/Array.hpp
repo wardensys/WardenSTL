@@ -366,222 +366,182 @@ namespace wstl {
         /// @brief The static size, needed for metaprogramming
         static const __WSTL_CONSTEXPR__ SizeType StaticSize = 0;
 
-        /// @brief Returns a reference to the element at the specified index with bounds checking
-        /// @param index Index of the element to return
-        /// @return Reference to the element at the specified index
-        /// @throws `IndexOutOfRange` if the index is out of range
+        /// @brief Returns a reference to the element at the specified index with bounds checking, no-op for zero-sized arrays
         __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__ ReferenceType At(SizeType) {
             return *Data();
         }
 
-        /// @brief Returns a const reference to the element at the specified index with bounds checking
-        /// @param index Index of the element to return
-        /// @return Const reference to the element at the specified index
-        /// @throws `IndexOutOfRange` if the index is out of range
+        /// @brief Returns a const reference to the element at the specified index with bounds checking,, no-op for zero-sized arrays
         __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__ ConstReferenceType At(SizeType) const {
             return *Data();
         }
 
-        /// @brief Access operator
-        /// @param index Index of the element to return
-        /// @return Reference to the element at the specified index
+        /// @brief Access operator, no-op for zero-sized arrays
         __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__ ReferenceType operator[](SizeType) {
             return *Data();
         }
 
-        /// @brief Access operator
-        /// @param index Index of the element to return
-        /// @return Const reference to the element at the specified index
+        /// @brief Access operator, no-op for zero-sized arrays
         __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__ ConstReferenceType operator[](SizeType) const {
             return *Data();
         }
 
-        /// @brief Gets reference to the first element of the array
+        /// @brief Gets reference to the first element of the array, no-op for zero-sized arrays
         __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__ ReferenceType Front() __WSTL_NOEXCEPT__ {
             return *Data();
         }
 
-        /// @brief Gets const reference to the first element of the array
+        /// @brief Gets const reference to the first element of the array, no-op for zero-sized arrays
         __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__ ConstReferenceType Front() const __WSTL_NOEXCEPT__ {
             return *Data();
         }
 
-        /// @brief Gets reference to the last element of the array
+        /// @brief Gets reference to the last element of the array, no-op for zero-sized arrays
         __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__ ReferenceType Back() __WSTL_NOEXCEPT__ {
             return *Data();
         }
 
-        /// @brief Gets const reference to the last element of the array
+        /// @brief Gets const reference to the last element of the array, no-op for zero-sized arrays
         __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__ ConstReferenceType Back() const __WSTL_NOEXCEPT__ {
             return *Data();
         }
 
-        /// @brief Gets the data pointer of the array
+        /// @brief Gets the data pointer of the array, no-op for zero-sized arrays
         __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__ PointerType Data() __WSTL_NOEXCEPT__ {
             return (const T*) 0;
         }
 
-        /// @brief Gets the const data pointer of the array
+        /// @brief Gets the const data pointer of the array, returns zero pointer for zero-sized arrays
         __WSTL_NODISCARD__ __WSTL_CONSTEXPR__ ConstReferenceType Data() const __WSTL_NOEXCEPT__ {
             return (T*) 0;
         }
 
-        /// @brief Gets the iterator to the beginning of the array
+        /// @brief Gets the iterator to the beginning of the array, no-op for zero-sized arrays
         __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__ Iterator Begin() __WSTL_NOEXCEPT__ {
             return Iterator();
         }
 
-        /// @brief Gets the iterator to the beginning of the array
+        /// @brief Gets the iterator to the beginning of the array, no-op for zero-sized arrays
         __WSTL_NODISCARD__ __WSTL_CONSTEXPR__ ConstIterator Begin() const __WSTL_NOEXCEPT__ {
             return ConstIterator();
         }
 
-        /// @brief Gets the const iterator to the beginning of the array
+        /// @brief Gets the const iterator to the beginning of the array, no-op for zero-sized arrays
         __WSTL_NODISCARD__ __WSTL_CONSTEXPR__ ConstIterator ConstBegin() const __WSTL_NOEXCEPT__ {
             return ConstIterator();
         }
 
-        /// @brief Gets the iterator to the end of the array
+        /// @brief Gets the iterator to the end of the array, no-op for zero-sized arrays
         __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__ Iterator End() __WSTL_NOEXCEPT__ {
             return Iterator();
         }
 
-        /// @brief Gets the iterator to the end of the array
+        /// @brief Gets the iterator to the end of the array, no-op for zero-sized arrays
         __WSTL_NODISCARD__ __WSTL_CONSTEXPR__ ConstIterator End() const __WSTL_NOEXCEPT__ {
             return ConstIterator();
         }
 
-        /// @brief Gets the const iterator to the end of the array
+        /// @brief Gets the const iterator to the end of the array, no-op for zero-sized arrays
         __WSTL_NODISCARD__ __WSTL_CONSTEXPR__ ConstIterator ConstEnd() const __WSTL_NOEXCEPT__ {
             return ConstIterator();
         }
 
-        /// @brief Gets the reverse iterator to the beginning of the array
+        /// @brief Gets the reverse iterator to the beginning of the array, no-op for zero-sized arrays
         __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__ 
         ReverseIterator ReverseBegin() __WSTL_NOEXCEPT__ {
             return ReverseIterator(End());
         }
 
-        /// @brief Gets the reverse iterator to the beginning of the array
+        /// @brief Gets the reverse iterator to the beginning of the array, no-op for zero-sized arrays
         __WSTL_NODISCARD__ __WSTL_CONSTEXPR__ 
         ConstReverseIterator ReverseBegin() const __WSTL_NOEXCEPT__ {
             return ConstReverseIterator(End());
         }
 
-        /// @brief Gets the const reverse iterator to the beginning of the array
+        /// @brief Gets the const reverse iterator to the beginning of the array, no-op for zero-sized arrays
         __WSTL_NODISCARD__ __WSTL_CONSTEXPR__ 
         ConstReverseIterator ConstReverseBegin() const __WSTL_NOEXCEPT__ {
             return ConstReverseIterator(End());
         }
 
-        /// @brief Gets the reverse iterator to the end of the array
+        /// @brief Gets the reverse iterator to the end of the array, no-op for zero-sized arrays
         __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__ 
         ReverseIterator ReverseEnd() __WSTL_NOEXCEPT__ {
             return ReverseIterator(Begin());
         }
 
-        /// @brief Gets the reverse iterator to the end of the array
+        /// @brief Gets the reverse iterator to the end of the array, no-op for zero-sized arrays
         __WSTL_NODISCARD__ __WSTL_CONSTEXPR__ 
         ConstIterator ReverseEnd() const __WSTL_NOEXCEPT__ {
             return ConstReverseIterator(Begin());
         }
 
-        /// @brief Gets the const reverse iterator to the end of the array
+        /// @brief Gets the const reverse iterator to the end of the array, no-op for zero-sized arrays
         __WSTL_NODISCARD__ __WSTL_CONSTEXPR__ 
         ConstReverseIterator ConstReverseEnd() const __WSTL_NOEXCEPT__ {
             return ConstReverseIterator(Begin());
         }
 
-        /// @brief Checks whether the array is empty
+        /// @brief Checks whether the array is empty, always true for zero-sized arrays
         __WSTL_NODISCARD__ __WSTL_CONSTEXPR__ bool Empty() const __WSTL_NOEXCEPT__{
             return true;
         }
 
-        /// @brief Gets the size of the array
+        /// @brief Gets the size of the array, always 0 for zero-sized arrays
         __WSTL_NODISCARD__ __WSTL_CONSTEXPR__ SizeType Size() const __WSTL_NOEXCEPT__{
             return 0;
         }
 
-        /// @brief Gets the maximum size of the array
+        /// @brief Gets the maximum size of the array, always 0 for zero-sized arrays
         __WSTL_NODISCARD__ __WSTL_CONSTEXPR__ SizeType MaxSize() const __WSTL_NOEXCEPT__{
             return 0;
         }
 
-        /// @brief Fills the array with the specified value
-        /// @param value The value to fill the array with
+        /// @brief Fills the array with the specified value, no-op for zero-sized arrays
         __WSTL_CONSTEXPR14__ void Fill(ParameterType) __WSTL_NOEXCEPT__ {}
 
-        /// @brief Swaps the contents of the array with another array
-        /// @param other The other array to swap with
+        /// @brief Swaps the contents of the array with another array, no-op for zero-sized arrays
         __WSTL_CONSTEXPR14__ void Swap(Array&) __WSTL_NOEXCEPT__ {}
 
         // Additional functions
 
-        /// @brief Assigns values from a range to the array
-        /// @param first Iterator to the first element of the range
-        /// @param last Iterator to the last element of the range
+        /// @brief Assigns values from a range to the array, no-op for zero-sized arrays
         template<typename InputIterator>
         void Assign(InputIterator, InputIterator) __WSTL_NOEXCEPT__ {}
 
-        /// @brief Assigns values from a range to the array, filling remaining elements with a specified value
-        /// @param first Iterator to the first element of the range
-        /// @param last Iterator to the last element of the range
-        /// @param value The value to fill remaining elements with
+        /// @brief Assigns values from a range to the array, no-op for zero-sized arrays
         template<typename InputIterator>
         void Assign(InputIterator, InputIterator, ParameterType) __WSTL_NOEXCEPT__ {}
 
-        /// @brief Inserts a value at the specified position
-        /// @param position Iterator to the position where the value should be inserted
-        /// @param value The value to insert
-        /// @return Iterator to the inserted value
-        /// @throws `OutOfRange` if the position is out of range and `__WSTL_CHECK_ITERATOR__` is defined
+        /// @brief Inserts a value at the specified position, no-op for zero-sized arrays
         Iterator Insert(ConstIterator, ParameterType) __WSTL_NOEXCEPT__ {
             return Iterator();
         }
 
-        /// @brief Inserts a range of values at the specified position
-        /// @param position Iterator to the position where the range should be inserted
-        /// @param first Iterator to the first element of the range
-        /// @param last Iterator to the last element of the range
-        /// @return Iterator to the first element of the inserted range
-        /// @throws `OutOfRange` if the position is out of range and `__WSTL_CHECK_ITERATOR__` is defined
+        /// @brief Inserts a range of values at the specified position, no-op for zero-sized arrays
         template<typename InputIterator>
         Iterator Insert(ConstIterator, InputIterator, InputIterator) __WSTL_NOEXCEPT__ {
             return Iterator();
         }
 
-        /// @brief Erases a value at the specified position and fills the last element with a specified value
-        /// @param position Iterator to the position of the value to delete
-        /// @param value The value to fill the last element with
-        /// @return Iterator to the position where the deleted value was
-        /// @throws `OutOfRange` if the position is out of range and `__WSTL_CHECK_ITERATOR__` is defined
+        /// @brief Erases a value at the specified position and fills the last element with a 
+        /// specified value, no-op for zero-sized arrays
         Iterator Erase(ConstIterator, ParameterType) __WSTL_NOEXCEPT__ {
             return Iterator();
         }
 
-        /// @brief Erases a value at the specified position
-        /// @param position Iterator to the position of the value to delete
-        /// @return Iterator to the position where the deleted value was
-        /// @throws `OutOfRange` if the position is out of range and `__WSTL_CHECK_ITERATOR__` is defined
+        /// @brief Erases a value at the specified position, no-op for zero-sized arrays
         Iterator Erase(ConstIterator) __WSTL_NOEXCEPT__ {
             return Iterator();
         }
 
-        /// @brief Erases a range of values and fills the deleted range with a specified value
-        /// @param first Iterator to the first element of the range to delete
-        /// @param last Iterator to the last element of the range to delete
-        /// @param value The value to fill the deleted range with
-        /// @return Iterator to the position where the beginning of the deleted range was
-        /// @throws `OutOfRange` if the positions are out of range and `__WSTL_CHECK_ITERATOR__` is defined
+        /// @brief Erases a range of values and fills the deleted range with a 
+        /// specified value, no-op for zero-sized arrays
         Iterator Erase(ConstIterator, ConstIterator, ParameterType) __WSTL_NOEXCEPT__ {
             return Iterator();
         }
 
-        /// @brief Erases a range of values
-        /// @param first Iterator to the first element of the range to delete
-        /// @param last Iterator to the last element of the range to delete
-        /// @return Iterator to the position where the beginning of the deleted range was
-        /// @throws `OutOfRange` if the positions are out of range and `__WSTL_CHECK_ITERATOR__` is defined
+        /// @brief Erases a range of values, no-op for zero-sized arrays
         __WSTL_CONSTEXPR14__ Iterator Erase(ConstIterator, ConstIterator) __WSTL_NOEXCEPT__ {
             return Iterator();
         }

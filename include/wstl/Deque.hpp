@@ -1945,7 +1945,8 @@ namespace wstl {
     #ifdef __WSTL_CXX11__
     /// @brief Makes a deque out of the given values, with specified type
     /// @tparam T Type of the elements
-    /// @param ...values Values to make the deque with
+    /// @param first First value to make the deque with
+    /// @param ...rest Rest values to make the deque with
     /// @return A deque containing the given values
     /// @ingroup deque
     /// @since C++11
@@ -1955,7 +1956,8 @@ namespace wstl {
     }
 
     /// @brief Makes a deque out of the given values
-    /// @param ...values Values to make the deque with
+    /// @param first First value to make the deque with
+    /// @param ...rest Rest values to make the deque with
     /// @return A deque containing the given values
     /// @ingroup deque
     /// @since C++11

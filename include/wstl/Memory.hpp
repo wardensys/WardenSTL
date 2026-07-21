@@ -188,7 +188,6 @@ namespace wstl {
         __WSTL_CONSTEXPR__ DefaultDelete() __WSTL_NOEXCEPT__ {}
 
         /// @brief Templated copy constructor
-        /// @param other Another `DefaultDelete` object to copy from
         template<typename U>
         __WSTL_CONSTEXPR__ DefaultDelete(const DefaultDelete<U[]>&) __WSTL_NOEXCEPT__ {}
 
@@ -1212,8 +1211,8 @@ namespace wstl {
         /// @details Default implementation is not optimized! Define `__WSTL_MEMOPS_USE_LIBC__` 
         /// to use `memcpy` from the <string.h> header (can be used from libc or provided manually), 
         /// or `__WSTL_MEMOPS_USE_BUILTINS__` to use compiler built-ins if available.
-        /// @param ptr1 Pointer to the first memory range
-        /// @param ptr2 Pointer to the second memory range
+        /// @param pointer1 Pointer to the first memory range
+        /// @param pointer2 Pointer to the second memory range
         /// @param count Number of bytes to compare
         /// @return Zero if equal, negative if `pointer1 < pointer2`, positive if `pointer1 > pointer2`
         /// @ingroup memory

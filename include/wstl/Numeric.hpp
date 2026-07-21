@@ -440,8 +440,10 @@ namespace wstl {
         template<typename T, T A, T B>
         struct GCD<T, A, B> : __private::__GCD<T, A, B> {};
 
+        /// @cond DOXYGEN_SHOULD_SKIP_THIS
         template<typename T, T A, T B, T... Rest>
         struct GCD : GCD<T, GCD<T, A, B>::Value, Rest...> {};
+        /// @endcond
         #else
         /// @brief Computes the greatest common divisor of two of numbers at compile time
         /// @tparam T Type of the input values
@@ -490,8 +492,10 @@ namespace wstl {
         template<typename T, T A, T B>
         struct LCM<T, A, B> : __private::__LCM<T, A, B> {};
 
+        /// @cond DOXYGEN_SHOULD_SKIP_THIS
         template<typename T, T A, T B, T... Rest>
         struct LCM : LCM<T, LCM<T, A, B>::Value, Rest...> {};
+        /// @endcond
         #else
         /// @brief Computes the least common multiple of two of numbers at compile time 
         /// @tparam T Type of the input values
