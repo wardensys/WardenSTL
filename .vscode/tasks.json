@@ -1,5 +1,14 @@
 {
     "version": "2.0.0",
+    "inputs": [
+        {
+            "id": "cppStandard",
+            "type": "pickString",
+            "description": "Select C++ standard",
+            "options": ["98", "03", "11", "14", "17", "20", "23"],
+            "default": "11"
+        }
+    ],
     "tasks": [
         {
             "label": "Setup Development Environment",
@@ -18,6 +27,7 @@
             "label": "Build",
             "type": "shell",
             "command": "scons",
+            "args": ["--cppstd=${input:cppStandard}"],
             "group": {
                 "isDefault": true,
                 "kind": "build"
@@ -36,7 +46,7 @@
             "label": "Syntax Checks",
             "type": "shell",
             "command": "scons",
-            "args": ["syntax_check"],
+            "args": ["syntax_check", "--cppstd=${input:cppStandard}"],
             "group": "test",
             "presentation": {
                 "reveal": "silent",
@@ -52,7 +62,7 @@
             "label": "Build Unit Tests",
             "type": "shell",
             "command": "scons",
-            "args": ["test"],
+            "args": ["test", "--cppstd=${input:cppStandard}"],
             "group": "test",
             "problemMatcher": "$gcc",
             "presentation": {
@@ -68,7 +78,7 @@
             "label": "Run All Tests",
             "type": "shell",
             "command": "scons",
-            "args": ["run_test"],
+            "args": ["run_test", "--cppstd=${input:cppStandard}"],
             "group": {
                 "kind": "test",
                 "isDefault": true
