@@ -932,9 +932,9 @@ TEST_SUITE("Algorithm") {
         // Empty
         std::array<int, 0> empty;
 
-        expected = std::min_element(std::begin(empty), std::end(empty), std::greater<int>());
-        result = wstl::MinElement(std::begin(empty), std::end(empty), std::greater<int>());
-        CHECK_EQ(expected, result);
+        auto expectedEmpty = std::min_element(std::begin(empty), std::end(empty), std::greater<int>());
+        auto resultEmpty = wstl::MinElement(std::begin(empty), std::end(empty), std::greater<int>());
+        CHECK_EQ(expectedEmpty, resultEmpty);
     }
 
     TEST_CASE("Min") {
@@ -961,9 +961,9 @@ TEST_SUITE("Algorithm") {
         // Empty
         std::array<int, 0> empty;
 
-        expected = std::max_element(std::begin(empty), std::end(empty), std::greater<int>());
-        result = wstl::MaxElement(std::begin(empty), std::end(empty), std::greater<int>());
-        CHECK_EQ(expected, result);
+        auto expectedEmpty = std::max_element(std::begin(empty), std::end(empty), std::greater<int>());
+        auto resultEmpty = wstl::MaxElement(std::begin(empty), std::end(empty), std::greater<int>());
+        CHECK_EQ(expectedEmpty, resultEmpty);
     }
 
     TEST_CASE("Max") {
@@ -992,10 +992,10 @@ TEST_SUITE("Algorithm") {
         // Empty
         std::array<int, 0> empty;
 
-        expected = std::minmax_element(std::begin(empty), std::end(empty), std::greater<int>());
-        result = wstl::MinMaxElement(std::begin(empty), std::end(empty), std::greater<int>());
-        CHECK_EQ(expected.first, result.First);
-        CHECK_EQ(expected.second, result.Second);
+        auto expectedEmpty = std::minmax_element(std::begin(empty), std::end(empty), std::greater<int>());
+        auto resultEmpty = wstl::MinMaxElement(std::begin(empty), std::end(empty), std::greater<int>());
+        CHECK_EQ(expectedEmpty.first, resultEmpty.First);
+        CHECK_EQ(expectedEmpty.second, resultEmpty.Second);
     }
 
     TEST_CASE("MinMax") {
