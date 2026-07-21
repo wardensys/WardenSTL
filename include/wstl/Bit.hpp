@@ -27,6 +27,10 @@
             #define __WSTL_BIG_ENDIAN__ __BIG_ENDIAN__
             #define __WSTL_NATIVE_ENDIAN__ __BYTE_ORDER__
         #endif
+    #elif defined(__WSTL_MSVC__)
+        #define __WSTL_LITTLE_ENDIAN__ 0
+        #define __WSTL_BIG_ENDIAN__ 1
+        #define __WSTL_NATIVE_ENDIAN__ __WSTL_LITTLE_ENDIAN__
     #else
         #error Unable to determine native endianness. Define __WSTL_NATIVE_ENDIAN__ as 0 for 'little endian' or 1 for 'big endian'.
     #endif
