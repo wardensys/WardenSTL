@@ -12,6 +12,12 @@
 #pragma message("_EXCEPTIONS is NOT defined")
 #endif
 
+#ifdef __EXCEPTIONS
+#pragma message("__EXCEPTIONS is defined")
+#else
+#pragma message("__EXCEPTIONS is NOT defined")
+#endif
+
 #ifdef __cpp_exceptions
 #pragma message("__cpp_exceptions is defined")
 #else
