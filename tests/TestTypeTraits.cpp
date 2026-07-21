@@ -638,7 +638,7 @@ TEST_SUITE("TypeTraits") {
         CHECK(wstl::IsFundamental<long double>::Value);
         CHECK(wstl::IsFundamental<char16_t>::Value);
         CHECK(wstl::IsFundamental<char32_t>::Value);
-        CHECK(wstl::IsFundamental<nullptr_t>::Value);
+        CHECK(wstl::IsFundamental<std::nullptr_t>::Value);
         CHECK_FALSE(wstl::IsFundamental<TestData>::Value);
         CHECK_FALSE(wstl::IsFundamental<EnumData>::Value);
         CHECK_FALSE(wstl::IsFundamental<EnumClassData>::Value);
@@ -680,7 +680,7 @@ TEST_SUITE("TypeTraits") {
         CHECK_FALSE(wstl::IsCompound<long double>::Value);
         CHECK_FALSE(wstl::IsCompound<char16_t>::Value);
         CHECK_FALSE(wstl::IsCompound<char32_t>::Value);
-        CHECK_FALSE(wstl::IsCompound<nullptr_t>::Value);
+        CHECK_FALSE(wstl::IsCompound<std::nullptr_t>::Value);
         CHECK(wstl::IsCompound<TestData>::Value);
         CHECK(wstl::IsCompound<EnumData>::Value);
         CHECK(wstl::IsCompound<EnumClassData>::Value);

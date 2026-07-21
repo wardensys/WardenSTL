@@ -620,7 +620,9 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::HasInfinity, Expected::has_infinity);
         CHECK_EQ(Result::HasQuietNaN, Expected::has_quiet_NaN);
         CHECK_EQ(Result::HasSignalingNaN, Expected::has_signaling_NaN);
+        #ifndef __WSTL_CXX23__
         CHECK_EQ(Result::HasDenormalizationLoss, Expected::has_denorm_loss);
+        #endif
         CHECK_EQ(Result::IsIEC559, Expected::is_iec559);
         CHECK_EQ(Result::IsBounded, Expected::is_bounded);
         CHECK_EQ(Result::IsModulo, Expected::is_modulo);
@@ -651,7 +653,9 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::HasInfinity, Expected::has_infinity);
         CHECK_EQ(Result::HasQuietNaN, Expected::has_quiet_NaN);
         CHECK_EQ(Result::HasSignalingNaN, Expected::has_signaling_NaN);
+        #ifndef __WSTL_CXX23__
         CHECK_EQ(Result::HasDenormalizationLoss, Expected::has_denorm_loss);
+        #endif
         CHECK_EQ(Result::IsIEC559, Expected::is_iec559);
         CHECK_EQ(Result::IsBounded, Expected::is_bounded);
         CHECK_EQ(Result::IsModulo, Expected::is_modulo);
@@ -682,7 +686,9 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::HasInfinity, Expected::has_infinity);
         CHECK_EQ(Result::HasQuietNaN, Expected::has_quiet_NaN);
         CHECK_EQ(Result::HasSignalingNaN, Expected::has_signaling_NaN);
+        #ifndef __WSTL_CXX23__
         CHECK_EQ(Result::HasDenormalizationLoss, Expected::has_denorm_loss);
+        #endif
         CHECK_EQ(Result::IsIEC559, Expected::is_iec559);
         CHECK_EQ(Result::IsBounded, Expected::is_bounded);
         CHECK_EQ(Result::IsModulo, Expected::is_modulo);
