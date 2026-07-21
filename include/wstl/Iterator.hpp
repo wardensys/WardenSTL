@@ -101,18 +101,6 @@ namespace wstl {
     // Iterator traits
 
     namespace __private {
-        #undef WSTL_DECLARE_TYPEDEF_TEST
-        #undef __WSTL_TYPEDEF_PARAMS__
-
-        #define __WSTL_TYPEDEF_PARAMS__(...) WSTL_EXPAND(WSTL_CONCATENATE(__WSTL_TYPEDEF, 5)(__VA_ARGS__))
-
-        #define WSTL_DECLARE_TYPEDEF_TEST(function, ...) \
-        template<typename T> \
-        static long function(__WSTL_TYPEDEF_PARAMS__(__VA_ARGS__)); \
-        \
-        template<typename> \
-        static char function(...);
-
         WSTL_DECLARE_TYPEDEF_TEST(__TestLibraryIterator, IteratorCategory, ValueType, DifferenceType, PointerType, ReferenceType)
 
         #ifdef __WSTL_STD_ITERATORTRAITS_SUPPORT__
