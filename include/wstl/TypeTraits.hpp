@@ -2255,7 +2255,7 @@ namespace wstl {
     namespace __private {
         #ifdef __WSTL_CXX11__
         template<typename T>
-        static auto __TestNothrowDestructible(int) -> decltype(DeclareValue<T>().~T(), BoolConstant<noexcept(DeclareValue<T>().~T())>{});
+        static auto __TestNothrowDestructible(int) -> decltype(DeclareValue<T&>().~T(), BoolConstant<noexcept(DeclareValue<T&>().~T())>{});
 
         template<typename T>
         static FalseType __TestNothrowDestructible(...);
@@ -2275,7 +2275,7 @@ namespace wstl {
             || defined(__WSTL_MSVC__) || defined(__WSTL_ICC__))
             __is_nothrow_destructible(T)
         #elif defined(__WSTL_CXX11__)
-            decltype(__private::__TestNothrowDestructible<T>(0))::Value
+            decltype(__private::__TestNothrowDestructible<RemoveCVReferenceType<RemoveAllExtentsType<T>>>(0))::Value
         #else
             false
         #endif

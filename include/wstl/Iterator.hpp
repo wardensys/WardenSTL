@@ -101,8 +101,7 @@ namespace wstl {
     // Iterator traits
 
     namespace __private {
-        WSTL_DECLARE_TYPEDEF_TEST(__TestLibraryIterator, 
-            IteratorCategory, ValueType, DifferenceType, PointerType, ReferenceType)
+        WSTL_DECLARE_TYPEDEF_TEST(__TestLibraryIterator, IteratorCategory, ValueType, DifferenceType, PointerType, ReferenceType)
 
         #ifdef __WSTL_STD_ITERATORTRAITS_SUPPORT__
         template<typename T>
@@ -123,8 +122,7 @@ namespace wstl {
         template<>
         struct __IteratorTraitsCategory<std::random_access_iterator_tag> { typedef RandomAccessIteratorTag Type; };
 
-        WSTL_DECLARE_TYPEDEF_TEST(__TestSTDIterator, 
-            iterator_category, value_type, difference_type, pointer, reference)
+        WSTL_DECLARE_TYPEDEF_TEST(__TestSTDIterator, iterator_category, value_type, difference_type, pointer, reference)
 
         template<typename Iterator, bool __IsLibraryIterator = WSTL_TYPEDEF_TEST_RESULT(__TestLibraryIterator, Iterator, 5),
         bool __IsIterator = __IsLibraryIterator || WSTL_TYPEDEF_TEST_RESULT(__TestSTDIterator, Iterator, 5)>

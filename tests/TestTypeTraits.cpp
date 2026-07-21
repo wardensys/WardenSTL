@@ -12,7 +12,7 @@
 #include <doctest.h>
 #include <wstl/TypeTraits.hpp>
 #include <type_traits>
-#include <stddef.h>
+#include <cstddef>
 
 #include "Utils.hpp"
 
