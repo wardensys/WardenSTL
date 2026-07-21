@@ -293,9 +293,9 @@ namespace wstl {}
 /// @ingroup utilities
 #define WSTL_CONCATENATE(a, b) __WSTL_CONCATENATE_IMPL__(a, b)
 
-#define __WSTL_COUNT_ARGS_IMPL__(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, N,...) N
-
 #ifdef __WSTL_CXX20__
+    #define __WSTL_COUNT_ARGS_IMPL__(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, N,...) N
+
     /// @brief A macro to count the number of arguments passed to it (up to 10)
     /// @param ... The arguments to count
     /// @ingroup utilities
@@ -306,16 +306,21 @@ namespace wstl {}
         WSTL_DIAGNOSTIC_IGNORE("-Wgnu-zero-variadic-macro-arguments")
     #endif
 
+    #define __WSTL_COUNT_ARGS_IMPL__(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, N,...) N
+
     /// @brief A macro to count the number of arguments passed to it (up to 10)
     /// @param ... The arguments to count
     /// @ingroup utilities
     #define WSTL_COUNT_ARGS(...) __WSTL_COUNT_ARGS_IMPL__(dummy, ##__VA_ARGS__, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
     WSTL_DIAGNOSTIC_POP
 #else
+    #define __WSTL_COUNT_ARGS_IMPL__(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, N,...) N
+
     /// @brief A macro to count the number of arguments passed to it (up to 10)
-    /// @param ... The arguments to count
+    /// @param ... The arguments to count, can't be empty
+    /// @note This macro does not support empty argument lists due to limitations in pre-C++20 compilers
     /// @ingroup utilities
-    #define WSTL_COMMA_IF_ARGS(...) __WSTL_COUNT_ARGS_IMPL__(dummy, __VA_ARGS__, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
+    #define WSTL_COUNT_ARGS(...) __WSTL_COUNT_ARGS_IMPL__(__VA_ARGS__, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
 #endif
 
 /// @brief A macro to mark a variable as unused, preventing compiler warnings about unused variables

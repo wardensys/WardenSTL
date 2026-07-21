@@ -2255,7 +2255,7 @@ namespace wstl {
     namespace __private {
         #ifdef __WSTL_CXX11__
         template<typename T>
-        static auto __TestNothrowDestructible(int) -> decltype(DeclareValue<T&>().~T(), BoolConstant<noexcept(DeclareValue<T&>().~T())>{});
+        static auto __TestNothrowDestructible(int) -> decltype(DeclareValue<T>().~T(), BoolConstant<noexcept(DeclareValue<T>().~T())>{});
 
         template<typename T>
         static FalseType __TestNothrowDestructible(...);
