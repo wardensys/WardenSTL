@@ -122,6 +122,21 @@ namespace wstl {
         template<>
         struct __IteratorTraitsCategory<std::random_access_iterator_tag> { typedef RandomAccessIteratorTag Type; };
 
+        template<>
+        struct __IteratorTraitsCategory<InputIteratorTag> { typedef std::input_iterator_tag Type; };
+
+        template<>
+        struct __IteratorTraitsCategory<OutputIteratorTag> { typedef std::output_iterator_tag Type; };
+
+        template<>
+        struct __IteratorTraitsCategory<ForwardIteratorTag> { typedef std::forward_iterator_tag Type; };
+
+        template<>
+        struct __IteratorTraitsCategory<BidirectionalIteratorTag> { typedef std::bidirectional_iterator_tag Type; };
+
+        template<>
+        struct __IteratorTraitsCategory<RandomAccessIteratorTag> { typedef std::random_access_iterator_tag Type; };
+
         WSTL_DECLARE_TYPEDEF_TEST(__TestSTDIterator, iterator_category, value_type, difference_type, pointer, reference)
 
         template<typename Iterator, bool __IsLibraryIterator = WSTL_TYPEDEF_TEST_RESULT(__TestLibraryIterator, Iterator, 5),
@@ -193,6 +208,35 @@ namespace wstl {
         typedef const T* PointerType;
         typedef const T& ReferenceType;
     };
+
+    // Macro for integrating library iterators into std::iterator_traits
+
+    #ifdef __WSTL_STD_ITERATORTRAITS_SUPPORT__
+    /// @brief A macro to integrate library iterators into `std::iterator_traits`, 
+    /// needs to be defined in the global namespace
+    /// @param temp Template parameters for the iterator (e.g., `template<typename T>`)
+    /// @param iterator The iterator type to integrate (e.g., `MyIterator<T>`)
+    /// @note Requires `__WSTL_STD_ITERATORTRAITS_SUPPORT__` to be defined
+    /// @ingroup iterator
+    #define WSTL_ITERATOR_STDTRAITS_COMPAT(temp, iterator) namespace std { \
+        temp \
+        struct iterator_traits<iterator> { \
+            typedef typename iterator::DifferenceType difference_type; \
+            typedef typename iterator::ValueType value_type; \
+            typedef typename iterator::PointerType pointer; \
+            typedef typename iterator::ReferenceType reference; \
+            typedef typename wstl::__private::__IteratorTraitsCategory<typename iterator::IteratorCategory>::Type iterator_category; \
+        }; \
+    }
+    #else
+    /// @brief A macro to integrate library iterators into `std::iterator_traits`, 
+    /// needs to be defined in the global namespace
+    /// @param temp Template parameters for the iterator (e.g., `template<typename T>`)
+    /// @param iterator The iterator type to integrate (e.g., `MyIterator<T>`)
+    /// @note Requires `__WSTL_STD_ITERATORTRAITS_SUPPORT__` to be defined
+    /// @ingroup iterator
+    #define WSTL_ITERATOR_STDTRAITS_COMPAT(temp, iterator)
+    #endif
 
     // Advance
 
@@ -539,7 +583,11 @@ namespace wstl {
     __WSTL_CONSTEXPR14__ ReverseIterator<T> MakeReverseIterator(T iterator) {
         return ReverseIterator<T>(iterator);
     }
+}
 
+WSTL_ITERATOR_STDTRAITS_COMPAT(template<typename T>, wstl::ReverseIterator<T>)
+
+namespace wstl {
     #ifdef __WSTL_CXX11__
     // Move iterator
 
@@ -757,7 +805,11 @@ namespace wstl {
         return MoveIterator<T>(wstl::Move(iterator));
     }
     #endif
+}
 
+WSTL_ITERATOR_STDTRAITS_COMPAT(template<typename T>, wstl::MoveIterator<T>)
+
+namespace wstl {
     // Insert iterator
 
     /// @brief An output iterator that inserts elements into a container at a specified position.
@@ -834,7 +886,11 @@ namespace wstl {
     InsertIterator<Container> Inserter(Container& container, typename Container::Iterator iterator) {
         return InsertIterator<Container>(container, iterator);
     }
+}
 
+WSTL_ITERATOR_STDTRAITS_COMPAT(template<typename Container>, wstl::InsertIterator<Container>)
+
+namespace wstl {
     // Front insert iterator
 
     /// @brief An output iterator that inserts elements at the front of a container
@@ -902,7 +958,11 @@ namespace wstl {
     __WSTL_CONSTEXPR14__ FrontInsertIterator<Container> FrontInserter(Container& container) {
         return FrontInsertIterator<Container>(container);
     }
+}
 
+WSTL_ITERATOR_STDTRAITS_COMPAT(template<typename Container>, wstl::FrontInsertIterator<Container>)
+
+namespace wstl {
     /// Back insert iterator
 
     /// @brief An output iterator that inserts elements at the back of a container
@@ -969,7 +1029,11 @@ namespace wstl {
     __WSTL_CONSTEXPR14__ BackInsertIterator<Container> BackInserter(Container& container) {
         return BackInsertIterator<Container>(container);
     }
+}
 
+WSTL_ITERATOR_STDTRAITS_COMPAT(template<typename Container>, wstl::BackInsertIterator<Container>)
+
+namespace wstl {
     // Range access functions
 
     /// @brief Returns an iterator to the beginning of the container

@@ -2040,6 +2040,8 @@ namespace wstl {
         return !(a < b);
     }
 
+    /// TODO: WSTL_ITERATOR_STDTRAITS_COMPAT
+
     // List
 
     /// @brief Version of the list with fixed storage, default option

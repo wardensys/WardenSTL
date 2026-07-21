@@ -1835,6 +1835,8 @@ namespace wstl {
         return !(a < b);
     }
 
+    /// TODO: WSTL_ITERATOR_STDTRAITS_COMPAT
+
     // Deque
 
     /// @brief Version of deque with fixed storage, default option

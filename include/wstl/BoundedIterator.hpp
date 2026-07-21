@@ -110,4 +110,6 @@ namespace wstl {
     }
 }
 
+WSTL_ITERATOR_STDTRAITS_COMPAT(template<typename T>, wstl::ForwardBoundedIterator<T>)
+
 #endif

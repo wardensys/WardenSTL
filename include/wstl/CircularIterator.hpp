@@ -526,4 +526,6 @@ namespace wstl {
     }
 }
 
+WSTL_ITERATOR_STDTRAITS_COMPAT(template<typename T>, wstl::CircularIterator<T>)
+
 #endif
