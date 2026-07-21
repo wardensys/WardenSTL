@@ -58,7 +58,8 @@ SYNTAX_CHECKS_FLAG = {
 env = Environment(
     ENV = os.environ,
     CXXCOMSTR = 'Compiling [$SOURCE]',
-    LINKCOMSTR = 'Linking [$TARGET]'
+    LINKCOMSTR = 'Linking [$TARGET]',
+    COMPILATIONDB_USE_ABSPATH = True
 )
 
 if compiler is not None: 
@@ -82,6 +83,12 @@ env.Append(
     ]
 )
 
+# Compilation database for IDE (VSCode)
+
+env.Tool('compilation_db')
+env.NoClean('.vscode/compile_commands.json')
+cdb = env.CompilationDatabase('.vscode/compile_commands.json')
+
 # Doxygen
 
 def OpenDoxygen(target: list[Node], source: list[Node], env: Environment) -> None:
@@ -95,6 +102,9 @@ doxygen = env.Command(
     'Doxyfile', 
     env.Action('doxygen ${SOURCE}', cmdstr='Generating Doxygen documentation...')
 )
+
+if 'docs' in COMMAND_LINE_TARGETS:
+    env.AlwaysBuild(doxygen)
 
 env.Alias('docs', doxygen)
 env.Clean(doxygen, 'build/docs')
@@ -111,11 +121,15 @@ env.VariantDir('build/tests', 'tests', duplicate=0)
 
 tests = env.Program('build/tests/test', env.Glob('build/tests/*.cpp'))
 
-env.AlwaysBuild(env.Alias('test', tests, './${SOURCE}'))
+env.AlwaysBuild(env.Alias('test', tests))
+
+env.AlwaysBuild(env.Alias('run_test', tests, './${SOURCE}'))
+
+env.Depends(tests, cdb)
 
 # Syntax checks
 
-if 'syntax-checks' in COMMAND_LINE_TARGETS:
+if 'syntax_check' in COMMAND_LINE_TARGETS:
     syntaxEnv = env.Clone(
         CXXCOMSTR = 'Syntax checking [$SOURCE]'
     )
@@ -127,4 +141,4 @@ if 'syntax-checks' in COMMAND_LINE_TARGETS:
 
     syntaxChecks = syntaxEnv.Object([*syntaxSource, *testSource])
 
-    env.Alias('syntax-checks', syntaxChecks)
+    env.Alias('syntax_check', syntaxChecks)

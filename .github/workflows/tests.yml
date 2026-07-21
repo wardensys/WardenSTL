@@ -65,8 +65,8 @@ jobs:
             - name: Install SCons
               run: |
                 python -m pip install --upgrade pip
-                python -m pip install scons
+                python -m pip install -r requirements.txt
 
             - name: Run test
-              run: scons test --compiler=${{ matrix.compiler }} --cppstd=${{ matrix.cpp-version }}
+              run: scons run_test --compiler=${{ matrix.compiler }} --cppstd=${{ matrix.cpp-version }}
              

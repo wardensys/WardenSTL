@@ -1,0 +1,159 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Setup Development Environment",
+            "type": "shell",
+            "linux": {
+                "command": "./scripts/setup.sh"
+            },
+            "osx": {
+                "command": "./scripts/setup.sh"
+            },
+            "windows": {
+                "command": "./scripts/setup.ps1"
+            }
+        },
+        {
+            "label": "Build",
+            "type": "shell",
+            "command": "scons",
+            "group": {
+                "isDefault": true,
+                "kind": "build"
+            },
+            "problemMatcher": "$gcc",
+            "presentation": {
+                "reveal": "silent",
+                "focus": false,
+                "panel": "dedicated",
+                "showReuseMessage": true,
+                "clear": true,
+                "revealProblems": "onProblem"
+            }
+        },
+        {
+            "label": "Syntax Checks",
+            "type": "shell",
+            "command": "scons",
+            "args": ["syntax_check"],
+            "group": "test",
+            "presentation": {
+                "reveal": "silent",
+                "focus": false,
+                "panel": "dedicated",
+                "showReuseMessage": true,
+                "clear": true,
+                "revealProblems": "onProblem"
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "Build Unit Tests",
+            "type": "shell",
+            "command": "scons",
+            "args": ["test"],
+            "group": "test",
+            "problemMatcher": "$gcc",
+            "presentation": {
+                "reveal": "silent",
+                "focus": false,
+                "panel": "dedicated" ,
+                "showReuseMessage": true,
+                "clear": true,
+                "revealProblems": "onProblem"
+            }
+        },
+        {
+            "label": "Run All Tests",
+            "type": "shell",
+            "command": "scons",
+            "args": ["run_test"],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc",
+            "presentation": {
+                "reveal": "always",
+                "focus": true,
+                "panel": "dedicated" ,
+                "showReuseMessage": true,
+                "clear": true,
+                "revealProblems": "onProblem"
+            },
+            "dependsOn": ["Syntax Checks"],
+            "dependsOrder": "sequence"
+        },
+        {
+            "label": "Generate Documentation",
+            "type": "shell",
+            "command": "scons",
+            "args": ["docs"],
+            "problemMatcher": {
+                "owner": "doxygen",
+                "fileLocation": "absolute",
+                "pattern": {
+                    "regexp": "^(.*?):([0-9]+): (warning|error): (.*)$",
+                    "file": 1,
+                    "line": 2,
+                    "severity": 3,
+                    "message": 4
+                }
+            },
+            "presentation": {
+                "reveal": "silent",
+                "focus": false,
+                "panel": "dedicated",
+                "showReuseMessage": true,
+                "clear": true,
+                "revealProblems": "onProblem"
+            }, 
+        },
+        {
+            "label": "Open Documentation",
+            "type": "shell",
+            "command": "scons",
+            "args": ["open"],
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "silent",
+                "panel": "dedicated",
+                "showReuseMessage": true,
+                "clear": false,
+                "revealProblems": "onProblem"
+            }
+        },
+        {
+            "label": "Cleanup",
+            "type": "shell",
+            "command": "scons",
+            "args": ["-c"],
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "silent",
+                "focus": false,
+                "panel": "dedicated",
+                "showReuseMessage": true,
+                "clear": true
+            }
+        },
+        {
+            "label": "Rebuild",
+            "dependsOn": [
+                "Cleanup",
+                "Build"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "silent",
+                "focus": false,
+                "panel": "dedicated",
+                "showReuseMessage": true,
+                "clear": true,
+                "revealProblems": "onProblem"
+            }
+        }
+    ]
+}

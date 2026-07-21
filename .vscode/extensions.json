@@ -1,0 +1,12 @@
+{
+    "recommendations": [
+        "jeff-hykin.better-cpp-syntax",
+        "ms-vscode.cpptools-extension-pack",
+        "samubarb.vscode-doxyfile",
+        "cschlosser.doxdocgen",
+        "github.vscode-github-actions",
+        "ms-python.python",
+        "matepek.vscode-catch2-test-adapter",
+        "wayou.vscode-todo-highlight"
+    ]
+}
