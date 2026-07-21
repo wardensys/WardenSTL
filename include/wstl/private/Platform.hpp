@@ -321,11 +321,13 @@ namespace wstl {}
 #else
     #define __WSTL_COUNT_ARGS_IMPL__(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, N,...) N
 
+    #define __WSTL_COUNT_ARGS(...) __WSTL_COUNT_ARGS_IMPL__(__VA_ARGS__, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1)
+
     /// @brief A macro to count the number of arguments passed to it (up to 10)
     /// @param ... The arguments to count, can't be empty
     /// @note This macro does not support empty argument lists due to limitations in pre-C++20 compilers
     /// @ingroup utilities
-    #define WSTL_COUNT_ARGS(...) WSTL_EXPAND(__WSTL_COUNT_ARGS_IMPL__(__VA_ARGS__, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1))
+    #define WSTL_COUNT_ARGS(...) __WSTL_COUNT_ARGS(__VA_ARGS__)
 #endif
 
 /// @brief A macro to mark a variable as unused, preventing compiler warnings about unused variables
