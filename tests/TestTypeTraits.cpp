@@ -465,10 +465,10 @@ TEST_SUITE("TypeTraits") {
     }
 
     TEST_CASE("IsNullPointer") {
-        CHECK(wstl::IsNullPointer<nullptr_t>::Value);
-        CHECK(wstl::IsNullPointer<const nullptr_t>::Value);
-        CHECK(wstl::IsNullPointer<volatile nullptr_t>::Value);
-        CHECK(wstl::IsNullPointer<const volatile nullptr_t>::Value);
+        CHECK(wstl::IsNullPointer<std::nullptr_t>::Value);
+        CHECK(wstl::IsNullPointer<const std::nullptr_t>::Value);
+        CHECK(wstl::IsNullPointer<volatile std::nullptr_t>::Value);
+        CHECK(wstl::IsNullPointer<const volatile std::nullptr_t>::Value);
         CHECK(wstl::IsNullPointer<wstl::nullptr_t>::Value);
         CHECK(wstl::IsNullPointer<wstl::NullPointerType>::Value);
         CHECK_FALSE(wstl::IsNullPointer<int>::Value);
