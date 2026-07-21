@@ -26,8 +26,10 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::HasInfinity, Expected::has_infinity);
         CHECK_EQ(Result::HasQuietNaN, Expected::has_quiet_NaN);
         CHECK_EQ(Result::HasSignalingNaN, Expected::has_signaling_NaN);
+        #ifndef __WSTL_CXX23__
         CHECK_EQ(int(Result::HasDenormalization), int(Expected::has_denorm));
         CHECK_EQ(Result::HasDenormalizationLoss, Expected::has_denorm_loss);
+        #endif
         CHECK_EQ(int(Result::RoundStyle), int(Expected::round_style));
         CHECK_EQ(Result::IsIEC559, Expected::is_iec559);
         CHECK_EQ(Result::IsBounded, Expected::is_bounded);
@@ -61,8 +63,10 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::HasInfinity, Expected::has_infinity);
         CHECK_EQ(Result::HasQuietNaN, Expected::has_quiet_NaN);
         CHECK_EQ(Result::HasSignalingNaN, Expected::has_signaling_NaN);
+        #ifndef __WSTL_CXX23__
         CHECK_EQ(int(Result::HasDenormalization), int(Expected::has_denorm));
         CHECK_EQ(Result::HasDenormalizationLoss, Expected::has_denorm_loss);
+        #endif
         CHECK_EQ(int(Result::RoundStyle), int(Expected::round_style));
         CHECK_EQ(Result::IsIEC559, Expected::is_iec559);
         CHECK_EQ(Result::IsBounded, Expected::is_bounded);
@@ -96,8 +100,10 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::HasInfinity, Expected::has_infinity);
         CHECK_EQ(Result::HasQuietNaN, Expected::has_quiet_NaN);
         CHECK_EQ(Result::HasSignalingNaN, Expected::has_signaling_NaN);
+        #ifndef __WSTL_CXX23__
         CHECK_EQ(int(Result::HasDenormalization), int(Expected::has_denorm));
         CHECK_EQ(Result::HasDenormalizationLoss, Expected::has_denorm_loss);
+        #endif
         CHECK_EQ(int(Result::RoundStyle), int(Expected::round_style));
         CHECK_EQ(Result::IsIEC559, Expected::is_iec559);
         CHECK_EQ(Result::IsBounded, Expected::is_bounded);
@@ -131,8 +137,10 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::HasInfinity, Expected::has_infinity);
         CHECK_EQ(Result::HasQuietNaN, Expected::has_quiet_NaN);
         CHECK_EQ(Result::HasSignalingNaN, Expected::has_signaling_NaN);
+        #ifndef __WSTL_CXX23__
         CHECK_EQ(int(Result::HasDenormalization), int(Expected::has_denorm));
         CHECK_EQ(Result::HasDenormalizationLoss, Expected::has_denorm_loss);
+        #endif
         CHECK_EQ(int(Result::RoundStyle), int(Expected::round_style));
         CHECK_EQ(Result::IsIEC559, Expected::is_iec559);
         CHECK_EQ(Result::IsBounded, Expected::is_bounded);
@@ -167,8 +175,10 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::HasInfinity, Expected::has_infinity);
         CHECK_EQ(Result::HasQuietNaN, Expected::has_quiet_NaN);
         CHECK_EQ(Result::HasSignalingNaN, Expected::has_signaling_NaN);
+        #ifndef __WSTL_CXX23__
         CHECK_EQ(int(Result::HasDenormalization), int(Expected::has_denorm));
         CHECK_EQ(Result::HasDenormalizationLoss, Expected::has_denorm_loss);
+        #endif
         CHECK_EQ(int(Result::RoundStyle), int(Expected::round_style));
         CHECK_EQ(Result::IsIEC559, Expected::is_iec559);
         CHECK_EQ(Result::IsBounded, Expected::is_bounded);
@@ -203,8 +213,10 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::HasInfinity, Expected::has_infinity);
         CHECK_EQ(Result::HasQuietNaN, Expected::has_quiet_NaN);
         CHECK_EQ(Result::HasSignalingNaN, Expected::has_signaling_NaN);
+        #ifndef __WSTL_CXX23__
         CHECK_EQ(int(Result::HasDenormalization), int(Expected::has_denorm));
         CHECK_EQ(Result::HasDenormalizationLoss, Expected::has_denorm_loss);
+        #endif
         CHECK_EQ(int(Result::RoundStyle), int(Expected::round_style));
         CHECK_EQ(Result::IsIEC559, Expected::is_iec559);
         CHECK_EQ(Result::IsBounded, Expected::is_bounded);
@@ -238,8 +250,10 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::HasInfinity, Expected::has_infinity);
         CHECK_EQ(Result::HasQuietNaN, Expected::has_quiet_NaN);
         CHECK_EQ(Result::HasSignalingNaN, Expected::has_signaling_NaN);
+        #ifndef __WSTL_CXX23__
         CHECK_EQ(int(Result::HasDenormalization), int(Expected::has_denorm));
         CHECK_EQ(Result::HasDenormalizationLoss, Expected::has_denorm_loss);
+        #endif
         CHECK_EQ(int(Result::RoundStyle), int(Expected::round_style));
         CHECK_EQ(Result::IsIEC559, Expected::is_iec559);
         CHECK_EQ(Result::IsBounded, Expected::is_bounded);
@@ -273,8 +287,10 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::HasInfinity, Expected::has_infinity);
         CHECK_EQ(Result::HasQuietNaN, Expected::has_quiet_NaN);
         CHECK_EQ(Result::HasSignalingNaN, Expected::has_signaling_NaN);
+        #ifndef __WSTL_CXX23__
         CHECK_EQ(int(Result::HasDenormalization), int(Expected::has_denorm));
         CHECK_EQ(Result::HasDenormalizationLoss, Expected::has_denorm_loss);
+        #endif
         CHECK_EQ(int(Result::RoundStyle), int(Expected::round_style));
         CHECK_EQ(Result::IsIEC559, Expected::is_iec559);
         CHECK_EQ(Result::IsBounded, Expected::is_bounded);
@@ -308,8 +324,10 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::HasInfinity, Expected::has_infinity);
         CHECK_EQ(Result::HasQuietNaN, Expected::has_quiet_NaN);
         CHECK_EQ(Result::HasSignalingNaN, Expected::has_signaling_NaN);
+        #ifndef __WSTL_CXX23__
         CHECK_EQ(int(Result::HasDenormalization), int(Expected::has_denorm));
         CHECK_EQ(Result::HasDenormalizationLoss, Expected::has_denorm_loss);
+        #endif
         CHECK_EQ(int(Result::RoundStyle), int(Expected::round_style));
         CHECK_EQ(Result::IsIEC559, Expected::is_iec559);
         CHECK_EQ(Result::IsBounded, Expected::is_bounded);
@@ -343,8 +361,10 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::HasInfinity, Expected::has_infinity);
         CHECK_EQ(Result::HasQuietNaN, Expected::has_quiet_NaN);
         CHECK_EQ(Result::HasSignalingNaN, Expected::has_signaling_NaN);
+        #ifndef __WSTL_CXX23__
         CHECK_EQ(int(Result::HasDenormalization), int(Expected::has_denorm));
         CHECK_EQ(Result::HasDenormalizationLoss, Expected::has_denorm_loss);
+        #endif
         CHECK_EQ(int(Result::RoundStyle), int(Expected::round_style));
         CHECK_EQ(Result::IsIEC559, Expected::is_iec559);
         CHECK_EQ(Result::IsBounded, Expected::is_bounded);
@@ -378,8 +398,10 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::HasInfinity, Expected::has_infinity);
         CHECK_EQ(Result::HasQuietNaN, Expected::has_quiet_NaN);
         CHECK_EQ(Result::HasSignalingNaN, Expected::has_signaling_NaN);
+        #ifndef __WSTL_CXX23__
         CHECK_EQ(int(Result::HasDenormalization), int(Expected::has_denorm));
         CHECK_EQ(Result::HasDenormalizationLoss, Expected::has_denorm_loss);
+        #endif
         CHECK_EQ(int(Result::RoundStyle), int(Expected::round_style));
         CHECK_EQ(Result::IsIEC559, Expected::is_iec559);
         CHECK_EQ(Result::IsBounded, Expected::is_bounded);
@@ -413,8 +435,10 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::HasInfinity, Expected::has_infinity);
         CHECK_EQ(Result::HasQuietNaN, Expected::has_quiet_NaN);
         CHECK_EQ(Result::HasSignalingNaN, Expected::has_signaling_NaN);
+        #ifndef __WSTL_CXX23__
         CHECK_EQ(int(Result::HasDenormalization), int(Expected::has_denorm));
         CHECK_EQ(Result::HasDenormalizationLoss, Expected::has_denorm_loss);
+        #endif
         CHECK_EQ(int(Result::RoundStyle), int(Expected::round_style));
         CHECK_EQ(Result::IsIEC559, Expected::is_iec559);
         CHECK_EQ(Result::IsBounded, Expected::is_bounded);
@@ -448,8 +472,10 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::HasInfinity, Expected::has_infinity);
         CHECK_EQ(Result::HasQuietNaN, Expected::has_quiet_NaN);
         CHECK_EQ(Result::HasSignalingNaN, Expected::has_signaling_NaN);
+        #ifndef __WSTL_CXX23__
         CHECK_EQ(int(Result::HasDenormalization), int(Expected::has_denorm));
         CHECK_EQ(Result::HasDenormalizationLoss, Expected::has_denorm_loss);
+        #endif
         CHECK_EQ(int(Result::RoundStyle), int(Expected::round_style));
         CHECK_EQ(Result::IsIEC559, Expected::is_iec559);
         CHECK_EQ(Result::IsBounded, Expected::is_bounded);
@@ -483,8 +509,10 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::HasInfinity, Expected::has_infinity);
         CHECK_EQ(Result::HasQuietNaN, Expected::has_quiet_NaN);
         CHECK_EQ(Result::HasSignalingNaN, Expected::has_signaling_NaN);
+        #ifndef __WSTL_CXX23__
         CHECK_EQ(int(Result::HasDenormalization), int(Expected::has_denorm));
         CHECK_EQ(Result::HasDenormalizationLoss, Expected::has_denorm_loss);
+        #endif
         CHECK_EQ(int(Result::RoundStyle), int(Expected::round_style));
         CHECK_EQ(Result::IsIEC559, Expected::is_iec559);
         CHECK_EQ(Result::IsBounded, Expected::is_bounded);
@@ -518,8 +546,10 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::HasInfinity, Expected::has_infinity);
         CHECK_EQ(Result::HasQuietNaN, Expected::has_quiet_NaN);
         CHECK_EQ(Result::HasSignalingNaN, Expected::has_signaling_NaN);
+        #ifndef __WSTL_CXX23__
         CHECK_EQ(int(Result::HasDenormalization), int(Expected::has_denorm));
         CHECK_EQ(Result::HasDenormalizationLoss, Expected::has_denorm_loss);
+        #endif
         CHECK_EQ(int(Result::RoundStyle), int(Expected::round_style));
         CHECK_EQ(Result::IsIEC559, Expected::is_iec559);
         CHECK_EQ(Result::IsBounded, Expected::is_bounded);
@@ -553,8 +583,10 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::HasInfinity, Expected::has_infinity);
         CHECK_EQ(Result::HasQuietNaN, Expected::has_quiet_NaN);
         CHECK_EQ(Result::HasSignalingNaN, Expected::has_signaling_NaN);
+        #ifndef __WSTL_CXX23__
         CHECK_EQ(int(Result::HasDenormalization), int(Expected::has_denorm));
         CHECK_EQ(Result::HasDenormalizationLoss, Expected::has_denorm_loss);
+        #endif
         CHECK_EQ(int(Result::RoundStyle), int(Expected::round_style));
         CHECK_EQ(Result::IsIEC559, Expected::is_iec559);
         CHECK_EQ(Result::IsBounded, Expected::is_bounded);
