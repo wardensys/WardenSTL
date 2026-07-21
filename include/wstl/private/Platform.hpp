@@ -278,6 +278,11 @@ namespace wstl {}
 
 // General macro utilities
 
+/// @brief Expands a macro argument, useful for nested macros, needed for some compilers
+/// @param x The macro argument to expand
+/// @ingroup utilities
+#define WSTL_EXPAND(x) x
+
 #define __WSTL_STRINGIFY_IMPL__(s) #s
 
 /// @brief A macro to convert a token into a string literal
@@ -320,14 +325,12 @@ namespace wstl {}
     /// @param ... The arguments to count, can't be empty
     /// @note This macro does not support empty argument lists due to limitations in pre-C++20 compilers
     /// @ingroup utilities
-    #define WSTL_COUNT_ARGS(...) __WSTL_COUNT_ARGS_IMPL__(__VA_ARGS__, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
+    #define WSTL_COUNT_ARGS(...) WSTL_EXPAND(__WSTL_COUNT_ARGS_IMPL__(__VA_ARGS__, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0))
 #endif
 
 /// @brief A macro to mark a variable as unused, preventing compiler warnings about unused variables
 /// @param x The variable to mark as unused
 /// @ingroup utilities
 #define WSTL_UNUSED(x) ((void) x)
-
-#define WSTL_EXPAND(x) x
 
 #endif
