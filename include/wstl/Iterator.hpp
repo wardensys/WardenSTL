@@ -101,12 +101,8 @@ namespace wstl {
     // Iterator traits
 
     namespace __private {
-        template<typename T>
-        static long __TestLibraryIterator(typename T::IteratorCategory*, typename T::ValueType*, 
-            typename T::DifferenceType*, typename T::PointerType*, typename RemoveReference<typename T::ReferenceType>::Type*);
-
-        template<typename>
-        static char __TestLibraryIterator(...);
+        WSTL_DECLARE_TYPEDEF_TEST(__TestLibraryIterator, 
+            IteratorCategory, ValueType, DifferenceType, PointerType, ReferenceType)
 
         #ifdef __WSTL_STD_ITERATORTRAITS_SUPPORT__
         template<typename T>
@@ -127,15 +123,11 @@ namespace wstl {
         template<>
         struct __IteratorTraitsCategory<std::random_access_iterator_tag> { typedef RandomAccessIteratorTag Type; };
 
-        template<typename T>
-        static long __TestSTDIterator(typename T::iterator_category*, typename T::value_type*,
-            typename T::difference_type*, typename T::pointer*, typename RemoveReference<typename T::reference>::Type*);
+        WSTL_DECLARE_TYPEDEF_TEST(__TestSTDIterator, 
+            iterator_category, value_type, difference_type, pointer, reference)
 
-        template<typename>
-        static char __TestSTDIterator(...);
-
-        template<typename Iterator, bool __IsLibraryIterator = sizeof(__TestLibraryIterator<Iterator>(0, 0, 0, 0, 0)) == sizeof(long), 
-        bool __IsIterator = __IsLibraryIterator || (sizeof(__TestSTDIterator<Iterator>(0, 0, 0, 0, 0)) == sizeof(long))>
+        template<typename Iterator, bool __IsLibraryIterator = WSTL_TYPEDEF_TEST_RESULT(__TestLibraryIterator, Iterator, 5),
+        bool __IsIterator = __IsLibraryIterator || WSTL_TYPEDEF_TEST_RESULT(__TestSTDIterator, Iterator, 5)>
         struct __IteratorTraits {};
 
         template<typename Iterator>
@@ -487,33 +479,33 @@ namespace wstl {
     // Comparison operators for ReverseIterator
 
     template<typename T>
-    __WSTL_CONSTEXPR14__ bool operator==(const ReverseIterator<T>& x, const ReverseIterator<T>& y) {
-        return x.Base() == y.Base();
+    __WSTL_CONSTEXPR14__ bool operator==(const ReverseIterator<T>& a, const ReverseIterator<T>& b) {
+        return a.Base() == b.Base();
     }
 
     template<typename T>
-    __WSTL_CONSTEXPR14__ bool operator!=(const ReverseIterator<T>& x, const ReverseIterator<T>& y) {
-        return !(x == y);
+    __WSTL_CONSTEXPR14__ bool operator!=(const ReverseIterator<T>& a, const ReverseIterator<T>& b) {
+        return !(a == b);
     }
 
     template<typename T>
-    __WSTL_CONSTEXPR14__ bool operator<(const ReverseIterator<T>& x, const ReverseIterator<T>& y) {
-        return y.Base() < x.Base();
+    __WSTL_CONSTEXPR14__ bool operator<(const ReverseIterator<T>& a, const ReverseIterator<T>& b) {
+        return b.Base() < a.Base();
     }
 
     template<typename T>
-    __WSTL_CONSTEXPR14__ bool operator<=(const ReverseIterator<T>& x, const ReverseIterator<T>& y) {
-        return !(y < x);
+    __WSTL_CONSTEXPR14__ bool operator<=(const ReverseIterator<T>& a, const ReverseIterator<T>& b) {
+        return !(b < a);
     }
 
     template<typename T>
-    __WSTL_CONSTEXPR14__ bool operator>(const ReverseIterator<T>& x, const ReverseIterator<T>& y) {
-        return y < x;
+    __WSTL_CONSTEXPR14__ bool operator>(const ReverseIterator<T>& a, const ReverseIterator<T>& b) {
+        return b < a;
     }
 
     template<typename T>
-    __WSTL_CONSTEXPR14__ bool operator>=(const ReverseIterator<T>& x, const ReverseIterator<T>& y) {
-        return !(x < y);
+    __WSTL_CONSTEXPR14__ bool operator>=(const ReverseIterator<T>& a, const ReverseIterator<T>& b) {
+        return !(a < b);
     }
 
     // Addition operator for ReverseIterator
@@ -536,8 +528,8 @@ namespace wstl {
     /// @return The difference between the two iterators
     /// @ingroup iterator
     template<typename T>
-    __WSTL_CONSTEXPR14__ typename ReverseIterator<T>::DifferenceType operator-(const ReverseIterator<T>& x, const ReverseIterator<T>& y) {
-        return y.Base() - x.Base();
+    __WSTL_CONSTEXPR14__ typename ReverseIterator<T>::DifferenceType operator-(const ReverseIterator<T>& a, const ReverseIterator<T>& b) {
+        return b.Base() - a.Base();
     }
 
     /// @brief Makes a reverse iterator from the given iterator
@@ -704,33 +696,33 @@ namespace wstl {
     // Comparison operators for MoveIterator
 
     template<typename T>
-    __WSTL_CONSTEXPR14__ bool operator==(const MoveIterator<T>& x, const MoveIterator<T>& y) {
-        return x.Base() == y.Base();
+    __WSTL_CONSTEXPR14__ bool operator==(const MoveIterator<T>& a, const MoveIterator<T>& b) {
+        return a.Base() == b.Base();
     }
 
     template<typename T>
-    __WSTL_CONSTEXPR14__ bool operator!=(const MoveIterator<T>& x, const MoveIterator<T>& y) {
-        return !(x == y);
+    __WSTL_CONSTEXPR14__ bool operator!=(const MoveIterator<T>& a, const MoveIterator<T>& b) {
+        return !(a == b);
     }
 
     template<typename T>
-    __WSTL_CONSTEXPR14__ bool operator<(const MoveIterator<T>& x, const MoveIterator<T>& y) {
-        return x.Base() < y.Base();
+    __WSTL_CONSTEXPR14__ bool operator<(const MoveIterator<T>& a, const MoveIterator<T>& b) {
+        return a.Base() < b.Base();
     }
 
     template<typename T>
-    __WSTL_CONSTEXPR14__ bool operator<=(const MoveIterator<T>& x, const MoveIterator<T>& y) {
-        return !(y < x);
+    __WSTL_CONSTEXPR14__ bool operator<=(const MoveIterator<T>& a, const MoveIterator<T>& b) {
+        return !(b < a);
     }
 
     template<typename T>
-    __WSTL_CONSTEXPR14__ bool operator>(const MoveIterator<T>& x, const MoveIterator<T>& y) {
-        return y < x;
+    __WSTL_CONSTEXPR14__ bool operator>(const MoveIterator<T>& a, const MoveIterator<T>& b) {
+        return b < a;
     }
 
     template<typename T>
-    __WSTL_CONSTEXPR14__ bool operator>=(const MoveIterator<T>& x, const MoveIterator<T>& y) {
-        return !(x < y);
+    __WSTL_CONSTEXPR14__ bool operator>=(const MoveIterator<T>& a, const MoveIterator<T>& b) {
+        return !(a < b);
     }
 
     // Addition operator for MoveIterator
@@ -741,8 +733,8 @@ namespace wstl {
     /// @return A new move iterator advanced by `offset` positions
     /// @ingroup iterator
     template<typename T>
-    __WSTL_CONSTEXPR14__ MoveIterator<T> operator+(typename MoveIterator<T>::DifferenceType offset, const MoveIterator<T>& iterator) {
-        return iterator + offset;
+    __WSTL_CONSTEXPR14__ MoveIterator<T> operator+(typename MoveIterator<T>::DifferenceType offset, const MoveIterator<T>& x) {
+        return x + offset;
     }
 
     // Difference operator for MoveIterator
@@ -753,8 +745,8 @@ namespace wstl {
     /// @return The difference between the two iterators
     /// @ingroup iterator
     template<typename T1, typename T2>
-    __WSTL_CONSTEXPR14__ auto operator-(const MoveIterator<T1>& x, const MoveIterator<T2>& y) -> decltype(x.Base() - y.Base()) {
-        return x.Base() - y.Base();
+    __WSTL_CONSTEXPR14__ auto operator-(const MoveIterator<T1>& a, const MoveIterator<T2>& b) -> decltype(a.Base() - b.Base()) {
+        return a.Base() - b.Base();
     }
     
     /// @brief Makes a move iterator from the given iterator
@@ -1216,7 +1208,7 @@ namespace wstl {
     #define ARRAY_SIZE(a) sizeof(wstl::ArraySize(a))
     
     /// @brief Returns the number of elements in a raw array
-    /// @param array A reference to the array
+    /// @param - A reference to the array
     /// @return The number of elements in the array
     /// @ingroup containers
     /// @see https://en.cppreference.com/w/cpp/iterator/size
@@ -1249,7 +1241,7 @@ namespace wstl {
 
     template<typename T, size_t N>
     /// @brief Checks if a fixed-size array is empty
-    /// @param array The array to check
+    /// @param - The array to check
     /// @return Always false, as fixed-size arrays are never empty
     /// @ingroup containers
     /// @see https://en.cppreference.com/w/cpp/iterator/empty

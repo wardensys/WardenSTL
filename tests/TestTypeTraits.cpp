@@ -12,6 +12,7 @@
 #include <doctest.h>
 #include <wstl/TypeTraits.hpp>
 #include <type_traits>
+#include <stddef.h>
 
 #include "Utils.hpp"
 
@@ -52,6 +53,7 @@ template<typename T> T Free0t();
 int FreeNoexcept(char) noexcept;
 long FreeVariadic(int, ...);
 
+struct FunctorNoexcept { typedef int ResultType; int operator()() noexcept; };
 struct Functor0 { typedef int ResultType; int operator()(); };
 struct Functor2 { typedef long ResultType; long operator()(int, char); };
 
@@ -360,6 +362,11 @@ TEST_SUITE("TypeTraits") {
 
     TEST_CASE("ResultOf") {
         // Free functions
+        CHECK(wstl::IsSame<wstl::ResultOf<decltype(Free0)>::Type, int>::Value);
+        CHECK(wstl::IsSame<wstl::ResultOf<decltype(Free1)>::Type, int>::Value);
+        CHECK(wstl::IsSame<wstl::ResultOf<decltype(Free2)>::Type, int>::Value);
+        CHECK(wstl::IsSame<wstl::ResultOf<decltype(Free3)>::Type, int>::Value);
+        CHECK(wstl::IsSame<wstl::ResultOf<decltype(Free0t<char>)>::Type, char>::Value);
         CHECK(wstl::IsSame<wstl::ResultOf<decltype(&Free0)>::Type, int>::Value);
         CHECK(wstl::IsSame<wstl::ResultOf<decltype(&Free1)>::Type, int>::Value);
         CHECK(wstl::IsSame<wstl::ResultOf<decltype(&Free2)>::Type, int>::Value);
@@ -1483,6 +1490,7 @@ TEST_SUITE("TypeTraits") {
     }
 
     TEST_CASE("IsInvocable") {
+        // Free function
         CHECK(wstl::IsInvocable<decltype(Free0)>::Value);
         CHECK_FALSE(wstl::IsInvocable<decltype(Free0), float>::Value);
         CHECK(wstl::IsInvocable<decltype(Free1), int>::Value);
@@ -1501,6 +1509,7 @@ TEST_SUITE("TypeTraits") {
         CHECK_FALSE(wstl::IsInvocable<decltype(FreeVariadic), TestData>::Value);
         CHECK_FALSE(wstl::IsInvocable<decltype(FreeVariadic)>::Value);
 
+        // Member function pointer
         CHECK(wstl::IsInvocable<decltype(&MemberFunction::Fn0), MemberFunction>::Value);
         CHECK(wstl::IsInvocable<decltype(&MemberFunction::Fn0), MemberFunction*>::Value);
         CHECK(wstl::IsInvocable<decltype(&MemberFunction::Fn0), MemberFunction&>::Value);
@@ -1556,11 +1565,13 @@ TEST_SUITE("TypeTraits") {
         CHECK_FALSE(wstl::IsInvocable<decltype(&MemberFunction::FnNoexcept), char>::Value);
         CHECK_FALSE(wstl::IsInvocable<decltype(&MemberFunction::FnNoexcept), MemberFunction, TestData>::Value);
 
+        // Member object pointer
         CHECK(wstl::IsInvocable<decltype(&A::M), A&>::Value);
         CHECK(wstl::IsInvocable<decltype(&A::M), A>::Value);
         CHECK(wstl::IsInvocable<decltype(&A::M), A*>::Value);
         CHECK_FALSE(wstl::IsInvocable<decltype(&A::M)>::Value);
 
+        // Functor
         CHECK(wstl::IsInvocable<Functor0>::Value);
         CHECK_FALSE(wstl::IsInvocable<Functor0, int>::Value);
         CHECK(wstl::IsInvocable<Functor2, int, char>::Value);
@@ -1570,6 +1581,7 @@ TEST_SUITE("TypeTraits") {
     }
 
     TEST_CASE("IsInvocableReturn") {
+        // Free function
         CHECK(wstl::IsInvocableReturn<void, decltype(FreeVoid), int>::Value);
         CHECK_FALSE(wstl::IsInvocableReturn<void, decltype(FreeVoid), TestData>::Value);
         CHECK_FALSE(wstl::IsInvocableReturn<void, decltype(FreeVoid)>::Value);
@@ -1617,6 +1629,7 @@ TEST_SUITE("TypeTraits") {
         CHECK_FALSE(wstl::IsInvocableReturn<TestData, decltype(FreeVariadic), int>::Value);
         CHECK_FALSE(wstl::IsInvocableReturn<long, decltype(FreeVariadic), TestData>::Value);
 
+        // Member function pointer
         CHECK(wstl::IsInvocableReturn<int, decltype(&MemberFunction::Fn0), MemberFunction>::Value);
         CHECK(wstl::IsInvocableReturn<void, decltype(&MemberFunction::Fn0), MemberFunction*>::Value);
         CHECK(wstl::IsInvocableReturn<char, decltype(&MemberFunction::Fn0), MemberFunction&>::Value);
@@ -1689,12 +1702,14 @@ TEST_SUITE("TypeTraits") {
         CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(&MemberFunction::VoidFn), MemberFunction, char>::Value);
         CHECK_FALSE(wstl::IsInvocableReturn<void, decltype(&MemberFunction::VoidFn), MemberFunction, TestData>::Value);
 
+        // Member object pointer
         CHECK(wstl::IsInvocableReturn<int, decltype(&A::M), A&>::Value);
         CHECK(wstl::IsInvocableReturn<void, decltype(&A::M), A>::Value);
         CHECK(wstl::IsInvocableReturn<char, decltype(&A::M), A*>::Value);
         CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(&A::M)>::Value);
         CHECK_FALSE(wstl::IsInvocableReturn<TestData, decltype(&A::M), A>::Value);
 
+        // Functor
         CHECK(wstl::IsInvocableReturn<int, Functor0>::Value);
         CHECK(wstl::IsInvocableReturn<void, Functor0>::Value);
         CHECK(wstl::IsInvocableReturn<char, Functor0>::Value);
@@ -1707,6 +1722,97 @@ TEST_SUITE("TypeTraits") {
         CHECK_FALSE(wstl::IsInvocableReturn<TestData, Functor2, int, char>::Value);
         CHECK_FALSE(wstl::IsInvocableReturn<int, Functor2, int, TestData>::Value);
     }
+
+    #ifdef __WSTL_CXX17__
+    TEST_CASE("IsNothrowInvocable") {
+        // Free function
+        CHECK_FALSE(wstl::IsNothrowInvocable<decltype(Free0)>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocable<decltype(Free0), float>::Value);
+        CHECK(wstl::IsNothrowInvocable<decltype(FreeNoexcept), char>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocable<decltype(FreeNoexcept), TestData>::Value);
+
+        // Member function pointer
+        CHECK_FALSE(wstl::IsNothrowInvocable<decltype(&MemberFunction::Fn0), MemberFunction>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocable<decltype(&MemberFunction::Fn0), MemberFunction*>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocable<decltype(&MemberFunction::Fn0), MemberFunction&>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocable<decltype(&MemberFunction::Fn0), MemberFunction, int>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocable<decltype(&MemberFunction::Fn0)>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocable<decltype(&MemberFunction::Fn0), const MemberFunction>::Value);
+        CHECK(wstl::IsNothrowInvocable<decltype(&MemberFunction::FnNoexcept), MemberFunction, char>::Value);
+        CHECK(wstl::IsNothrowInvocable<decltype(&MemberFunction::FnNoexcept), MemberFunction*, double>::Value);
+        CHECK(wstl::IsNothrowInvocable<decltype(&MemberFunction::FnNoexcept), MemberFunction&, char>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocable<decltype(&MemberFunction::FnNoexcept), MemberFunction, char, int>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocable<decltype(&MemberFunction::FnNoexcept), MemberFunction>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocable<decltype(&MemberFunction::FnNoexcept), const MemberFunction, char>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocable<decltype(&MemberFunction::FnNoexcept)>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocable<decltype(&MemberFunction::FnNoexcept), char>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocable<decltype(&MemberFunction::FnNoexcept), MemberFunction, TestData>::Value);
+
+        // Member object pointer
+        CHECK(wstl::IsNothrowInvocable<decltype(&A::M), A&>::Value);
+        CHECK(wstl::IsNothrowInvocable<decltype(&A::M), A>::Value);
+        CHECK(wstl::IsNothrowInvocable<decltype(&A::M), A*>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocable<decltype(&A::M)>::Value);
+
+        // Functor
+        CHECK_FALSE(wstl::IsNothrowInvocable<Functor0>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocable<Functor0, int>::Value);
+        CHECK(wstl::IsNothrowInvocable<FunctorNoexcept>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocable<FunctorNoexcept, int>::Value);
+    }
+
+    TEST_CASE("IsNothrowInvocableReturn") {
+        // Free function
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, decltype(Free0)>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<void, decltype(Free0)>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<char, decltype(Free0)>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, decltype(Free0), float>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<TestData, decltype(Free0)>::Value);
+        CHECK(wstl::IsNothrowInvocableReturn<int, decltype(FreeNoexcept), char>::Value);
+        CHECK(wstl::IsNothrowInvocableReturn<void, decltype(FreeNoexcept), char>::Value);
+        CHECK(wstl::IsNothrowInvocableReturn<char, decltype(FreeNoexcept), int>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, decltype(FreeNoexcept), char, int>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<TestData, decltype(FreeNoexcept), char>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, decltype(FreeNoexcept), TestData>::Value);
+
+        // Member function pointer
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, decltype(&MemberFunction::Fn0), MemberFunction>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<void, decltype(&MemberFunction::Fn0), MemberFunction*>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<char, decltype(&MemberFunction::Fn0), MemberFunction&>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, decltype(&MemberFunction::Fn0), const MemberFunction>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, decltype(&MemberFunction::Fn0), MemberFunction, int>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, decltype(&MemberFunction::Fn0), int>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<TestData, decltype(&MemberFunction::Fn0)>::Value);
+        CHECK(wstl::IsNothrowInvocableReturn<int, decltype(&MemberFunction::FnNoexcept), MemberFunction, char>::Value);
+        CHECK(wstl::IsNothrowInvocableReturn<void, decltype(&MemberFunction::FnNoexcept), MemberFunction*, char>::Value);
+        CHECK(wstl::IsNothrowInvocableReturn<char, decltype(&MemberFunction::FnNoexcept), MemberFunction&, long>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, decltype(&MemberFunction::FnNoexcept), MemberFunction, char, int>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, decltype(&MemberFunction::FnNoexcept), const MemberFunction, char>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, decltype(&MemberFunction::FnNoexcept), MemberFunction>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, decltype(&MemberFunction::FnNoexcept), char>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<TestData, decltype(&MemberFunction::FnNoexcept), MemberFunction, char>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, decltype(&MemberFunction::FnNoexcept), MemberFunction, TestData>::Value);
+
+        // Member object pointer
+        CHECK(wstl::IsNothrowInvocableReturn<int, decltype(&A::M), A&>::Value);
+        CHECK(wstl::IsNothrowInvocableReturn<void, decltype(&A::M), A>::Value);
+        CHECK(wstl::IsNothrowInvocableReturn<char, decltype(&A::M), A*>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, decltype(&A::M)>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<TestData, decltype(&A::M), A>::Value);
+
+        // Functor
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, Functor0>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<void, Functor0>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<char, Functor0>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, Functor0, int>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<TestData, Functor0>::Value);
+        CHECK(wstl::IsNothrowInvocableReturn<int, FunctorNoexcept>::Value);
+        CHECK(wstl::IsNothrowInvocableReturn<void, FunctorNoexcept>::Value);
+        CHECK(wstl::IsNothrowInvocableReturn<char, FunctorNoexcept>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, FunctorNoexcept, int>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<TestData, FunctorNoexcept>::Value);
+    }
+    #endif
 
     #if !defined(__WSTL_TYPETRAITS_NO_BUILTINS__) && defined(__WSTL_SUPPORTED_COMPILER__)
     TEST_CASE("UnderlyingType") {

@@ -136,6 +136,65 @@ namespace wstl {
     using RemoveReferenceType = typename RemoveReference<T>::Type;
     #endif
 
+    // Typedef test macro
+
+    #define __WSTL_TYPEDEF_PARAMS__(...) WSTL_CONCATENATE(__WSTL_TYPEDEF, WSTL_COUNT_ARGS(__VA_ARGS__))(__VA_ARGS__)
+
+    #define __WSTL_TYPEDEF1(A) \
+        typename RemoveReference<typename T::A>::Type*
+
+    #define __WSTL_TYPEDEF2(A, B) \
+        typename RemoveReference<typename T::A>::Type*, \
+        typename RemoveReference<typename T::B>::Type*
+
+    #define __WSTL_TYPEDEF3(A, B, C) \
+        typename RemoveReference<typename T::A>::Type*, \
+        typename RemoveReference<typename T::B>::Type*, \
+        typename RemoveReference<typename T::C>::Type*
+
+    #define __WSTL_TYPEDEF4(A, B, C, D) \
+        typename RemoveReference<typename T::A>::Type*, \
+        typename RemoveReference<typename T::B>::Type*, \
+        typename RemoveReference<typename T::C>::Type*, \
+        typename RemoveReference<typename T::D>::Type*
+
+    #define __WSTL_TYPEDEF5(A, B, C, D, E) \
+        typename RemoveReference<typename T::A>::Type*, \
+        typename RemoveReference<typename T::B>::Type*, \
+        typename RemoveReference<typename T::C>::Type*, \
+        typename RemoveReference<typename T::D>::Type*, \
+        typename RemoveReference<typename T::E>::Type*
+
+    #define __WSTL_NULLPTR_LIST__(N) WSTL_CONCATENATE(__WSTL_ZEROS, N)
+
+    #define __WSTL_ZEROS0
+    #define __WSTL_ZEROS1 0
+    #define __WSTL_ZEROS2 0, 0
+    #define __WSTL_ZEROS3 0, 0, 0
+    #define __WSTL_ZEROS4 0, 0, 0, 0
+    #define __WSTL_ZEROS5 0, 0, 0, 0, 0
+
+    /// @brief A macro to declare a typedef test function with a specified name
+    /// @details The test function will return `long` if all specified typedefs are present in the type `T`, 
+    /// and `char` otherwise. This allows for compile-time checks of typedef presence
+    /// @param function The name of the test function
+    /// @param ... The typedefs to test, up to 5
+    /// @ingroup utilities
+    #define WSTL_DECLARE_TYPEDEF_TEST(function, ...) \
+        template<typename T> \
+        static long function(__WSTL_TYPEDEF_PARAMS__(__VA_ARGS__)); \
+        \
+        template<typename> \
+        static char function(...);
+
+    /// @brief A macro for the result of a typedef test function
+    /// @param function The name of the test function
+    /// @param type The type to test for present typedefs
+    /// @param count The number of typedefs to test for, maximum of 5
+    /// @ingroup utilities
+    #define WSTL_TYPEDEF_TEST_RESULT(function, type, count) \
+        sizeof(function<type>(__WSTL_NULLPTR_LIST__(count))) == sizeof(long)
+
     // Remove pointer
 
     /// @brief Removes pointer from specified type
@@ -613,13 +672,9 @@ namespace wstl {
     // Result of
 
     namespace __private {
-        template<typename T>
-        static long __TestResultType(typename T::ResultType*);
+        WSTL_DECLARE_TYPEDEF_TEST(__TestResultType, ResultType)
 
-        template<typename>
-        static char __TestResultType(...);
-
-        template<typename Functor, bool IsFunctor = sizeof(__TestResultType<Functor>(0)) == sizeof(long)>
+        template<typename Functor, bool IsFunctor = WSTL_TYPEDEF_TEST_RESULT(__TestResultType, Functor, 1)>
         struct __ResultOfFunctor;
 
         template<typename Functor>
@@ -627,6 +682,18 @@ namespace wstl {
 
         template<typename Functor>
         struct __ResultOf : __private::__ResultOfFunctor<Functor> {};
+
+        template<typename Return, typename Arg1, typename Arg2, typename Arg3>
+        struct __ResultOf<Return(Arg1, Arg2, Arg3)> { typedef Return Type; };
+
+        template<typename Return, typename Arg1, typename Arg2>
+        struct __ResultOf<Return(Arg1, Arg2)> { typedef Return Type; };
+
+        template<typename Return, typename Arg>
+        struct __ResultOf<Return(Arg)> { typedef Return Type; };
+
+        template<typename Return>
+        struct __ResultOf<Return()> { typedef Return Type; };
 
         template<typename Return, typename Arg1, typename Arg2, typename Arg3>
         struct __ResultOf<Return(*)(Arg1, Arg2, Arg3)> { typedef Return Type; };
@@ -2263,7 +2330,7 @@ namespace wstl {
     struct IsSigned : FalseType {};
 
     template<> struct IsSigned<signed char> : TrueType {};
-    template<> struct IsSigned<char> : BoolConstant<(char(255) < 0)> {};
+    template<> struct IsSigned<char> : BoolConstant<(char(255) < char(0))> {};
     template<> struct IsSigned<wchar_t> : BoolConstant<(wchar_t(-1) < wchar_t(0))> {};
     template<> struct IsSigned<short> : TrueType {};
     template<> struct IsSigned<int> : TrueType {};
@@ -2306,7 +2373,7 @@ namespace wstl {
     struct IsUnsigned : FalseType {};
 
     template<> struct IsUnsigned<bool> : TrueType {};
-    template<> struct IsUnsigned<char> : BoolConstant<(char(255) > 0)> {};
+    template<> struct IsUnsigned<char> : BoolConstant<(char(255) > char(0))> {};
     template<> struct IsUnsigned<wchar_t> : BoolConstant<(wchar_t(-1) > wchar_t(0))> {};
     template<> struct IsUnsigned<unsigned char> : TrueType {};
     template<> struct IsUnsigned<unsigned short> : TrueType {};
@@ -2789,10 +2856,24 @@ namespace wstl {
         template<typename U>
         struct __IsReferenceWrapper<ReferenceWrapper<U>> : TrueType {};
 
+        // Suppress warnings related to noexcept specification because without it everything was fine
+        WSTL_DIAGNOSTIC_PUSH
+
+        #if defined(__WSTL_CLANG__)
+            WSTL_DIAGNOSTIC_IGNORE("-Wimplicit-int-conversion")
+            WSTL_DIAGNOSTIC_IGNORE("-Wshorten-64-to-32")
+        #elif defined(__WSTL_GCC__)
+            WSTL_DIAGNOSTIC_IGNORE("-Wconversion")
+        #elif defined(__WSTL_MSVC__)
+            WSTL_DIAGNOSTIC_IGNORE(4244)
+        #endif
+
         // General callable
 
         template<typename Function, typename... Args>
-        constexpr auto __Invoke(Function&& function, Args&&... args) -> EnableIfType<!IsMemberPointer<Function>::Value, 
+        constexpr auto __Invoke(Function&& function, Args&&... args) __WSTL_NOEXCEPT_EXPR__(
+            noexcept((__Forward<Function>(function))(__Forward<Args>(args)...))
+        ) -> EnableIfType<!IsMemberPointer<Function>::Value, 
         decltype((__Forward<Function>(function))(__Forward<Args>(args)...))> {
             return (__Forward<Function>(function))(__Forward<Args>(args)...);
         }
@@ -2800,15 +2881,19 @@ namespace wstl {
         // Member function pointer, object
 
         template<typename Function, typename Object, typename... Args>
-        constexpr auto __Invoke(Function&& function, Object&& object, Args&&... args) -> EnableIfType<!__private::__IsReferenceWrapper<DecayType<Object>>::Value && 
-        !IsPointer<Object>::Value && IsMemberFunctionPointer<DecayType<Function>>::Value, decltype((__Forward<Object>(object).*function)(__Forward<Args>(args)...))> {
+        constexpr auto __Invoke(Function&& function, Object&& object, Args&&... args) __WSTL_NOEXCEPT_EXPR__(
+            noexcept((__Forward<Object>(object).*function)(__Forward<Args>(args)...))
+        ) -> EnableIfType<!__private::__IsReferenceWrapper<DecayType<Object>>::Value && !IsPointer<DecayType<Object>>::Value && 
+        IsMemberFunctionPointer<DecayType<Function>>::Value, decltype((__Forward<Object>(object).*function)(__Forward<Args>(args)...))> {
             return (__Forward<Object>(object).*function)(__Forward<Args>(args)...);
         }
 
         // Member function pointer, reference wrapper
 
         template<typename Function, typename Reference, typename... Args>
-        constexpr auto __Invoke(Function&& function, Reference&& reference, Args&&... args) -> EnableIfType<__private::__IsReferenceWrapper<DecayType<Reference>>::Value && 
+        constexpr auto __Invoke(Function&& function, Reference&& reference, Args&&... args) __WSTL_NOEXCEPT_EXPR__(
+            noexcept((reference.Get().*function)(__Forward<Args>(args)...))
+        ) -> EnableIfType<__private::__IsReferenceWrapper<DecayType<Reference>>::Value && 
         IsMemberFunctionPointer<DecayType<Function>>::Value, decltype((reference.Get().*function)(__Forward<Args>(args)...))> {
             return (reference.Get().*function)(__Forward<Args>(args)...);
         }
@@ -2816,7 +2901,9 @@ namespace wstl {
         // Member function pointer, pointer
 
         template<typename Function, typename Pointer, typename... Args>
-        constexpr auto __Invoke(Function&& function, Pointer&& pointer, Args&&... args) -> EnableIfType<IsPointer<DecayType<Pointer>>::Value && 
+        constexpr auto __Invoke(Function&& function, Pointer&& pointer, Args&&... args) __WSTL_NOEXCEPT_EXPR__(
+            noexcept(((*__Forward<Pointer>(pointer)).*function)(__Forward<Args>(args)...))
+        ) -> EnableIfType<IsPointer<DecayType<Pointer>>::Value && 
         IsMemberFunctionPointer<DecayType<Function>>::Value, decltype(((*__Forward<Pointer>(pointer)).*function)(__Forward<Args>(args)...))> {
             return ((*__Forward<Pointer>(pointer)).*function)(__Forward<Args>(args)...);
         }
@@ -2824,15 +2911,19 @@ namespace wstl {
         // Member object pointer, object
 
         template<typename Function, typename Object>
-        constexpr auto __Invoke(Function&& function, Object&& object) -> EnableIfType<IsMemberObjectPointer<DecayType<Function>>::Value &&
-        !IsPointer<DecayType<Object>>::Value && !__private::__IsReferenceWrapper<DecayType<Object>>::Value, decltype(__Forward<Object>(object).*function)> {
+        constexpr auto __Invoke(Function&& function, Object&& object) __WSTL_NOEXCEPT_EXPR__(
+            noexcept(__Forward<Object>(object).*function)
+        ) -> EnableIfType<IsMemberObjectPointer<DecayType<Function>>::Value && !IsPointer<DecayType<Object>>::Value && 
+        !__private::__IsReferenceWrapper<DecayType<Object>>::Value, decltype(__Forward<Object>(object).*function)> {
             return __Forward<Object>(object).*function;
         }
 
         // Member object pointer, reference wrapper
 
         template<typename Function, typename Reference>
-        constexpr auto __Invoke(Function&& function, Reference&& reference) -> EnableIfType<IsMemberObjectPointer<DecayType<Function>>::Value && 
+        constexpr auto __Invoke(Function&& function, Reference&& reference) __WSTL_NOEXCEPT_EXPR__(
+            noexcept(reference.Get().*function)
+        ) -> EnableIfType<IsMemberObjectPointer<DecayType<Function>>::Value && 
         __private::__IsReferenceWrapper<DecayType<Reference>>::Value, decltype(reference.Get().*function)> {
             return reference.Get().*function;
         }
@@ -2840,10 +2931,14 @@ namespace wstl {
         // Member object pointer, pointer
 
         template<typename Function, typename Pointer>
-        constexpr auto __Invoke(Function&& function, Pointer&& pointer) -> EnableIfType<IsMemberObjectPointer<DecayType<Function>>::Value && 
+        constexpr auto __Invoke(Function&& function, Pointer&& pointer) __WSTL_NOEXCEPT_EXPR__(
+            noexcept((*__Forward<Pointer>(pointer)).*function)
+        ) -> EnableIfType<IsMemberObjectPointer<DecayType<Function>>::Value && 
         IsPointer<DecayType<Pointer>>::Value, decltype((*__Forward<Pointer>(pointer)).*function)> {
             return (*__Forward<Pointer>(pointer)).*function;
         }
+
+        WSTL_DIAGNOSTIC_POP
 
         template<typename, typename Function, typename... Args>
         struct __InvokeResult {};
@@ -2920,6 +3015,70 @@ namespace wstl {
     /// @since C++17
     template<typename Result, typename Function, typename... Args>
     inline constexpr bool IsInvocableReturnValue = IsInvocableReturn<Result, Function, Args...>::Value;
+    #endif
+
+    #ifdef __WSTL_EXCEPTIONS__
+    #ifdef __WSTL_CXX17__
+    // Is nothrow invocable
+
+    namespace __private {
+        template<typename, typename Function, typename... Args>
+        struct __IsNothrowInvocable : FalseType {};
+
+        template<typename Function, typename... Args>
+        struct __IsNothrowInvocable<VoidType<decltype(__Invoke(DeclareValue<Function>(), DeclareValue<Args>()...))>, Function, Args...> : 
+            BoolConstant<noexcept(__Invoke(DeclareValue<Function>(), DeclareValue<Args>()...))> {};
+    }
+
+    /// @brief Checks whether a callable can be invoked with specified arguments and not throw any exceptions
+    /// @details Only available from C++17 and higher because noexcept doesn't work the same in lower versions
+    /// @tparam Function Type of the callable to invoke
+    /// @tparam ...Args Types of the arguments to invoke with
+    /// @ingroup type_traits
+    /// @since C++17
+    /// @note Requires `__WSTL_EXCEPTIONS__` to be defined
+    /// @see https://en.cppreference.com/w/cpp/types/is_invocable
+    template<typename Function, typename... Args>
+    struct IsNothrowInvocable : __private::__IsNothrowInvocable<void, Function, Args...> {};
+
+    /// @copydoc IsNothrowInvocable
+    /// @since C++17
+    template<typename Function, typename... Args>
+    inline constexpr bool IsNothrowInvocableValue = IsNothrowInvocable<Function, Args...>::Value;
+
+    // Is nothrow invocable return
+
+    namespace __private {
+        template<typename, typename Result, typename Function, typename... Args>
+        struct __IsNothrowInvocableReturn : FalseType {};
+
+        template<typename Result, typename Function, typename... Args>
+        struct __IsNothrowInvocableReturn<VoidType<decltype(static_cast<Result>(__Invoke(DeclareValue<Function>(), DeclareValue<Args>()...)))>, Result, Function, Args...> : 
+            BoolConstant<noexcept(static_cast<Result>(__Invoke(DeclareValue<Function>(), DeclareValue<Args>()...)))> {};
+
+        template<typename Function, typename... Args>
+        struct __IsNothrowInvocableReturn<VoidType<decltype(__Invoke(DeclareValue<Function>(), DeclareValue<Args>()...))>, void, Function, Args...> : 
+            BoolConstant<noexcept(__Invoke(DeclareValue<Function>(), DeclareValue<Args>()...))> {};
+    }
+
+    /// @brief Checks whether a callable can be invoked with specified arguments 
+    /// and return type is convertible to specified type, and not throw any exceptions
+    /// @details Only available from C++17 and higher because noexcept doesn't work the same in lower versions
+    /// @tparam Result Type to check return type against
+    /// @tparam Function Type of the callable to invoke
+    /// @tparam ...Args Types of the arguments to invoke with
+    /// @ingroup type_traits
+    /// @since C++17
+    /// @note Requires `__WSTL_EXCEPTIONS__` to be defined
+    /// @see https://en.cppreference.com/w/cpp/types/is_invocable
+    template<typename Result, typename Function, typename... Args>
+    struct IsNothrowInvocableReturn : __private::__IsNothrowInvocableReturn<void, Result, Function, Args...> {};
+
+    /// @copydoc IsNothrowInvocableReturn
+    /// @since C++17
+    template<typename Result, typename Function, typename... Args>
+    inline constexpr bool IsNothrowInvocableReturnValue = IsNothrowInvocableReturn<Result, Function, Args...>::Value;
+    #endif
     #endif
     #endif
 
