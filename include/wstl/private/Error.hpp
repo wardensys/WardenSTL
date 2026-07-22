@@ -45,162 +45,163 @@ namespace wstl {
 
 #ifdef __WSTL_EXCEPTIONS__
     #ifdef __WSTL_HANDLE_ERRORS__
-        #define __WSTL_ASSERT__(condition, exception) {             \
-            if(!(condition)) {                                      \
-                wstl::__private::__ErrorHandlerError((exception));  \
-                throw((exception));                                 \
-            }                                                       \
-        }
-
-        #define __WSTL_ASSERT_RETURN__(condition, exception) {      \
-            if(!(condition)) {                                      \
-                wstl::__private::__ErrorHandlerError((exception));  \
-                throw((exception));                                 \
-                return;                                             \
-            }                                                       \
-        }
-
-        #define __WSTL_ASSERT_RETURNVALUE__(condition, exception, value) {  \
-            if(!(condition)) {                                              \
+        #define __WSTL_ASSERT__(condition, exception) do {                  \
+            if(__WSTL_UNLIKELY_EXPR__(!(condition))) __WSTL_UNLIKELY__ {    \
                 wstl::__private::__ErrorHandlerError((exception));          \
                 throw((exception));                                         \
-                return(value);                                              \
             }                                                               \
-        }
+        } while(false)
 
-        #define __WSTL_THROW__(exception) {                     \
+        #define __WSTL_ASSERT_RETURN__(condition, exception) do {           \
+            if(__WSTL_UNLIKELY_EXPR__(!(condition))) __WSTL_UNLIKELY__ {    \
+                wstl::__private::__ErrorHandlerError((exception));          \
+                throw((exception));                                         \
+                return;                                                     \
+            }                                                               \
+        } while(false)
+
+        #define __WSTL_ASSERT_RETURNVALUE__(condition, exception, value) do {   \
+            if(__WSTL_UNLIKELY_EXPR__(!(condition))) __WSTL_UNLIKELY__ {        \
+                wstl::__private::__ErrorHandlerError((exception));              \
+                throw((exception));                                             \
+                return(value);                                                  \
+            }                                                                   \
+        } while(false)
+
+        #define __WSTL_THROW__(exception) do {                  \
             wstl::__private::__ErrorHandlerError((exception));  \
             throw((exception));                                 \
-        }
+        } while(false)
 
-        #define __WSTL_THROW_RETURN__(exception) {              \
+        #define __WSTL_THROW_RETURN__(exception) do {           \
             wstl::__private::__ErrorHandlerError((exception));  \
             throw((exception));                                 \
             return;                                             \
-        }
+        } while(falses)
 
-        #define __WSTL_THROW_RETURNVALUE__(exception, value) {  \
-            wstl::__private::__ErrorHandlerError((exception));  \
-            throw((exception));                                 \
-            return (value);                                     \
-        }
+        #define __WSTL_THROW_RETURNVALUE__(exception, value) do {   \
+            wstl::__private::__ErrorHandlerError((exception));      \
+            throw((exception));                                     \
+            return (value);                                         \
+        } while(false)
     #else
-        #define __WSTL_ASSERT__(condition, exception) { \
-            if(!(condition)) throw((exception));        \
-        }
+        #define __WSTL_ASSERT__(condition, exception) do {                                  \
+            if(__WSTL_UNLIKELY_EXPR__(!(condition))) __WSTL_UNLIKELY__ throw((exception));  \
+        } while(false)
 
-        #define __WSTL_ASSERT_RETURN__(condition, exception) {  \
-            if(!(condition)) {                                  \
-                throw((exception));                             \
-                return;                                         \
-            }                                                   \
-        }
-
-        #define __WSTL_ASSERT_RETURNVALUE__(condition, exception, value) {  \
-            if(!(condition)) {                                              \
+        #define __WSTL_ASSERT_RETURN__(condition, exception) do {           \
+            if(__WSTL_UNLIKELY_EXPR__(!(condition))) __WSTL_UNLIKELY__ {    \
                 throw((exception));                                         \
-                return(value);                                              \
+                return;                                                     \
             }                                                               \
+        } while(false)
+
+        #define __WSTL_ASSERT_RETURNVALUE__(condition, exception, value) do {   \
+            if(__WSTL_UNLIKELY_EXPR__(!(condition))) __WSTL_UNLIKELY__ {        \
+                throw((exception));                                             \
+                return(value);                                                  \
+            }                                                                   \
+        } while(false)
+
+        #define __WSTL_THROW__(exception) do {  \
+            throw((exception));                 \
         }
 
-        #define __WSTL_THROW__(exception) { \
-            throw((exception));             \
-        }
+        #define __WSTL_THROW_RETURN__(exception) do {   \
+            throw((exception));                         \
+            return;                                     \
+        } while(false)
 
-        #define __WSTL_THROW_RETURN__(exception) {  \
-            throw((exception));                     \
-            return;                                 \
-        }
-
-        #define __WSTL_THROW_RETURNVALUE__(exception, value) {  \
-            throw((exception));                                 \
-            return (value);                                     \
-        }
+        #define __WSTL_THROW_RETURNVALUE__(exception, value) do {   \
+            throw((exception));                                     \
+            return (value);                                         \
+        } while(false)
     #endif
 #else
     #ifdef __WSTL_HANDLE_ERRORS__
-        #define __WSTL_ASSERT__(condition, exception) {                         \
-            if(!(condition)) wstl::__private::__ErrorHandlerError((exception)); \
-        }                                                                       
+        #define __WSTL_ASSERT__(condition, exception) do {              \
+            if(__WSTL_UNLIKELY_EXPR__(!(condition))) __WSTL_UNLIKELY__  \
+                wstl::__private::__ErrorHandlerError((exception));      \
+        } while(false)
 
-        #define __WSTL_ASSERT_RETURN__(condition, exception) {      \
-            if(!(condition)) {                                      \
-                wstl::__private::__ErrorHandlerError((exception));  \
-                return;                                             \
-            }                                                       \
-        }
-
-        #define __WSTL_ASSERT_RETURNVALUE__(condition, exception, value) {  \
-            if(!(condition)) {                                              \
+        #define __WSTL_ASSERT_RETURN__(condition, exception) do {           \
+            if(__WSTL_UNLIKELY_EXPR__(!(condition))) __WSTL_UNLIKELY__ {    \
                 wstl::__private::__ErrorHandlerError((exception));          \
-                return (value);                                             \
+                return;                                                     \
             }                                                               \
         }
 
-        #define __WSTL_THROW__(exception) {                     \
-            wstl::__private::__ErrorHandlerError((exception));  \
-        }
+        #define __WSTL_ASSERT_RETURNVALUE__(condition, exception, value) do {   \
+            if(__WSTL_UNLIKELY_EXPR__(!(condition))) __WSTL_UNLIKELY__ {        \
+                wstl::__private::__ErrorHandlerError((exception));              \
+                return (value);                                                 \
+            }                                                                   \
+        } while(false)
 
-        #define __WSTL_THROW_RETURN__(exception) {              \
+        #define __WSTL_THROW__(exception) do {                  \
+            wstl::__private::__ErrorHandlerError((exception));  \
+        } while(false)
+
+        #define __WSTL_THROW_RETURN__(exception) do {           \
             wstl::__private::__ErrorHandlerError((exception));  \
             return;                                             \
-        }
+        } while(false)
 
-        #define __WSTL_THROW_RETURNVALUE__(exception, value) {  \
-            wstl::__private::__ErrorHandlerError((exception));  \
-            return (value);                                     \
-        }
+        #define __WSTL_THROW_RETURNVALUE__(exception, value) do {   \
+            wstl::__private::__ErrorHandlerError((exception));      \
+            return (value);                                         \
+        } while(false)
     #else
         #ifdef __WSTL_ASSERT_SUPPORT__
             #define __WSTL_ASSERT__(condition, exception) assert((condition))
 
-            #define __WSTL_ASSERT_RETURN__(condition, exception) {  \
-                if(!(condition)) {                                  \
-                    assert(false);                                  \
-                    return;                                         \
-                }                                                   \
-            }
+            #define __WSTL_ASSERT_RETURN__(condition, exception) do {           \
+                if(__WSTL_UNLIKELY_EXPR__(!(condition))) __WSTL_UNLIKELY__ {    \
+                    assert(false);                                              \
+                    return;                                                     \
+                }                                                               \
+            } while(false)
 
             #define __WSTL_ASSERT_RETURNVALUE__(condition, exception, value) {  \
-                if(!(condition)) {                                              \
+                if(__WSTL_UNLIKELY_EXPR__(!(condition))) __WSTL_UNLIKELY__ {    \
                     assert(false);                                              \
                     return (value);                                             \
                 }                                                               \
-            }
+            } while(false)
 
-            #define __WSTL_THROW__(exception) { \
-                assert(false);                  \
-            }
+            #define __WSTL_THROW__(exception) do {  \
+                assert(false);                      \
+            } while(false)
 
-            #define __WSTL_THROW_RETURN__(exception) {  \
-                assert(false);                          \
-                return;                                 \
-            }
+            #define __WSTL_THROW_RETURN__(exception) do {   \
+                assert(false);                              \
+                return;                                     \
+            } while(false)
 
-            #define __WSTL_THROW_RETURNVALUE__(exception, value) {  \
-                assert(false);                                      \
-                return (value);                                     \
-            }
+            #define __WSTL_THROW_RETURNVALUE__(exception, value) do {   \
+                assert(false);                                          \
+                return (value);                                         \
+            } while(false)
         #else
             #define __WSTL_ASSERT__(condition, exception)
 
-            #define __WSTL_ASSERT_RETURN__(condition, exception) {  \
-                if(!(condition)) return;                            \
-            }
+            #define __WSTL_ASSERT_RETURN__(condition, exception) do {               \
+                if(__WSTL_UNLIKELY_EXPR__(!(condition))) __WSTL_UNLIKELY__ return;  \
+            } while(false)
 
-            #define __WSTL_ASSERT_RETURNVALUE__(condition, exception, value) {  \
-                if(!(condition)) return (value);                                \
-            }
+            #define __WSTL_ASSERT_RETURNVALUE__(condition, exception, value) do {           \
+                if(__WSTL_UNLIKELY_EXPR__(!(condition))) __WSTL_UNLIKELY__ return (value);  \
+            } while(false)
 
             #define __WSTL_THROW__(exception)
 
-            #define __WSTL_THROW_RETURN__(exception) {  \
-                return;                                 \
-            }
+            #define __WSTL_THROW_RETURN__(exception) do {   \
+                return;                                     \
+            } while(false)
 
-            #define __WSTL_THROW_RETURNVALUE__(exception, value) {  \
-                return (value);                                     \
-            }
+            #define __WSTL_THROW_RETURNVALUE__(exception, value) do {   \
+                return (value);                                         \
+            } while(false)
         #endif
         
     #endif

@@ -210,6 +210,8 @@ namespace wstl {}
     #define __WSTL_CONSTEXPR20__ constexpr
     #define __WSTL_LIKELY__ [[likely]]
     #define __WSTL_UNLIKELY__ [[unlikely]]
+    #define __WSTL_LIKELY_EXPR__(x)
+    #define __WSTL_UNLIKELY_EXPR__(x)
     #define __WSTL_CONSTEVAL__ consteval
     #define __WSTL_CONSTINIT__ constinit
     #define __WSTL_NO_UNIQUE_ADDRESS__ [[no_unique_address]]
@@ -218,6 +220,15 @@ namespace wstl {}
     #define __WSTL_CONSTEXPR20__
     #define __WSTL_LIKELY__
     #define __WSTL_UNLIKELY__
+
+    #if defined(__WSTL_GCC__) || defined(__WSTL_CLANG__) || defined(__WSTL_ICC__)
+        #define __WSTL_LIKELY_EXPR__(x) __builtin_expect(!!(x), 1)
+        #define __WSTL_UNLIKELY_EXPR__(x) __builtin_expect(!!(x), 0)
+    #else
+        #define __WSTL_LIKELY_EXPR__(x)
+        #define __WSTL_UNLIKELY__(x)
+    #endif
+    
     #define __WSTL_CONSTEVAL__
     #define __WSTL_CONSTINIT__
     #define __WSTL_NO_UNIQUE_ADDRESS__
