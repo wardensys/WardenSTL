@@ -305,7 +305,7 @@ namespace wstl {
             static constexpr int Digits = (CHAR_BIT * sizeof(char8_t)) - (wstl::IsSigned<char8_t>::Value ? 1 : 0);
             static constexpr int Digits10 = __WSTL_LOG10_2__(Digits);
             static constexpr bool IsSigned = wstl::IsSigned<char8_t>::Value;
-            static constexpr bool IsModulo = false;
+            static constexpr bool IsModulo = true;
         };
 
         template<typename T>
@@ -679,15 +679,15 @@ namespace wstl {
     template<>
     class NumericLimits<char8_t> : public __private::__IntegralLimitsChar8<> {
     public:
-        static constexpr char8_t Min() __WSTL_NOEXCEPT__ { return char8_t(CHAR_MIN); }
-        static constexpr char8_t Max() __WSTL_NOEXCEPT__ { return char8_t(CHAR_MAX); }
-        static constexpr char8_t Lowest() __WSTL_NOEXCEPT__ { return char8_t(CHAR_MIN); }
-        static constexpr char8_t Epsilon() __WSTL_NOEXCEPT__ { return 0; }
-        static constexpr char8_t RoundError() __WSTL_NOEXCEPT__ { return 0; }
-        static constexpr char8_t Infinity() __WSTL_NOEXCEPT__ { return 0; }
-        static constexpr char8_t QuietNaN() __WSTL_NOEXCEPT__ { return 0; }
-        static constexpr char8_t SignalingNaN() __WSTL_NOEXCEPT__ { return 0; }
-        static constexpr char8_t DenormalizedMin() __WSTL_NOEXCEPT__ { return 0; }
+        static constexpr char8_t Min() __WSTL_NOEXCEPT__ { return 0U; }
+        static constexpr char8_t Max() __WSTL_NOEXCEPT__ { return UCHAR_MAX; }
+        static constexpr char8_t Lowest() __WSTL_NOEXCEPT__ { return 0U; }
+        static constexpr char8_t Epsilon() __WSTL_NOEXCEPT__ { return 0U; }
+        static constexpr char8_t RoundError() __WSTL_NOEXCEPT__ { return 0U; }
+        static constexpr char8_t Infinity() __WSTL_NOEXCEPT__ { return 0U; }
+        static constexpr char8_t QuietNaN() __WSTL_NOEXCEPT__ { return 0U; }
+        static constexpr char8_t SignalingNaN() __WSTL_NOEXCEPT__ { return 0U; }
+        static constexpr char8_t DenormalizedMin() __WSTL_NOEXCEPT__ { return 0U; }
     };
     #endif
 
