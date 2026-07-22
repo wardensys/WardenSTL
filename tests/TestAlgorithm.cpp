@@ -2021,6 +2021,16 @@ TEST_SUITE("Algorithm") {
         bool equal = std::equal(out1.begin(), out1.end(), check1.begin());
         CHECK(equal);
 
+        data1.clear(); // reinitialize the data1 again
+        data1.emplace_back(Item(1U));
+        data1.emplace_back(Item(2U));
+        data1.emplace_back(Item(3U));
+        data1.emplace_back(Item(4U));
+        data1.emplace_back(Item(5U));
+        data1.emplace_back(Item(6U));
+        data1.emplace_back(Item(7U));
+        data1.emplace_back(Item(8U));
+
         // Non-random access iterator
         out1.clear();
         out1.resize(8);
@@ -2029,6 +2039,16 @@ TEST_SUITE("Algorithm") {
 
         equal = std::equal(out1.begin(), out1.end(), check1.begin());
         CHECK(equal);
+
+        data3.clear(); // reinitialize the data3 again
+        data3.emplace_back(Item(1U));
+        data3.emplace_back(Item(2U));
+        data3.emplace_back(Item(3U));
+        data3.emplace_back(Item(4U));
+        data3.emplace_back(Item(5U));
+        data3.emplace_back(Item(6U));
+        data3.emplace_back(Item(7U));
+        data3.emplace_back(Item(8U));
 
         // Destination smaller
 
@@ -2060,6 +2080,13 @@ TEST_SUITE("Algorithm") {
 
         equal = std::equal(out1.begin(), out1.end(), check3.begin());
         CHECK(equal);
+
+        data4.clear(); // reinitialize the data4 again
+        data4.emplace_back(Item(1U));
+        data4.emplace_back(Item(2U));
+        data4.emplace_back(Item(3U));
+        data4.emplace_back(Item(4U));
+        data4.emplace_back(Item(5U));
 
         // Non-random access iterator
         out1.clear();
