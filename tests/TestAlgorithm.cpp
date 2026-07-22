@@ -2009,6 +2009,7 @@ TEST_SUITE("Algorithm") {
         check3.emplace_back(Item(0U));
         check3.emplace_back(Item(0U));
         check3.emplace_back(Item(0U));
+        check3.emplace_back(Item(0U));
 
         // Same size
 
