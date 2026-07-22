@@ -126,7 +126,11 @@ tests = env.Program('build/tests/test', env.Glob('build/tests/*.cpp'))
 
 env.AlwaysBuild(env.Alias('test', tests))
 
-env.AlwaysBuild(env.Alias('run_test', tests, './${SOURCE}'))
+env.AlwaysBuild(env.Alias(
+    'run_test', 
+    tests, 
+    env.Action(lambda target, source, env: env.Execute(str(source[0])), cmdstr="Running tests..."))
+)
 
 env.Depends(tests, cdb)
 
