@@ -446,22 +446,22 @@ TEST_SUITE("TypeTraits") {
     }
 
     TEST_CASE("IsConst") {
-        CHECK_FALSE(wstl::IsConst<int>::Value);
-        CHECK_FALSE(wstl::IsConst<volatile int>::Value);
-        CHECK(wstl::IsConst<const int>::Value);
-        CHECK(wstl::IsConst<const volatile int>::Value);
+        CHECK_EQ(wstl::IsConst<int>::Value, std::is_const<int>::value);
+        CHECK_EQ(wstl::IsConst<volatile int>::Value, std::is_const<volatile int>::value);
+        CHECK_EQ(wstl::IsConst<const int>::Value, std::is_const<const int>::value);
+        CHECK_EQ(wstl::IsConst<const volatile int>::Value, std::is_const<const volatile int>::value);
     }
 
     TEST_CASE("IsVolatile") {
-        CHECK_FALSE(wstl::IsVolatile<int>::Value);
-        CHECK(wstl::IsVolatile<volatile int>::Value);
-        CHECK_FALSE(wstl::IsVolatile<const int>::Value);
-        CHECK(wstl::IsVolatile<const volatile int>::Value);
+        CHECK_EQ(wstl::IsVolatile<int>::Value, std::is_volatile<int>::value);
+        CHECK_EQ(wstl::IsVolatile<volatile int>::Value, std::is_volatile<volatile int>::value);
+        CHECK_EQ(wstl::IsVolatile<const int>::Value, std::is_volatile<const int>::value);
+        CHECK_EQ(wstl::IsVolatile<const volatile int>::Value, std::is_volatile<const volatile int>::value);
     }
 
     TEST_CASE("IsSame") {
-        CHECK(wstl::IsSame<int, int>::Value);
-        CHECK_FALSE(wstl::IsSame<int, char>::Value);
+        CHECK_EQ(wstl::IsSame<int, int>::Value, std::is_same<int, int>::value);
+        CHECK_EQ(wstl::IsSame<int, char>::Value, std::is_same<int, char>::value);
     }
 
     TEST_CASE("IsNullPointer") {
@@ -475,441 +475,432 @@ TEST_SUITE("TypeTraits") {
     }
 
     TEST_CASE("IsVoid") {
-        CHECK(wstl::IsVoid<void>::Value);
-        CHECK(wstl::IsVoid<const void>::Value);
-        CHECK(wstl::IsVoid<volatile void>::Value);
+        CHECK_EQ(wstl::IsVoid<void>::Value, std::is_void<void>::value);
+        CHECK_EQ(wstl::IsVoid<const void>::Value, std::is_void<const void>::value);
+        CHECK_EQ(wstl::IsVoid<volatile void>::Value, std::is_void<volatile void>::value);
         CHECK(wstl::IsVoid<wstl::VoidType<int, char>>::Value);
-        CHECK_FALSE(wstl::IsVoid<int>::Value);
+        CHECK_EQ(wstl::IsVoid<int>::Value, std::is_void<int>::value);
     }
 
     TEST_CASE("IsIntegral") {
-        CHECK(wstl::IsIntegral<bool>::Value);
-        CHECK(wstl::IsIntegral<char>::Value);
-        CHECK(wstl::IsIntegral<signed char>::Value);
-        CHECK(wstl::IsIntegral<unsigned char>::Value);
-        CHECK(wstl::IsIntegral<wchar_t>::Value);
-        CHECK(wstl::IsIntegral<short>::Value);
-        CHECK(wstl::IsIntegral<signed short>::Value);
-        CHECK(wstl::IsIntegral<unsigned short>::Value);
-        CHECK(wstl::IsIntegral<int>::Value);
-        CHECK(wstl::IsIntegral<signed int>::Value);
-        CHECK(wstl::IsIntegral<unsigned int>::Value);
-        CHECK(wstl::IsIntegral<long>::Value);
-        CHECK(wstl::IsIntegral<signed long>::Value);
-        CHECK(wstl::IsIntegral<unsigned long>::Value);
-        CHECK(wstl::IsIntegral<long long>::Value);
-        CHECK(wstl::IsIntegral<signed long long>::Value);
-        CHECK(wstl::IsIntegral<unsigned long long>::Value);
-        CHECK(wstl::IsIntegral<const int>::Value);
-        CHECK(wstl::IsIntegral<volatile int>::Value);
-        CHECK(wstl::IsIntegral<const int>::Value);
-        CHECK(wstl::IsIntegral<const volatile int>::Value);
-        CHECK_FALSE(wstl::IsIntegral<float>::Value);
-        CHECK_FALSE(wstl::IsIntegral<double>::Value);
-        CHECK_FALSE(wstl::IsIntegral<long double>::Value);
-        CHECK(wstl::IsIntegral<char16_t>::Value);
-        CHECK(wstl::IsIntegral<char32_t>::Value);
-        CHECK_FALSE(wstl::IsIntegral<TestData>::Value);
-        CHECK_FALSE(wstl::IsIntegral<EnumData>::Value);
-        CHECK_FALSE(wstl::IsIntegral<EnumClassData>::Value);
-        CHECK_FALSE(wstl::IsIntegral<UnionData>::Value);
-        CHECK_FALSE(wstl::IsIntegral<int[]>::Value);
-        CHECK_FALSE(wstl::IsIntegral<int&>::Value);
-        CHECK_FALSE(wstl::IsIntegral<int TestData::*>::Value);
-        CHECK_FALSE(wstl::IsIntegral<EnumData>::Value);
+        CHECK_EQ(wstl::IsIntegral<bool>::Value, std::is_integral<bool>::value);
+        CHECK_EQ(wstl::IsIntegral<char>::Value, std::is_integral<char>::value);
+        CHECK_EQ(wstl::IsIntegral<signed char>::Value, std::is_integral<signed char>::value);
+        CHECK_EQ(wstl::IsIntegral<unsigned char>::Value, std::is_integral<unsigned char>::value);
+        CHECK_EQ(wstl::IsIntegral<wchar_t>::Value, std::is_integral<wchar_t>::value);
+        CHECK_EQ(wstl::IsIntegral<short>::Value, std::is_integral<short>::value);
+        CHECK_EQ(wstl::IsIntegral<signed short>::Value, std::is_integral<signed short>::value);
+        CHECK_EQ(wstl::IsIntegral<unsigned short>::Value, std::is_integral<unsigned short>::value);
+        CHECK_EQ(wstl::IsIntegral<int>::Value, std::is_integral<int>::value);
+        CHECK_EQ(wstl::IsIntegral<signed int>::Value, std::is_integral<signed int>::value);
+        CHECK_EQ(wstl::IsIntegral<unsigned int>::Value, std::is_integral<unsigned int>::value);
+        CHECK_EQ(wstl::IsIntegral<long>::Value, std::is_integral<long>::value);
+        CHECK_EQ(wstl::IsIntegral<signed long>::Value, std::is_integral<signed long>::value);
+        CHECK_EQ(wstl::IsIntegral<unsigned long>::Value, std::is_integral<unsigned long>::value);
+        CHECK_EQ(wstl::IsIntegral<long long>::Value, std::is_integral<long long>::value);
+        CHECK_EQ(wstl::IsIntegral<signed long long>::Value, std::is_integral<signed long long>::value);
+        CHECK_EQ(wstl::IsIntegral<unsigned long long>::Value, std::is_integral<unsigned long long>::value);
+        CHECK_EQ(wstl::IsIntegral<const int>::Value, std::is_integral<const int>::value);
+        CHECK_EQ(wstl::IsIntegral<volatile int>::Value, std::is_integral<volatile int>::value);
+        CHECK_EQ(wstl::IsIntegral<const int>::Value, std::is_integral<const int>::value);
+        CHECK_EQ(wstl::IsIntegral<const volatile int>::Value, std::is_integral<const volatile int>::value);
+        CHECK_EQ(wstl::IsIntegral<float>::Value, std::is_integral<float>::value);
+        CHECK_EQ(wstl::IsIntegral<double>::Value, std::is_integral<double>::value);
+        CHECK_EQ(wstl::IsIntegral<long double>::Value, std::is_integral<long double>::value);
+        CHECK_EQ(wstl::IsIntegral<char16_t>::Value, std::is_integral<char16_t>::value);
+        CHECK_EQ(wstl::IsIntegral<char32_t>::Value, std::is_integral<char32_t>::value);
+        CHECK_EQ(wstl::IsIntegral<TestData>::Value, std::is_integral<TestData>::value);
+        CHECK_EQ(wstl::IsIntegral<EnumData>::Value, std::is_integral<EnumData>::value);
+        CHECK_EQ(wstl::IsIntegral<EnumClassData>::Value, std::is_integral<EnumClassData>::value);
+        CHECK_EQ(wstl::IsIntegral<UnionData>::Value, std::is_integral<UnionData>::value);
+        CHECK_EQ(wstl::IsIntegral<int[]>::Value, std::is_integral<int[]>::value);
+        CHECK_EQ(wstl::IsIntegral<int&>::Value, std::is_integral<int&>::value);
+        CHECK_EQ(wstl::IsIntegral<int TestData::*>::Value, std::is_integral<int TestData::*>::value);
+        CHECK_EQ(wstl::IsIntegral<EnumData>::Value, std::is_integral<EnumData>::value);
 
-        #ifdef __WSTL_CXX20__
-        CHECK(wstl::IsIntegral<char8_t>::Value);
-        #endif
+    #ifdef __WSTL_CXX20__
+        CHECK_EQ(wstl::IsIntegral<char8_t>::Value, std::is_integral<char8_t>::value);
+    #endif
     }
 
     TEST_CASE("IsFloatingPoint") {
-        CHECK_FALSE(wstl::IsFloatingPoint<bool>::Value);
-        CHECK_FALSE(wstl::IsFloatingPoint<char>::Value);
-        CHECK_FALSE(wstl::IsFloatingPoint<signed char>::Value);
-        CHECK_FALSE(wstl::IsFloatingPoint<unsigned char>::Value);
-        CHECK_FALSE(wstl::IsFloatingPoint<wchar_t>::Value);
-        CHECK_FALSE(wstl::IsFloatingPoint<short>::Value);
-        CHECK_FALSE(wstl::IsFloatingPoint<signed short>::Value);
-        CHECK_FALSE(wstl::IsFloatingPoint<unsigned short>::Value);
-        CHECK_FALSE(wstl::IsFloatingPoint<int>::Value);
-        CHECK_FALSE(wstl::IsFloatingPoint<signed int>::Value);
-        CHECK_FALSE(wstl::IsFloatingPoint<unsigned int>::Value);
-        CHECK_FALSE(wstl::IsFloatingPoint<long>::Value);
-        CHECK_FALSE(wstl::IsFloatingPoint<signed long>::Value);
-        CHECK_FALSE(wstl::IsFloatingPoint<unsigned long>::Value);
-        CHECK_FALSE(wstl::IsFloatingPoint<long long>::Value);
-        CHECK_FALSE(wstl::IsFloatingPoint<signed long long>::Value);
-        CHECK_FALSE(wstl::IsFloatingPoint<unsigned long long>::Value);
-        CHECK_FALSE(wstl::IsFloatingPoint<const int>::Value);
-        CHECK_FALSE(wstl::IsFloatingPoint<volatile int>::Value);
-        CHECK_FALSE(wstl::IsFloatingPoint<const int>::Value);
-        CHECK_FALSE(wstl::IsFloatingPoint<const volatile int>::Value);
-        CHECK(wstl::IsFloatingPoint<float>::Value);
-        CHECK(wstl::IsFloatingPoint<double>::Value);
-        CHECK(wstl::IsFloatingPoint<long double>::Value);
-        CHECK_FALSE(wstl::IsFloatingPoint<char16_t>::Value);
-        CHECK_FALSE(wstl::IsFloatingPoint<char32_t>::Value);
+        CHECK_EQ(wstl::IsFloatingPoint<bool>::Value, std::is_floating_point<bool>::value);
+        CHECK_EQ(wstl::IsFloatingPoint<char>::Value, std::is_floating_point<char>::value);
+        CHECK_EQ(wstl::IsFloatingPoint<signed char>::Value, std::is_floating_point<signed char>::value);
+        CHECK_EQ(wstl::IsFloatingPoint<unsigned char>::Value, std::is_floating_point<unsigned char>::value);
+        CHECK_EQ(wstl::IsFloatingPoint<wchar_t>::Value, std::is_floating_point<wchar_t>::value);
+        CHECK_EQ(wstl::IsFloatingPoint<short>::Value, std::is_floating_point<short>::value);
+        CHECK_EQ(wstl::IsFloatingPoint<signed short>::Value, std::is_floating_point<signed short>::value);
+        CHECK_EQ(wstl::IsFloatingPoint<unsigned short>::Value, std::is_floating_point<unsigned short>::value);
+        CHECK_EQ(wstl::IsFloatingPoint<int>::Value, std::is_floating_point<int>::value);
+        CHECK_EQ(wstl::IsFloatingPoint<signed int>::Value, std::is_floating_point<signed int>::value);
+        CHECK_EQ(wstl::IsFloatingPoint<unsigned int>::Value, std::is_floating_point<unsigned int>::value);
+        CHECK_EQ(wstl::IsFloatingPoint<long>::Value, std::is_floating_point<long>::value);
+        CHECK_EQ(wstl::IsFloatingPoint<signed long>::Value, std::is_floating_point<signed long>::value);
+        CHECK_EQ(wstl::IsFloatingPoint<unsigned long>::Value, std::is_floating_point<unsigned long>::value);
+        CHECK_EQ(wstl::IsFloatingPoint<long long>::Value, std::is_floating_point<long long>::value);
+        CHECK_EQ(wstl::IsFloatingPoint<signed long long>::Value, std::is_floating_point<signed long long>::value);
+        CHECK_EQ(wstl::IsFloatingPoint<unsigned long long>::Value, std::is_floating_point<unsigned long long>::value);
+        CHECK_EQ(wstl::IsFloatingPoint<const int>::Value, std::is_floating_point<const int>::value);
+        CHECK_EQ(wstl::IsFloatingPoint<volatile int>::Value, std::is_floating_point<volatile int>::value);
+        CHECK_EQ(wstl::IsFloatingPoint<const volatile int>::Value, std::is_floating_point<const volatile int>::value);
+        CHECK_EQ(wstl::IsFloatingPoint<float>::Value, std::is_floating_point<float>::value);
+        CHECK_EQ(wstl::IsFloatingPoint<double>::Value, std::is_floating_point<double>::value);
+        CHECK_EQ(wstl::IsFloatingPoint<long double>::Value, std::is_floating_point<long double>::value);
+        CHECK_EQ(wstl::IsFloatingPoint<char16_t>::Value, std::is_floating_point<char16_t>::value);
+        CHECK_EQ(wstl::IsFloatingPoint<char32_t>::Value, std::is_floating_point<char32_t>::value);
 
-        CHECK_FALSE(wstl::IsFloatingPoint<TestData>::Value);
-        CHECK_FALSE(wstl::IsFloatingPoint<const TestData>::Value);
-        CHECK_FALSE(wstl::IsFloatingPoint<EnumData>::Value);
-        CHECK_FALSE(wstl::IsFloatingPoint<EnumClassData>::Value);
-        CHECK_FALSE(wstl::IsFloatingPoint<UnionData>::Value);
-        CHECK_FALSE(wstl::IsFloatingPoint<int[]>::Value);
-        CHECK_FALSE(wstl::IsFloatingPoint<int&>::Value);
-        CHECK_FALSE(wstl::IsFloatingPoint<int TestData::*>::Value);
-        CHECK_FALSE(wstl::IsFloatingPoint<EnumData>::Value);
+        CHECK_EQ(wstl::IsFloatingPoint<TestData>::Value, std::is_floating_point<TestData>::value);
+        CHECK_EQ(wstl::IsFloatingPoint<const TestData>::Value, std::is_floating_point<const TestData>::value);
+        CHECK_EQ(wstl::IsFloatingPoint<EnumData>::Value, std::is_floating_point<EnumData>::value);
+        CHECK_EQ(wstl::IsFloatingPoint<EnumClassData>::Value, std::is_floating_point<EnumClassData>::value);
+        CHECK_EQ(wstl::IsFloatingPoint<UnionData>::Value, std::is_floating_point<UnionData>::value);
+        CHECK_EQ(wstl::IsFloatingPoint<int[]>::Value, std::is_floating_point<int[]>::value);
+        CHECK_EQ(wstl::IsFloatingPoint<int&>::Value, std::is_floating_point<int&>::value);
+        CHECK_EQ(wstl::IsFloatingPoint<int TestData::*>::Value, std::is_floating_point<int TestData::*>::value);
+        CHECK_EQ(wstl::IsFloatingPoint<EnumData>::Value, std::is_floating_point<EnumData>::value);
 
-        CHECK(wstl::IsFloatingPoint<const float>::Value);
-        CHECK(wstl::IsFloatingPoint<volatile float>::Value);
-        CHECK(wstl::IsFloatingPoint<const volatile float>::Value);
+        CHECK_EQ(wstl::IsFloatingPoint<const float>::Value, std::is_floating_point<const float>::value);
+        CHECK_EQ(wstl::IsFloatingPoint<volatile float>::Value, std::is_floating_point<volatile float>::value);
+        CHECK_EQ(wstl::IsFloatingPoint<const volatile float>::Value, std::is_floating_point<const volatile float>::value);
 
-        #ifdef __WSTL_CXX20__
-        CHECK_FALSE(wstl::IsFloatingPoint<char8_t>::Value);
-        #endif
+    #ifdef __WSTL_CXX20__
+        CHECK_EQ(wstl::IsFloatingPoint<char8_t>::Value, std::is_floating_point<char8_t>::value);
+    #endif
     }
 
     TEST_CASE("IsArithmetic") {
-        CHECK(wstl::IsArithmetic<bool>::Value);
-        CHECK(wstl::IsArithmetic<char>::Value);
-        CHECK(wstl::IsArithmetic<signed char>::Value);
-        CHECK(wstl::IsArithmetic<unsigned char>::Value);
-        CHECK(wstl::IsArithmetic<wchar_t>::Value);
-        CHECK(wstl::IsArithmetic<short>::Value);
-        CHECK(wstl::IsArithmetic<signed short>::Value);
-        CHECK(wstl::IsArithmetic<unsigned short>::Value);
-        CHECK(wstl::IsArithmetic<int>::Value);
-        CHECK(wstl::IsArithmetic<signed int>::Value);
-        CHECK(wstl::IsArithmetic<unsigned int>::Value);
-        CHECK(wstl::IsArithmetic<long>::Value);
-        CHECK(wstl::IsArithmetic<signed long>::Value);
-        CHECK(wstl::IsArithmetic<unsigned long>::Value);
-        CHECK(wstl::IsArithmetic<long long>::Value);
-        CHECK(wstl::IsArithmetic<signed long long>::Value);
-        CHECK(wstl::IsArithmetic<unsigned long long>::Value);
-        CHECK(wstl::IsArithmetic<const int>::Value);
-        CHECK(wstl::IsArithmetic<volatile int>::Value);
-        CHECK(wstl::IsArithmetic<const int>::Value);
-        CHECK(wstl::IsArithmetic<const volatile int>::Value);
-        CHECK(wstl::IsArithmetic<float>::Value);
-        CHECK(wstl::IsArithmetic<double>::Value);
-        CHECK(wstl::IsArithmetic<long double>::Value);
-        CHECK(wstl::IsArithmetic<char16_t>::Value);
-        CHECK(wstl::IsArithmetic<char32_t>::Value);
-        CHECK_FALSE(wstl::IsArithmetic<TestData>::Value);
-        CHECK_FALSE(wstl::IsArithmetic<EnumData>::Value);
-        CHECK_FALSE(wstl::IsArithmetic<EnumClassData>::Value);
-        CHECK_FALSE(wstl::IsArithmetic<UnionData>::Value);
-        CHECK_FALSE(wstl::IsArithmetic<int[]>::Value);
-        CHECK_FALSE(wstl::IsArithmetic<int&>::Value);
-        CHECK_FALSE(wstl::IsArithmetic<int TestData::*>::Value);
-        CHECK_FALSE(wstl::IsArithmetic<EnumData>::Value);
+        CHECK_EQ(wstl::IsArithmetic<bool>::Value, std::is_arithmetic<bool>::value);
+        CHECK_EQ(wstl::IsArithmetic<char>::Value, std::is_arithmetic<char>::value);
+        CHECK_EQ(wstl::IsArithmetic<signed char>::Value, std::is_arithmetic<signed char>::value);
+        CHECK_EQ(wstl::IsArithmetic<unsigned char>::Value, std::is_arithmetic<unsigned char>::value);
+        CHECK_EQ(wstl::IsArithmetic<wchar_t>::Value, std::is_arithmetic<wchar_t>::value);
+        CHECK_EQ(wstl::IsArithmetic<short>::Value, std::is_arithmetic<short>::value);
+        CHECK_EQ(wstl::IsArithmetic<signed short>::Value, std::is_arithmetic<signed short>::value);
+        CHECK_EQ(wstl::IsArithmetic<unsigned short>::Value, std::is_arithmetic<unsigned short>::value);
+        CHECK_EQ(wstl::IsArithmetic<int>::Value, std::is_arithmetic<int>::value);
+        CHECK_EQ(wstl::IsArithmetic<signed int>::Value, std::is_arithmetic<signed int>::value);
+        CHECK_EQ(wstl::IsArithmetic<unsigned int>::Value, std::is_arithmetic<unsigned int>::value);
+        CHECK_EQ(wstl::IsArithmetic<long>::Value, std::is_arithmetic<long>::value);
+        CHECK_EQ(wstl::IsArithmetic<signed long>::Value, std::is_arithmetic<signed long>::value);
+        CHECK_EQ(wstl::IsArithmetic<unsigned long>::Value, std::is_arithmetic<unsigned long>::value);
+        CHECK_EQ(wstl::IsArithmetic<long long>::Value, std::is_arithmetic<long long>::value);
+        CHECK_EQ(wstl::IsArithmetic<signed long long>::Value, std::is_arithmetic<signed long long>::value);
+        CHECK_EQ(wstl::IsArithmetic<unsigned long long>::Value, std::is_arithmetic<unsigned long long>::value);
+        CHECK_EQ(wstl::IsArithmetic<const int>::Value, std::is_arithmetic<const int>::value);
+        CHECK_EQ(wstl::IsArithmetic<volatile int>::Value, std::is_arithmetic<volatile int>::value);
+        CHECK_EQ(wstl::IsArithmetic<const int>::Value, std::is_arithmetic<const int>::value);
+        CHECK_EQ(wstl::IsArithmetic<const volatile int>::Value, std::is_arithmetic<const volatile int>::value);
+        CHECK_EQ(wstl::IsArithmetic<float>::Value, std::is_arithmetic<float>::value);
+        CHECK_EQ(wstl::IsArithmetic<double>::Value, std::is_arithmetic<double>::value);
+        CHECK_EQ(wstl::IsArithmetic<long double>::Value, std::is_arithmetic<long double>::value);
+        CHECK_EQ(wstl::IsArithmetic<char16_t>::Value, std::is_arithmetic<char16_t>::value);
+        CHECK_EQ(wstl::IsArithmetic<char32_t>::Value, std::is_arithmetic<char32_t>::value);
+        CHECK_EQ(wstl::IsArithmetic<TestData>::Value, std::is_arithmetic<TestData>::value);
+        CHECK_EQ(wstl::IsArithmetic<EnumData>::Value, std::is_arithmetic<EnumData>::value);
+        CHECK_EQ(wstl::IsArithmetic<EnumClassData>::Value, std::is_arithmetic<EnumClassData>::value);
+        CHECK_EQ(wstl::IsArithmetic<UnionData>::Value, std::is_arithmetic<UnionData>::value);
+        CHECK_EQ(wstl::IsArithmetic<int[]>::Value, std::is_arithmetic<int[]>::value);
+        CHECK_EQ(wstl::IsArithmetic<int&>::Value, std::is_arithmetic<int&>::value);
+        CHECK_EQ(wstl::IsArithmetic<int TestData::*>::Value, std::is_arithmetic<int TestData::*>::value);
+        CHECK_EQ(wstl::IsArithmetic<EnumData>::Value, std::is_arithmetic<EnumData>::value);
 
-        #ifdef __WSTL_CXX20__
-        CHECK(wstl::IsArithmetic<char8_t>::Value);
-        #endif
+    #ifdef __WSTL_CXX20__
+        CHECK_EQ(wstl::IsArithmetic<char8_t>::Value, std::is_arithmetic<char8_t>::value);
+    #endif
     }
 
     TEST_CASE("IsFundamental") {
-        CHECK(wstl::IsFundamental<bool>::Value);
-        CHECK(wstl::IsFundamental<char>::Value);
-        CHECK(wstl::IsFundamental<signed char>::Value);
-        CHECK(wstl::IsFundamental<unsigned char>::Value);
-        CHECK(wstl::IsFundamental<wchar_t>::Value);
-        CHECK(wstl::IsFundamental<short>::Value);
-        CHECK(wstl::IsFundamental<signed short>::Value);
-        CHECK(wstl::IsFundamental<unsigned short>::Value);
-        CHECK(wstl::IsFundamental<int>::Value);
-        CHECK(wstl::IsFundamental<signed int>::Value);
-        CHECK(wstl::IsFundamental<unsigned int>::Value);
-        CHECK(wstl::IsFundamental<long>::Value);
-        CHECK(wstl::IsFundamental<signed long>::Value);
-        CHECK(wstl::IsFundamental<unsigned long>::Value);
-        CHECK(wstl::IsFundamental<long long>::Value);
-        CHECK(wstl::IsFundamental<signed long long>::Value);
-        CHECK(wstl::IsFundamental<unsigned long long>::Value);
-        CHECK(wstl::IsFundamental<const int>::Value);
-        CHECK(wstl::IsFundamental<volatile int>::Value);
-        CHECK(wstl::IsFundamental<const int>::Value);
-        CHECK(wstl::IsFundamental<const volatile int>::Value);
-        CHECK(wstl::IsFundamental<float>::Value);
-        CHECK(wstl::IsFundamental<double>::Value);
-        CHECK(wstl::IsFundamental<long double>::Value);
-        CHECK(wstl::IsFundamental<char16_t>::Value);
-        CHECK(wstl::IsFundamental<char32_t>::Value);
-        CHECK(wstl::IsFundamental<std::nullptr_t>::Value);
-        CHECK_FALSE(wstl::IsFundamental<TestData>::Value);
-        CHECK_FALSE(wstl::IsFundamental<EnumData>::Value);
-        CHECK_FALSE(wstl::IsFundamental<EnumClassData>::Value);
-        CHECK_FALSE(wstl::IsFundamental<UnionData>::Value);
-        CHECK_FALSE(wstl::IsFundamental<int[]>::Value);
-        CHECK_FALSE(wstl::IsFundamental<int&>::Value);
-        CHECK_FALSE(wstl::IsFundamental<int TestData::*>::Value);
-        CHECK_FALSE(wstl::IsFundamental<EnumData>::Value);
+        CHECK_EQ(wstl::IsFundamental<bool>::Value, std::is_fundamental<bool>::value);
+        CHECK_EQ(wstl::IsFundamental<char>::Value, std::is_fundamental<char>::value);
+        CHECK_EQ(wstl::IsFundamental<signed char>::Value, std::is_fundamental<signed char>::value);
+        CHECK_EQ(wstl::IsFundamental<unsigned char>::Value, std::is_fundamental<unsigned char>::value);
+        CHECK_EQ(wstl::IsFundamental<wchar_t>::Value, std::is_fundamental<wchar_t>::value);
+        CHECK_EQ(wstl::IsFundamental<short>::Value, std::is_fundamental<short>::value);
+        CHECK_EQ(wstl::IsFundamental<signed short>::Value, std::is_fundamental<signed short>::value);
+        CHECK_EQ(wstl::IsFundamental<unsigned short>::Value, std::is_fundamental<unsigned short>::value);
+        CHECK_EQ(wstl::IsFundamental<int>::Value, std::is_fundamental<int>::value);
+        CHECK_EQ(wstl::IsFundamental<signed int>::Value, std::is_fundamental<signed int>::value);
+        CHECK_EQ(wstl::IsFundamental<unsigned int>::Value, std::is_fundamental<unsigned int>::value);
+        CHECK_EQ(wstl::IsFundamental<long>::Value, std::is_fundamental<long>::value);
+        CHECK_EQ(wstl::IsFundamental<signed long>::Value, std::is_fundamental<signed long>::value);
+        CHECK_EQ(wstl::IsFundamental<unsigned long>::Value, std::is_fundamental<unsigned long>::value);
+        CHECK_EQ(wstl::IsFundamental<long long>::Value, std::is_fundamental<long long>::value);
+        CHECK_EQ(wstl::IsFundamental<signed long long>::Value, std::is_fundamental<signed long long>::value);
+        CHECK_EQ(wstl::IsFundamental<unsigned long long>::Value, std::is_fundamental<unsigned long long>::value);
+        CHECK_EQ(wstl::IsFundamental<const int>::Value, std::is_fundamental<const int>::value);
+        CHECK_EQ(wstl::IsFundamental<volatile int>::Value, std::is_fundamental<volatile int>::value);
+        CHECK_EQ(wstl::IsFundamental<const int>::Value, std::is_fundamental<const int>::value);
+        CHECK_EQ(wstl::IsFundamental<const volatile int>::Value, std::is_fundamental<const volatile int>::value);
+        CHECK_EQ(wstl::IsFundamental<float>::Value, std::is_fundamental<float>::value);
+        CHECK_EQ(wstl::IsFundamental<double>::Value, std::is_fundamental<double>::value);
+        CHECK_EQ(wstl::IsFundamental<long double>::Value, std::is_fundamental<long double>::value);
+        CHECK_EQ(wstl::IsFundamental<char16_t>::Value, std::is_fundamental<char16_t>::value);
+        CHECK_EQ(wstl::IsFundamental<char32_t>::Value, std::is_fundamental<char32_t>::value);
+        CHECK_EQ(wstl::IsFundamental<std::nullptr_t>::Value, std::is_fundamental<std::nullptr_t>::value);
+        CHECK_EQ(wstl::IsFundamental<TestData>::Value, std::is_fundamental<TestData>::value);
+        CHECK_EQ(wstl::IsFundamental<EnumData>::Value, std::is_fundamental<EnumData>::value);
+        CHECK_EQ(wstl::IsFundamental<EnumClassData>::Value, std::is_fundamental<EnumClassData>::value);
+        CHECK_EQ(wstl::IsFundamental<UnionData>::Value, std::is_fundamental<UnionData>::value);
+        CHECK_EQ(wstl::IsFundamental<int[]>::Value, std::is_fundamental<int[]>::value);
+        CHECK_EQ(wstl::IsFundamental<int&>::Value, std::is_fundamental<int&>::value);
+        CHECK_EQ(wstl::IsFundamental<int TestData::*>::Value, std::is_fundamental<int TestData::*>::value);
+        CHECK_EQ(wstl::IsFundamental<EnumData>::Value, std::is_fundamental<EnumData>::value);
 
-        #ifdef __WSTL_CXX20__
-        CHECK(wstl::IsFundamental<char8_t>::Value);
-        #endif
+    #ifdef __WSTL_CXX20__
+        CHECK_EQ(wstl::IsFundamental<char8_t>::Value, std::is_fundamental<char8_t>::value);
+    #endif
     }
 
     TEST_CASE("IsCompound") {
-        CHECK_FALSE(wstl::IsCompound<bool>::Value);
-        CHECK_FALSE(wstl::IsCompound<char>::Value);
-        CHECK_FALSE(wstl::IsCompound<signed char>::Value);
-        CHECK_FALSE(wstl::IsCompound<unsigned char>::Value);
-        CHECK_FALSE(wstl::IsCompound<wchar_t>::Value);
-        CHECK_FALSE(wstl::IsCompound<short>::Value);
-        CHECK_FALSE(wstl::IsCompound<signed short>::Value);
-        CHECK_FALSE(wstl::IsCompound<unsigned short>::Value);
-        CHECK_FALSE(wstl::IsCompound<int>::Value);
-        CHECK_FALSE(wstl::IsCompound<signed int>::Value);
-        CHECK_FALSE(wstl::IsCompound<unsigned int>::Value);
-        CHECK_FALSE(wstl::IsCompound<long>::Value);
-        CHECK_FALSE(wstl::IsCompound<signed long>::Value);
-        CHECK_FALSE(wstl::IsCompound<unsigned long>::Value);
-        CHECK_FALSE(wstl::IsCompound<long long>::Value);
-        CHECK_FALSE(wstl::IsCompound<signed long long>::Value);
-        CHECK_FALSE(wstl::IsCompound<unsigned long long>::Value);
-        CHECK_FALSE(wstl::IsCompound<const int>::Value);
-        CHECK_FALSE(wstl::IsCompound<volatile int>::Value);
-        CHECK_FALSE(wstl::IsCompound<const int>::Value);
-        CHECK_FALSE(wstl::IsCompound<const volatile int>::Value);
-        CHECK_FALSE(wstl::IsCompound<float>::Value);
-        CHECK_FALSE(wstl::IsCompound<double>::Value);
-        CHECK_FALSE(wstl::IsCompound<long double>::Value);
-        CHECK_FALSE(wstl::IsCompound<char16_t>::Value);
-        CHECK_FALSE(wstl::IsCompound<char32_t>::Value);
-        CHECK_FALSE(wstl::IsCompound<std::nullptr_t>::Value);
-        CHECK(wstl::IsCompound<TestData>::Value);
-        CHECK(wstl::IsCompound<EnumData>::Value);
-        CHECK(wstl::IsCompound<EnumClassData>::Value);
-        CHECK(wstl::IsCompound<UnionData>::Value);
-        CHECK(wstl::IsCompound<int[]>::Value);
-        CHECK(wstl::IsCompound<int&>::Value);
-        CHECK(wstl::IsCompound<int TestData::*>::Value);
-        CHECK(wstl::IsCompound<EnumData>::Value);
+        CHECK_EQ(wstl::IsCompound<bool>::Value, std::is_compound<bool>::value);
+        CHECK_EQ(wstl::IsCompound<char>::Value, std::is_compound<char>::value);
+        CHECK_EQ(wstl::IsCompound<signed char>::Value, std::is_compound<signed char>::value);
+        CHECK_EQ(wstl::IsCompound<unsigned char>::Value, std::is_compound<unsigned char>::value);
+        CHECK_EQ(wstl::IsCompound<wchar_t>::Value, std::is_compound<wchar_t>::value);
+        CHECK_EQ(wstl::IsCompound<short>::Value, std::is_compound<short>::value);
+        CHECK_EQ(wstl::IsCompound<signed short>::Value, std::is_compound<signed short>::value);
+        CHECK_EQ(wstl::IsCompound<unsigned short>::Value, std::is_compound<unsigned short>::value);
+        CHECK_EQ(wstl::IsCompound<int>::Value, std::is_compound<int>::value);
+        CHECK_EQ(wstl::IsCompound<signed int>::Value, std::is_compound<signed int>::value);
+        CHECK_EQ(wstl::IsCompound<unsigned int>::Value, std::is_compound<unsigned int>::value);
+        CHECK_EQ(wstl::IsCompound<long>::Value, std::is_compound<long>::value);
+        CHECK_EQ(wstl::IsCompound<signed long>::Value, std::is_compound<signed long>::value);
+        CHECK_EQ(wstl::IsCompound<unsigned long>::Value, std::is_compound<unsigned long>::value);
+        CHECK_EQ(wstl::IsCompound<long long>::Value, std::is_compound<long long>::value);
+        CHECK_EQ(wstl::IsCompound<signed long long>::Value, std::is_compound<signed long long>::value);
+        CHECK_EQ(wstl::IsCompound<unsigned long long>::Value, std::is_compound<unsigned long long>::value);
+        CHECK_EQ(wstl::IsCompound<const int>::Value, std::is_compound<const int>::value);
+        CHECK_EQ(wstl::IsCompound<volatile int>::Value, std::is_compound<volatile int>::value);
+        CHECK_EQ(wstl::IsCompound<const int>::Value, std::is_compound<const int>::value);
+        CHECK_EQ(wstl::IsCompound<const volatile int>::Value, std::is_compound<const volatile int>::value);
+        CHECK_EQ(wstl::IsCompound<float>::Value, std::is_compound<float>::value);
+        CHECK_EQ(wstl::IsCompound<double>::Value, std::is_compound<double>::value);
+        CHECK_EQ(wstl::IsCompound<long double>::Value, std::is_compound<long double>::value);
+        CHECK_EQ(wstl::IsCompound<char16_t>::Value, std::is_compound<char16_t>::value);
+        CHECK_EQ(wstl::IsCompound<char32_t>::Value, std::is_compound<char32_t>::value);
+        CHECK_EQ(wstl::IsCompound<std::nullptr_t>::Value, std::is_compound<std::nullptr_t>::value);
+        CHECK_EQ(wstl::IsCompound<TestData>::Value, std::is_compound<TestData>::value);
+        CHECK_EQ(wstl::IsCompound<EnumData>::Value, std::is_compound<EnumData>::value);
+        CHECK_EQ(wstl::IsCompound<EnumClassData>::Value, std::is_compound<EnumClassData>::value);
+        CHECK_EQ(wstl::IsCompound<UnionData>::Value, std::is_compound<UnionData>::value);
+        CHECK_EQ(wstl::IsCompound<int[]>::Value, std::is_compound<int[]>::value);
+        CHECK_EQ(wstl::IsCompound<int&>::Value, std::is_compound<int&>::value);
+        CHECK_EQ(wstl::IsCompound<int TestData::*>::Value, std::is_compound<int TestData::*>::value);
+        CHECK_EQ(wstl::IsCompound<EnumData>::Value, std::is_compound<EnumData>::value);
 
-        #ifdef __WSTL_CXX20__
-        CHECK_FALSE(wstl::IsCompound<char8_t>::Value);
-        #endif
+    #ifdef __WSTL_CXX20__
+        CHECK_EQ(wstl::IsCompound<char8_t>::Value, std::is_compound<char8_t>::value);
+    #endif
     }
 
     TEST_CASE("IsLValueReference") {
-        CHECK(wstl::IsLValueReference<int&>::Value);
-        CHECK(wstl::IsLValueReference<const int&>::Value);
-        CHECK(wstl::IsLValueReference<volatile int&>::Value);
-        CHECK(wstl::IsLValueReference<const volatile int&>::Value);
-        CHECK_FALSE(wstl::IsLValueReference<int&&>::Value);
-        CHECK_FALSE(wstl::IsLValueReference<int*>::Value);
-        CHECK_FALSE(wstl::IsLValueReference<int>::Value);
-        CHECK_FALSE(wstl::IsLValueReference<void>::Value);
+        CHECK_EQ(wstl::IsLValueReference<int&>::Value, std::is_lvalue_reference<int&>::value);
+        CHECK_EQ(wstl::IsLValueReference<const int&>::Value, std::is_lvalue_reference<const int&>::value);
+        CHECK_EQ(wstl::IsLValueReference<volatile int&>::Value, std::is_lvalue_reference<volatile int&>::value);
+        CHECK_EQ(wstl::IsLValueReference<const volatile int&>::Value, std::is_lvalue_reference<const volatile int&>::value);
+        CHECK_EQ(wstl::IsLValueReference<int&&>::Value, std::is_lvalue_reference<int&&>::value);
+        CHECK_EQ(wstl::IsLValueReference<int*>::Value, std::is_lvalue_reference<int*>::value);
+        CHECK_EQ(wstl::IsLValueReference<int>::Value, std::is_lvalue_reference<int>::value);
+        CHECK_EQ(wstl::IsLValueReference<void>::Value, std::is_lvalue_reference<void>::value);
     }
-
     TEST_CASE("IsRValueReference") {
-        CHECK(wstl::IsRValueReference<int&&>::Value);
-        CHECK(wstl::IsRValueReference<const int&&>::Value);
-        CHECK(wstl::IsRValueReference<volatile int&&>::Value);
-        CHECK(wstl::IsRValueReference<const volatile int&&>::Value);
-        CHECK_FALSE(wstl::IsRValueReference<int&>::Value);
-        CHECK_FALSE(wstl::IsRValueReference<int*>::Value);
-        CHECK_FALSE(wstl::IsRValueReference<int>::Value);
-        CHECK_FALSE(wstl::IsRValueReference<void>::Value);
+        CHECK_EQ(wstl::IsRValueReference<int&&>::Value, std::is_rvalue_reference<int&&>::value);
+        CHECK_EQ(wstl::IsRValueReference<const int&&>::Value, std::is_rvalue_reference<const int&&>::value);
+        CHECK_EQ(wstl::IsRValueReference<volatile int&&>::Value, std::is_rvalue_reference<volatile int&&>::value);
+        CHECK_EQ(wstl::IsRValueReference<const volatile int&&>::Value, std::is_rvalue_reference<const volatile int&&>::value);
+        CHECK_EQ(wstl::IsRValueReference<int&>::Value, std::is_rvalue_reference<int&>::value);
+        CHECK_EQ(wstl::IsRValueReference<int*>::Value, std::is_rvalue_reference<int*>::value);
+        CHECK_EQ(wstl::IsRValueReference<int>::Value, std::is_rvalue_reference<int>::value);
+        CHECK_EQ(wstl::IsRValueReference<void>::Value, std::is_rvalue_reference<void>::value);
     }
-
     TEST_CASE("IsReference") {
-        CHECK(wstl::IsReference<int&>::Value);
-        CHECK(wstl::IsReference<const int&>::Value);
-        CHECK(wstl::IsReference<volatile int&>::Value);
-        CHECK(wstl::IsReference<const volatile int&>::Value);
-        CHECK(wstl::IsReference<int&&>::Value);
-        CHECK_FALSE(wstl::IsReference<int*>::Value);
-        CHECK_FALSE(wstl::IsReference<int>::Value);
-        CHECK_FALSE(wstl::IsReference<void>::Value);
+        CHECK_EQ(wstl::IsReference<int&>::Value, std::is_reference<int&>::value);
+        CHECK_EQ(wstl::IsReference<const int&>::Value, std::is_reference<const int&>::value);
+        CHECK_EQ(wstl::IsReference<volatile int&>::Value, std::is_reference<volatile int&>::value);
+        CHECK_EQ(wstl::IsReference<const volatile int&>::Value, std::is_reference<const volatile int&>::value);
+        CHECK_EQ(wstl::IsReference<int&&>::Value, std::is_reference<int&&>::value);
+        CHECK_EQ(wstl::IsReference<int*>::Value, std::is_reference<int*>::value);
+        CHECK_EQ(wstl::IsReference<int>::Value, std::is_reference<int>::value);
+        CHECK_EQ(wstl::IsReference<void>::Value, std::is_reference<void>::value);
     }
-
     TEST_CASE("IsFunction") {
-        CHECK(wstl::IsFunction<decltype(Free0)>::Value);
-        CHECK(wstl::IsFunction<decltype(Free1)>::Value);
-        CHECK(wstl::IsFunction<decltype(Free2)>::Value);
-        CHECK(wstl::IsFunction<decltype(Free3)>::Value);
-        CHECK(wstl::IsFunction<decltype(Free0t<char>)>::Value);
-        CHECK_FALSE(wstl::IsFunction<int MemberFunction::*>::Value);
-        CHECK_FALSE(wstl::IsFunction<int*>::Value);
-        CHECK_FALSE(wstl::IsFunction<int (MemberFunction::*)(int)>::Value);
-        CHECK_FALSE(wstl::IsFunction<int>::Value);
+        CHECK_EQ(wstl::IsFunction<decltype(Free0)>::Value, std::is_function<decltype(Free0)>::value);
+        CHECK_EQ(wstl::IsFunction<decltype(Free1)>::Value, std::is_function<decltype(Free1)>::value);
+        CHECK_EQ(wstl::IsFunction<decltype(Free2)>::Value, std::is_function<decltype(Free2)>::value);
+        CHECK_EQ(wstl::IsFunction<decltype(Free3)>::Value, std::is_function<decltype(Free3)>::value);
+        CHECK_EQ(wstl::IsFunction<decltype(Free0t<char>)>::Value, std::is_function<decltype(Free0t<char>)>::value);
+        CHECK_EQ(wstl::IsFunction<int MemberFunction::*>::Value, std::is_function<int MemberFunction::*>::value);
+        CHECK_EQ(wstl::IsFunction<int*>::Value, std::is_function<int*>::value);
+        CHECK_EQ(wstl::IsFunction<int (MemberFunction::*)(int)>::Value, std::is_function<int (MemberFunction::*)(int)>::value);
+        CHECK_EQ(wstl::IsFunction<int>::Value, std::is_function<int>::value);
     }
-
     TEST_CASE("IsArray") {
-        CHECK(wstl::IsArray<int[10]>::Value);
-        CHECK(wstl::IsArray<int[]>::Value);
-        CHECK(wstl::IsArray<int[10][10]>::Value);
-        CHECK_FALSE(wstl::IsArray<int>::Value);
+        CHECK_EQ(wstl::IsArray<int[10]>::Value, std::is_array<int[10]>::value);
+        CHECK_EQ(wstl::IsArray<int[]>::Value, std::is_array<int[]>::value);
+        CHECK_EQ(wstl::IsArray<int[10][10]>::Value, std::is_array<int[10][10]>::value);
+        CHECK_EQ(wstl::IsArray<int>::Value, std::is_array<int>::value);
     }
-
     TEST_CASE("IsUnion") {
-        CHECK(wstl::IsUnion<UnionData>::Value);
-        CHECK_FALSE(wstl::IsUnion<TestData>::Value);
+        CHECK_EQ(wstl::IsUnion<UnionData>::Value, std::is_union<UnionData>::value);
+        CHECK_EQ(wstl::IsUnion<TestData>::Value, std::is_union<TestData>::value);
     }
-
     TEST_CASE("IsMemberPointer") {
-        CHECK(wstl::IsMemberPointer<int MemberFunction::*>::Value);
-        CHECK(wstl::IsMemberPointer<int (MemberFunction::*)(int)>::Value);
-        CHECK_FALSE(wstl::IsMemberPointer<int*>::Value);
-        CHECK_FALSE(wstl::IsMemberPointer<int>::Value);
-        CHECK_FALSE(wstl::IsMemberPointer<decltype(&Free0)>::Value);
+        CHECK_EQ(wstl::IsMemberPointer<int MemberFunction::*>::Value, std::is_member_pointer<int MemberFunction::*>::value);
+        CHECK_EQ(wstl::IsMemberPointer<int (MemberFunction::*)(int)>::Value, std::is_member_pointer<int (MemberFunction::*)(int)>::value);
+        CHECK_EQ(wstl::IsMemberPointer<int*>::Value, std::is_member_pointer<int*>::value);
+        CHECK_EQ(wstl::IsMemberPointer<int>::Value, std::is_member_pointer<int>::value);
+        CHECK_EQ(wstl::IsMemberPointer<decltype(&Free0)>::Value, std::is_member_pointer<decltype(&Free0)>::value);
     }
-
     TEST_CASE("IsMemberFunctionPointer") {
-        CHECK_FALSE(wstl::IsMemberFunctionPointer<int MemberFunction::*>::Value);
-        CHECK(wstl::IsMemberFunctionPointer<int (MemberFunction::*)(int)>::Value);
-        CHECK_FALSE(wstl::IsMemberFunctionPointer<int*>::Value);
-        CHECK_FALSE(wstl::IsMemberFunctionPointer<int>::Value);
-        CHECK_FALSE(wstl::IsMemberFunctionPointer<decltype(&Free0)>::Value);
+        CHECK_EQ(wstl::IsMemberFunctionPointer<int MemberFunction::*>::Value, std::is_member_function_pointer<int MemberFunction::*>::value);
+        CHECK_EQ(wstl::IsMemberFunctionPointer<int (MemberFunction::*)(int)>::Value, std::is_member_function_pointer<int (MemberFunction::*)(int)>::value);
+        CHECK_EQ(wstl::IsMemberFunctionPointer<int*>::Value, std::is_member_function_pointer<int*>::value);
+        CHECK_EQ(wstl::IsMemberFunctionPointer<int>::Value, std::is_member_function_pointer<int>::value);
+        CHECK_EQ(wstl::IsMemberFunctionPointer<decltype(&Free0)>::Value, std::is_member_function_pointer<decltype(&Free0)>::value);
     }
 
     TEST_CASE("IsMemberObjectPointer") {
-        CHECK(wstl::IsMemberObjectPointer<int MemberFunction::*>::Value);
-        CHECK_FALSE(wstl::IsMemberObjectPointer<int (MemberFunction::*)(int)>::Value);
-        CHECK_FALSE(wstl::IsMemberObjectPointer<int*>::Value);
-        CHECK_FALSE(wstl::IsMemberObjectPointer<int>::Value);
-        CHECK_FALSE(wstl::IsMemberObjectPointer<decltype(&Free0)>::Value);
+        CHECK_EQ(wstl::IsMemberObjectPointer<int MemberFunction::*>::Value, std::is_member_object_pointer<int MemberFunction::*>::value);
+        CHECK_EQ(wstl::IsMemberObjectPointer<int (MemberFunction::*)(int)>::Value, std::is_member_object_pointer<int (MemberFunction::*)(int)>::value);
+        CHECK_EQ(wstl::IsMemberObjectPointer<int*>::Value, std::is_member_object_pointer<int*>::value);
+        CHECK_EQ(wstl::IsMemberObjectPointer<int>::Value, std::is_member_object_pointer<int>::value);
+        CHECK_EQ(wstl::IsMemberObjectPointer<decltype(&Free0)>::Value, std::is_member_object_pointer<decltype(&Free0)>::value);
     }
 
     TEST_CASE("IsClass") {
-        CHECK(wstl::IsClass<TestData>::Value);
-        CHECK(wstl::IsClass<ClassData>::Value);
-        CHECK(wstl::IsClass<const ClassData>::Value);
-        CHECK(wstl::IsClass<UnionData::ClassData>::Value);
-        CHECK_FALSE(wstl::IsClass<EnumClassData>::Value);
-        CHECK_FALSE(wstl::IsClass<UnionData>::Value);
-        CHECK_FALSE(wstl::IsClass<EnumData>::Value);
-        CHECK_FALSE(wstl::IsClass<int>::Value);
+        CHECK_EQ(wstl::IsClass<TestData>::Value, std::is_class<TestData>::value);
+        CHECK_EQ(wstl::IsClass<ClassData>::Value, std::is_class<ClassData>::value);
+        CHECK_EQ(wstl::IsClass<const ClassData>::Value, std::is_class<const ClassData>::value);
+        CHECK_EQ(wstl::IsClass<UnionData::ClassData>::Value, std::is_class<UnionData::ClassData>::value);
+        CHECK_EQ(wstl::IsClass<EnumClassData>::Value, std::is_class<EnumClassData>::value);
+        CHECK_EQ(wstl::IsClass<UnionData>::Value, std::is_class<UnionData>::value);
+        CHECK_EQ(wstl::IsClass<EnumData>::Value, std::is_class<EnumData>::value);
+        CHECK_EQ(wstl::IsClass<int>::Value, std::is_class<int>::value);
     }
 
     TEST_CASE("IsBaseOf") {
-        CHECK(wstl::IsBaseOf<A, A>::Value);
-        CHECK(wstl::IsBaseOf<A, BBaseA>::Value);
-        CHECK(wstl::IsBaseOf<A, CBaseB>::Value);
-        CHECK_FALSE(wstl::IsBaseOf<A, D>::Value);
-        CHECK_FALSE(wstl::IsBaseOf<BBaseA, A>::Value);
-        CHECK_FALSE(wstl::IsBaseOf<UnionData, UnionData>::Value);
-        CHECK_FALSE(wstl::IsBaseOf<int, int>::Value);
+        CHECK_EQ(wstl::IsBaseOf<A, A>::Value, std::is_base_of<A, A>::value);
+        CHECK_EQ(wstl::IsBaseOf<A, BBaseA>::Value, std::is_base_of<A, BBaseA>::value);
+        CHECK_EQ(wstl::IsBaseOf<A, CBaseB>::Value, std::is_base_of<A, CBaseB>::value);
+        CHECK_EQ(wstl::IsBaseOf<A, D>::Value, std::is_base_of<A, D>::value);
+        CHECK_EQ(wstl::IsBaseOf<BBaseA, A>::Value, std::is_base_of<BBaseA, A>::value);
+        CHECK_EQ(wstl::IsBaseOf<UnionData, UnionData>::Value, std::is_base_of<UnionData, UnionData>::value);
+        CHECK_EQ(wstl::IsBaseOf<int, int>::Value, std::is_base_of<int, int>::value);
     }
 
     TEST_CASE("IsConvertible") {
         // Fundamental types
-        CHECK(wstl::IsConvertible<int, double>::Value);
-        CHECK(wstl::IsConvertible<double, int>::Value);
-        CHECK(wstl::IsConvertible<int, int>::Value);
+        CHECK_EQ(wstl::IsConvertible<int, double>::Value, std::is_convertible<int, double>::value);
+        CHECK_EQ(wstl::IsConvertible<double, int>::Value, std::is_convertible<double, int>::value);
+        CHECK_EQ(wstl::IsConvertible<int, int>::Value, std::is_convertible<int, int>::value);
 
         // Pointers
-        CHECK(wstl::IsConvertible<int*, const int*>::Value);
-        CHECK_FALSE(wstl::IsConvertible<const int*, int*>::Value);
+        CHECK_EQ(wstl::IsConvertible<int*, const int*>::Value, std::is_convertible<int*, const int*>::value);
+        CHECK_EQ(wstl::IsConvertible<const int*, int*>::Value, std::is_convertible<const int*, int*>::value);
 
         // Inheritance
-        CHECK_FALSE(wstl::IsConvertible<BBaseA*, A*>::Value);
-        CHECK_FALSE(wstl::IsConvertible<A*, BBaseA*>::Value);
+        CHECK_EQ(wstl::IsConvertible<BBaseA*, A*>::Value, std::is_convertible<BBaseA*, A*>::value);
+        CHECK_EQ(wstl::IsConvertible<A*, BBaseA*>::Value, std::is_convertible<A*, BBaseA*>::value);
 
         // References
-        CHECK(wstl::IsConvertible<int&, int>::Value);
-        CHECK(wstl::IsConvertible<int&, const int&>::Value);
-        CHECK_FALSE(wstl::IsConvertible<const int&, int&>::Value);
+        CHECK_EQ(wstl::IsConvertible<int&, int>::Value, std::is_convertible<int&, int>::value);
+        CHECK_EQ(wstl::IsConvertible<int&, const int&>::Value, std::is_convertible<int&, const int&>::value);
+        CHECK_EQ(wstl::IsConvertible<const int&, int&>::Value, std::is_convertible<const int&, int&>::value);
 
         // Void
-        CHECK(wstl::IsConvertible<void, void>::Value);
-        CHECK_FALSE(wstl::IsConvertible<int, void>::Value);
-        CHECK_FALSE(wstl::IsConvertible<void, int>::Value);
+        CHECK_EQ(wstl::IsConvertible<void, void>::Value, std::is_convertible<void, void>::value);
+        CHECK_EQ(wstl::IsConvertible<int, void>::Value, std::is_convertible<int, void>::value);
+        CHECK_EQ(wstl::IsConvertible<void, int>::Value, std::is_convertible<void, int>::value);
 
         // User-defined implicit
-        CHECK(wstl::IsConvertible<int, Implicit>::Value);
-        CHECK(wstl::IsConvertible<From, To>::Value);
+        CHECK_EQ(wstl::IsConvertible<int, Implicit>::Value, std::is_convertible<int, Implicit>::value);
+        CHECK_EQ(wstl::IsConvertible<From, To>::Value, std::is_convertible<From, To>::value);
 
         // User-defined explicit
-        CHECK_FALSE(wstl::IsConvertible<int, Explicit>::Value);
+        CHECK_EQ(wstl::IsConvertible<int, Explicit>::Value, std::is_convertible<int, Explicit>::value);
 
         // Conversion operator
-        CHECK(wstl::IsConvertible<ToBool, bool>::Value);
+        CHECK_EQ(wstl::IsConvertible<ToBool, bool>::Value, std::is_convertible<ToBool, bool>::value);
 
         // Array
-        CHECK(wstl::IsConvertible<int[3], const int*>::Value);
+        CHECK_EQ(wstl::IsConvertible<int[3], const int*>::Value, std::is_convertible<int[3], const int*>::value);
 
         // Function pointers
         using Fn = int(int);
-        CHECK(wstl::IsConvertible<Fn, Fn*>::Value);
+        CHECK_EQ(wstl::IsConvertible<Fn, Fn*>::Value, std::is_convertible<Fn, Fn*>::value);
 
         // CV qualifiers
-        CHECK(wstl::IsConvertible<int, const int>::Value);
-        CHECK(wstl::IsConvertible<const int, int>::Value);
+        CHECK_EQ(wstl::IsConvertible<int, const int>::Value, std::is_convertible<int, const int>::value);
+        CHECK_EQ(wstl::IsConvertible<const int, int>::Value, std::is_convertible<const int, int>::value);
 
         // Enum
-        CHECK(wstl::IsConvertible<EnumData, int>::Value);
-        CHECK_FALSE(wstl::IsConvertible<EnumClassData, int>::Value);
+        CHECK_EQ(wstl::IsConvertible<EnumData, int>::Value, std::is_convertible<EnumData, int>::value);
+        CHECK_EQ(wstl::IsConvertible<EnumClassData, int>::Value, std::is_convertible<EnumClassData, int>::value);
     }
 
     TEST_CASE("IsEnum") {
-        CHECK(wstl::IsEnum<EnumData>::Value);
-        CHECK(wstl::IsEnum<EnumClassData>::Value);
-        CHECK_FALSE(wstl::IsEnum<TestData>::Value);
-        CHECK_FALSE(wstl::IsEnum<FakeEnum>::Value);
-        CHECK_FALSE(wstl::IsEnum<int>::Value);
+        CHECK_EQ(wstl::IsEnum<EnumData>::Value, std::is_enum<EnumData>::value);
+        CHECK_EQ(wstl::IsEnum<EnumClassData>::Value, std::is_enum<EnumClassData>::value);
+        CHECK_EQ(wstl::IsEnum<TestData>::Value, std::is_enum<TestData>::value);
+        CHECK_EQ(wstl::IsEnum<FakeEnum>::Value, std::is_enum<FakeEnum>::value);
+        CHECK_EQ(wstl::IsEnum<int>::Value, std::is_enum<int>::value);
     }
 
     TEST_CASE("IsPointer") {
-        CHECK(wstl::IsPointer<int*>::Value);
-        CHECK(wstl::IsPointer<const int*>::Value);
-        CHECK(wstl::IsPointer<volatile int*>::Value);
-        CHECK(wstl::IsPointer<const volatile int*>::Value);
-        CHECK_FALSE(wstl::IsPointer<int>::Value);
+        CHECK_EQ(wstl::IsPointer<int*>::Value, std::is_pointer<int*>::value);
+        CHECK_EQ(wstl::IsPointer<const int*>::Value, std::is_pointer<const int*>::value);
+        CHECK_EQ(wstl::IsPointer<volatile int*>::Value, std::is_pointer<volatile int*>::value);
+        CHECK_EQ(wstl::IsPointer<const volatile int*>::Value, std::is_pointer<const volatile int*>::value);
+        CHECK_EQ(wstl::IsPointer<int>::Value, std::is_pointer<int>::value);
     }
 
     TEST_CASE("IsScalar") {
-        CHECK(wstl::IsScalar<int>::Value);
-        CHECK(wstl::IsScalar<float>::Value);
-        CHECK(wstl::IsScalar<EnumData>::Value);
-        CHECK(wstl::IsScalar<EnumClassData>::Value);
-        CHECK(wstl::IsScalar<int*>::Value);
-        CHECK(wstl::IsScalar<int MemberFunction::*>::Value);
-        CHECK(wstl::IsScalar<int (MemberFunction::*)(int)>::Value);
-        CHECK(wstl::IsScalar<decltype(&Free0)>::Value);
-        CHECK_FALSE(wstl::IsScalar<ClassData>::Value);
-        CHECK_FALSE(wstl::IsScalar<TestData>::Value);
+        CHECK_EQ(wstl::IsScalar<int>::Value, std::is_scalar<int>::value);
+        CHECK_EQ(wstl::IsScalar<float>::Value, std::is_scalar<float>::value);
+        CHECK_EQ(wstl::IsScalar<EnumData>::Value, std::is_scalar<EnumData>::value);
+        CHECK_EQ(wstl::IsScalar<EnumClassData>::Value, std::is_scalar<EnumClassData>::value);
+        CHECK_EQ(wstl::IsScalar<int*>::Value, std::is_scalar<int*>::value);
+        CHECK_EQ(wstl::IsScalar<int MemberFunction::*>::Value, std::is_scalar<int MemberFunction::*>::value);
+        CHECK_EQ(wstl::IsScalar<int (MemberFunction::*)(int)>::Value, std::is_scalar<int (MemberFunction::*)(int)>::value);
+        CHECK_EQ(wstl::IsScalar<decltype(&Free0)>::Value, std::is_scalar<decltype(&Free0)>::value);
+        CHECK_EQ(wstl::IsScalar<ClassData>::Value, std::is_scalar<ClassData>::value);
+        CHECK_EQ(wstl::IsScalar<TestData>::Value, std::is_scalar<TestData>::value);
     }
 
     TEST_CASE("IsTrivial") {
-        CHECK(wstl::IsTrivial<int>::Value);
-        CHECK(wstl::IsTrivial<TrivialConstructor>::Value);
-        CHECK(wstl::IsTrivial<PrivateDefaultConstructor>::Value);
-        CHECK_FALSE(wstl::IsTrivial<NonTrivialData>::Value);
-        CHECK_FALSE(wstl::IsTrivial<NonTrivialConstructor>::Value);
+        CHECK_EQ(wstl::IsTrivial<int>::Value, std::is_trivial<int>::value);
+        CHECK_EQ(wstl::IsTrivial<TrivialConstructor>::Value, std::is_trivial<TrivialConstructor>::value);
+        CHECK_EQ(wstl::IsTrivial<PrivateDefaultConstructor>::Value, std::is_trivial<PrivateDefaultConstructor>::value);
+        CHECK_EQ(wstl::IsTrivial<NonTrivialData>::Value, std::is_trivial<NonTrivialData>::value);
+        CHECK_EQ(wstl::IsTrivial<NonTrivialConstructor>::Value, std::is_trivial<NonTrivialConstructor>::value);
     }
 
     TEST_CASE("IsPOD") {
-        CHECK(wstl::IsPOD<int>::Value);
-        CHECK(wstl::IsPOD<A>::Value);
-        CHECK_FALSE(wstl::IsPOD<BBaseA>::Value);
-        CHECK_FALSE(wstl::IsPOD<VirtualFunction>::Value);
+        CHECK_EQ(wstl::IsPOD<int>::Value, std::is_pod<int>::value);
+        CHECK_EQ(wstl::IsPOD<A>::Value, std::is_pod<A>::value);
+        CHECK_EQ(wstl::IsPOD<BBaseA>::Value, std::is_pod<BBaseA>::value);
+        CHECK_EQ(wstl::IsPOD<VirtualFunction>::Value, std::is_pod<VirtualFunction>::value);
     }
 
     TEST_CASE("IsStandardLayout") {
-        CHECK(wstl::IsStandardLayout<int>::Value);
-        CHECK(wstl::IsStandardLayout<A>::Value);
-        CHECK_FALSE(wstl::IsStandardLayout<BBaseA>::Value);
-        CHECK_FALSE(wstl::IsStandardLayout<VirtualFunction>::Value);
+        CHECK_EQ(wstl::IsStandardLayout<int>::Value, std::is_standard_layout<int>::value);
+        CHECK_EQ(wstl::IsStandardLayout<A>::Value, std::is_standard_layout<A>::value);
+        CHECK_EQ(wstl::IsStandardLayout<BBaseA>::Value, std::is_standard_layout<BBaseA>::value);
+        CHECK_EQ(wstl::IsStandardLayout<VirtualFunction>::Value, std::is_standard_layout<VirtualFunction>::value);
     }
 
     TEST_CASE("IsObject") {
-        CHECK(wstl::IsObject<int>::Value);
-        CHECK(wstl::IsObject<int*>::Value);
-        CHECK(wstl::IsObject<TestData>::Value);
-        CHECK(wstl::IsObject<TestData>::Value);
-        CHECK(wstl::IsObject<int(*)()>::Value);
-        CHECK_FALSE(wstl::IsObject<void>::Value);
-        CHECK_FALSE(wstl::IsObject<int&>::Value);
-        CHECK_FALSE(wstl::IsObject<int*&>::Value);
-        CHECK_FALSE(wstl::IsObject<TestData&>::Value);
-        CHECK_FALSE(wstl::IsObject<int()>::Value);
-        CHECK_FALSE(wstl::IsObject<int(&)()>::Value);
+        CHECK_EQ(wstl::IsObject<int>::Value, std::is_object<int>::value);
+        CHECK_EQ(wstl::IsObject<int*>::Value, std::is_object<int*>::value);
+        CHECK_EQ(wstl::IsObject<TestData>::Value, std::is_object<TestData>::value);
+        CHECK_EQ(wstl::IsObject<int(*)()>::Value, std::is_object<int(*)()>::value);
+        CHECK_EQ(wstl::IsObject<void>::Value, std::is_object<void>::value);
+        CHECK_EQ(wstl::IsObject<int&>::Value, std::is_object<int&>::value);
+        CHECK_EQ(wstl::IsObject<int*&>::Value, std::is_object<int*&>::value);
+        CHECK_EQ(wstl::IsObject<TestData&>::Value, std::is_object<TestData&>::value);
+        CHECK_EQ(wstl::IsObject<int()>::Value, std::is_object<int()>::value);
+        CHECK_EQ(wstl::IsObject<int(&)()>::Value, std::is_object<int(&)()>::value);
     }
 
     TEST_CASE("IsConstructible") {
