@@ -5,6 +5,7 @@
 
 #include <doctest.h>
 #include <wstl/Exception.hpp>
+#include <cstring>
 
 
 TEST_SUITE("Exception") {
