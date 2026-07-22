@@ -75,7 +75,8 @@ env.Append(
         '__WSTL_EXCEPTIONS__',
         '__WSTL_EXCEPTION_LOCATION__',
         '__WSTL_CHECK_ITERATOR__',
-        '__WSTL_CHECK_INDEXOPERATOR__'
+        '__WSTL_CHECK_INDEXOPERATOR__',
+        '__WSTL_MATH_SUPPORT__'
     ],
     CPPPATH = [
         env.Dir('doctest/doctest').srcnode(),
