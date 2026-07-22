@@ -92,14 +92,12 @@ namespace wstl {
         #define __WSTL_ASSERT_RETURN__(condition, exception) do {           \
             if(__WSTL_UNLIKELY_EXPR__(!(condition))) __WSTL_UNLIKELY__ {    \
                 throw((exception));                                         \
-                return;                                                     \
             }                                                               \
         } while(false)
 
         #define __WSTL_ASSERT_RETURNVALUE__(condition, exception, value) do {   \
             if(__WSTL_UNLIKELY_EXPR__(!(condition))) __WSTL_UNLIKELY__ {        \
                 throw((exception));                                             \
-                return(value);                                                  \
             }                                                                   \
         } while(false)
 
@@ -109,12 +107,10 @@ namespace wstl {
 
         #define __WSTL_THROW_RETURN__(exception) do {   \
             throw((exception));                         \
-            return;                                     \
         } while(false)
 
         #define __WSTL_THROW_RETURNVALUE__(exception, value) do {   \
             throw((exception));                                     \
-            return (value);                                         \
         } while(false)
     #endif
 #else
