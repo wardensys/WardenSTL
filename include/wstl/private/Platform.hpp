@@ -225,8 +225,8 @@ namespace wstl {}
         #define __WSTL_LIKELY_EXPR__(x) __builtin_expect(!!(x), 1)
         #define __WSTL_UNLIKELY_EXPR__(x) __builtin_expect(!!(x), 0)
     #else
-        #define __WSTL_LIKELY_EXPR__(x)
-        #define __WSTL_UNLIKELY__(x)
+        #define __WSTL_LIKELY_EXPR__(x) x
+        #define __WSTL_UNLIKELY_EXPR__(x) x
     #endif
     
     #define __WSTL_CONSTEVAL__
