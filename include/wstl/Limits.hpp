@@ -78,10 +78,14 @@
     #endif
 #endif
 
-#if !defined(HUGE_VAL) && defined(__WSTL_FREESTANDING__)
-    #define HUGE_VALF FLT_MAX
-    #define HUGE_VAL DBL_MAX
-    #define HUGE_VALL LDBL_MAX
+#ifdef HUGE_VAL
+    #define __WSTL_HUGE_VALF__ HUGE_VALF
+    #define __WSTL_HUGE_VAL__ HUGE_VAL
+    #define __WSTL_HUGE_VALL__ HUGE_VALL
+#else
+    #define __WSTL_HUGE_VALF__ FLT_MAX
+    #define __WSTL_HUGE_VAL__ DBL_MAX
+    #define __WSTL_HUGE_VALL__ LDBL_MAX
 #endif
 
 #ifdef NAN
@@ -95,9 +99,9 @@
     #define __WSTL_NANL__ nanl("")
     #define __WSTL_HAS_NAN__ true
 #else
-    #define __WSTL_NANF__ HUGE_VALF
-    #define __WSTL_NAN__ HUGE_VAL
-    #define __WSTL_NANL__ HUGE_VALL
+    #define __WSTL_NANF__ __WSTL_HUGE_VALF__
+    #define __WSTL_NAN__ __WSTL_HUGE_VAL__
+    #define __WSTL_NANL__ __WSTL_HUGE_VALL__
     #define __WSTL_HAS_NAN__ false
 #endif
 
@@ -877,7 +881,7 @@ namespace wstl {
         static __WSTL_CONSTEXPR__ float Lowest() __WSTL_NOEXCEPT__ { return -FLT_MAX; }
         static __WSTL_CONSTEXPR__ float Epsilon() __WSTL_NOEXCEPT__ { return FLT_EPSILON; }
         static __WSTL_CONSTEXPR__ float RoundError() __WSTL_NOEXCEPT__ { return 0.5F; }
-        static __WSTL_CONSTEXPR__ float Infinity() __WSTL_NOEXCEPT__ { return HUGE_VALF; }
+        static __WSTL_CONSTEXPR__ float Infinity() __WSTL_NOEXCEPT__ { return __WSTL_HUGE_VALF__; }
         static __WSTL_CONSTEXPR__ float QuietNaN() __WSTL_NOEXCEPT__ { return __WSTL_NANF__; }
         static __WSTL_CONSTEXPR__ float SignalingNaN() __WSTL_NOEXCEPT__ { return __WSTL_NANF__; }
         static __WSTL_CONSTEXPR__ float DenormalizedMin() __WSTL_NOEXCEPT__ { return FLT_MIN; }
@@ -893,7 +897,7 @@ namespace wstl {
         static __WSTL_CONSTEXPR__ double Lowest() __WSTL_NOEXCEPT__ { return -DBL_MAX; }
         static __WSTL_CONSTEXPR__ double Epsilon() __WSTL_NOEXCEPT__ { return DBL_EPSILON; }
         static __WSTL_CONSTEXPR__ double RoundError() __WSTL_NOEXCEPT__ { return 0.5; }
-        static __WSTL_CONSTEXPR__ double Infinity() __WSTL_NOEXCEPT__ { return HUGE_VAL; }
+        static __WSTL_CONSTEXPR__ double Infinity() __WSTL_NOEXCEPT__ { return __WSTL_HUGE_VAL__; }
         static __WSTL_CONSTEXPR__ double QuietNaN() __WSTL_NOEXCEPT__ { return __WSTL_NAN__; }
         static __WSTL_CONSTEXPR__ double SignalingNaN() __WSTL_NOEXCEPT__ { return __WSTL_NAN__; }
         static __WSTL_CONSTEXPR__ double DenormalizedMin() __WSTL_NOEXCEPT__ { return DBL_MIN; }
@@ -909,7 +913,7 @@ namespace wstl {
         static __WSTL_CONSTEXPR__ long double Lowest() __WSTL_NOEXCEPT__ { return -LDBL_MAX; }
         static __WSTL_CONSTEXPR__ long double Epsilon() __WSTL_NOEXCEPT__ { return LDBL_EPSILON; }
         static __WSTL_CONSTEXPR__ long double RoundError() __WSTL_NOEXCEPT__ { return 0.5L; }
-        static __WSTL_CONSTEXPR__ long double Infinity() __WSTL_NOEXCEPT__ { return HUGE_VALL; }
+        static __WSTL_CONSTEXPR__ long double Infinity() __WSTL_NOEXCEPT__ { return __WSTL_HUGE_VALL__; }
         static __WSTL_CONSTEXPR__ long double QuietNaN() __WSTL_NOEXCEPT__ { return __WSTL_NANL__; }
         static __WSTL_CONSTEXPR__ long double SignalingNaN() __WSTL_NOEXCEPT__ { return __WSTL_NANL__; }
         static __WSTL_CONSTEXPR__ long double DenormalizedMin() __WSTL_NOEXCEPT__ { return LDBL_MIN; }
