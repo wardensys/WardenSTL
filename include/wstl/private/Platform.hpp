@@ -210,8 +210,8 @@ namespace wstl {}
     #define __WSTL_CONSTEXPR20__ constexpr
     #define __WSTL_LIKELY__ [[likely]]
     #define __WSTL_UNLIKELY__ [[unlikely]]
-    #define __WSTL_LIKELY_EXPR__(x)
-    #define __WSTL_UNLIKELY_EXPR__(x)
+    #define __WSTL_LIKELY_EXPR__(x) x
+    #define __WSTL_UNLIKELY_EXPR__(x) x
     #define __WSTL_CONSTEVAL__ consteval
     #define __WSTL_CONSTINIT__ constinit
     #define __WSTL_NO_UNIQUE_ADDRESS__ [[no_unique_address]]
