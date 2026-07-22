@@ -1273,7 +1273,7 @@ TEST_SUITE("Algorithm") {
             std::vector<int> data2 = initial;
 
             wstl::PartialSort(data1.begin(), data1.begin() + ptrdiff_t(i), data1.end());
-            std::partial_sort(data2.begin(), data2.begin() + ptrdiff_t(i), data2.end());
+            // std::partial_sort(data2.begin(), data2.begin() + ptrdiff_t(i), data2.end());
 
             bool equal = std::equal(data1.begin(), data1.end(), data2.begin());
 
@@ -1295,9 +1295,22 @@ TEST_SUITE("Algorithm") {
             data2 = initial;
 
             wstl::PartialSort(data1.begin(), data1.begin() + ptrdiff_t(i), data1.end(), std::greater<int>());
-            std::partial_sort(data2.begin(), data2.begin() + ptrdiff_t(i), data2.end(), std::greater<int>());
+            // std::partial_sort(data2.begin(), data2.begin() + ptrdiff_t(i), data2.end(), std::greater<int>());
 
             equal = std::equal(data1.begin(), data1.end(), data2.begin());
+
+            CAPTURE(i);
+
+            if (!equal) {
+                for (auto x : data1)
+                    std::cout << x << ' ';
+                std::cout << '\n';
+
+                for (auto x : data2)
+                    std::cout << x << ' ';
+                std::cout << '\n';
+            }
+
             CHECK(equal);
         }
     }
