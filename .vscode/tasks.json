@@ -75,24 +75,24 @@
             }
         },
         {
-            "label": "Run All Tests",
+            "label": "Run Unit Tests",
             "type": "shell",
             "command": "scons",
             "args": ["run_test", "--cppstd=${input:cppStandard}"],
-            "group": {
-                "kind": "test",
-                "isDefault": true
-            },
+            "group": "test",
             "problemMatcher": "$gcc",
             "presentation": {
-                "reveal": "always",
-                "focus": true,
-                "panel": "dedicated" ,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "dedicated",
                 "showReuseMessage": true,
                 "clear": true,
                 "revealProblems": "onProblem"
-            },
-            "dependsOn": ["Syntax Checks"],
+            }
+        },
+        {
+            "label": "Run All Tests",
+            "dependsOn": ["Syntax Checks", "Run Unit Tests"],
             "dependsOrder": "sequence"
         },
         {
