@@ -2236,7 +2236,7 @@ namespace wstl {
         #elif __WSTL_HAS_BUILTIN__(__is_trivially_destructible) || defined(__WSTL_MSVC__) || defined(__WSTL_ICC__)
             __is_trivially_destructible(T)
         #elif __WSTL_HAS_BUILTIN__(__has_trivial_destructor)
-            __has_trivial_destructor(T)
+            __has_trivial_destructor(T) && IsDestructible<T>::Value
         #else
             false
         #endif
