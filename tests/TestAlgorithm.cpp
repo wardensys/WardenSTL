@@ -1276,6 +1276,19 @@ TEST_SUITE("Algorithm") {
             std::partial_sort(data2.begin(), data2.begin() + ptrdiff_t(i), data2.end());
 
             bool equal = std::equal(data1.begin(), data1.end(), data2.begin());
+
+            CAPTURE(i);
+
+            if (!equal) {
+                for (auto x : data1)
+                    std::cout << x << ' ';
+                std::cout << '\n';
+
+                for (auto x : data2)
+                    std::cout << x << ' ';
+                std::cout << '\n';
+            }
+
             CHECK(equal);
 
             data1 = initial;
