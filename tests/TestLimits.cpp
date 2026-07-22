@@ -40,7 +40,7 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::Radix, Expected::radix);
         CHECK_EQ(Result::MinExponent, Expected::min_exponent);
         CHECK_EQ(Result::MinExponent10, Expected::min_exponent10);
-        CHECK_EQ(Result::Traps, Expected::traps);
+        CHECK_FALSE(Result::Traps);
         CHECK_EQ(Result::TinynessBefore, Expected::tinyness_before);
         CHECK_EQ(Result::Min(), Expected::min());
         CHECK_EQ(Result::Lowest(), Expected::lowest());
@@ -77,7 +77,7 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::Radix, Expected::radix);
         CHECK_EQ(Result::MinExponent, Expected::min_exponent);
         CHECK_EQ(Result::MinExponent10, Expected::min_exponent10);
-        CHECK_EQ(Result::Traps, Expected::traps);
+        CHECK_FALSE(Result::Traps);
         CHECK_EQ(Result::TinynessBefore, Expected::tinyness_before);
         CHECK_EQ(Result::Min(), Expected::min());
         CHECK_EQ(Result::Lowest(), Expected::lowest());
@@ -114,7 +114,7 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::Radix, Expected::radix);
         CHECK_EQ(Result::MinExponent, Expected::min_exponent);
         CHECK_EQ(Result::MinExponent10, Expected::min_exponent10);
-        CHECK_EQ(Result::Traps, Expected::traps);
+        CHECK_FALSE(Result::Traps);
         CHECK_EQ(Result::TinynessBefore, Expected::tinyness_before);
         CHECK_EQ(Result::Min(), Expected::min());
         CHECK_EQ(Result::Lowest(), Expected::lowest());
@@ -151,7 +151,7 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::Radix, Expected::radix);
         CHECK_EQ(Result::MinExponent, Expected::min_exponent);
         CHECK_EQ(Result::MinExponent10, Expected::min_exponent10);
-        CHECK_EQ(Result::Traps, Expected::traps);
+        CHECK_FALSE(Result::Traps);
         CHECK_EQ(Result::TinynessBefore, Expected::tinyness_before);
         CHECK_EQ(Result::Min(), Expected::min());
         CHECK_EQ(Result::Lowest(), Expected::lowest());
@@ -189,7 +189,7 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::Radix, Expected::radix);
         CHECK_EQ(Result::MinExponent, Expected::min_exponent);
         CHECK_EQ(Result::MinExponent10, Expected::min_exponent10);
-        CHECK_EQ(Result::Traps, Expected::traps);
+        CHECK_FALSE(Result::Traps);
         CHECK_EQ(Result::TinynessBefore, Expected::tinyness_before);
         CHECK_EQ(Result::Min(), Expected::min());
         CHECK_EQ(Result::Lowest(), Expected::lowest());
@@ -227,7 +227,7 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::Radix, Expected::radix);
         CHECK_EQ(Result::MinExponent, Expected::min_exponent);
         CHECK_EQ(Result::MinExponent10, Expected::min_exponent10);
-        CHECK_EQ(Result::Traps, Expected::traps);
+        CHECK_FALSE(Result::Traps);
         CHECK_EQ(Result::TinynessBefore, Expected::tinyness_before);
         CHECK_EQ(Result::Min(), Expected::min());
         CHECK_EQ(Result::Lowest(), Expected::lowest());
@@ -264,7 +264,7 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::Radix, Expected::radix);
         CHECK_EQ(Result::MinExponent, Expected::min_exponent);
         CHECK_EQ(Result::MinExponent10, Expected::min_exponent10);
-        CHECK_EQ(Result::Traps, Expected::traps);
+        CHECK_FALSE(Result::Traps);
         CHECK_EQ(Result::TinynessBefore, Expected::tinyness_before);
         CHECK_EQ(Result::Min(), Expected::min());
         CHECK_EQ(Result::Lowest(), Expected::lowest());
@@ -301,7 +301,7 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::Radix, Expected::radix);
         CHECK_EQ(Result::MinExponent, Expected::min_exponent);
         CHECK_EQ(Result::MinExponent10, Expected::min_exponent10);
-        CHECK_EQ(Result::Traps, Expected::traps);
+        CHECK_FALSE(Result::Traps);
         CHECK_EQ(Result::TinynessBefore, Expected::tinyness_before);
         CHECK_EQ(Result::Min(), Expected::min());
         CHECK_EQ(Result::Lowest(), Expected::lowest());
@@ -338,7 +338,7 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::Radix, Expected::radix);
         CHECK_EQ(Result::MinExponent, Expected::min_exponent);
         CHECK_EQ(Result::MinExponent10, Expected::min_exponent10);
-        CHECK_EQ(Result::Traps, Expected::traps);
+        CHECK_FALSE(Result::Traps);
         CHECK_EQ(Result::TinynessBefore, Expected::tinyness_before);
         CHECK_EQ(Result::Min(), Expected::min());
         CHECK_EQ(Result::Lowest(), Expected::lowest());
@@ -375,7 +375,7 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::Radix, Expected::radix);
         CHECK_EQ(Result::MinExponent, Expected::min_exponent);
         CHECK_EQ(Result::MinExponent10, Expected::min_exponent10);
-        CHECK_EQ(Result::Traps, Expected::traps);
+        CHECK_FALSE(Result::Traps);
         CHECK_EQ(Result::TinynessBefore, Expected::tinyness_before);
         CHECK_EQ(Result::Min(), Expected::min());
         CHECK_EQ(Result::Lowest(), Expected::lowest());
@@ -412,7 +412,7 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::Radix, Expected::radix);
         CHECK_EQ(Result::MinExponent, Expected::min_exponent);
         CHECK_EQ(Result::MinExponent10, Expected::min_exponent10);
-        CHECK_EQ(Result::Traps, Expected::traps);
+        CHECK_FALSE(Result::Traps);
         CHECK_EQ(Result::TinynessBefore, Expected::tinyness_before);
         CHECK_EQ(Result::Min(), Expected::min());
         CHECK_EQ(Result::Lowest(), Expected::lowest());
@@ -449,7 +449,7 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::Radix, Expected::radix);
         CHECK_EQ(Result::MinExponent, Expected::min_exponent);
         CHECK_EQ(Result::MinExponent10, Expected::min_exponent10);
-        CHECK_EQ(Result::Traps, Expected::traps);
+        CHECK_FALSE(Result::Traps);
         CHECK_EQ(Result::TinynessBefore, Expected::tinyness_before);
         CHECK_EQ(Result::Min(), Expected::min());
         CHECK_EQ(Result::Lowest(), Expected::lowest());
@@ -486,7 +486,7 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::Radix, Expected::radix);
         CHECK_EQ(Result::MinExponent, Expected::min_exponent);
         CHECK_EQ(Result::MinExponent10, Expected::min_exponent10);
-        CHECK_EQ(Result::Traps, Expected::traps);
+        CHECK_FALSE(Result::Traps);
         CHECK_EQ(Result::TinynessBefore, Expected::tinyness_before);
         CHECK_EQ(Result::Min(), Expected::min());
         CHECK_EQ(Result::Lowest(), Expected::lowest());
@@ -523,7 +523,7 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::Radix, Expected::radix);
         CHECK_EQ(Result::MinExponent, Expected::min_exponent);
         CHECK_EQ(Result::MinExponent10, Expected::min_exponent10);
-        CHECK_EQ(Result::Traps, Expected::traps);
+        CHECK_FALSE(Result::Traps);
         CHECK_EQ(Result::TinynessBefore, Expected::tinyness_before);
         CHECK_EQ(Result::Min(), Expected::min());
         CHECK_EQ(Result::Lowest(), Expected::lowest());
@@ -560,7 +560,7 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::Radix, Expected::radix);
         CHECK_EQ(Result::MinExponent, Expected::min_exponent);
         CHECK_EQ(Result::MinExponent10, Expected::min_exponent10);
-        CHECK_EQ(Result::Traps, Expected::traps);
+        CHECK_FALSE(Result::Traps);
         CHECK_EQ(Result::TinynessBefore, Expected::tinyness_before);
         CHECK_EQ(Result::Min(), Expected::min());
         CHECK_EQ(Result::Lowest(), Expected::lowest());
@@ -597,7 +597,7 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::Radix, Expected::radix);
         CHECK_EQ(Result::MinExponent, Expected::min_exponent);
         CHECK_EQ(Result::MinExponent10, Expected::min_exponent10);
-        CHECK_EQ(Result::Traps, Expected::traps);
+        CHECK_FALSE(Result::Traps);
         CHECK_EQ(Result::TinynessBefore, Expected::tinyness_before);
         CHECK_EQ(Result::Min(), Expected::min());
         CHECK_EQ(Result::Lowest(), Expected::lowest());
@@ -632,7 +632,7 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::Radix, Expected::radix);
         CHECK_EQ(Result::MinExponent, Expected::min_exponent);
         CHECK_EQ(Result::MinExponent10, Expected::min_exponent10);
-        CHECK_EQ(Result::Traps, Expected::traps);
+        CHECK_FALSE(Result::Traps);
         CHECK_EQ(Result::Min(), Expected::min());
         CHECK_EQ(Result::Lowest(), Expected::lowest());
         CHECK_EQ(Result::Max(), Expected::max());
@@ -665,7 +665,7 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::Radix, Expected::radix);
         CHECK_EQ(Result::MinExponent, Expected::min_exponent);
         CHECK_EQ(Result::MinExponent10, Expected::min_exponent10);
-        CHECK_EQ(Result::Traps, Expected::traps);
+        CHECK_FALSE(Result::Traps);
         CHECK_EQ(Result::Min(), Expected::min());
         CHECK_EQ(Result::Lowest(), Expected::lowest());
         CHECK_EQ(Result::Max(), Expected::max());
@@ -698,7 +698,7 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::Radix, Expected::radix);
         CHECK_EQ(Result::MinExponent, Expected::min_exponent);
         CHECK_EQ(Result::MinExponent10, Expected::min_exponent10);
-        CHECK_EQ(Result::Traps, Expected::traps);
+        CHECK_FALSE(Result::Traps);
         CHECK_EQ(Result::Min(), Expected::min());
         CHECK_EQ(Result::Lowest(), Expected::lowest());
         CHECK_EQ(Result::Max(), Expected::max());

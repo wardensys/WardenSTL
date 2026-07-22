@@ -11,10 +11,10 @@ TEST_SUITE("Exception") {
     TEST_CASE("Constuctor") {
         wstl::Exception e("Sample file", 67, "Sample exception");
 
-        CHECK_EQ(e.Filename(), "Sample file");
+        CHECK_EQ(strcmp(e.Filename(), "Sample file"), 0);
         CHECK_EQ(e.Line(), 67U);
-        CHECK_EQ(e.What(), "Sample exception");
-        CHECK_EQ(e.Name(), "Exception");
+        CHECK_EQ(strcmp(e.What(), "Sample exception"), 0);
+        CHECK_EQ(strcmp(e.Name(), "Exception"), 0);
     }
 
     TEST_CASE("Exception") {
@@ -24,10 +24,10 @@ TEST_SUITE("Exception") {
             throw e;
         }
         catch(const wstl::Exception& c) {
-            CHECK_EQ(c.Filename(), "Sample file");
+            CHECK_EQ(strcmp(c.Filename(), "Sample file"), 0);
             CHECK_EQ(c.Line(), 67U);
-            CHECK_EQ(c.What(), "Sample exception");
-            CHECK_EQ(c.Name(), "Exception");
+            CHECK_EQ(strcmp(c.What(), "Sample exception"), 0);
+            CHECK_EQ(strcmp(c.Name(), "Exception"), 0);
         }
     }
 }
