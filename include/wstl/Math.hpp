@@ -339,15 +339,19 @@ namespace wstl {
         template<typename T, T N, size_t ROOT, typename U, U ABS_N, U LOW, U HIGH>
         struct __NthRootSearch<T, N, ROOT, U, ABS_N, LOW, HIGH, false> {
         private:
+            // Find the middle value of the root for binary search
             static const __WSTL_CONSTEXPR__ U Mid = LOW + (HIGH - LOW) / 2;
+            // Exponentiate the middle value to compare against number to see if it matches
             static const __WSTL_CONSTEXPR__ U MidPower = compile::Power<U, Mid, ROOT>::Value;
 
         public:
-            static const __WSTL_CONSTEXPR__ U Value = wstl::Conditional<(MidPower == ABS_N), 
-                IntegralConstant<U, Mid>, typename wstl::Conditional<
+            static const __WSTL_CONSTEXPR__ U Value = wstl::Conditional<
+                (MidPower == ABS_N), 
+                IntegralConstant<U, Mid>, // We found the root
+                typename wstl::Conditional<
                     (MidPower > ABS_N),
-                    __NthRootSearch<T, N, ROOT, U, ABS_N, LOW, Mid - 1>,
-                    __NthRootSearch<T, N, ROOT, U, ABS_N, Mid + 1, HIGH> 
+                    __NthRootSearch<T, N, ROOT, U, ABS_N, LOW, Mid - 1>, // Seek in the lower half
+                    __NthRootSearch<T, N, ROOT, U, ABS_N, Mid + 1, HIGH> // Seek in the higher half
                 >::Type>::Type::Value;
         };
 
@@ -364,36 +368,42 @@ namespace wstl {
         template<typename T, T N, size_t ROOT, typename U, U ABS_N, U LOW, U HIGH>
         const __WSTL_CONSTEXPR__ U __NthRootSearch<T, N, ROOT, U, ABS_N, LOW, HIGH, true>::Value;
 
-        template<typename T, T N, size_t ROOT, bool = (N == 0), bool = (N == 1)>
+        template<typename T, T N, size_t ROOT, bool = (N == 0), bool = (N == 1), bool = (N < 0)>
         struct __NthRoot;
         
         template<typename T, T N, size_t ROOT>
-        struct __NthRoot<T, N, ROOT, false, false> {
-        private:
-            static const __WSTL_CONSTEXPR__ T SearchValue = static_cast<T>(__NthRootSearch<T, N, ROOT>::Value);
-
-        public:
-            static const T Value = (N < 0) ? -SearchValue : SearchValue;
+        struct __NthRoot<T, N, ROOT, false, false, false> {
+            // Don't negate the value, N is positive
+            static const __WSTL_CONSTEXPR__ T Value = static_cast<T>(__NthRootSearch<T, N, ROOT>::Value);
         };
 
         template<typename T, T N, size_t ROOT>
-        const __WSTL_CONSTEXPR__ T __NthRoot<T, N, ROOT, false, false>::Value;
+        const __WSTL_CONSTEXPR__ T __NthRoot<T, N, ROOT, false, false, false>::Value;
 
         template<typename T, T N, size_t ROOT>
-        struct __NthRoot<T, N, ROOT, true, false> {
-            static const T Value = 0;
+        struct __NthRoot<T, N, ROOT, false, false, true> {
+            // Negate the value, N is negative
+            static const __WSTL_CONSTEXPR__ T Value = -static_cast<T>(__NthRootSearch<T, N, ROOT>::Value);
         };
 
         template<typename T, T N, size_t ROOT>
-        const __WSTL_CONSTEXPR__ T __NthRoot<T, N, ROOT, true, false>::Value;
+        const __WSTL_CONSTEXPR__ T __NthRoot<T, N, ROOT, false, false, true>::Value;
 
         template<typename T, T N, size_t ROOT>
-        struct __NthRoot<T, N, ROOT, false, true> {
-            static const T Value = 1;
+        struct __NthRoot<T, N, ROOT, true, false, false> {
+            static const __WSTL_CONSTEXPR__ T Value = 0;
         };
 
         template<typename T, T N, size_t ROOT>
-        const __WSTL_CONSTEXPR__ T __NthRoot<T, N, ROOT, false, true>::Value;
+        const __WSTL_CONSTEXPR__ T __NthRoot<T, N, ROOT, true, false, false>::Value;
+
+        template<typename T, T N, size_t ROOT>
+        struct __NthRoot<T, N, ROOT, false, true, false> {
+            static const __WSTL_CONSTEXPR__ T Value = 1;
+        };
+
+        template<typename T, T N, size_t ROOT>
+        const __WSTL_CONSTEXPR__ T __NthRoot<T, N, ROOT, false, true, false>::Value;
     }
 
     namespace compile {
