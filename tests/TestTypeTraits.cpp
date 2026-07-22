@@ -877,10 +877,10 @@ TEST_SUITE("TypeTraits") {
     }
 
     TEST_CASE("IsPOD") {
-        CHECK_EQ(wstl::IsPOD<int>::Value, std::is_pod<int>::value);
-        CHECK_EQ(wstl::IsPOD<A>::Value, std::is_pod<A>::value);
-        CHECK_EQ(wstl::IsPOD<BBaseA>::Value, std::is_pod<BBaseA>::value);
-        CHECK_EQ(wstl::IsPOD<VirtualFunction>::Value, std::is_pod<VirtualFunction>::value);
+        CHECK(wstl::IsPOD<int>::Value);
+        CHECK(wstl::IsPOD<A>::Value);
+        CHECK_FALSE(wstl::IsPOD<BBaseA>::Value);
+        CHECK_FALSE(wstl::IsPOD<VirtualFunction>::Value);
     }
 
     TEST_CASE("IsStandardLayout") {
