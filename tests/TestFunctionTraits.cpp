@@ -86,7 +86,7 @@ TEST_SUITE("FunctionTraits") {
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ObjectType, void>::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ResultType, void>::Value));
         CHECK_EQ(wstl::FunctionTraits<Function>::Arity, 1);
-        CHECK_EQ(wstl::FunctionTraits<Function>::FunctionType, wstl::FUNCTION_TYPE_FREE);
+        CHECK_EQ(wstl::FunctionTraits<Function>::Type, wstl::FUNCTION_TYPE_FREE);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsConst);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVolatile);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVariadic);
@@ -112,7 +112,7 @@ TEST_SUITE("FunctionTraits") {
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ObjectType, void>::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ResultType, int>::Value));
         CHECK_EQ(wstl::FunctionTraits<Function>::Arity, 0);
-        CHECK_EQ(wstl::FunctionTraits<Function>::FunctionType, wstl::FUNCTION_TYPE_FREE);
+        CHECK_EQ(wstl::FunctionTraits<Function>::Type, wstl::FUNCTION_TYPE_FREE);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsConst);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVolatile);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVariadic);
@@ -138,7 +138,7 @@ TEST_SUITE("FunctionTraits") {
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ObjectType, void>::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ResultType, int>::Value));
         CHECK_EQ(wstl::FunctionTraits<Function>::Arity, 1);
-        CHECK_EQ(wstl::FunctionTraits<Function>::FunctionType, wstl::FUNCTION_TYPE_FREE);
+        CHECK_EQ(wstl::FunctionTraits<Function>::Type, wstl::FUNCTION_TYPE_FREE);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsConst);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVolatile);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVariadic);
@@ -164,7 +164,7 @@ TEST_SUITE("FunctionTraits") {
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ObjectType, void>::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ResultType, int>::Value));
         CHECK_EQ(wstl::FunctionTraits<Function>::Arity, 2);
-        CHECK_EQ(wstl::FunctionTraits<Function>::FunctionType, wstl::FUNCTION_TYPE_FREE);
+        CHECK_EQ(wstl::FunctionTraits<Function>::Type, wstl::FUNCTION_TYPE_FREE);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsConst);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVolatile);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVariadic);
@@ -191,7 +191,7 @@ TEST_SUITE("FunctionTraits") {
         CHECK(wstl::IsSame<wstl::FunctionTraits<Function>::ObjectType, void>::Value);
         CHECK(wstl::IsSame<wstl::FunctionTraits<Function>::ResultType, int>::Value);
         CHECK_EQ(wstl::FunctionTraits<Function>::Arity, 3);
-        CHECK_EQ(wstl::FunctionTraits<Function>::FunctionType, wstl::FUNCTION_TYPE_FREE);
+        CHECK_EQ(wstl::FunctionTraits<Function>::Type, wstl::FUNCTION_TYPE_FREE);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsConst);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVolatile);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVariadic);
@@ -215,7 +215,7 @@ TEST_SUITE("FunctionTraits") {
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ObjectType, void>::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ResultType, char>::Value));
         CHECK_EQ(wstl::FunctionTraits<Function>::Arity, 0);
-        CHECK_EQ(wstl::FunctionTraits<Function>::FunctionType, wstl::FUNCTION_TYPE_FREE);
+        CHECK_EQ(wstl::FunctionTraits<Function>::Type, wstl::FUNCTION_TYPE_FREE);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsConst);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVolatile);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVariadic);
@@ -241,7 +241,7 @@ TEST_SUITE("FunctionTraits") {
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ObjectType, void>::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ResultType, int>::Value));
         CHECK_EQ(wstl::FunctionTraits<Function>::Arity, 1);
-        CHECK_EQ(wstl::FunctionTraits<Function>::FunctionType, wstl::FUNCTION_TYPE_FREE);
+        CHECK_EQ(wstl::FunctionTraits<Function>::Type, wstl::FUNCTION_TYPE_FREE);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsConst);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVolatile);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVariadic);
@@ -267,7 +267,7 @@ TEST_SUITE("FunctionTraits") {
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ObjectType, void>::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ResultType, long>::Value));
         CHECK_EQ(wstl::FunctionTraits<Function>::Arity, 1);
-        CHECK_EQ(wstl::FunctionTraits<Function>::FunctionType, wstl::FUNCTION_TYPE_FREE);
+        CHECK_EQ(wstl::FunctionTraits<Function>::Type, wstl::FUNCTION_TYPE_FREE);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsConst);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVolatile);
         CHECK(wstl::FunctionTraits<Function>::IsVariadic);
@@ -294,7 +294,7 @@ TEST_SUITE("FunctionTraits") {
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ObjectType, FunctorNoexcept>::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ResultType, int>::Value));
         CHECK_EQ(wstl::FunctionTraits<Function>::Arity, 0);
-        CHECK_EQ(wstl::FunctionTraits<Function>::FunctionType, wstl::FUNCTION_TYPE_FUNCTOR);
+        CHECK_EQ(wstl::FunctionTraits<Function>::Type, wstl::FUNCTION_TYPE_FUNCTOR);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsConst);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVolatile);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVariadic);
@@ -319,7 +319,7 @@ TEST_SUITE("FunctionTraits") {
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ObjectType, Functor0>::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ResultType, long>::Value));
         CHECK_EQ(wstl::FunctionTraits<Function>::Arity, 0);
-        CHECK_EQ(wstl::FunctionTraits<Function>::FunctionType, wstl::FUNCTION_TYPE_FUNCTOR);
+        CHECK_EQ(wstl::FunctionTraits<Function>::Type, wstl::FUNCTION_TYPE_FUNCTOR);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsConst);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVolatile);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVariadic);
@@ -337,7 +337,7 @@ TEST_SUITE("FunctionTraits") {
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ObjectType, Functor1>::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ResultType, int>::Value));
         CHECK_EQ(wstl::FunctionTraits<Function>::Arity, 1);
-        CHECK_EQ(wstl::FunctionTraits<Function>::FunctionType, wstl::FUNCTION_TYPE_FUNCTOR);
+        CHECK_EQ(wstl::FunctionTraits<Function>::Type, wstl::FUNCTION_TYPE_FUNCTOR);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsConst);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVolatile);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVariadic);
@@ -355,7 +355,7 @@ TEST_SUITE("FunctionTraits") {
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ObjectType, Functor2>::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ResultType, long>::Value));
         CHECK_EQ(wstl::FunctionTraits<Function>::Arity, 2);
-        CHECK_EQ(wstl::FunctionTraits<Function>::FunctionType, wstl::FUNCTION_TYPE_FUNCTOR);
+        CHECK_EQ(wstl::FunctionTraits<Function>::Type, wstl::FUNCTION_TYPE_FUNCTOR);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsConst);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVolatile);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVariadic);
@@ -373,7 +373,7 @@ TEST_SUITE("FunctionTraits") {
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ObjectType, MemberFunction>::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ResultType, int>::Value));
         CHECK_EQ(wstl::FunctionTraits<Function>::Arity, 0);
-        CHECK_EQ(wstl::FunctionTraits<Function>::FunctionType, wstl::FUNCTION_TYPE_MEMBER);
+        CHECK_EQ(wstl::FunctionTraits<Function>::Type, wstl::FUNCTION_TYPE_MEMBER);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsConst);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVolatile);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVariadic);
@@ -399,7 +399,7 @@ TEST_SUITE("FunctionTraits") {
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ObjectType, MemberFunction>::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ResultType, int>::Value));
         CHECK_EQ(wstl::FunctionTraits<Function>::Arity, 0);
-        CHECK_EQ(wstl::FunctionTraits<Function>::FunctionType, wstl::FUNCTION_TYPE_MEMBER);
+        CHECK_EQ(wstl::FunctionTraits<Function>::Type, wstl::FUNCTION_TYPE_MEMBER);
         CHECK(wstl::FunctionTraits<Function>::IsConst);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVolatile);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVariadic);
@@ -425,7 +425,7 @@ TEST_SUITE("FunctionTraits") {
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ObjectType, MemberFunction>::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ResultType, int>::Value));
         CHECK_EQ(wstl::FunctionTraits<Function>::Arity, 0);
-        CHECK_EQ(wstl::FunctionTraits<Function>::FunctionType, wstl::FUNCTION_TYPE_MEMBER);
+        CHECK_EQ(wstl::FunctionTraits<Function>::Type, wstl::FUNCTION_TYPE_MEMBER);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsConst);
         CHECK(wstl::FunctionTraits<Function>::IsVolatile);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVariadic);
@@ -451,7 +451,7 @@ TEST_SUITE("FunctionTraits") {
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ObjectType, MemberFunction>::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ResultType, int>::Value));
         CHECK_EQ(wstl::FunctionTraits<Function>::Arity, 0);
-        CHECK_EQ(wstl::FunctionTraits<Function>::FunctionType, wstl::FUNCTION_TYPE_MEMBER);
+        CHECK_EQ(wstl::FunctionTraits<Function>::Type, wstl::FUNCTION_TYPE_MEMBER);
         CHECK(wstl::FunctionTraits<Function>::IsConst);
         CHECK(wstl::FunctionTraits<Function>::IsVolatile);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVariadic);
@@ -477,7 +477,7 @@ TEST_SUITE("FunctionTraits") {
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ObjectType, MemberFunction>::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ResultType, int>::Value));
         CHECK_EQ(wstl::FunctionTraits<Function>::Arity, 1);
-        CHECK_EQ(wstl::FunctionTraits<Function>::FunctionType, wstl::FUNCTION_TYPE_MEMBER);
+        CHECK_EQ(wstl::FunctionTraits<Function>::Type, wstl::FUNCTION_TYPE_MEMBER);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsConst);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVolatile);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVariadic);
@@ -503,7 +503,7 @@ TEST_SUITE("FunctionTraits") {
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ObjectType, MemberFunction>::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ResultType, int>::Value));
         CHECK_EQ(wstl::FunctionTraits<Function>::Arity, 1);
-        CHECK_EQ(wstl::FunctionTraits<Function>::FunctionType, wstl::FUNCTION_TYPE_MEMBER);
+        CHECK_EQ(wstl::FunctionTraits<Function>::Type, wstl::FUNCTION_TYPE_MEMBER);
         CHECK(wstl::FunctionTraits<Function>::IsConst);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVolatile);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVariadic);
@@ -529,7 +529,7 @@ TEST_SUITE("FunctionTraits") {
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ObjectType, MemberFunction>::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ResultType, int>::Value));
         CHECK_EQ(wstl::FunctionTraits<Function>::Arity, 1);
-        CHECK_EQ(wstl::FunctionTraits<Function>::FunctionType, wstl::FUNCTION_TYPE_MEMBER);
+        CHECK_EQ(wstl::FunctionTraits<Function>::Type, wstl::FUNCTION_TYPE_MEMBER);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsConst);
         CHECK(wstl::FunctionTraits<Function>::IsVolatile);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVariadic);
@@ -555,7 +555,7 @@ TEST_SUITE("FunctionTraits") {
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ObjectType, MemberFunction>::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ResultType, int>::Value));
         CHECK_EQ(wstl::FunctionTraits<Function>::Arity, 1);
-        CHECK_EQ(wstl::FunctionTraits<Function>::FunctionType, wstl::FUNCTION_TYPE_MEMBER);
+        CHECK_EQ(wstl::FunctionTraits<Function>::Type, wstl::FUNCTION_TYPE_MEMBER);
         CHECK(wstl::FunctionTraits<Function>::IsConst);
         CHECK(wstl::FunctionTraits<Function>::IsVolatile);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVariadic);
@@ -583,7 +583,7 @@ TEST_SUITE("FunctionTraits") {
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ObjectType, MemberFunction>::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ResultType, int>::Value));
         CHECK_EQ(wstl::FunctionTraits<Function>::Arity, 2);
-        CHECK_EQ(wstl::FunctionTraits<Function>::FunctionType, wstl::FUNCTION_TYPE_MEMBER);
+        CHECK_EQ(wstl::FunctionTraits<Function>::Type, wstl::FUNCTION_TYPE_MEMBER);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsConst);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVolatile);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVariadic);
@@ -609,7 +609,7 @@ TEST_SUITE("FunctionTraits") {
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ObjectType, MemberFunction>::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ResultType, int>::Value));
         CHECK_EQ(wstl::FunctionTraits<Function>::Arity, 2);
-        CHECK_EQ(wstl::FunctionTraits<Function>::FunctionType, wstl::FUNCTION_TYPE_MEMBER);
+        CHECK_EQ(wstl::FunctionTraits<Function>::Type, wstl::FUNCTION_TYPE_MEMBER);
         CHECK(wstl::FunctionTraits<Function>::IsConst);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVolatile);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVariadic);
@@ -635,7 +635,7 @@ TEST_SUITE("FunctionTraits") {
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ObjectType, MemberFunction>::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ResultType, int>::Value));
         CHECK_EQ(wstl::FunctionTraits<Function>::Arity, 2);
-        CHECK_EQ(wstl::FunctionTraits<Function>::FunctionType, wstl::FUNCTION_TYPE_MEMBER);
+        CHECK_EQ(wstl::FunctionTraits<Function>::Type, wstl::FUNCTION_TYPE_MEMBER);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsConst);
         CHECK(wstl::FunctionTraits<Function>::IsVolatile);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVariadic);
@@ -661,7 +661,7 @@ TEST_SUITE("FunctionTraits") {
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ObjectType, MemberFunction>::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ResultType, int>::Value));
         CHECK_EQ(wstl::FunctionTraits<Function>::Arity, 2);
-        CHECK_EQ(wstl::FunctionTraits<Function>::FunctionType, wstl::FUNCTION_TYPE_MEMBER);
+        CHECK_EQ(wstl::FunctionTraits<Function>::Type, wstl::FUNCTION_TYPE_MEMBER);
         CHECK(wstl::FunctionTraits<Function>::IsConst);
         CHECK(wstl::FunctionTraits<Function>::IsVolatile);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVariadic);
@@ -688,7 +688,7 @@ TEST_SUITE("FunctionTraits") {
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ObjectType, MemberFunction>::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ResultType, int>::Value));
         CHECK_EQ(wstl::FunctionTraits<Function>::Arity, 3);
-        CHECK_EQ(wstl::FunctionTraits<Function>::FunctionType, wstl::FUNCTION_TYPE_MEMBER);
+        CHECK_EQ(wstl::FunctionTraits<Function>::Type, wstl::FUNCTION_TYPE_MEMBER);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsConst);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVolatile);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVariadic);
@@ -712,7 +712,7 @@ TEST_SUITE("FunctionTraits") {
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ObjectType, MemberFunction>::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ResultType, int>::Value));
         CHECK_EQ(wstl::FunctionTraits<Function>::Arity, 3);
-        CHECK_EQ(wstl::FunctionTraits<Function>::FunctionType, wstl::FUNCTION_TYPE_MEMBER);
+        CHECK_EQ(wstl::FunctionTraits<Function>::Type, wstl::FUNCTION_TYPE_MEMBER);
         CHECK(wstl::FunctionTraits<Function>::IsConst);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVolatile);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVariadic);
@@ -736,7 +736,7 @@ TEST_SUITE("FunctionTraits") {
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ObjectType, MemberFunction>::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ResultType, int>::Value));
         CHECK_EQ(wstl::FunctionTraits<Function>::Arity, 3);
-        CHECK_EQ(wstl::FunctionTraits<Function>::FunctionType, wstl::FUNCTION_TYPE_MEMBER);
+        CHECK_EQ(wstl::FunctionTraits<Function>::Type, wstl::FUNCTION_TYPE_MEMBER);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsConst);
         CHECK(wstl::FunctionTraits<Function>::IsVolatile);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVariadic);
@@ -760,7 +760,7 @@ TEST_SUITE("FunctionTraits") {
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ObjectType, MemberFunction>::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ResultType, int>::Value));
         CHECK_EQ(wstl::FunctionTraits<Function>::Arity, 3);
-        CHECK_EQ(wstl::FunctionTraits<Function>::FunctionType, wstl::FUNCTION_TYPE_MEMBER);
+        CHECK_EQ(wstl::FunctionTraits<Function>::Type, wstl::FUNCTION_TYPE_MEMBER);
         CHECK(wstl::FunctionTraits<Function>::IsConst);
         CHECK(wstl::FunctionTraits<Function>::IsVolatile);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVariadic);
@@ -785,7 +785,7 @@ TEST_SUITE("FunctionTraits") {
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ObjectType, MemberFunction>::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ResultType, void>::Value));
         CHECK_EQ(wstl::FunctionTraits<Function>::Arity, 1);
-        CHECK_EQ(wstl::FunctionTraits<Function>::FunctionType, wstl::FUNCTION_TYPE_MEMBER);
+        CHECK_EQ(wstl::FunctionTraits<Function>::Type, wstl::FUNCTION_TYPE_MEMBER);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsConst);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVolatile);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVariadic);
@@ -811,7 +811,7 @@ TEST_SUITE("FunctionTraits") {
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ObjectType, MemberFunction>::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ResultType, long>::Value));
         CHECK_EQ(wstl::FunctionTraits<Function>::Arity, 0);
-        CHECK_EQ(wstl::FunctionTraits<Function>::FunctionType, wstl::FUNCTION_TYPE_MEMBER);
+        CHECK_EQ(wstl::FunctionTraits<Function>::Type, wstl::FUNCTION_TYPE_MEMBER);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsConst);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVolatile);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVariadic);
@@ -837,7 +837,7 @@ TEST_SUITE("FunctionTraits") {
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ObjectType, MemberFunction>::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ResultType, short>::Value));
         CHECK_EQ(wstl::FunctionTraits<Function>::Arity, 2);
-        CHECK_EQ(wstl::FunctionTraits<Function>::FunctionType, wstl::FUNCTION_TYPE_MEMBER);
+        CHECK_EQ(wstl::FunctionTraits<Function>::Type, wstl::FUNCTION_TYPE_MEMBER);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsConst);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVolatile);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVariadic);
@@ -866,7 +866,7 @@ TEST_SUITE("FunctionTraits") {
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ObjectType, MemberFunction>::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ResultType, int>::Value));
         CHECK_EQ(wstl::FunctionTraits<Function>::Arity, 1);
-        CHECK_EQ(wstl::FunctionTraits<Function>::FunctionType, wstl::FUNCTION_TYPE_MEMBER);
+        CHECK_EQ(wstl::FunctionTraits<Function>::Type, wstl::FUNCTION_TYPE_MEMBER);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsConst);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVolatile);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVariadic);
@@ -893,7 +893,7 @@ TEST_SUITE("FunctionTraits") {
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ObjectType, MemberFunction>::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ResultType, int>::Value));
         CHECK_EQ(wstl::FunctionTraits<Function>::Arity, 1);
-        CHECK_EQ(wstl::FunctionTraits<Function>::FunctionType, wstl::FUNCTION_TYPE_MEMBER);
+        CHECK_EQ(wstl::FunctionTraits<Function>::Type, wstl::FUNCTION_TYPE_MEMBER);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsConst);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVolatile);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVariadic);
@@ -917,7 +917,7 @@ TEST_SUITE("FunctionTraits") {
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ObjectType, MemberFunction>::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ResultType, int>::Value));
         CHECK_EQ(wstl::FunctionTraits<Function>::Arity, 1);
-        CHECK_EQ(wstl::FunctionTraits<Function>::FunctionType, wstl::FUNCTION_TYPE_MEMBER);
+        CHECK_EQ(wstl::FunctionTraits<Function>::Type, wstl::FUNCTION_TYPE_MEMBER);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsConst);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVolatile);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVariadic);
@@ -942,7 +942,7 @@ TEST_SUITE("FunctionTraits") {
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ObjectType, void>::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ResultType, long>::Value));
         CHECK_EQ(wstl::FunctionTraits<Function>::Arity, 1);
-        CHECK_EQ(wstl::FunctionTraits<Function>::FunctionType, wstl::FUNCTION_TYPE_FREE);
+        CHECK_EQ(wstl::FunctionTraits<Function>::Type, wstl::FUNCTION_TYPE_FREE);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsConst);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVolatile);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVariadic);
@@ -971,7 +971,7 @@ TEST_SUITE("FunctionTraits") {
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ObjectType, MemberFunction>::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ResultType, char>::Value));
         CHECK_EQ(wstl::FunctionTraits<Function>::Arity, 2);
-        CHECK_EQ(wstl::FunctionTraits<Function>::FunctionType, wstl::FUNCTION_TYPE_MEMBER);
+        CHECK_EQ(wstl::FunctionTraits<Function>::Type, wstl::FUNCTION_TYPE_MEMBER);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsConst);
         CHECK_FALSE(wstl::FunctionTraits<Function>::IsVolatile);
         CHECK(wstl::FunctionTraits<Function>::IsVariadic);

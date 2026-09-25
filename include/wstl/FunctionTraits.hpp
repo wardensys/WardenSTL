@@ -49,7 +49,7 @@ namespace wstl {
             typedef TypeList<> ArgumentTypes;
 
             static const __WSTL_CONSTEXPR__ size_t Arity = 0;
-            static const __WSTL_CONSTEXPR__ FunctionType FunctionType = FUNCTION_TYPE_FUNCTOR;
+            static const __WSTL_CONSTEXPR__ FunctionType Type = FUNCTION_TYPE_FUNCTOR;
             static const __WSTL_CONSTEXPR__ bool IsConst = false;
             static const __WSTL_CONSTEXPR__ bool IsVolatile = false;
             static const __WSTL_CONSTEXPR__ bool IsVariadic = false;
@@ -67,7 +67,7 @@ namespace wstl {
             WSTL_TYPEDEF_TEST_RESULT(__TestResultType, T, 1) && 
             !(WSTL_TYPEDEF_TEST_RESULT(__TestFunctionArg1, T, 1) || 
             WSTL_TYPEDEF_TEST_RESULT(__TestFunctionArg2, T, 2))>::Type
-        >::FunctionType;
+        >::Type;
 
         template<typename T>
         const __WSTL_CONSTEXPR__ bool __FunctionTraits<T, typename EnableIf<
@@ -102,7 +102,7 @@ namespace wstl {
             typedef TypeList<typename T::ArgumentType> ArgumentTypes;
 
             static const __WSTL_CONSTEXPR__ size_t Arity = 1;
-            static const __WSTL_CONSTEXPR__ FunctionType FunctionType = FUNCTION_TYPE_FUNCTOR;
+            static const __WSTL_CONSTEXPR__ FunctionType Type = FUNCTION_TYPE_FUNCTOR;
             static const __WSTL_CONSTEXPR__ bool IsConst = false;
             static const __WSTL_CONSTEXPR__ bool IsVolatile = false;
             static const __WSTL_CONSTEXPR__ bool IsVariadic = false;
@@ -118,7 +118,7 @@ namespace wstl {
         const __WSTL_CONSTEXPR__ FunctionType __FunctionTraits<T, typename EnableIf<
             WSTL_TYPEDEF_TEST_RESULT(__TestResultType, T, 1) && 
             WSTL_TYPEDEF_TEST_RESULT(__TestFunctionArg1, T, 1)>::Type
-        >::FunctionType;
+        >::Type;
 
         template<typename T>
         const __WSTL_CONSTEXPR__ bool __FunctionTraits<T, typename EnableIf<
@@ -150,7 +150,7 @@ namespace wstl {
             typedef TypeList<typename T::FirstArgumentType, typename T::SecondArgumentType> ArgumentTypes;
 
             static const __WSTL_CONSTEXPR__ size_t Arity = 2;
-            static const __WSTL_CONSTEXPR__ FunctionType FunctionType = FUNCTION_TYPE_FUNCTOR;
+            static const __WSTL_CONSTEXPR__ FunctionType Type = FUNCTION_TYPE_FUNCTOR;
             static const __WSTL_CONSTEXPR__ bool IsConst = false;
             static const __WSTL_CONSTEXPR__ bool IsVolatile = false;
             static const __WSTL_CONSTEXPR__ bool IsVariadic = false;
@@ -166,7 +166,7 @@ namespace wstl {
         const __WSTL_CONSTEXPR__ FunctionType __FunctionTraits<T, typename EnableIf<
             WSTL_TYPEDEF_TEST_RESULT(__TestResultType, T, 1) && 
             WSTL_TYPEDEF_TEST_RESULT(__TestFunctionArg2, T, 2)>::Type
-        >::FunctionType;
+        >::Type;
 
         template<typename T>
         const __WSTL_CONSTEXPR__ bool __FunctionTraits<T, typename EnableIf<
@@ -198,7 +198,7 @@ namespace wstl {
             static constexpr size_t Arity = sizeof...(Args);
             static constexpr bool IsVariadic = false;
 
-            static constexpr FunctionType FunctionType = FUNCTION_TYPE_FREE;
+            static constexpr FunctionType Type = FUNCTION_TYPE_FREE;
 
             static constexpr bool IsConst = false;
             static constexpr bool IsVolatile = false;
@@ -216,7 +216,7 @@ namespace wstl {
         constexpr bool __FunctionTraits<Return(Args...)>::IsVariadic;
 
         template<typename Return, typename... Args>
-        constexpr FunctionType __FunctionTraits<Return(Args...)>::FunctionType;
+        constexpr FunctionType __FunctionTraits<Return(Args...)>::Type;
 
         template<typename Return, typename... Args>
         constexpr bool __FunctionTraits<Return(Args...)>::IsConst;
@@ -264,20 +264,20 @@ namespace wstl {
         // Functor
 
         template<typename T>
-        static auto __TestCallOperator(int) -> decltype(&T::operator(), TrueType{}) {}
+        static auto __TestCallOperator(int) -> decltype(&T::operator(), TrueType{});
 
         template<typename>
-        static auto __TestCallOperator(...) -> FalseType {}
+        static auto __TestCallOperator(...) -> FalseType;
 
         template<typename T>
         struct __FunctionTraits<T, EnableIfType<IsClass<DecayType<T>>::Value && 
         decltype(__TestCallOperator<T>(0))::Value && !(WSTL_TYPEDEF_TEST_RESULT(__TestResultType, T, 1))>> : __FunctionTraits<decltype(&DecayType<T>::operator())> {
-            static constexpr FunctionType FunctionType = FUNCTION_TYPE_FUNCTOR;
+            static constexpr FunctionType Type = FUNCTION_TYPE_FUNCTOR;
         };
 
         template<typename T>
         constexpr FunctionType __FunctionTraits<T, EnableIfType<IsClass<DecayType<T>>::Value && 
-        decltype(__TestCallOperator<T>(0))::Value && !(WSTL_TYPEDEF_TEST_RESULT(__TestResultType, T, 1))>>::FunctionType;
+        decltype(__TestCallOperator<T>(0))::Value && !(WSTL_TYPEDEF_TEST_RESULT(__TestResultType, T, 1))>>::Type;
 
         // Member function
 
@@ -290,7 +290,7 @@ namespace wstl {
             static constexpr size_t Arity = sizeof...(Args);
             static constexpr bool IsVariadic = false;
 
-            static constexpr FunctionType FunctionType = FUNCTION_TYPE_MEMBER;
+            static constexpr FunctionType Type = FUNCTION_TYPE_MEMBER;
 
             static constexpr bool IsConst = false;
             static constexpr bool IsVolatile = false;
@@ -308,7 +308,7 @@ namespace wstl {
         constexpr bool __FunctionTraits<Return (Object::*)(Args...)>::IsVariadic;
 
         template<typename Return, typename Object, typename... Args>
-        constexpr FunctionType __FunctionTraits<Return (Object::*)(Args...)>::FunctionType;
+        constexpr FunctionType __FunctionTraits<Return (Object::*)(Args...)>::Type;
 
         template<typename Return, typename Object, typename... Args>
         constexpr bool __FunctionTraits<Return (Object::*)(Args...)>::IsConst;
@@ -754,7 +754,7 @@ namespace wstl {
             typedef TypeList<Arg1, Arg2> ArgumentTypes;
 
             static const size_t Arity = 2;
-            static const FunctionType FunctionType = FUNCTION_TYPE_FREE;
+            static const FunctionType Type = FUNCTION_TYPE_FREE;
             static const bool IsConst = false;
             static const bool IsVolatile = false;
             static const bool IsVariadic = false;
@@ -764,7 +764,7 @@ namespace wstl {
         const size_t __FunctionTraits<Return(Arg1, Arg2)>::Arity;
 
         template<typename Return, typename Arg1, typename Arg2>
-        const FunctionType __FunctionTraits<Return(Arg1, Arg2)>::FunctionType;
+        const FunctionType __FunctionTraits<Return(Arg1, Arg2)>::Type;
 
         template<typename Return, typename Arg1, typename Arg2>
         const bool __FunctionTraits<Return(Arg1, Arg2)>::IsConst;
@@ -782,7 +782,7 @@ namespace wstl {
             typedef TypeList<Arg> ArgumentTypes;
 
             static const size_t Arity = 1;
-            static const FunctionType FunctionType = FUNCTION_TYPE_FREE;
+            static const FunctionType Type = FUNCTION_TYPE_FREE;
             static const bool IsConst = false;
             static const bool IsVolatile = false;
             static const bool IsVariadic = false;
@@ -792,7 +792,7 @@ namespace wstl {
         const size_t __FunctionTraits<Return(Arg)>::Arity;
 
         template<typename Return, typename Arg>
-        const FunctionType __FunctionTraits<Return(Arg)>::FunctionType;
+        const FunctionType __FunctionTraits<Return(Arg)>::Type;
 
         template<typename Return, typename Arg>
         const bool __FunctionTraits<Return(Arg)>::IsConst;
@@ -810,7 +810,7 @@ namespace wstl {
             typedef TypeList<> ArgumentTypes;
 
             static const size_t Arity = 0;
-            static const FunctionType FunctionType = FUNCTION_TYPE_FREE;
+            static const FunctionType Type = FUNCTION_TYPE_FREE;
             static const bool IsConst = false;
             static const bool IsVolatile = false;
             static const bool IsVariadic = false;
@@ -820,7 +820,7 @@ namespace wstl {
         const size_t __FunctionTraits<Return()>::Arity;
 
         template<typename Return>
-        const FunctionType __FunctionTraits<Return()>::FunctionType;
+        const FunctionType __FunctionTraits<Return()>::Type;
 
         template<typename Return>
         const bool __FunctionTraits<Return()>::IsConst;
@@ -867,7 +867,7 @@ namespace wstl {
             typedef TypeList<Arg1, Arg2> ArgumentTypes;
 
             static const size_t Arity = 2;
-            static const FunctionType FunctionType = FUNCTION_TYPE_MEMBER;
+            static const FunctionType Type = FUNCTION_TYPE_MEMBER;
             static const bool IsConst = false;
             static const bool IsVolatile = false;
             static const bool IsVariadic = false;
@@ -877,7 +877,7 @@ namespace wstl {
         const size_t __FunctionTraits<Return (Object::*)(Arg1, Arg2)>::Arity;
 
         template<typename Return, typename Object, typename Arg1, typename Arg2>
-        const FunctionType __FunctionTraits<Return (Object::*)(Arg1, Arg2)>::FunctionType;
+        const FunctionType __FunctionTraits<Return (Object::*)(Arg1, Arg2)>::Type;
 
         template<typename Return, typename Object, typename Arg1, typename Arg2>
         const bool __FunctionTraits<Return (Object::*)(Arg1, Arg2)>::IsConst;
@@ -895,7 +895,7 @@ namespace wstl {
             typedef TypeList<Arg> ArgumentTypes;
 
             static const size_t Arity = 1;
-            static const FunctionType FunctionType = FUNCTION_TYPE_MEMBER;
+            static const FunctionType Type = FUNCTION_TYPE_MEMBER;
             static const bool IsConst = false;
             static const bool IsVolatile = false;
             static const bool IsVariadic = false;
@@ -905,7 +905,7 @@ namespace wstl {
         const size_t __FunctionTraits<Return (Object::*)(Arg)>::Arity;
 
         template<typename Return, typename Object, typename Arg>
-        const FunctionType __FunctionTraits<Return (Object::*)(Arg)>::FunctionType;
+        const FunctionType __FunctionTraits<Return (Object::*)(Arg)>::Type;
 
         template<typename Return, typename Object, typename Arg>
         const bool __FunctionTraits<Return (Object::*)(Arg)>::IsConst;
@@ -923,7 +923,7 @@ namespace wstl {
             typedef TypeList<> ArgumentTypes;
 
             static const size_t Arity = 0;
-            static const FunctionType FunctionType = FUNCTION_TYPE_MEMBER;
+            static const FunctionType Type = FUNCTION_TYPE_MEMBER;
             static const bool IsConst = false;
             static const bool IsVolatile = false;
             static const bool IsVariadic = false;
@@ -933,7 +933,7 @@ namespace wstl {
         const size_t __FunctionTraits<Return (Object::*)()>::Arity;
 
         template<typename Return, typename Object>
-        const FunctionType __FunctionTraits<Return (Object::*)()>::FunctionType;
+        const FunctionType __FunctionTraits<Return (Object::*)()>::Type;
 
         template<typename Return, typename Object>
         const bool __FunctionTraits<Return (Object::*)()>::IsConst;
