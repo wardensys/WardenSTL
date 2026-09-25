@@ -1,5 +1,5 @@
 // Part of WardenSTL - https://github.com/WardenHD/WardenSTL
-// Copyright (c) 2025 Artem Bezruchko (WardenHD)
+// Copyright (c) 2026 Artem Bezruchko (WardenHD)
 //
 // Licensed under the MIT License. See LICENSE file for details.
 
@@ -66,6 +66,51 @@ namespace wstl {
     /// @since C++17
     template<typename T>
     inline constexpr size_t TupleSizeValue = TupleSize<T>::Value;
+    #endif
+
+    // Tuple front
+    
+    /// @brief Obtains the first element type from tuple-like type
+    /// @tparam T Tuple-like type
+    /// @ingroup tuple
+    template<typename T>
+    struct TupleFront : TupleElement<0, T> {};
+
+    #ifdef __WSTL_CXX11__
+    /// @copydoc TupleFront
+    /// @since C++11
+    template<typename T>
+    using TupleFrontType = typename TupleFront<T>::Type;
+    #endif
+
+    // Tuple back
+    
+    /// @brief Obtains the last element type from tuple-like type
+    /// @tparam T Tuple-like type
+    /// @ingroup tuple
+    template<typename T>
+    struct TupleBack : TupleElement<TupleSize<T>::Value - 1, T> {};
+
+    #ifdef __WSTL_CXX11__
+    /// @copydoc TupleBack
+    /// @since C++11
+    template<typename T>
+    using TupleBackType = typename TupleBack<T>::Type;
+    #endif
+
+    // Tuple is empty
+
+    /// @brief Checks if tuple-like type is empty
+    /// @tparam T Tuple-like type
+    /// @ingroup tuple
+    template<typename T>
+    struct TupleIsEmpty : BoolConstant<(TupleSize<T>::Value == 0)> {};
+
+    #ifdef __WSTL_CXX17__
+    /// @copydoc TupleIsEmpty
+    /// @since C++17
+    template<typename T>
+    inline constexpr size_t TupleIsEmptyValue = TupleIsEmpty<T>::Value;
     #endif
 
     // Integer sequence

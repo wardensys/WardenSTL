@@ -1,10 +1,12 @@
 // Part of WardenSTL - https://github.com/WardenHD/WardenSTL
-// Copyright (c) 2025 Artem Bezruchko (WardenHD)
+// Copyright (c) 2026 Artem Bezruchko (WardenHD)
 //
 // Licensed under the MIT License. See LICENSE file for details.
 
-#include <doctest.h>
 #include <wstl/Tuple.hpp>
+
+#ifdef __WSTL_CXX11__
+#include <doctest.h>
 #include <wstl/Utility.hpp>
 #include <tuple>
 
@@ -358,9 +360,24 @@ TEST_SUITE("Tuple") {
         CHECK(wstl::IsSame<wstl::TupleElementType<3, Data>, std::string>::Value);
     }
 
+    TEST_CASE("TupleFront") {
+        CHECK(wstl::IsSame<wstl::TupleFront<wstl::Tuple<int, char, double>>::Type, int>::Value);
+        CHECK(wstl::IsSame<wstl::TupleFront<wstl::Tuple<char>>::Type, char>::Value);
+    }
+
+    TEST_CASE("TupleBack") {
+        CHECK(wstl::IsSame<wstl::TupleBack<wstl::Tuple<int, char, double>>::Type, double>::Value);
+        CHECK(wstl::IsSame<wstl::TupleBack<wstl::Tuple<char>>::Type, char>::Value);
+    }
+
     TEST_CASE("TupleSize") {
         CHECK_EQ(wstl::TupleSize<Data>::Value, 4UL);
         CHECK_EQ(wstl::TupleSize<wstl::Tuple<>>::Value, 0UL);
+    }
+
+    TEST_CASE("TupleIsEmpty") {
+        CHECK(wstl::TupleIsEmpty<wstl::Tuple<>>::Value);
+        CHECK_FALSE(wstl::TupleIsEmpty<wstl::Tuple<int, char>>::Value);
     }
 
     TEST_CASE("Tuple Get specialization") {
@@ -644,3 +661,4 @@ TEST_SUITE("Tuple") {
         CHECK_EQ(result, 610);
     }
 }
+#endif
