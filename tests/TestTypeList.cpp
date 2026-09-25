@@ -1,3 +1,8 @@
+// Part of WardenSTL - https://github.com/WardenHD/WardenSTL
+// Copyright (c) 2026 Artem Bezruchko (WardenHD)
+//
+// Licensed under the MIT License. See LICENSE file for details.
+
 #include <doctest.h>
 #include <wstl/TypeList.hpp>
 
