@@ -291,49 +291,49 @@ TEST_SUITE("Functional") {
 
         wstl::Function<void()> func2(FreeVoid);
         CHECK(func2);
-        CHECK_EQ(func2.Target(), FreeVoid);
+        CHECK_EQ(func2.Target(), &FreeVoid);
         CHECK_FALSE(func2 == wstl::NullPointer);
         CHECK(func2 != wstl::NullPointer);
 
         wstl::Function<void()> func3(func2);
         CHECK(func2);
         CHECK(func3);
-        CHECK_EQ(func3.Target(), FreeVoid);
+        CHECK_EQ(func3.Target(), &FreeVoid);
         
         #ifdef __WSTL_CXX11__
         wstl::Function<void()> func4(wstl::Move(func2));
         CHECK_FALSE(func2);
         CHECK(func4);
-        CHECK_EQ(func4.Target(), FreeVoid);
+        CHECK_EQ(func4.Target(), &FreeVoid);
         #endif
         
         // Assignment operators
         func1 = func3;
         CHECK(func3);
         CHECK(func1);
-        CHECK_EQ(func1.Target(), FreeVoid);
+        CHECK_EQ(func1.Target(), &FreeVoid);
 
         #ifdef __WSTL_CXX11__
         func2 = wstl::Move(func4);
         CHECK_FALSE(func4);
         CHECK(func2);
-        CHECK_EQ(func2.Target(), FreeVoid);
+        CHECK_EQ(func2.Target(), &FreeVoid);
         #endif
 
         func2 = wstl::NullPointer;
         CHECK_EQ(func2.Target(), wstl::NullPointer);
 
         func0 = FreeVoid;
-        CHECK_EQ(func0.Target(), FreeVoid);
+        CHECK_EQ(func0.Target(), &FreeVoid);
 
         // Swap
         func2.Swap(func3);
-        CHECK_EQ(func2.Target(), FreeVoid);
+        CHECK_EQ(func2.Target(), &FreeVoid);
         CHECK_EQ(func3.Target(), wstl::NullPointer);
 
         // Reset
         func3.Reset(FreeVoid);
-        CHECK_EQ(func3.Target(), FreeVoid);
+        CHECK_EQ(func3.Target(), &FreeVoid);
 
         // Function call
         Call(func3);
@@ -357,20 +357,20 @@ TEST_SUITE("Functional") {
 
         const wstl::Function<void()> func2(FreeVoid);
         CHECK(func2);
-        CHECK_EQ(func2.Target(), FreeVoid);
+        CHECK_EQ(func2.Target(), &FreeVoid);
         CHECK_FALSE(func2 == wstl::NullPointer);
         CHECK(func2 != wstl::NullPointer);
 
         const wstl::Function<void()> func3(func2);
         CHECK(func2);
         CHECK(func3);
-        CHECK_EQ(func3.Target(), FreeVoid);
+        CHECK_EQ(func3.Target(), &FreeVoid);
 
         #ifdef __WSTL_CXX11__
         const wstl::Function<void()> func4(wstl::Move(func2));
         CHECK(func2);
         CHECK(func4);
-        CHECK_EQ(func4.Target(), FreeVoid);
+        CHECK_EQ(func4.Target(), &FreeVoid);
         #endif
 
         // Function call
@@ -394,49 +394,49 @@ TEST_SUITE("Functional") {
 
         wstl::Function<void(int)> func2(Free1);
         CHECK(func2);
-        CHECK_EQ(func2.Target(), Free1);
+        CHECK_EQ(func2.Target(), &Free1);
         CHECK_FALSE(func2 == wstl::NullPointer);
         CHECK(func2 != wstl::NullPointer);
 
         wstl::Function<void(int)> func3(func2);
         CHECK(func2);
         CHECK(func3);
-        CHECK_EQ(func3.Target(), Free1);
+        CHECK_EQ(func3.Target(), &Free1);
 
         #ifdef __WSTL_CXX11__
         wstl::Function<void(int)> func4(wstl::Move(func2));
         CHECK_FALSE(func2);
         CHECK(func4);
-        CHECK_EQ(func4.Target(), Free1);
+        CHECK_EQ(func4.Target(), &Free1);
         #endif
         
         // Assignment operators
         func1 = func3;
         CHECK(func3);
         CHECK(func1);
-        CHECK_EQ(func1.Target(), Free1);
+        CHECK_EQ(func1.Target(), &Free1);
         
         #ifdef __WSTL_CXX11__
         func2 = wstl::Move(func4);
         CHECK_FALSE(func4);
         CHECK(func2);
-        CHECK_EQ(func2.Target(), Free1);
+        CHECK_EQ(func2.Target(), &Free1);
         #endif
 
         func2 = wstl::NullPointer;
         CHECK_EQ(func2.Target(), wstl::NullPointer);
 
         func0 = Free1;
-        CHECK_EQ(func0.Target(), Free1);
+        CHECK_EQ(func0.Target(), &Free1);
 
         // Swap
         func2.Swap(func3);
-        CHECK_EQ(func2.Target(), Free1);
+        CHECK_EQ(func2.Target(), &Free1);
         CHECK_EQ(func3.Target(), wstl::NullPointer);
 
         // Reset
         func3.Reset(Free1);
-        CHECK_EQ(func3.Target(), Free1);
+        CHECK_EQ(func3.Target(), &Free1);
 
         Call(func3, VALUE1);
         CHECK(functionCalled);
@@ -459,20 +459,20 @@ TEST_SUITE("Functional") {
 
         const wstl::Function<void(int)> func2(Free1);
         CHECK(func2);
-        CHECK_EQ(func2.Target(), Free1);
+        CHECK_EQ(func2.Target(), &Free1);
         CHECK_FALSE(func2 == wstl::NullPointer);
         CHECK(func2 != wstl::NullPointer);
 
         const wstl::Function<void(int)> func3(func2);
         CHECK(func2);
         CHECK(func3);
-        CHECK_EQ(func3.Target(), Free1);
+        CHECK_EQ(func3.Target(), &Free1);
 
         #ifdef __WSTL_CXX11__
         const wstl::Function<void(int)> func4(wstl::Move(func2));
         CHECK(func2);
         CHECK(func4);
-        CHECK_EQ(func4.Target(), Free1);
+        CHECK_EQ(func4.Target(), &Free1);
         #endif
 
         // Function call
@@ -497,49 +497,49 @@ TEST_SUITE("Functional") {
 
         wstl::Function<void(int, char)> func2(Free2);
         CHECK(func2);
-        CHECK_EQ(func2.Target(), Free2);
+        CHECK_EQ(func2.Target(), &Free2);
         CHECK_FALSE(func2 == wstl::NullPointer);
         CHECK(func2 != wstl::NullPointer);
 
         wstl::Function<void(int, char)> func3(func2);
         CHECK(func2);
         CHECK(func3);
-        CHECK_EQ(func3.Target(), Free2);
+        CHECK_EQ(func3.Target(), &Free2);
 
         #ifdef __WSTL_CXX11__
         wstl::Function<void(int, char)> func4(wstl::Move(func2));
         CHECK_FALSE(func2);
         CHECK(func4);
-        CHECK_EQ(func4.Target(), Free2);
+        CHECK_EQ(func4.Target(), &Free2);
         #endif
         
         // Assignment operators
         func1 = func3;
         CHECK(func3);
         CHECK(func1);
-        CHECK_EQ(func1.Target(), Free2);
+        CHECK_EQ(func1.Target(), &Free2);
 
         #ifdef __WSTL_CXX11__
         func2 = wstl::Move(func4);
         CHECK_FALSE(func4);
         CHECK(func2);
-        CHECK_EQ(func2.Target(), Free2);
+        CHECK_EQ(func2.Target(), &Free2);
         #endif
 
         func2 = wstl::NullPointer;
         CHECK_EQ(func2.Target(), wstl::NullPointer);
 
         func0 = Free2;
-        CHECK_EQ(func0.Target(), Free2);
+        CHECK_EQ(func0.Target(), &Free2);
 
         // Swap
         func2.Swap(func3);
-        CHECK_EQ(func2.Target(), Free2);
+        CHECK_EQ(func2.Target(), &Free2);
         CHECK_EQ(func3.Target(), wstl::NullPointer);
 
         // Reset
         func3.Reset(Free2);
-        CHECK_EQ(func3.Target(), Free2);
+        CHECK_EQ(func3.Target(), &Free2);
 
         // Function call
         Call(func3, VALUE1, VALUE2);
@@ -564,20 +564,20 @@ TEST_SUITE("Functional") {
 
         const wstl::Function<void(int, char)> func2(Free2);
         CHECK(func2);
-        CHECK_EQ(func2.Target(), Free2);
+        CHECK_EQ(func2.Target(), &Free2);
         CHECK_FALSE(func2 == wstl::NullPointer);
         CHECK(func2 != wstl::NullPointer);
 
         const wstl::Function<void(int, char)> func3(func2);
         CHECK(func2);
         CHECK(func3);
-        CHECK_EQ(func3.Target(), Free2);
+        CHECK_EQ(func3.Target(), &Free2);
 
         #ifdef __WSTL_CXX11__
         const wstl::Function<void(int, char)> func4(wstl::Move(func2));
         CHECK(func2);
         CHECK(func4);
-        CHECK_EQ(func4.Target(), Free2);
+        CHECK_EQ(func4.Target(), &Free2);
         #endif
 
         // Function call
@@ -604,45 +604,45 @@ TEST_SUITE("Functional") {
 
         wstl::Function<void(int, char, FakeInteger)> func2(Free3);
         CHECK(func2);
-        CHECK_EQ(func2.Target(), Free3);
+        CHECK_EQ(func2.Target(), &Free3);
         CHECK_FALSE(func2 == nullptr);
         CHECK(func2 != nullptr);
 
         wstl::Function<void(int, char, FakeInteger)> func3(func2);
         CHECK(func2);
         CHECK(func3);
-        CHECK_EQ(func3.Target(), Free3);
+        CHECK_EQ(func3.Target(), &Free3);
 
         wstl::Function<void(int, char, FakeInteger)> func4(wstl::Move(func2));
         CHECK_FALSE(func2);
         CHECK(func4);
-        CHECK_EQ(func4.Target(), Free3);
+        CHECK_EQ(func4.Target(), &Free3);
         
         // Assignment operators
         func1 = func4;
         CHECK(func4);
         CHECK(func1);
-        CHECK_EQ(func1.Target(), Free3);
+        CHECK_EQ(func1.Target(), &Free3);
 
         func2 = wstl::Move(func3);
         CHECK_FALSE(func3);
         CHECK(func2);
-        CHECK_EQ(func2.Target(), Free3);
+        CHECK_EQ(func2.Target(), &Free3);
 
         func4 = nullptr;
         CHECK_EQ(func4.Target(), nullptr);
 
         func4 = Free3;
-        CHECK_EQ(func4.Target(), Free3);
+        CHECK_EQ(func4.Target(), &Free3);
 
         // Swap
         func3.Swap(func2);
-        CHECK_EQ(func3.Target(), Free3);
+        CHECK_EQ(func3.Target(), &Free3);
         CHECK_EQ(func2.Target(), nullptr);
 
         // Reset
         func2.Reset(Free3);
-        CHECK_EQ(func2.Target(), Free3);
+        CHECK_EQ(func2.Target(), &Free3);
 
         // Function call
         Call(func3, VALUE1, VALUE2, VALUE3);
@@ -668,19 +668,19 @@ TEST_SUITE("Functional") {
 
         const wstl::Function<void(int, char, FakeInteger)> func2(Free3);
         CHECK(func2);
-        CHECK_EQ(func2.Target(), Free3);
+        CHECK_EQ(func2.Target(), &Free3);
         CHECK_FALSE(func2 == nullptr);
         CHECK(func2 != nullptr);
 
         const wstl::Function<void(int, char, FakeInteger)> func3(func2);
         CHECK(func2);
         CHECK(func3);
-        CHECK_EQ(func3.Target(), Free3);
+        CHECK_EQ(func3.Target(), &Free3);
 
         const wstl::Function<void(int, char, FakeInteger)> func4(wstl::Move(func2));
         CHECK(func2);
         CHECK(func4);
-        CHECK_EQ(func4.Target(), Free3);
+        CHECK_EQ(func4.Target(), &Free3);
 
         // Function call
         Call(func3, VALUE1, VALUE2, VALUE3);
@@ -707,49 +707,49 @@ TEST_SUITE("Functional") {
 
         wstl::Function<int()> func2(FreeReturn);
         CHECK(func2);
-        CHECK_EQ(func2.Target(), FreeReturn);
+        CHECK_EQ(func2.Target(), &FreeReturn);
         CHECK_FALSE(func2 == wstl::NullPointer);
         CHECK(func2 != wstl::NullPointer);
 
         wstl::Function<int()> func3(func2);
         CHECK(func2);
         CHECK(func3);
-        CHECK_EQ(func3.Target(), FreeReturn);
+        CHECK_EQ(func3.Target(), &FreeReturn);
 
         #ifdef __WSTL_CXX11__
         wstl::Function<int()> func4(wstl::Move(func2));
         CHECK_FALSE(func2);
         CHECK(func4);
-        CHECK_EQ(func4.Target(), FreeReturn);
+        CHECK_EQ(func4.Target(), &FreeReturn);
         #endif
         
         // Assignment operators
         func1 = func3;
         CHECK(func3);
         CHECK(func1);
-        CHECK_EQ(func1.Target(), FreeReturn);
+        CHECK_EQ(func1.Target(), &FreeReturn);
 
         #ifdef __WSTL_CXX11__
         func2 = wstl::Move(func4);
         CHECK_FALSE(func4);
         CHECK(func2);
-        CHECK_EQ(func2.Target(), FreeReturn);
+        CHECK_EQ(func2.Target(), &FreeReturn);
         #endif
 
         func2 = wstl::NullPointer;
         CHECK_EQ(func2.Target(), wstl::NullPointer);
 
         func0 = FreeReturn;
-        CHECK_EQ(func0.Target(), FreeReturn);
+        CHECK_EQ(func0.Target(), &FreeReturn);
 
         // Swap
         func2.Swap(func3);
-        CHECK_EQ(func2.Target(), FreeReturn);
+        CHECK_EQ(func2.Target(), &FreeReturn);
         CHECK_EQ(func3.Target(), wstl::NullPointer);
 
         // Reset
         func3.Reset(FreeReturn);
-        CHECK_EQ(func3.Target(), FreeReturn);
+        CHECK_EQ(func3.Target(), &FreeReturn);
 
         // Function call
         int result = Call(func3);
@@ -773,20 +773,20 @@ TEST_SUITE("Functional") {
 
         const wstl::Function<int()> func2(FreeReturn);
         CHECK(func2);
-        CHECK_EQ(func2.Target(), FreeReturn);
+        CHECK_EQ(func2.Target(), &FreeReturn);
         CHECK_FALSE(func2 == wstl::NullPointer);
         CHECK(func2 != wstl::NullPointer);
 
         const wstl::Function<int()> func3(func2);
         CHECK(func2);
         CHECK(func3);
-        CHECK_EQ(func3.Target(), FreeReturn);
+        CHECK_EQ(func3.Target(), &FreeReturn);
 
         #ifdef __WSTL_CXX11__
         const wstl::Function<int()> func4(wstl::Move(func2));
         CHECK(func2);
         CHECK(func4);
-        CHECK_EQ(func4.Target(), FreeReturn);
+        CHECK_EQ(func4.Target(), &FreeReturn);
         #endif
 
         // Function call
