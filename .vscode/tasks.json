@@ -24,10 +24,28 @@
             }
         },
         {
+            "label": "Update Compilation DB",
+            "type": "shell",
+            "command": "scons",
+            "args": [
+                "cdb",
+                "--cppstd=${input:cppStandard}"
+            ],
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "never",
+                "focus": false,
+                "revealProblems": "onProblem",
+                "close": true
+            }
+        },
+        {
             "label": "Build",
             "type": "shell",
             "command": "scons",
-            "args": ["--cppstd=${input:cppStandard}"],
+            "args": [
+                "--cppstd=${input:cppStandard}"
+            ],
             "group": {
                 "isDefault": true,
                 "kind": "build"
@@ -46,10 +64,13 @@
             "label": "Syntax Checks",
             "type": "shell",
             "command": "scons",
-            "args": ["syntax_check", "--cppstd=${input:cppStandard}"],
+            "args": [
+                "syntax_check",
+                "--cppstd=${input:cppStandard}"
+            ],
             "group": "test",
             "presentation": {
-                "reveal": "silent",
+                "reveal": "always",
                 "focus": false,
                 "panel": "dedicated",
                 "showReuseMessage": true,
@@ -62,23 +83,10 @@
             "label": "Build Unit Tests",
             "type": "shell",
             "command": "scons",
-            "args": ["test", "--cppstd=${input:cppStandard}"],
-            "group": "test",
-            "problemMatcher": "$gcc",
-            "presentation": {
-                "reveal": "silent",
-                "focus": false,
-                "panel": "dedicated" ,
-                "showReuseMessage": true,
-                "clear": true,
-                "revealProblems": "onProblem"
-            }
-        },
-        {
-            "label": "Run Unit Tests",
-            "type": "shell",
-            "command": "scons",
-            "args": ["run_test", "--cppstd=${input:cppStandard}"],
+            "args": [
+                "test",
+                "--cppstd=${input:cppStandard}"
+            ],
             "group": "test",
             "problemMatcher": "$gcc",
             "presentation": {
@@ -91,15 +99,40 @@
             }
         },
         {
+            "label": "Run Unit Tests",
+            "type": "shell",
+            "command": "scons",
+            "args": [
+                "run_test",
+                "--cppstd=${input:cppStandard}"
+            ],
+            "group": "test",
+            "problemMatcher": "$gcc",
+            "presentation": {
+                "reveal": "always",
+                "focus": false,
+                "panel": "dedicated",
+                "showReuseMessage": true,
+                "clear": true,
+                "revealProblems": "onProblem"
+            }
+        },
+        {
             "label": "Run All Tests",
-            "dependsOn": ["Syntax Checks", "Run Unit Tests"],
-            "dependsOrder": "sequence"
+            "dependsOn": [
+                "Syntax Checks",
+                "Run Unit Tests"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": []
         },
         {
             "label": "Generate Documentation",
             "type": "shell",
             "command": "scons",
-            "args": ["docs"],
+            "args": [
+                "docs"
+            ],
             "problemMatcher": {
                 "owner": "doxygen",
                 "fileLocation": "absolute",
@@ -118,13 +151,15 @@
                 "showReuseMessage": true,
                 "clear": true,
                 "revealProblems": "onProblem"
-            }, 
+            }
         },
         {
             "label": "Open Documentation",
             "type": "shell",
             "command": "scons",
-            "args": ["open"],
+            "args": [
+                "open"
+            ],
             "problemMatcher": [],
             "presentation": {
                 "reveal": "silent",
@@ -138,7 +173,9 @@
             "label": "Cleanup",
             "type": "shell",
             "command": "scons",
-            "args": ["-c"],
+            "args": [
+                "-c"
+            ],
             "problemMatcher": [],
             "presentation": {
                 "reveal": "silent",
