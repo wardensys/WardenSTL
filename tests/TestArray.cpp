@@ -1,5 +1,5 @@
 // Part of WardenSTL - https://github.com/WardenHD/WardenSTL
-// Copyright (c) 2025 Artem Bezruchko (WardenHD)
+// Copyright (c) 2026 Artem Bezruchko (WardenHD)
 //
 // This file is based on the Embedded Template Library (ETL)'s test_array.cpp
 // from https://github.com/ETLCPP/etl, licensed under the MIT License.
@@ -19,9 +19,9 @@
 TEST_SUITE("Array") {    
     static const size_t SIZE = 10;
 
-    using Data = wstl::Array<int, SIZE>;
-    using CompareData = std::array<int, SIZE>;
-    using ZeroData = wstl::Array<int, 0>;
+    typedef wstl::Array<int, SIZE> Data;
+    typedef std::array<int, SIZE> CompareData;
+    typedef wstl::Array<int, 0> ZeroData;
     
     CompareData compareData = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     CompareData swapData = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
@@ -142,11 +142,13 @@ TEST_SUITE("Array") {
         CHECK_EQ(data.ConstReverseEnd(), Data::ConstReverseIterator(data.Data()));
     }
 
+    #ifdef __WSTL_CXX11__
     TEST_CASE("Range support") {
         Data data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
         for(int& value : data) CHECK_EQ(value, compareData[size_t(&value - &data[0])]);
     }
+    #endif
 
     TEST_CASE("Iterator") {
         Data data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
@@ -441,17 +443,17 @@ TEST_SUITE("Array") {
     }
 
     TEST_CASE("TupleElement") {
-        CHECK(wstl::IsSame<wstl::TupleElementType<0, Data>, int>::Value);
-        CHECK(wstl::IsSame<wstl::TupleElementType<3, Data>, int>::Value);
-        CHECK(wstl::IsSame<wstl::TupleElementType<9, Data>, int>::Value);
+        CHECK((wstl::IsSame<wstl::TupleElement<0, Data>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::TupleElement<3, Data>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::TupleElement<9, Data>::Type, int>::Value));
 
         // The following line should fail with a compilation error
-        // CHECK(wstl::IsSame<wstl::TupleElementType<10, Data>, int>::Value);
+        // CHECK((wstl::IsSame<wstl::TupleElement<10, Data>::Type, int>::Value));
     }
 
     TEST_CASE("TupleSize") {
         CHECK_EQ(wstl::TupleSize<Data>::Value, SIZE);
-        CHECK_EQ(wstl::TupleSize<wstl::Array<std::string, 5>>::Value, 5UL);
+        CHECK_EQ((wstl::TupleSize<wstl::Array<std::string, 5> >::Value), 5UL);
         CHECK_EQ(wstl::TupleSize<ZeroData>::Value, 0UL);
     }
 
@@ -581,12 +583,14 @@ TEST_SUITE("Array") {
     }
 
     TEST_CASE("ToArray") {
-        auto data = wstl::ToArray({0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
+        int arr[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+        wstl::Array<int, 10> data = wstl::ToArray(arr);
 
         bool equal = std::equal(compareData.begin(), compareData.end(), data.Begin());
         CHECK(equal);
     }
 
+    #ifdef __WSTL_CXX11__
     TEST_CASE("ToArray movable") {
         typedef MovableData<int> Item;
         wstl::Array<Item, 5> compare = {Item(0), Item(1), Item(2), Item(3), Item(4)};
@@ -596,6 +600,7 @@ TEST_SUITE("Array") {
         bool equal = std::equal(compare.Begin(), compare.End(), data.Begin());
         CHECK(equal);
     }
+    #endif
 
     #ifdef __WSTL_CXX14__
     typedef wstl::Array<int, 6> ArrayType;

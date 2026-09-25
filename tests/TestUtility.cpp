@@ -1,5 +1,5 @@
 // Part of WardenSTL - https://github.com/WardenHD/WardenSTL
-// Copyright (c) 2025 Artem Bezruchko (WardenHD)
+// Copyright (c) 2026 Artem Bezruchko (WardenHD)
 //
 // Licensed under the MIT License. See LICENSE file for details.
 
@@ -9,14 +9,22 @@
 #include "Utils.hpp"
 
 
+namespace {
+    enum Enum {
+        E0 = 67,
+        E1 = 228,
+        E2 = 69
+    };
+}
+
 TEST_SUITE("Utility") {
     TEST_CASE("AsConst") {
         Dummy d;
         const Dummy cd;
         const Dummy& ref = wstl::AsConst(d);
 
-        CHECK(wstl::IsSame<decltype(wstl::AsConst(d)), const Dummy&>::Value);
-        CHECK(wstl::IsSame<decltype(wstl::AsConst(cd)), const Dummy&>::Value);
+        CHECK((wstl::IsSame<decltype(wstl::AsConst(d)), const Dummy&>::Value));
+        CHECK((wstl::IsSame<decltype(wstl::AsConst(cd)), const Dummy&>::Value));
         CHECK_EQ(&ref, &d);
 
         // The following line should not compile due to deleted overload for rvalue references
@@ -71,6 +79,7 @@ TEST_SUITE("Utility") {
         CHECK_EQ(p1.Second, p2.Second);
     }
 
+    #ifdef __WSTL_CXX11__
     TEST_CASE("Pair move constructor from parameters") {
         wstl::Pair<MovableData<int>, MovableData<int>> p(10, 20);
 
@@ -109,6 +118,7 @@ TEST_SUITE("Utility") {
         CHECK_EQ(p.Second.A, 30);
         CHECK_EQ(p.Second.B, 40);
     }
+    #endif
 
     TEST_CASE("Pair swap") {
         wstl::Pair<int, int> p1(1, 2);
@@ -142,6 +152,7 @@ TEST_SUITE("Utility") {
         CHECK_EQ(p1.Second, 4);
     }
 
+    #ifdef __WSTL_CXX11__
     TEST_CASE("Pair move assignment operator") {
         wstl::Pair<MovableData<int>, MovableData<int>> p1(1, 2);
         wstl::Pair<MovableData<int>, MovableData<int>> p2(3, 4);
@@ -167,6 +178,7 @@ TEST_SUITE("Utility") {
         CHECK_EQ(p1.First.Value, 3);
         CHECK_EQ(p1.Second.Value, 4);
     }
+    #endif
 
     #ifdef __WSTL_CXX17__
     TEST_CASE("Pair template deduction guide") {
@@ -180,37 +192,50 @@ TEST_SUITE("Utility") {
     #endif
 
     TEST_CASE("Pair TupleSize specialization") {
-        CHECK_EQ(wstl::TupleSize<wstl::Pair<int, double>>::Value, 2UL);
+        CHECK_EQ((wstl::TupleSize<wstl::Pair<int, double> >::Value), 2UL);
     }
 
     TEST_CASE("Pair TupleElement specialization") {
-        CHECK(wstl::IsSame<wstl::TupleElementType<0, wstl::Pair<int, double>>, int>::Value);
-        CHECK(wstl::IsSame<wstl::TupleElementType<1, wstl::Pair<int, double>>, double>::Value);
+        CHECK((wstl::IsSame<wstl::TupleElement<0, wstl::Pair<int, double> >::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::TupleElement<1, wstl::Pair<int, double> >::Type, double>::Value));
 
         // The following line should fail with a compilation error
-        // wstl::TupleElementType<2, wstl::Pair<int, double>> er;
+        // wstl::TupleElement<2, wstl::Pair<int, double> >::Type er;
     }
 
     TEST_CASE("Pair Get specialization") {
-        wstl::Pair<int, MovableData<int>> data(10, 64);
-        const wstl::Pair<int, MovableData<int>> constData(20, 32);
+        #ifdef __WSTL_CXX11__
+        typedef MovableData<int> SecondType;
+        #else
+        typedef int SecondType;
+        #endif
+
+        wstl::Pair<int, SecondType> data(10, 64);
+        const wstl::Pair<int, SecondType> constData(20, 32);
 
         // Lvalue
         int i0 = wstl::Get<0>(data);
         int ci0 = wstl::Get<0>(constData);
-        MovableData<int> m1 = wstl::Move(wstl::Get<1>(data));
-        MovableData<int> cm1 = wstl::Move(wstl::Get<1>(constData));
+        SecondType m1 = __WSTL_MOVE__(wstl::Get<1>(data));
+        SecondType cm1 = __WSTL_MOVE__(wstl::Get<1>(constData));
 
         CHECK_EQ(i0, 10);
         CHECK_EQ(ci0, 20);
+
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(m1.Value, 64);
         CHECK_EQ(cm1.Value, 32);
+        #else
+        CHECK_EQ(m1, 64);
+        CHECK_EQ(cm1, 32);
+        #endif
 
         // The following lines should fail with a compilation error
         // auto el1 = wstl::Get<2>(data);
         // auto el2 = wstl::Get<2>(constData);
 
         // Rvalue
+        #ifdef __WSTL_CXX11__
         int&& ri0 = wstl::Get<0>(wstl::Move(data));
         const int&& rci0 = wstl::Get<0>(wstl::Move(constData));
         MovableData<int>&& rm1 = wstl::Move(wstl::Get<1>(wstl::Move(data)));
@@ -224,6 +249,7 @@ TEST_SUITE("Utility") {
         // The following lines should fail with a compilation error
         // auto er1 = wstl::Get<2>(wstl::Move(data));
         // auto er2 = wstl::Get<2>(wstl::Move(constData));
+        #endif
     }
 
     TEST_CASE("Pair comparison operators") {
@@ -306,6 +332,7 @@ TEST_SUITE("Utility") {
         CHECK_EQ(p1.Second, p2.Second);
 
         // Movable data
+        #ifdef __WSTL_CXX11__
         wstl::Pair<MovableData<int>, MovableData<int>> mp1(67, 69);
         wstl::Pair<MovableData<int>, MovableData<int>> mp2;
 
@@ -313,10 +340,11 @@ TEST_SUITE("Utility") {
 
         CHECK_EQ(mp1.First, mp2.First);
         CHECK_EQ(mp1.Second, mp2.Second);
+        #endif
     }
 
-    #if !defined(__WSTL_TYPETRAITS_NO_BUILTINS__) && defined(__WSTL_SUPPORTED_COMPILER__)
     TEST_CASE("ToUnderlying") {
+        #if !defined(__WSTL_TYPETRAITS_NO_BUILTINS__) && defined(__WSTL_CXX11__) && defined(__WSTL_SUPPORTED_COMPILER__)
         enum Enum0 : char {
             E0 = 'w',
             E1 = 's',
@@ -348,12 +376,21 @@ TEST_SUITE("Utility") {
         CHECK_EQ(wstl::ToUnderlying(Enum1::D0), 100);
         CHECK_EQ(wstl::ToUnderlying(Enum1::D2), 11);
         CHECK_EQ(wstl::ToUnderlying(Enum2::I0), 12);
+        #else
+        Enum e0 = E0;
+        Enum e1 = E1;
+        Enum e2 = E2;
+
+        CHECK_EQ(wstl::ToUnderlying(e0), 67);
+        CHECK_EQ(wstl::ToUnderlying(e1), 228);
+        CHECK_EQ(wstl::ToUnderlying(e2), 69);
+        #endif
     }
-    #endif
 
     // Test cases for IntegerSequence, MakeIndexSequence and related functions 
     // that are defined in private TupleUtils.hpp header
 
+    #ifdef __WSTL_CXX11__
     template<typename T, T... Integers>
     T IntegerSum(wstl::IntegerSequence<T, Integers...>) {
         T result = 0;
@@ -418,4 +455,5 @@ TEST_SUITE("Utility") {
         CHECK_EQ(IntegerSum(Data3{}), 10UL);
         CHECK(wstl::IsSame<decltype(IntegerSum(Data3{})), size_t>::Value);
     }
+    #endif
 }

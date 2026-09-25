@@ -1,5 +1,5 @@
 // Part of WardenSTL - https://github.com/WardenHD/WardenSTL
-// Copyright (c) 2025 Artem Bezruchko (WardenHD)
+// Copyright (c) 2026 Artem Bezruchko (WardenHD)
 //
 // This file is based on the Embedded Template Library (ETL)'s test_numeric.cpp
 // from https://github.com/ETLCPP/etl, licensed under the MIT License.
@@ -109,8 +109,8 @@ TEST_SUITE("Numeric") {
     }
 
     TEST_CASE("GCD") {
-        constexpr int num1 = {2 * 2 * 3};
-        constexpr int num2 = {2 * 3 * 3};
+        const __WSTL_CONSTEXPR__ int num1 = {2 * 2 * 3};
+        const __WSTL_CONSTEXPR__ int num2 = {2 * 3 * 3};
 
         // Unsigned
         CHECK_EQ(wstl::GCD((uint32_t) num1, (uint32_t) num2), 6U);
@@ -131,14 +131,16 @@ TEST_SUITE("Numeric") {
         CHECK_EQ(wstl::GCD(0, 0), 0);
 
         // More than two numbers
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(wstl::GCD(2, 3, 7, 14, 21), 1);
         CHECK_EQ(wstl::GCD(12, 18, 30, 42), 6);
         CHECK_EQ(wstl::GCD(-12, -18, 42), 6);
+        #endif
     }
 
     TEST_CASE("LCM") {
-        constexpr int num1 = {2 * 2 * 3};
-        constexpr int num2 = {2 * 3 * 3};
+        const __WSTL_CONSTEXPR__ int num1 = {2 * 2 * 3};
+        const __WSTL_CONSTEXPR__ int num2 = {2 * 3 * 3};
 
         // Unsigned
         CHECK_EQ(wstl::LCM((uint32_t) num1, (uint32_t) num2), 36U);
@@ -163,9 +165,11 @@ TEST_SUITE("Numeric") {
         CHECK_EQ(wstl::LCM(21, 6), 42);
 
         // More than two numbers
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(wstl::LCM(2, 3, 7, 14, 21), 42);
         CHECK_EQ(wstl::LCM(12, 18, 30, 42), 1260);
         CHECK_EQ(wstl::LCM(-12, -18, 42), 252);
+        #endif
     }
 
     TEST_CASE("Midpoint") {
@@ -204,7 +208,7 @@ TEST_SUITE("Numeric") {
         CHECK_EQ(wstl::Midpoint(std::numeric_limits<double>::max(), -std::numeric_limits<double>::max()), doctest::Approx(0.0).epsilon(0.001));
 
         // Pointer
-        std::vector<int> data1 = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+        std::array<int, 9> data1 = {1, 2, 3, 4, 5, 6, 7, 8, 9};
 
         CHECK_EQ(*wstl::Midpoint(data1.data(), data1.data() + data1.size()), data1[4]);
         CHECK_EQ(*wstl::Midpoint(data1.data() + data1.size(), data1.data()), data1[5]);
@@ -231,90 +235,104 @@ TEST_SUITE("Numeric") {
     };
 
     TEST_CASE("GCD compile-time version") {
-        constexpr int num1 = {2 * 2 * 3};
-        constexpr int num2 = {2 * 3 * 3};
+        const __WSTL_CONSTEXPR__ int num1 = {2 * 2 * 3};
+        const __WSTL_CONSTEXPR__ int num2 = {2 * 3 * 3};
 
         // Unsigned
-        CHECK_EQ(wstl::compile::GCD<uint32_t, num1, num2>::Value, 6U);
-        CHECK_EQ(wstl::compile::GCD<uint32_t, 6U, 10U>::Value, 2U);
-        CHECK_EQ(wstl::compile::GCD<uint32_t, 6U, 7U>::Value, 1U);
-        CHECK_EQ(wstl::compile::GCD<uint32_t, 0U, 7U>::Value, 7U);
-        CHECK_EQ(wstl::compile::GCD<uint32_t, 7U, 0U>::Value, 7U);
-        CHECK_EQ(wstl::compile::GCD<uint32_t, 0U, 0U>::Value, 0U);
+        CHECK_EQ((wstl::compile::GCD<uint32_t, num1, num2>::Value), 6U);
+        CHECK_EQ((wstl::compile::GCD<uint32_t, 6U, 10U>::Value), 2U);
+        CHECK_EQ((wstl::compile::GCD<uint32_t, 6U, 7U>::Value), 1U);
+        CHECK_EQ((wstl::compile::GCD<uint32_t, 0U, 7U>::Value), 7U);
+        CHECK_EQ((wstl::compile::GCD<uint32_t, 7U, 0U>::Value), 7U);
+        CHECK_EQ((wstl::compile::GCD<uint32_t, 0U, 0U>::Value), 0U);
 
         // Signed
-        CHECK_EQ(wstl::compile::GCD<int, num1, num2>::Value, 6);
-        CHECK_EQ(wstl::compile::GCD<int, 6, 10>::Value, 2);
-        CHECK_EQ(wstl::compile::GCD<int, 6, -10>::Value, 2);
-        CHECK_EQ(wstl::compile::GCD<int, -6, -10>::Value, 2);
-        CHECK_EQ(wstl::compile::GCD<int, 6, 7>::Value, 1);
-        CHECK_EQ(wstl::compile::GCD<int, 0, 7>::Value, 7);
-        CHECK_EQ(wstl::compile::GCD<int, -7, 0>::Value, 7);
-        CHECK_EQ(wstl::compile::GCD<int, 0, 0>::Value, 0);
+        CHECK_EQ((wstl::compile::GCD<int, num1, num2>::Value), 6);
+        CHECK_EQ((wstl::compile::GCD<int, 6, 10>::Value), 2);
+        CHECK_EQ((wstl::compile::GCD<int, 6, -10>::Value), 2);
+        CHECK_EQ((wstl::compile::GCD<int, -6, -10>::Value), 2);
+        CHECK_EQ((wstl::compile::GCD<int, 6, 7>::Value), 1);
+        CHECK_EQ((wstl::compile::GCD<int, 0, 7>::Value), 7);
+        CHECK_EQ((wstl::compile::GCD<int, -7, 0>::Value), 7);
+        CHECK_EQ((wstl::compile::GCD<int, 0, 0>::Value), 0);
 
         // More than two numbers
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(wstl::compile::GCD<int, 2, 3, 7, 14, 21>::Value, 1);
         CHECK_EQ(wstl::compile::GCD<int, 12, 18, 30, 42>::Value, 6);
         CHECK_EQ(wstl::compile::GCD<int, -12, -18, 42>::Value, 6);
+        #endif
     }
 
     TEST_CASE("LCM compile-time version") {
-        constexpr int num1 = {2 * 2 * 3};
-        constexpr int num2 = {2 * 3 * 3};
+        const __WSTL_CONSTEXPR__ int num1 = {2 * 2 * 3};
+        const __WSTL_CONSTEXPR__ int num2 = {2 * 3 * 3};
 
         // Unsigned
-        CHECK_EQ(wstl::compile::LCM<uint32_t, num1, num2>::Value, 36U);
-        CHECK_EQ(wstl::compile::LCM<uint32_t, 6U, 10U>::Value, 30U);
-        CHECK_EQ(wstl::compile::LCM<uint32_t, 6U, 7U>::Value, 42U);
-        CHECK_EQ(wstl::compile::LCM<uint32_t, 0U, 7U>::Value, 0U);
-        CHECK_EQ(wstl::compile::LCM<uint32_t, 7U, 0U>::Value, 0U);
-        CHECK_EQ(wstl::compile::LCM<uint32_t, 0U, 0U>::Value, 0U);
+        CHECK_EQ((wstl::compile::LCM<uint32_t, num1, num2>::Value), 36U);
+        CHECK_EQ((wstl::compile::LCM<uint32_t, 6U, 10U>::Value), 30U);
+        CHECK_EQ((wstl::compile::LCM<uint32_t, 6U, 7U>::Value), 42U);
+        CHECK_EQ((wstl::compile::LCM<uint32_t, 0U, 7U>::Value), 0U);
+        CHECK_EQ((wstl::compile::LCM<uint32_t, 7U, 0U>::Value), 0U);
+        CHECK_EQ((wstl::compile::LCM<uint32_t, 0U, 0U>::Value), 0U);
 
         // Signed
-        CHECK_EQ(wstl::compile::LCM<int, num1, num2>::Value, 36);
-        CHECK_EQ(wstl::compile::LCM<int, 6, 10>::Value, 30);
-        CHECK_EQ(wstl::compile::LCM<int, 6, -10>::Value, 30);
-        CHECK_EQ(wstl::compile::LCM<int, -6, -10>::Value, 30);
-        CHECK_EQ(wstl::compile::LCM<int, 6, 7>::Value, 42);
-        CHECK_EQ(wstl::compile::LCM<int, 0, 7>::Value, 0);
-        CHECK_EQ(wstl::compile::LCM<int, -7, 0>::Value, 0);
-        CHECK_EQ(wstl::compile::LCM<int, 0, 0>::Value, 0);
-        CHECK_EQ(wstl::compile::LCM<int, 50000, 50000>::Value, 50000);
-        CHECK_EQ(wstl::compile::LCM<int, 12, 18>::Value, 36);
-        CHECK_EQ(wstl::compile::LCM<int, 7, 5>::Value, 35);
-        CHECK_EQ(wstl::compile::LCM<int, 21, 6>::Value, 42);
+        CHECK_EQ((wstl::compile::LCM<int, num1, num2>::Value), 36);
+        CHECK_EQ((wstl::compile::LCM<int, 6, 10>::Value), 30);
+        CHECK_EQ((wstl::compile::LCM<int, 6, -10>::Value), 30);
+        CHECK_EQ((wstl::compile::LCM<int, -6, -10>::Value), 30);
+        CHECK_EQ((wstl::compile::LCM<int, 6, 7>::Value), 42);
+        CHECK_EQ((wstl::compile::LCM<int, 0, 7>::Value), 0);
+        CHECK_EQ((wstl::compile::LCM<int, -7, 0>::Value), 0);
+        CHECK_EQ((wstl::compile::LCM<int, 0, 0>::Value), 0);
+        CHECK_EQ((wstl::compile::LCM<int, 50000, 50000>::Value), 50000);
+        CHECK_EQ((wstl::compile::LCM<int, 12, 18>::Value), 36);
+        CHECK_EQ((wstl::compile::LCM<int, 7, 5>::Value), 35);
+        CHECK_EQ((wstl::compile::LCM<int, 21, 6>::Value), 42);
 
         // More than two numbers
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(wstl::compile::LCM<int, 2, 3, 7, 14, 21>::Value, 42);
         CHECK_EQ(wstl::compile::LCM<int, 12, 18, 30, 42>::Value, 1260);
         CHECK_EQ(wstl::compile::LCM<int, -12, -18, 42>::Value, 252);
+        #endif
     }
 
     TEST_CASE("Midpoint compile-time version") {
         // Unsigned
-        CHECK_EQ(wstl::compile::Midpoint<uint32_t, 0U, 0U>::Value, 0U);
-        CHECK_EQ(wstl::compile::Midpoint<uint32_t, 0U, 1U>::Value, 0U); // biased towards 0
-        CHECK_EQ(wstl::compile::Midpoint<uint32_t, 1U, 0U>::Value, 1U); // biased towards 1
+        CHECK_EQ((wstl::compile::Midpoint<uint32_t, 0U, 0U>::Value), 0U);
+        CHECK_EQ((wstl::compile::Midpoint<uint32_t, 0U, 1U>::Value), 0U); // biased towards 0
+        CHECK_EQ((wstl::compile::Midpoint<uint32_t, 1U, 0U>::Value), 1U); // biased towards 1
 
-        CHECK_EQ(wstl::compile::Midpoint<uint32_t, 0U, std::numeric_limits<uint32_t>::max()>::Value, (std::numeric_limits<uint32_t>::max() / 2U));
-        CHECK_EQ(wstl::compile::Midpoint<uint32_t, std::numeric_limits<uint32_t>::max(), 0U>::Value, (std::numeric_limits<uint32_t>::max() / 2U) + 1U);
-
-        CHECK_EQ(wstl::compile::Midpoint<uint32_t, std::numeric_limits<uint32_t>::min(), std::numeric_limits<uint32_t>::max()>::Value, (std::numeric_limits<uint32_t>::max() / 2U));
-        CHECK_EQ(wstl::compile::Midpoint<uint32_t, std::numeric_limits<uint32_t>::max(), std::numeric_limits<uint32_t>::min()>::Value, (std::numeric_limits<uint32_t>::max() / 2U) + 1U);
+        #ifdef __WSTL_CXX11__
+        CHECK_EQ((wstl::compile::Midpoint<uint32_t, 0U, std::numeric_limits<uint32_t>::max()>::Value), (std::numeric_limits<uint32_t>::max() / 2U));
+        CHECK_EQ((wstl::compile::Midpoint<uint32_t, std::numeric_limits<uint32_t>::max(), 0U>::Value), (std::numeric_limits<uint32_t>::max() / 2U) + 1U);
+        #else
+        CHECK_EQ((wstl::compile::Midpoint<uint32_t, 0U, UINT32_MAX>::Value), (UINT32_MAX / 2U));
+        CHECK_EQ((wstl::compile::Midpoint<uint32_t, UINT32_MAX, 0U>::Value), (UINT32_MAX / 2U) + 1U);
+        #endif
 
         // Signed
-        CHECK_EQ(wstl::compile::Midpoint<int, 0, 0>::Value, 0);
-        CHECK_EQ(wstl::compile::Midpoint<int, 0, 1>::Value, 0);
-        CHECK_EQ(wstl::compile::Midpoint<int, 1, 0>::Value, 1);
-        CHECK_EQ(wstl::compile::Midpoint<int, -3, 4>::Value, 0);
-        CHECK_EQ(wstl::compile::Midpoint<int, 4, -3>::Value, 1);
-        CHECK_EQ(wstl::compile::Midpoint<int, -3, -4>::Value, -3);
-        CHECK_EQ(wstl::compile::Midpoint<int, -4, -3>::Value, -4);
+        CHECK_EQ((wstl::compile::Midpoint<int, 0, 0>::Value), 0);
+        CHECK_EQ((wstl::compile::Midpoint<int, 0, 1>::Value), 0);
+        CHECK_EQ((wstl::compile::Midpoint<int, 1, 0>::Value), 1);
+        CHECK_EQ((wstl::compile::Midpoint<int, -3, 4>::Value), 0);
+        CHECK_EQ((wstl::compile::Midpoint<int, 4, -3>::Value), 1);
+        CHECK_EQ((wstl::compile::Midpoint<int, -3, -4>::Value), -3);
+        CHECK_EQ((wstl::compile::Midpoint<int, -4, -3>::Value), -4);
+        
+        #ifdef __WSTL_CXX11__
+        CHECK_EQ((wstl::compile::Midpoint<int, 0, std::numeric_limits<int32_t>::max()>::Value), (std::numeric_limits<int32_t>::max() / 2));
+        CHECK_EQ((wstl::compile::Midpoint<int, std::numeric_limits<int32_t>::max(), 0>::Value), (std::numeric_limits<int32_t>::max() / 2) + 1);
 
-        CHECK_EQ(wstl::compile::Midpoint<int, 0, std::numeric_limits<int32_t>::max()>::Value, (std::numeric_limits<int32_t>::max() / 2));
-        CHECK_EQ(wstl::compile::Midpoint<int, std::numeric_limits<int32_t>::max(), 0>::Value, (std::numeric_limits<int32_t>::max() / 2) + 1);
+        CHECK_EQ((wstl::compile::Midpoint<int, std::numeric_limits<int32_t>::min(), std::numeric_limits<int32_t>::max()>::Value), -1);
+        CHECK_EQ((wstl::compile::Midpoint<int, std::numeric_limits<int32_t>::max(), std::numeric_limits<int32_t>::min()>::Value), 0);
+        #else
+        CHECK_EQ((wstl::compile::Midpoint<int, 0, INT32_MAX>::Value), (INT32_MAX / 2));
+        CHECK_EQ((wstl::compile::Midpoint<int, INT32_MAX, 0>::Value), (INT32_MAX / 2) + 1);
 
-        CHECK_EQ(wstl::compile::Midpoint<int, std::numeric_limits<int32_t>::min(), std::numeric_limits<int32_t>::max()>::Value, -1);
-        CHECK_EQ(wstl::compile::Midpoint<int, std::numeric_limits<int32_t>::max(), std::numeric_limits<int32_t>::min()>::Value, 0);
+        CHECK_EQ((wstl::compile::Midpoint<int, INT32_MIN, INT32_MAX>::Value), -1);
+        CHECK_EQ((wstl::compile::Midpoint<int, INT32_MAX, INT32_MIN>::Value), 0);
+        #endif
     }
 }

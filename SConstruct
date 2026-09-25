@@ -36,7 +36,10 @@ GNU_COMPILER_FLAGS = [
     '-Wpedantic', 
     '-Wconversion', 
     '-Wshadow', 
-    '-Werror'
+    '-Werror',
+    '-Wno-variadic-macros',
+    '-Wno-c++11-long-long',
+    '-Wno-deprecated-declarations'
 ]
 
 COMPILER_FLAGS = {
@@ -79,7 +82,7 @@ env.Append(
         '__WSTL_MATH_SUPPORT__'
     ],
     CPPPATH = [
-        env.Dir('doctest/doctest').srcnode(),
+        env.Dir(f'thirdparty/{"doctest98" if cppstd == "98" else "doctest"}/doctest' ).srcnode(),
         env.Dir('include').srcnode()
     ]
 )

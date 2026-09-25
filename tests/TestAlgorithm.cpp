@@ -1,5 +1,5 @@
 // Part of WardenSTL - https://github.com/WardenHD/WardenSTL
-// Copyright (c) 2025 Artem Bezruchko (WardenHD)
+// Copyright (c) 2026 Artem Bezruchko (WardenHD)
 //
 // This file is based on the Embedded Template Library (ETL)'s test_algorithm.cpp
 // from https://github.com/ETLCPP/etl, licensed under the MIT License.
@@ -30,7 +30,7 @@ namespace {
     std::random_device rd;
     std::mt19937 urng(rd());
 
-    constexpr size_t SIZE = 9;
+    const std::size_t SIZE = 9;
 
     int dataA[SIZE] = {4, 5, 7, 1, 10, 6, 3, 7, 7};
     int dataB[SIZE] = {1, 60, 4, 3, 9, 10, 5, 4, 10};
@@ -38,9 +38,37 @@ namespace {
     std::list<int> dataLA(std::begin(dataA), std::end(dataA));
     std::list<int> dataLB(std::begin(dataB), std::end(dataB));
 
-    constexpr size_t NONTRIVIAL_SIZE = 7;
+    const std::size_t NONTRIVIAL_SIZE = 7;
 
-    NonTrivialData dataN[NONTRIVIAL_SIZE] = {{1, 2}, {3, 4}, {5, 6}, {7, 8}, {9, 10}, {11, 12}, {13, 14}};
+    NonTrivialData dataN[NONTRIVIAL_SIZE] = {NonTrivialData(1, 2), NonTrivialData(3, 4), NonTrivialData(5, 6), 
+        NonTrivialData(7, 8), NonTrivialData(9, 10), NonTrivialData(11, 12), NonTrivialData(13, 14)};
+
+    template<typename T, T Value>
+    struct ConstantGenerator {
+        T operator()() const {
+            return Value;
+        }
+    };
+
+    bool StablePartitionPredicate(const NonTrivialData& x) {
+        return x.A > 2 && x.B > 2; 
+    }
+
+    bool IsNotEven(int x) { 
+        return x % 2 != 0; 
+    }
+
+    bool CopyIfPredicate2(const NonTrivialData& x) { 
+        return x.A % 2 == 0; 
+    }
+
+    bool AdjacentFindPredicate(int a, int b) { 
+        return (a - b) == 1; 
+    }
+
+    void DoubleFunction(int& x) { 
+        x *= 2; 
+    }
 }
 
 TEST_SUITE("Algorithm") {
@@ -52,7 +80,11 @@ TEST_SUITE("Algorithm") {
     }
 
     TEST_CASE("FindIf") {
+        #ifdef __WSTL_CXX11__
         auto predicate = [](int x) { return x == 5; };
+        #else
+        std::binder2nd<std::equal_to<int> > predicate(std::equal_to<int>(), 5);
+        #endif
 
         int* it1 = std::find_if(std::begin(dataA), std::end(dataA), predicate);
         int* it2 = wstl::FindIf(std::begin(dataA), std::end(dataA), predicate);
@@ -61,7 +93,11 @@ TEST_SUITE("Algorithm") {
     }
 
     TEST_CASE("FindIfNot") {
+        #ifdef __WSTL_CXX11__
         auto predicate = [](int x) { return x == 3; };
+        #else
+        std::binder2nd<std::equal_to<int> > predicate(std::equal_to<int>(), 3);
+        #endif
 
         int* it1 = std::find_if_not(std::begin(dataA), std::end(dataA), predicate);
         int* it2 = wstl::FindIfNot(std::begin(dataA), std::end(dataA), predicate);
@@ -70,8 +106,13 @@ TEST_SUITE("Algorithm") {
     }
 
     TEST_CASE("AllOf") {
+        #ifdef __WSTL_CXX11__
         auto truePredicate = [](int x) { return x > 0; };
         auto falsePredicate = [](int x) { return x > 3; };
+        #else
+        std::binder2nd<std::greater<int> > truePredicate(std::greater<int>(), 0);
+        std::binder2nd<std::greater<int> > falsePredicate(std::greater<int>(), 3);
+        #endif
 
         bool expected = std::all_of(std::begin(dataA), std::end(dataA), truePredicate);
         bool result = wstl::AllOf(std::begin(dataA), std::end(dataA), truePredicate);
@@ -85,8 +126,13 @@ TEST_SUITE("Algorithm") {
     }
 
     TEST_CASE("AnyOf") {
+        #ifdef __WSTL_CXX11__
         auto truePredicate = [](int x) { return x < 3; };
         auto falsePredicate = [](int x) { return x < 0; };
+        #else
+        std::binder2nd<std::less<int> > truePredicate(std::less<int>(), 0);
+        std::binder2nd<std::less<int> > falsePredicate(std::less<int>(), 3);
+        #endif
 
         bool expected = std::any_of(std::begin(dataA), std::end(dataA), truePredicate);
         bool result = wstl::AnyOf(std::begin(dataA), std::end(dataA), truePredicate);
@@ -100,8 +146,13 @@ TEST_SUITE("Algorithm") {
     }
 
     TEST_CASE("NoneOf") {
+        #ifdef __WSTL_CXX11__
         auto truePredicate = [](int x) { return x < 0; };
         auto falsePredicate = [](int x) { return x < 3; };
+        #else
+        std::binder2nd<std::less<int> > truePredicate(std::less<int>(), 0);
+        std::binder2nd<std::less<int> > falsePredicate(std::less<int>(), 3);
+        #endif
 
         bool expected = std::none_of(std::begin(dataA), std::end(dataA), truePredicate);
         bool result = wstl::NoneOf(std::begin(dataA), std::end(dataA), truePredicate);
@@ -118,7 +169,7 @@ TEST_SUITE("Algorithm") {
         int data[] = {4, 3, 1, 6, 7, 4};
         int expected[] = {8, 6, 2, 12, 14, 8};
 
-        wstl::ForEach(std::begin(data), std::end(data), [](int& x) { x *= 2; });
+        wstl::ForEach(std::begin(data), std::end(data), &DoubleFunction);
 
         CHECK(std::equal(std::begin(data), std::end(data), std::begin(expected)));
     }
@@ -126,8 +177,8 @@ TEST_SUITE("Algorithm") {
     TEST_CASE("ForEachInRange") {
         int data[] = {4, 3, 1, 6, 7, 4};
         int expected[] = {8, 6, 2, 12, 14, 8};
-
-        wstl::ForEachInRange(std::begin(data), 6, [](int& x) { return x *= 2; });
+        
+        wstl::ForEachInRange(std::begin(data), 6, &DoubleFunction);
 
         CHECK(std::equal(std::begin(data), std::end(data), std::begin(expected)));
     }
@@ -140,10 +191,8 @@ TEST_SUITE("Algorithm") {
     }
 
     TEST_CASE("CountIf") {
-        auto predicate = [](int x) { return x % 2 == 0; };
-
-        ptrdiff_t c1 = wstl::CountIf(std::begin(dataA), std::end(dataA), predicate);
-        ptrdiff_t c2 = std::count_if(std::begin(dataA), std::end(dataA), predicate);
+        ptrdiff_t c1 = wstl::CountIf(std::begin(dataA), std::end(dataA), &wstl::IsEven<int>);
+        ptrdiff_t c2 = std::count_if(std::begin(dataA), std::end(dataA), &wstl::IsEven<int>);
 
         CHECK_EQ(c1, c2);
     }
@@ -152,16 +201,15 @@ TEST_SUITE("Algorithm") {
         int data1[] = {1, 2, 3, 4, 5, 7, 8};
         int data2[] = {1, 2, 3, 4, 5, 6, 7};
         int data3[] = {1, 2, 3, 4, 5, 6, 7, 8};
-        auto predicate = [](int a, int b) { return a == b; };
 
-        auto result = wstl::Mismatch(std::begin(data1), std::end(data1), std::begin(data2));
-        auto expected = std::mismatch(std::begin(data1), std::end(data1), std::begin(data2));
+        wstl::Pair<int*, int*> result = wstl::Mismatch(std::begin(data1), std::end(data1), std::begin(data2));
+        std::pair<int*, int*> expected = std::mismatch(std::begin(data1), std::end(data1), std::begin(data2));
 
         CHECK_EQ(result.First, expected.first);
         CHECK_EQ(result.Second, expected.second);
 
-        result = wstl::Mismatch(std::begin(data1), std::end(data1), std::begin(data2), predicate);
-        expected = std::mismatch(std::begin(data1), std::end(data1), std::begin(data2), predicate);
+        result = wstl::Mismatch(std::begin(data1), std::end(data1), std::begin(data2), std::equal_to<int>());
+        expected = std::mismatch(std::begin(data1), std::end(data1), std::begin(data2), std::equal_to<int>());
 
         CHECK_EQ(result.First, expected.first);
         CHECK_EQ(result.Second, expected.second);
@@ -179,8 +227,8 @@ TEST_SUITE("Algorithm") {
         CHECK_EQ(result.First, expected.first);
         CHECK_EQ(result.Second, expected.second);
 
-        result = wstl::Mismatch(std::begin(data2), std::end(data2), std::begin(data3), std::end(data3), predicate);
-        expected = std::mismatch(std::begin(data2), std::end(data2), std::begin(data3), std::end(data3), predicate);
+        result = wstl::Mismatch(std::begin(data2), std::end(data2), std::begin(data3), std::end(data3), std::equal_to<int>());
+        expected = std::mismatch(std::begin(data2), std::end(data2), std::begin(data3), std::end(data3), std::equal_to<int>());
 
         CHECK_EQ(result.First, expected.first);
         CHECK_EQ(result.Second, expected.second);
@@ -247,15 +295,13 @@ TEST_SUITE("Algorithm") {
     }
 
     TEST_CASE("AdjacentFind") {
-        auto predicate = [](int a, int b) { return (a - b) == 1; };
-
         int* it1 = wstl::AdjacentFind(std::begin(dataA), std::end(dataA));
         int* it2 = std::adjacent_find(std::begin(dataA), std::end(dataA));
 
         CHECK_EQ(it1, it2);
 
-        it1 = wstl::AdjacentFind(std::begin(dataA), std::end(dataA), predicate);
-        it2 = std::adjacent_find(std::begin(dataA), std::end(dataA), predicate);
+        it1 = wstl::AdjacentFind(std::begin(dataA), std::end(dataA), &AdjacentFindPredicate);
+        it2 = std::adjacent_find(std::begin(dataA), std::end(dataA), &AdjacentFindPredicate);
 
         CHECK_EQ(it1, it2);
     }
@@ -309,10 +355,8 @@ TEST_SUITE("Algorithm") {
         int buffer1[SIZE] = {0};
         int buffer2[SIZE] = {0};
 
-        auto predicate = [](int x) { return x % 2 == 0; };
-
-        int* p1 = wstl::CopyIf(std::begin(dataA), std::end(dataA), std::begin(buffer1), predicate);
-        int* p2 = std::copy_if(std::begin(dataA), std::end(dataA), std::begin(buffer2), predicate);
+        int* p1 = wstl::CopyIf(std::begin(dataA), std::end(dataA), std::begin(buffer1), &wstl::IsEven<int>);
+        int* p2 = std::copy_if(std::begin(dataA), std::end(dataA), std::begin(buffer2), &wstl::IsEven<int>);
 
         ptrdiff_t d1 = std::distance(buffer1, p1);
         ptrdiff_t d2 = std::distance(buffer2, p2);
@@ -325,10 +369,8 @@ TEST_SUITE("Algorithm") {
         NonTrivialData bufferN1[NONTRIVIAL_SIZE];
         NonTrivialData bufferN2[NONTRIVIAL_SIZE];
 
-        auto predicateN = [](NonTrivialData x) { return x.A % 2 == 0; };
-
-        NonTrivialData* pn1 = wstl::CopyIf(std::begin(dataN), std::end(dataN), std::begin(bufferN1), predicateN);
-        NonTrivialData* pn2 = std::copy_if(std::begin(dataN), std::end(dataN), std::begin(bufferN2), predicateN);
+        NonTrivialData* pn1 = wstl::CopyIf(std::begin(dataN), std::end(dataN), std::begin(bufferN1), &CopyIfPredicate2);
+        NonTrivialData* pn2 = std::copy_if(std::begin(dataN), std::end(dataN), std::begin(bufferN2), &CopyIfPredicate2);
 
         d1 = std::distance(bufferN1, pn1);
         d2 = std::distance(bufferN2, pn2);
@@ -341,8 +383,8 @@ TEST_SUITE("Algorithm") {
         std::list<int> list1(SIZE);
         std::list<int> list2(SIZE);
 
-        std::list<int>::iterator pl1 = wstl::CopyIf(std::begin(dataLA), std::end(dataLA), std::begin(list1), predicate);
-        std::list<int>::iterator pl2 = std::copy_if(std::begin(dataLA), std::end(dataLA), std::begin(list2), predicate);
+        std::list<int>::iterator pl1 = wstl::CopyIf(std::begin(dataLA), std::end(dataLA), std::begin(list1), &wstl::IsEven<int>);
+        std::list<int>::iterator pl2 = std::copy_if(std::begin(dataLA), std::end(dataLA), std::begin(list2), &wstl::IsEven<int>);
 
         d1 = std::distance(list1.begin(), pl1);
         d2 = std::distance(list2.begin(), pl2);
@@ -441,9 +483,15 @@ TEST_SUITE("Algorithm") {
     }
 
     TEST_CASE("Move") {
-        typedef std::vector<std::unique_ptr<uint32_t>> Data;
+        #ifdef __WSTL_CXX11__
+        typedef std::vector<std::unique_ptr<uint32_t> > Data;
+        #else
+        typedef std::vector<uint32_t> Data;
+        #endif
+
         Data data1;
 
+        #ifdef __WSTL_CXX11__
         // Create some data
         std::unique_ptr<uint32_t> p1(new uint32_t(1U));
         std::unique_ptr<uint32_t> p2(new uint32_t(2U));
@@ -457,10 +505,19 @@ TEST_SUITE("Algorithm") {
         data1.push_back(std::move(p3));
         data1.push_back(std::move(p4));
         data1.push_back(std::move(p5));
+        #else
+        // Create data and push it
+        data1.push_back(1U);
+        data1.push_back(2U);
+        data1.push_back(3U);
+        data1.push_back(4U);
+        data1.push_back(5U);
+        #endif
 
         Data data2;
         wstl::Move(data1.begin(), data1.end(), std::back_inserter(data2));
 
+        #ifdef __WSTL_CXX11__
         CHECK(!p1);
         CHECK(!p2);
         CHECK(!p3);
@@ -472,12 +529,25 @@ TEST_SUITE("Algorithm") {
         CHECK_EQ(*data2[2], 3U);
         CHECK_EQ(*data2[3], 4U);
         CHECK_EQ(*data2[4], 5U);
+        #else
+        CHECK_EQ(data2[0], 1U);
+        CHECK_EQ(data2[1], 2U);
+        CHECK_EQ(data2[2], 3U);
+        CHECK_EQ(data2[3], 4U);
+        CHECK_EQ(data2[4], 5U);
+        #endif
     }
 
     TEST_CASE("MoveBackward") {
-        typedef std::vector<std::unique_ptr<uint32_t>> Data;
+        #ifdef __WSTL_CXX11__
+        typedef std::vector<std::unique_ptr<uint32_t> > Data;
+        #else
+        typedef std::vector<uint32_t> Data;
+        #endif
+
         Data data1;
 
+        #ifdef __WSTL_CXX11__
         // Create some data
         std::unique_ptr<uint32_t> p1(new uint32_t(1U));
         std::unique_ptr<uint32_t> p2(new uint32_t(2U));
@@ -491,10 +561,19 @@ TEST_SUITE("Algorithm") {
         data1.push_back(std::move(p3));
         data1.push_back(std::move(p4));
         data1.push_back(std::move(p5));
+        #else
+        // Create data and push it
+        data1.push_back(1U);
+        data1.push_back(2U);
+        data1.push_back(3U);
+        data1.push_back(4U);
+        data1.push_back(5U);
+        #endif
 
         Data data2(5);
         wstl::MoveBackward(data1.begin(), data1.end(), data2.end());
 
+        #ifdef __WSTL_CXX11__
         CHECK(!p1);
         CHECK(!p2);
         CHECK(!p3);
@@ -506,23 +585,42 @@ TEST_SUITE("Algorithm") {
         CHECK_EQ(*data2[2], 3U);
         CHECK_EQ(*data2[3], 4U);
         CHECK_EQ(*data2[4], 5U);
+        #else
+        CHECK_EQ(data2[0], 1U);
+        CHECK_EQ(data2[1], 2U);
+        CHECK_EQ(data2[2], 3U);
+        CHECK_EQ(data2[3], 4U);
+        CHECK_EQ(data2[4], 5U);
+        #endif
     }
 
     TEST_CASE("Fill") {
         int buffer[SIZE];
 
+        #ifdef __WSTL_CXX11__
+        auto predicate = [](int x) { return x == 5; };
+        #else
+        std::binder2nd<std::equal_to<int> > predicate(std::equal_to<int>(), 5);
+        #endif
+
         wstl::Fill(std::begin(buffer), std::end(buffer), 5);
         
-        bool result = std::all_of(std::begin(buffer), std::end(buffer), [](int x) { return x == 5; });
+        bool result = std::all_of(std::begin(buffer), std::end(buffer), predicate);
         CHECK(result);
     }
 
     TEST_CASE("FillInRange") {
         int buffer[SIZE];
 
+        #ifdef __WSTL_CXX11__
+        auto predicate = [](int x) { return x == 5; };
+        #else
+        std::binder2nd<std::equal_to<int> > predicate(std::equal_to<int>(), 5);
+        #endif
+
         wstl::FillInRange(std::begin(buffer), SIZE, 5);
         
-        bool result = std::all_of(std::begin(buffer), std::end(buffer), [](int x) { return x == 5; });
+        bool result = std::all_of(std::begin(buffer), std::end(buffer), predicate);
         CHECK(result);
     }
 
@@ -530,7 +628,11 @@ TEST_SUITE("Algorithm") {
         int buffer1[SIZE];
         int buffer2[SIZE];
 
+        #ifdef __WSTL_CXX11__
         auto transform = [](int x) { return x * 2; };
+        #else
+        std::binder2nd<std::multiplies<int> > transform(std::multiplies<int>(), 2);
+        #endif
 
         wstl::Transform(std::begin(dataA), std::end(dataA), buffer1, transform);
         std::transform(std::begin(dataA), std::end(dataA), buffer2, transform);
@@ -549,10 +651,8 @@ TEST_SUITE("Algorithm") {
         int buffer1[SIZE];
         int buffer2[SIZE];
 
-        auto generator = []() { return 5; };
-
-        wstl::Generate(std::begin(buffer1), std::end(buffer1), generator);
-        std::generate(std::begin(buffer2), std::end(buffer2), generator);
+        wstl::Generate(std::begin(buffer1), std::end(buffer1), ConstantGenerator<int, 5>());
+        std::generate(std::begin(buffer2), std::end(buffer2), ConstantGenerator<int, 5>());
 
         bool result = std::equal(std::begin(buffer1), std::end(buffer1), std::begin(buffer2));
         CHECK(result);
@@ -562,10 +662,8 @@ TEST_SUITE("Algorithm") {
         int buffer1[SIZE];
         int buffer2[SIZE];
 
-        auto generator = []() { return 5; };
-
-        wstl::GenerateInRange(std::begin(buffer1), SIZE, generator);
-        std::generate_n(std::begin(buffer2), SIZE, generator);
+        wstl::GenerateInRange(std::begin(buffer1), SIZE, ConstantGenerator<int, 5>());
+        std::generate_n(std::begin(buffer2), SIZE, ConstantGenerator<int, 5>());
 
         bool result = std::equal(std::begin(buffer1), std::end(buffer1), std::begin(buffer2));
         CHECK(result);
@@ -585,9 +683,7 @@ TEST_SUITE("Algorithm") {
         int data[] = {1, 2, 3, 4, 4, 4, 5, 6, 7};
         int expected[] = {2, 4, 4, 4, 6};
 
-        auto predicate = [](int x) { return x % 2 != 0; };
-
-        wstl::RemoveIf(std::begin(data), std::end(data), predicate);
+        wstl::RemoveIf(std::begin(data), std::end(data), &IsNotEven);
 
         bool result = std::equal(std::begin(expected), std::end(expected), data);
         CHECK(result);
@@ -609,9 +705,7 @@ TEST_SUITE("Algorithm") {
         int expected[] = {2, 4, 4, 4, 6};
         int buffer[9];
 
-        auto predicate = [](int x) { return x % 2 != 0; };
-
-        wstl::RemoveCopyIf(std::begin(data), std::end(data), buffer, predicate);
+        wstl::RemoveCopyIf(std::begin(data), std::end(data), buffer, &IsNotEven);
 
         bool result = std::equal(std::begin(expected), std::end(expected), buffer);
         CHECK(result);
@@ -631,9 +725,7 @@ TEST_SUITE("Algorithm") {
         int data[] = {1, 2, 3, 4, 4, 4, 5, 6, 7};
         int expected[] = {10, 2, 10, 4, 4, 4, 10, 6, 10};
 
-        auto predicate = [](int x) { return x % 2 != 0; };
-
-        wstl::ReplaceIf(std::begin(data), std::end(data), predicate, 10);
+        wstl::ReplaceIf(std::begin(data), std::end(data), &IsNotEven, 10);
 
         bool result = std::equal(std::begin(expected), std::end(expected), data);
         CHECK(result);
@@ -655,9 +747,7 @@ TEST_SUITE("Algorithm") {
         int expected[] = {10, 2, 10, 4, 4, 4, 10, 6, 10};
         int buffer[9];
 
-        auto predicate = [](int x) { return x % 2 != 0; };
-
-        wstl::ReplaceCopyIf(std::begin(data), std::end(data), buffer, predicate, 10);
+        wstl::ReplaceCopyIf(std::begin(data), std::end(data), buffer, &IsNotEven, 10);
 
         bool result = std::equal(std::begin(expected), std::end(expected), buffer);
         CHECK(result);
@@ -713,11 +803,11 @@ TEST_SUITE("Algorithm") {
 
     TEST_CASE("Rotate") {
         // POD
-        std::vector<int> initial = {1, 2, 3, 4, 5, 6, 7};
+        std::array<int, 7> initial = {1, 2, 3, 4, 5, 6, 7};
 
         for(size_t i = 0; i < initial.size(); ++i) {
-            std::vector<int> data1(initial);
-            std::vector<int> data2(initial);
+            std::array<int, 7> data1(initial);
+            std::array<int, 7> data2(initial);
 
             wstl::Rotate(data1.data(), data1.data() + i, data1.data() + data1.size());
             std::rotate(data2.data(), data2.data() + i, data2.data() + data2.size());
@@ -743,11 +833,10 @@ TEST_SUITE("Algorithm") {
 
     TEST_CASE("RotateCopy") {
         // POD
-        std::vector<int> initial = {1, 2, 3, 4, 5, 6, 7};
+        std::array<int, 7> initial = {1, 2, 3, 4, 5, 6, 7};
 
         for(size_t i = 0; i < initial.size(); ++i) {
-            std::vector<int> data1(initial.size());
-            std::vector<int> data2(initial.size());
+            std::array<int, 7> data1, data2;
 
             wstl::RotateCopy(initial.data(), initial.data() + i, initial.data() + initial.size(), data1.data());
             std::rotate_copy(initial.data(), initial.data() + i, initial.data() + initial.size(), data2.data());
@@ -806,7 +895,12 @@ TEST_SUITE("Algorithm") {
 
     TEST_CASE("IsPartitioned") {
         int data[] = {1, 2, 3, 4, 5, 6, 7, 8};
+
+        #ifdef __WSTL_CXX11__
         auto predicate = std::bind(std::greater<int>(), std::placeholders::_1, 4);
+        #else
+        std::binder2nd<std::greater<int> > predicate(std::greater<int>(), 4);
+        #endif
 
         bool expected = std::is_partitioned(std::begin(data), std::end(data), predicate);
         bool result = wstl::IsPartitioned(std::begin(data), std::end(data), predicate);
@@ -829,11 +923,11 @@ TEST_SUITE("Algorithm") {
         bool complete = false;
 
         while(!complete) {
-            auto pivot1 = wstl::Partition(data1.begin(), data1.end(), wstl::IsEven<int>);
-            auto pivot2 = std::partition(expected1.begin(), expected1.end(), wstl::IsEven<int>);
+            std::forward_list<int>::iterator pivot1 = wstl::Partition(data1.begin(), data1.end(), wstl::IsEven<int>);
+            std::forward_list<int>::iterator pivot2 = std::partition(expected1.begin(), expected1.end(), wstl::IsEven<int>);
 
-            auto distance1 = std::distance(data1.begin(), pivot1);
-            auto distance2 = std::distance(expected1.begin(), pivot2);
+            ptrdiff_t distance1 = std::distance(data1.begin(), pivot1);
+            ptrdiff_t distance2 = std::distance(expected1.begin(), pivot2);
 
             CHECK_EQ(distance1, distance2);
             CHECK_EQ(*pivot1, *pivot2);
@@ -854,11 +948,11 @@ TEST_SUITE("Algorithm") {
         complete = false;
 
         while(!complete) {
-            auto pivot1 = wstl::Partition(data2.begin(), data2.end(), wstl::IsEven<int>);
-            auto pivot2 = std::partition(expected2.begin(), expected2.end(), wstl::IsEven<int>);
+            int* pivot1 = wstl::Partition(data2.begin(), data2.end(), wstl::IsEven<int>);
+            int* pivot2 = std::partition(expected2.begin(), expected2.end(), wstl::IsEven<int>);
 
-            auto distance1 = std::distance(data2.begin(), pivot1);
-            auto distance2 = std::distance(expected2.begin(), pivot2);
+            ptrdiff_t distance1 = std::distance(data2.begin(), pivot1);
+            ptrdiff_t distance2 = std::distance(expected2.begin(), pivot2);
 
             CHECK_EQ(distance1, distance2);
             CHECK_EQ(*pivot1, *pivot2);
@@ -879,8 +973,14 @@ TEST_SUITE("Algorithm") {
         int data2False[SIZE] = {0};
         int data2True[SIZE] = {0};
 
-        wstl::PartitionCopy(std::begin(dataA), std::end(dataA), data1True, data1False, std::bind(std::greater<int>(), std::placeholders::_1, 4));
-        std::partition_copy(std::begin(dataA), std::end(dataA), data2True, data2False, std::bind(std::greater<int>(), std::placeholders::_1, 4));
+        #ifdef __WSTL_CXX11__
+        auto predicate = std::bind(std::greater<int>(), std::placeholders::_1, 4);
+        #else
+        std::binder2nd<std::greater<int> > predicate(std::greater<int>(), 4);
+        #endif
+
+        wstl::PartitionCopy(std::begin(dataA), std::end(dataA), data1True, data1False, predicate);
+        std::partition_copy(std::begin(dataA), std::end(dataA), data2True, data2False, predicate);
 
         bool result = std::equal(std::begin(data2True), std::end(data2True), std::begin(data1True));
         CHECK(result);
@@ -890,13 +990,23 @@ TEST_SUITE("Algorithm") {
     }
 
     TEST_CASE("StablePartition") {
-        std::vector<NonTrivialData> initial = {{1, 1}, {2, 1}, {3, 1}, {2, 2}, {3, 2}, {4, 1}, {2, 3}, {3, 3}, {5, 1}};
+        std::vector<NonTrivialData> initial;
+
+        initial.push_back(NonTrivialData(1, 1));
+        initial.push_back(NonTrivialData(2, 1));
+        initial.push_back(NonTrivialData(3, 1));
+        initial.push_back(NonTrivialData(2, 2));
+        initial.push_back(NonTrivialData(3, 2));
+        initial.push_back(NonTrivialData(4, 1));
+        initial.push_back(NonTrivialData(2, 3));
+        initial.push_back(NonTrivialData(3, 3));
+        initial.push_back(NonTrivialData(5, 1));
 
         std::vector<NonTrivialData> data1(initial);
         std::vector<NonTrivialData> data2(initial);
 
-        wstl::StablePartition(data1.begin(), data1.end(), [](NonTrivialData& x) { return x.A > 2 && x.B > 2; });
-        std::stable_partition(data2.begin(), data2.end(), [](NonTrivialData& x) { return x.A > 2 && x.B > 2; });
+        wstl::StablePartition(data1.begin(), data1.end(), &StablePartitionPredicate);
+        std::stable_partition(data2.begin(), data2.end(), &StablePartitionPredicate);
 
         bool result = std::equal(data1.begin(), data1.end(), data2.begin());
         CHECK(result);       
@@ -905,16 +1015,24 @@ TEST_SUITE("Algorithm") {
     TEST_CASE("PartitionPoint") {
         int data[] = {1, 2, 3, 4, 5, 6, 7, 8};
 
-        std::partition(std::begin(data), std::end(data), std::bind(std::greater<int>(), std::placeholders::_1, 4));
+        #ifdef __WSTL_CXX11__
+        auto predicate1 = std::bind(std::greater<int>(), std::placeholders::_1, 4);
+        auto predicate2 = std::bind(std::greater<int>(), std::placeholders::_1, 8);
+        #else
+        std::binder2nd<std::greater<int> > predicate1(std::greater<int>(), 4);
+        std::binder2nd<std::greater<int> > predicate2(std::greater<int>(), 8);
+        #endif
 
-        int* p1 = wstl::PartitionPoint(std::begin(data), std::end(data), std::bind(std::greater<int>(), std::placeholders::_1, 4));
-        int* p2 = std::partition_point(std::begin(data), std::end(data), std::bind(std::greater<int>(), std::placeholders::_1, 4));
+        std::partition(std::begin(data), std::end(data), predicate1);
+
+        int* p1 = wstl::PartitionPoint(std::begin(data), std::end(data), predicate1);
+        int* p2 = std::partition_point(std::begin(data), std::end(data), predicate1);
         CHECK_EQ(p1, p2);
 
-        std::partition(std::begin(data), std::end(data), std::bind(std::greater<int>(), std::placeholders::_1, 8));
+        std::partition(std::begin(data), std::end(data), predicate2);
 
-        p1 = wstl::PartitionPoint(std::begin(data), std::end(data), std::bind(std::greater<int>(), std::placeholders::_1, 8));
-        p2 = std::partition_point(std::begin(data), std::end(data), std::bind(std::greater<int>(), std::placeholders::_1, 8));
+        p1 = wstl::PartitionPoint(std::begin(data), std::end(data), predicate2);
+        p2 = std::partition_point(std::begin(data), std::end(data), predicate2);
         CHECK_EQ(p1, p2);
     }
 
@@ -932,8 +1050,8 @@ TEST_SUITE("Algorithm") {
         // Empty
         std::array<int, 0> empty;
 
-        auto expectedEmpty = std::min_element(std::begin(empty), std::end(empty), std::greater<int>());
-        auto resultEmpty = wstl::MinElement(std::begin(empty), std::end(empty), std::greater<int>());
+        int* expectedEmpty = std::min_element(std::begin(empty), std::end(empty), std::greater<int>());
+        int* resultEmpty = wstl::MinElement(std::begin(empty), std::end(empty), std::greater<int>());
         CHECK_EQ(expectedEmpty, resultEmpty);
     }
 
@@ -943,8 +1061,8 @@ TEST_SUITE("Algorithm") {
 
         CHECK_EQ(wstl::Min(a, b), 1);
         CHECK_EQ(wstl::Min(a, b, std::greater<int>()), 2);
-        CHECK_EQ(wstl::compile::Min<int, 1, 2>::Value, 1);
-        CHECK_EQ(wstl::compile::Min<int, 1, 2, wstl::compile::Greater<int>>::Value, 2);
+        CHECK_EQ((wstl::compile::Min<int, 1, 2>::Value), 1);
+        CHECK_EQ((wstl::compile::Min<int, 1, 2, wstl::compile::Greater<int> >::Value), 2);
     }
 
     TEST_CASE("MaxElement") {
@@ -961,8 +1079,8 @@ TEST_SUITE("Algorithm") {
         // Empty
         std::array<int, 0> empty;
 
-        auto expectedEmpty = std::max_element(std::begin(empty), std::end(empty), std::greater<int>());
-        auto resultEmpty = wstl::MaxElement(std::begin(empty), std::end(empty), std::greater<int>());
+        int* expectedEmpty = std::max_element(std::begin(empty), std::end(empty), std::greater<int>());
+        int* resultEmpty = wstl::MaxElement(std::begin(empty), std::end(empty), std::greater<int>());
         CHECK_EQ(expectedEmpty, resultEmpty);
     }
 
@@ -972,8 +1090,8 @@ TEST_SUITE("Algorithm") {
 
         CHECK_EQ(wstl::Max(a, b), 2);
         CHECK_EQ(wstl::Max(a, b, std::greater<int>()), 1);
-        CHECK_EQ(wstl::compile::Max<int, 1, 2>::Value, 2);
-        CHECK_EQ(wstl::compile::Max<int, 1, 2, wstl::compile::Greater<int>>::Value, 1);
+        CHECK_EQ((wstl::compile::Max<int, 1, 2>::Value), 2);
+        CHECK_EQ((wstl::compile::Max<int, 1, 2, wstl::compile::Greater<int> >::Value), 1);
     }
 
     TEST_CASE("MinMaxElement") {
@@ -992,8 +1110,8 @@ TEST_SUITE("Algorithm") {
         // Empty
         std::array<int, 0> empty;
 
-        auto expectedEmpty = std::minmax_element(std::begin(empty), std::end(empty), std::greater<int>());
-        auto resultEmpty = wstl::MinMaxElement(std::begin(empty), std::end(empty), std::greater<int>());
+        std::pair<int*, int*> expectedEmpty = std::minmax_element(std::begin(empty), std::end(empty), std::greater<int>());
+        wstl::Pair<int*, int*> resultEmpty = wstl::MinMaxElement(std::begin(empty), std::end(empty), std::greater<int>());
         CHECK_EQ(expectedEmpty.first, resultEmpty.First);
         CHECK_EQ(expectedEmpty.second, resultEmpty.Second);
     }
@@ -1019,11 +1137,12 @@ TEST_SUITE("Algorithm") {
         CHECK_EQ(wstl::Clamp(15, 0, 10), 10);
 
         // Compile-time
-        CHECK_EQ(wstl::compile::Clamp<int, 5, 0, 10>::Value, 5);
-        CHECK_EQ(wstl::compile::Clamp<int, -5, 0, 10>::Value, 0);
-        CHECK_EQ(wstl::compile::Clamp<int, 15, 0, 10>::Value, 10);
+        CHECK_EQ((wstl::compile::Clamp<int, 5, 0, 10>::Value), 5);
+        CHECK_EQ((wstl::compile::Clamp<int, -5, 0, 10>::Value), 0);
+        CHECK_EQ((wstl::compile::Clamp<int, 15, 0, 10>::Value), 10);
 
         // Constexpr
+        #ifdef __WSTL_CXX11__
         constexpr int result1 = wstl::Clamp(5, 0, 10);
         constexpr int result2 = wstl::Clamp(-5, 0, 10);
         constexpr int result3 = wstl::Clamp(15, 0, 10);
@@ -1031,6 +1150,7 @@ TEST_SUITE("Algorithm") {
         CHECK_EQ(result1, 5);
         CHECK_EQ(result2, 0);
         CHECK_EQ(result3, 10);
+        #endif
     }
 
     TEST_CASE("Equal") {
@@ -1056,8 +1176,9 @@ TEST_SUITE("Algorithm") {
     }
 
     TEST_CASE("Heap") {
-        std::vector<uint32_t> data1 = {1, 2, 3, 4, 5, 6, 7, 8};
-        std::vector<uint32_t> data2 = {1, 2, 3, 4, 5, 6, 7, 8};
+        int arr[] = {1, 2, 3, 4, 5, 6, 7, 8};
+        std::vector<uint32_t> data1(std::begin(arr), std::end(arr));
+        std::vector<uint32_t> data2(std::begin(arr), std::end(arr));
 
         wstl::MakeHeap(data1.begin(), data1.end());
         std::make_heap(data2.begin(), data2.end());
@@ -1120,31 +1241,36 @@ TEST_SUITE("Algorithm") {
     }
 
     TEST_CASE("Heap movable") {
+        #ifdef __WSTL_CXX11__
         typedef MovableData<uint32_t> Item;
+        #else
+        typedef uint32_t Item;
+        #endif
+
         typedef std::vector<Item> Data;
         Data data1;
 
         // Create some data
         Item p1(1U), p2(2U), p3(3U), p4(4U), p5(5U), p6(6U), p7(7U), p8(8U);
 
-        data1.push_back(std::move(p1));
-        data1.push_back(std::move(p2));
-        data1.push_back(std::move(p3));
-        data1.push_back(std::move(p4));
-        data1.push_back(std::move(p5));
-        data1.push_back(std::move(p6));
-        data1.push_back(std::move(p7));
-        data1.push_back(std::move(p8));
+        data1.push_back(__WSTL_MOVE__(p1));
+        data1.push_back(__WSTL_MOVE__(p2));
+        data1.push_back(__WSTL_MOVE__(p3));
+        data1.push_back(__WSTL_MOVE__(p4));
+        data1.push_back(__WSTL_MOVE__(p5));
+        data1.push_back(__WSTL_MOVE__(p6));
+        data1.push_back(__WSTL_MOVE__(p7));
+        data1.push_back(__WSTL_MOVE__(p8));
 
         Data data2;
-        data2.emplace_back(Item(1U));
-        data2.emplace_back(Item(2U));
-        data2.emplace_back(Item(3U));
-        data2.emplace_back(Item(4U));
-        data2.emplace_back(Item(5U));
-        data2.emplace_back(Item(6U));
-        data2.emplace_back(Item(7U));
-        data2.emplace_back(Item(8U));
+        data2.push_back(Item(1U));
+        data2.push_back(Item(2U));
+        data2.push_back(Item(3U));
+        data2.push_back(Item(4U));
+        data2.push_back(Item(5U));
+        data2.push_back(Item(6U));
+        data2.push_back(Item(7U));
+        data2.push_back(Item(8U));
 
         wstl::MakeHeap(data1.begin(), data1.end());
         std::make_heap(data2.begin(), data2.end());
@@ -1266,11 +1392,11 @@ TEST_SUITE("Algorithm") {
     }
 
     TEST_CASE("PartialSort") {
-        std::vector<int> initial = {5, 7, 4, 2, 8, 6, 1, 9, 0, 3};
+        std::array<int, 10> initial = {5, 7, 4, 2, 8, 6, 1, 9, 0, 3};
 
         for(size_t i = 0; i < initial.size(); ++i) {
-            std::vector<int> data1 = initial;
-            std::vector<int> data2 = initial;
+            std::array<int, 10> data1 = initial;
+            std::array<int, 10> data2 = initial;
 
             wstl::PartialSort(data1.begin(), data1.begin() + ptrdiff_t(i), data1.end());
             std::partial_sort(data2.begin(), data2.begin() + ptrdiff_t(i), data2.end());
@@ -1280,12 +1406,10 @@ TEST_SUITE("Algorithm") {
             CAPTURE(i);
 
             if (!equal) {
-                for (auto x : data1)
-                    std::cout << x << ' ';
+                for (int* x = data1.begin(); x != data1.end(); ++x) std::cout << *x << ' ';
                 std::cout << '\n';
 
-                for (auto x : data2)
-                    std::cout << x << ' ';
+                for (int* x = data2.begin(); x != data2.end(); ++x) std::cout << *x << ' ';
                 std::cout << '\n';
             }
 
@@ -1302,12 +1426,10 @@ TEST_SUITE("Algorithm") {
             CAPTURE(i);
 
             if (!equal) {
-                for (auto x : data1)
-                    std::cout << x << ' ';
+                for (int* x = data1.begin(); x != data1.end(); ++x) std::cout << *x << ' ';
                 std::cout << '\n';
 
-                for (auto x : data2)
-                    std::cout << x << ' ';
+                for (int* x = data2.begin(); x != data2.end(); ++x) std::cout << *x << ' ';
                 std::cout << '\n';
             }
 
@@ -1316,7 +1438,7 @@ TEST_SUITE("Algorithm") {
     }
 
     TEST_CASE("PartialSortCopy") {
-        std::vector<int> initial = {5, 7, 4, 2, 8, 6, 1, 9, 0, 3};
+        std::array<int, 10> initial = {5, 7, 4, 2, 8, 6, 1, 9, 0, 3};
 
         for(size_t i = 0; i < initial.size(); ++i) {
             std::vector<int> data1(initial.size());
@@ -1365,11 +1487,11 @@ TEST_SUITE("Algorithm") {
     }
 
     TEST_CASE("InplaceMerge") {
-        std::vector<int> data1 = {2, 4, 6, 7, 9, 1, 3, 5, 8};
-        std::vector<int> data2 = {9, 7, 6, 4, 1, 8, 5, 3, 2};
+        std::array<int, 9> data1 = {2, 4, 6, 7, 9, 1, 3, 5, 8};
+        std::array<int, 9> data2 = {9, 7, 6, 4, 1, 8, 5, 3, 2};
 
-        std::vector<int> result(data1);
-        std::vector<int> expected(data1);
+        std::array<int, 9> result(data1);
+        std::array<int, 9> expected(data1);
 
         wstl::InplaceMerge(result.begin(), result.begin() + 5, result.end());
         std::inplace_merge(expected.begin(), expected.begin() + 5, expected.end());
@@ -1545,7 +1667,17 @@ TEST_SUITE("Algorithm") {
     }
 
     TEST_CASE("StableSort") {
-        std::vector<NonTrivialData> initial = {{1, 1}, {2, 1}, {3, 1}, {2, 2}, {3, 2}, {4, 1}, {2, 3}, {3, 3}, {5, 1}};
+        std::vector<NonTrivialData> initial;
+
+        initial.push_back(NonTrivialData(1, 1));
+        initial.push_back(NonTrivialData(2, 1));
+        initial.push_back(NonTrivialData(3, 1));
+        initial.push_back(NonTrivialData(2, 2));
+        initial.push_back(NonTrivialData(3, 2));
+        initial.push_back(NonTrivialData(4, 1));
+        initial.push_back(NonTrivialData(2, 3));
+        initial.push_back(NonTrivialData(3, 3));
+        initial.push_back(NonTrivialData(5, 1));
 
         std::vector<NonTrivialData> data1(initial);
         std::vector<NonTrivialData> data2(initial);
@@ -1805,8 +1937,21 @@ TEST_SUITE("Algorithm") {
     }
 
     TEST_CASE("NextPermutation") {
-        std::vector<int> initial1 = {1, 2, 3, 4, 5, 6};
-        std::vector<int> initial2 = {6, 5, 4, 3, 2, 1};
+        std::vector<int> initial1;
+        initial1.push_back(1);
+        initial1.push_back(2);
+        initial1.push_back(3);
+        initial1.push_back(4);
+        initial1.push_back(5);
+        initial1.push_back(6);
+
+        std::vector<int> initial2;
+        initial2.push_back(6);
+        initial2.push_back(5);
+        initial2.push_back(4);
+        initial2.push_back(3);
+        initial2.push_back(2);
+        initial2.push_back(1);
 
         std::vector<int> data1 = initial1;
         std::vector<int> data2 = initial1;
@@ -1837,8 +1982,21 @@ TEST_SUITE("Algorithm") {
     }
 
     TEST_CASE("PreviousPermutation") {
-        std::vector<int> initial1 = {1, 2, 3, 4, 5, 6};
-        std::vector<int> initial2 = {6, 5, 4, 3, 2, 1};
+        std::vector<int> initial1;
+        initial1.push_back(1);
+        initial1.push_back(2);
+        initial1.push_back(3);
+        initial1.push_back(4);
+        initial1.push_back(5);
+        initial1.push_back(6);
+
+        std::vector<int> initial2;
+        initial2.push_back(6);
+        initial2.push_back(5);
+        initial2.push_back(4);
+        initial2.push_back(3);
+        initial2.push_back(2);
+        initial2.push_back(1);
 
         std::vector<int> data1 = initial1;
         std::vector<int> data2 = initial1;
@@ -1939,77 +2097,82 @@ TEST_SUITE("Algorithm") {
     }
 
     TEST_CASE("MoveSafe") {
+        #ifdef __WSTL_CXX11__
         typedef MovableData<uint32_t> Item;
+        #else
+        typedef uint32_t Item;
+        #endif
+
         typedef std::vector<Item> Data;
         Data data1;
 
         // Create some data
         Item p1(1U), p2(2U), p3(3U), p4(4U), p5(5U), p6(6U), p7(7U), p8(8U);
 
-        data1.push_back(std::move(p1));
-        data1.push_back(std::move(p2));
-        data1.push_back(std::move(p3));
-        data1.push_back(std::move(p4));
-        data1.push_back(std::move(p5));
-        data1.push_back(std::move(p6));
-        data1.push_back(std::move(p7));
-        data1.push_back(std::move(p8));
+        data1.push_back(__WSTL_MOVE__(p1));
+        data1.push_back(__WSTL_MOVE__(p2));
+        data1.push_back(__WSTL_MOVE__(p3));
+        data1.push_back(__WSTL_MOVE__(p4));
+        data1.push_back(__WSTL_MOVE__(p5));
+        data1.push_back(__WSTL_MOVE__(p6));
+        data1.push_back(__WSTL_MOVE__(p7));
+        data1.push_back(__WSTL_MOVE__(p8));
 
         Data data2;
-        data2.emplace_back(Item(1U));
-        data2.emplace_back(Item(2U));
-        data2.emplace_back(Item(3U));
-        data2.emplace_back(Item(4U));
-        data2.emplace_back(Item(5U));
+        data2.push_back(Item(1U));
+        data2.push_back(Item(2U));
+        data2.push_back(Item(3U));
+        data2.push_back(Item(4U));
+        data2.push_back(Item(5U));
 
         std::list<Item> data3;
-        data3.emplace_back(Item(1U));
-        data3.emplace_back(Item(2U));
-        data3.emplace_back(Item(3U));
-        data3.emplace_back(Item(4U));
-        data3.emplace_back(Item(5U));
-        data3.emplace_back(Item(6U));
-        data3.emplace_back(Item(7U));
-        data3.emplace_back(Item(8U));
+        data3.push_back(Item(1U));
+        data3.push_back(Item(2U));
+        data3.push_back(Item(3U));
+        data3.push_back(Item(4U));
+        data3.push_back(Item(5U));
+        data3.push_back(Item(6U));
+        data3.push_back(Item(7U));
+        data3.push_back(Item(8U));
 
         std::list<Item> data4;
-        data4.emplace_back(Item(1U));
-        data4.emplace_back(Item(2U));
-        data4.emplace_back(Item(3U));
-        data4.emplace_back(Item(4U));
-        data4.emplace_back(Item(5U));
+        data4.push_back(Item(1U));
+        data4.push_back(Item(2U));
+        data4.push_back(Item(3U));
+        data4.push_back(Item(4U));
+        data4.push_back(Item(5U));
 
         std::vector<Item> out1(10);
         std::vector<Item> out2(5);
 
         std::vector<Item> check1;
-        check1.emplace_back(Item(1U));
-        check1.emplace_back(Item(2U));
-        check1.emplace_back(Item(3U));
-        check1.emplace_back(Item(4U));
-        check1.emplace_back(Item(5U));
-        check1.emplace_back(Item(6U));
-        check1.emplace_back(Item(7U));
-        check1.emplace_back(Item(8U));
+        check1.push_back(Item(1U));
+        check1.push_back(Item(2U));
+        check1.push_back(Item(3U));
+        check1.push_back(Item(4U));
+        check1.push_back(Item(5U));
+        check1.push_back(Item(6U));
+        check1.push_back(Item(7U));
+        check1.push_back(Item(8U));
 
         std::vector<Item> check2;
-        check2.emplace_back(Item(1U));
-        check2.emplace_back(Item(2U));
-        check2.emplace_back(Item(3U));
-        check2.emplace_back(Item(4U));
-        check2.emplace_back(Item(5U));
+        check2.push_back(Item(1U));
+        check2.push_back(Item(2U));
+        check2.push_back(Item(3U));
+        check2.push_back(Item(4U));
+        check2.push_back(Item(5U));
 
         std::vector<Item> check3;
-        check3.emplace_back(Item(1U));
-        check3.emplace_back(Item(2U));
-        check3.emplace_back(Item(3U));
-        check3.emplace_back(Item(4U));
-        check3.emplace_back(Item(5U));
-        check3.emplace_back(Item(0U));
-        check3.emplace_back(Item(0U));
-        check3.emplace_back(Item(0U));
-        check3.emplace_back(Item(0U));
-        check3.emplace_back(Item(0U));
+        check3.push_back(Item(1U));
+        check3.push_back(Item(2U));
+        check3.push_back(Item(3U));
+        check3.push_back(Item(4U));
+        check3.push_back(Item(5U));
+        check3.push_back(Item(0U));
+        check3.push_back(Item(0U));
+        check3.push_back(Item(0U));
+        check3.push_back(Item(0U));
+        check3.push_back(Item(0U));
 
         // Same size
 

@@ -1,10 +1,12 @@
 // Part of WardenSTL - https://github.com/WardenHD/WardenSTL
-// Copyright (c) 2025 Artem Bezruchko (WardenHD)
+// Copyright (c) 2026 Artem Bezruchko (WardenHD)
 //
 // Licensed under the MIT License. See LICENSE file for details.
 
-#include <doctest.h>
 #include <wstl/private/Move.hpp>
+
+#ifdef __WSTL_CXX11__
+#include <doctest.h>
 #include <utility>
 
 #include "Utils.hpp"
@@ -90,3 +92,4 @@ TEST_SUITE("Utility") {
         CHECK_EQ(TestForwardLike<const Dummy2&&>(wstl::Move(cd)), ForwardTestType::ConstRValue);
     }
 }
+#endif

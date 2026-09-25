@@ -1,6 +1,7 @@
 [submodule "thirdparty/doctest"]
 	path = thirdparty/doctest
 	url = https://github.com/doctest/doctest.git
+
 [submodule "thirdparty/doctest98"]
 	path = thirdparty/doctest98
 	url = https://github.com/doctest/doctest.git

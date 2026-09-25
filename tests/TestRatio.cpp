@@ -1,5 +1,5 @@
 // Part of WardenSTL - https://github.com/WardenHD/WardenSTL
-// Copyright (c) 2025 Artem Bezruchko (WardenHD)
+// Copyright (c) 2026 Artem Bezruchko (WardenHD)
 //
 // This file is based on the Embedded Template Library (ETL)'s test_ratio.cpp
 // from https://github.com/ETLCPP/etl, licensed under the MIT License.
@@ -16,16 +16,16 @@
 
 TEST_SUITE("Ratio") {
     TEST_CASE("Ratio definition") {
-        constexpr intmax_t NUMERATOR = 20;
-        constexpr intmax_t DENOMINATOR = 600;
+        const __WSTL_CONSTEXPR__ intmax_t NUMERATOR = 20;
+        const __WSTL_CONSTEXPR__ intmax_t DENOMINATOR = 600;
         
         intmax_t N = NUMERATOR / wstl::compile::GCD<intmax_t, NUMERATOR, DENOMINATOR>::Value;
         intmax_t D = DENOMINATOR / wstl::compile::GCD<intmax_t, NUMERATOR, DENOMINATOR>::Value;
 
-        using Data = wstl::Ratio<NUMERATOR, DENOMINATOR>;
-        using RatioType = Data::Type;
+        typedef wstl::Ratio<NUMERATOR, DENOMINATOR> Data;
+        typedef Data::Type RatioType;
 
-        CHECK_FALSE(std::is_same<Data, RatioType>::value);
+        CHECK_FALSE((std::is_same<Data, RatioType>::value));
 
         CHECK_EQ(Data::Numerator, N);
         CHECK_EQ(Data::Denominator, D);
@@ -35,67 +35,85 @@ TEST_SUITE("Ratio") {
     }
 
     TEST_CASE("RatioAdd") {
-        using Ratio1 = wstl::Ratio<2, 3>;
-        using Ratio2 = wstl::Ratio<1, 6>;
+        typedef wstl::Ratio<2, 3> Ratio1;
+        typedef wstl::Ratio<1, 6> Ratio2;
 
-        using Result = wstl::RatioAdd<Ratio1, Ratio2>;
+        typedef wstl::RatioAdd<Ratio1, Ratio2> Result;
 
+        #ifdef __WSTL_CXX11__
         CHECK(wstl::IsSame<Result, wstl::Ratio<5, 6>>::Value);
+        #endif
+        
         CHECK_EQ(Result::Numerator, 5);
         CHECK_EQ(Result::Denominator, 6);
     }
 
     TEST_CASE("RatioSubtract") {
-        using Ratio1 = wstl::Ratio<2, 3>;
-        using Ratio2 = wstl::Ratio<1, 6>;
+        typedef wstl::Ratio<2, 3> Ratio1;
+        typedef wstl::Ratio<1, 6> Ratio2;
 
-        using Result1 = wstl::RatioSubtract<Ratio1, Ratio2>;
+        typedef wstl::RatioSubtract<Ratio1, Ratio2> Result1;
 
+        #ifdef __WSTL_CXX11__
         CHECK(wstl::IsSame<Result1, wstl::Ratio<1, 2>>::Value);
+        #endif
+
         CHECK_EQ(Result1::Numerator, 1);
         CHECK_EQ(Result1::Denominator, 2);
 
-        using Result2 = wstl::RatioSubtract<Ratio2, Ratio1>;
+        typedef wstl::RatioSubtract<Ratio2, Ratio1> Result2;
 
+        #ifdef __WSTL_CXX11__
         CHECK(wstl::IsSame<Result2, wstl::Ratio<-1, 2>::Type>::Value);
+        #endif
+
         CHECK_EQ(Result2::Numerator, -1);
         CHECK_EQ(Result2::Denominator, 2);
     }
 
     TEST_CASE("RatioMultiply") {
-        using Ratio1 = wstl::Ratio<2, 3>;
-        using Ratio2 = wstl::Ratio<1, 6>;
+        typedef wstl::Ratio<2, 3> Ratio1;
+        typedef wstl::Ratio<1, 6> Ratio2;
 
-        using Result = wstl::RatioMultiply<Ratio1, Ratio2>;
+        typedef wstl::RatioMultiply<Ratio1, Ratio2> Result;
 
+        #ifdef __WSTL_CXX11__
         CHECK(wstl::IsSame<Result, wstl::Ratio<1, 9>>::Value);
+        #endif
+
         CHECK_EQ(Result::Numerator, 1);
         CHECK_EQ(Result::Denominator, 9);
     }
 
     TEST_CASE("RatioDivide") {
-        using Ratio1 = wstl::Ratio<2, 3>;
-        using Ratio2 = wstl::Ratio<1, 6>;
+        typedef wstl::Ratio<2, 3> Ratio1;
+        typedef wstl::Ratio<1, 6> Ratio2;
 
-        using Result1 = wstl::RatioDivide<Ratio1, Ratio2>;
+        typedef wstl::RatioDivide<Ratio1, Ratio2> Result1;
 
+        #ifdef __WSTL_CXX11__
         CHECK(wstl::IsSame<Result1, wstl::Ratio<4, 1>::Type>::Value);
+        #endif
+
         CHECK_EQ(Result1::Numerator, 4);
         CHECK_EQ(Result1::Denominator, 1);
 
-        using Result2 = wstl::RatioDivide<Ratio2, Ratio1>;
+        typedef wstl::RatioDivide<Ratio2, Ratio1> Result2;
 
+        #ifdef __WSTL_CXX11__
         CHECK(wstl::IsSame<Result2, wstl::Ratio<1, 4>::Type>::Value);
+        #endif
+
         CHECK_EQ(Result2::Numerator, 1);
         CHECK_EQ(Result2::Denominator, 4);
     }
 
     TEST_CASE("RatioEqual") {
-        using Ratio1 = wstl::Ratio<2, 3>;
-        using Ratio2 = wstl::Ratio<1, 6>;
+        typedef wstl::Ratio<2, 3> Ratio1;
+        typedef wstl::Ratio<1, 6> Ratio2;
 
-        CHECK(wstl::RatioEqual<Ratio1, Ratio1>::Value);
-        CHECK_FALSE(wstl::RatioEqual<Ratio1, Ratio2>::Value);
+        CHECK((wstl::RatioEqual<Ratio1, Ratio1>::Value));
+        CHECK_FALSE((wstl::RatioEqual<Ratio1, Ratio2>::Value));
 
         #ifdef __WSTL_CXX17__
         CHECK(wstl::RatioEqualValue<Ratio1, Ratio1>);
@@ -104,11 +122,11 @@ TEST_SUITE("Ratio") {
     }
 
     TEST_CASE("RatioNotEqual") {
-        using Ratio1 = wstl::Ratio<2, 3>;
-        using Ratio2 = wstl::Ratio<1, 6>;
+        typedef wstl::Ratio<2, 3> Ratio1;
+        typedef wstl::Ratio<1, 6> Ratio2;
 
-        CHECK(wstl::RatioNotEqual<Ratio1, Ratio2>::Value);
-        CHECK_FALSE(wstl::RatioNotEqual<Ratio1, Ratio1>::Value);
+        CHECK((wstl::RatioNotEqual<Ratio1, Ratio2>::Value));
+        CHECK_FALSE((wstl::RatioNotEqual<Ratio1, Ratio1>::Value));
 
         #ifdef __WSTL_CXX17__
         CHECK(wstl::RatioNotEqualValue<Ratio1, Ratio2>);
@@ -117,12 +135,12 @@ TEST_SUITE("Ratio") {
     }
 
     TEST_CASE("RatioLess") {
-        using Ratio1 = wstl::Ratio<1, 6>;
-        using Ratio2 = wstl::Ratio<2, 3>;
+        typedef wstl::Ratio<1, 6> Ratio1;
+        typedef wstl::Ratio<2, 3> Ratio2;
 
-        CHECK(wstl::RatioLess<Ratio1, Ratio2>::Value);
-        CHECK_FALSE(wstl::RatioLess<Ratio1, Ratio1>::Value);
-        CHECK_FALSE(wstl::RatioLess<Ratio2, Ratio1>::Value);
+        CHECK((wstl::RatioLess<Ratio1, Ratio2>::Value));
+        CHECK_FALSE((wstl::RatioLess<Ratio1, Ratio1>::Value));
+        CHECK_FALSE((wstl::RatioLess<Ratio2, Ratio1>::Value));
 
         #ifdef __WSTL_CXX17__
         CHECK(wstl::RatioLessValue<Ratio1, Ratio2>);
@@ -132,12 +150,12 @@ TEST_SUITE("Ratio") {
     }
 
     TEST_CASE("RatioLessEqual") {
-        using Ratio1 = wstl::Ratio<1, 6>;
-        using Ratio2 = wstl::Ratio<2, 3>;
+        typedef wstl::Ratio<1, 6> Ratio1;
+        typedef wstl::Ratio<2, 3> Ratio2;
 
-        CHECK(wstl::RatioLessEqual<Ratio1, Ratio2>::Value);
-        CHECK(wstl::RatioLessEqual<Ratio1, Ratio1>::Value);
-        CHECK_FALSE(wstl::RatioLess<Ratio2, Ratio1>::Value);
+        CHECK((wstl::RatioLessEqual<Ratio1, Ratio2>::Value));
+        CHECK((wstl::RatioLessEqual<Ratio1, Ratio1>::Value));
+        CHECK_FALSE((wstl::RatioLess<Ratio2, Ratio1>::Value));
 
         #ifdef __WSTL_CXX17__
         CHECK(wstl::RatioLessEqualValue<Ratio1, Ratio2>);
@@ -147,12 +165,12 @@ TEST_SUITE("Ratio") {
     }
 
     TEST_CASE("RatioGreater") {
-        using Ratio1 = wstl::Ratio<1, 6>;
-        using Ratio2 = wstl::Ratio<2, 3>;
+        typedef wstl::Ratio<1, 6> Ratio1;
+        typedef wstl::Ratio<2, 3> Ratio2;
 
-        CHECK(wstl::RatioGreater<Ratio2, Ratio1>::Value);
-        CHECK_FALSE(wstl::RatioGreater<Ratio1, Ratio1>::Value);
-        CHECK_FALSE(wstl::RatioGreater<Ratio1, Ratio2>::Value);
+        CHECK((wstl::RatioGreater<Ratio2, Ratio1>::Value));
+        CHECK_FALSE((wstl::RatioGreater<Ratio1, Ratio1>::Value));
+        CHECK_FALSE((wstl::RatioGreater<Ratio1, Ratio2>::Value));
 
         #ifdef __WSTL_CXX17__
         CHECK(wstl::RatioGreaterValue<Ratio2, Ratio1>);
@@ -162,12 +180,12 @@ TEST_SUITE("Ratio") {
     }
 
     TEST_CASE("RatioGreaterEqual") {
-        using Ratio1 = wstl::Ratio<1, 6>;
-        using Ratio2 = wstl::Ratio<2, 3>;
+        typedef wstl::Ratio<1, 6> Ratio1;
+        typedef wstl::Ratio<2, 3> Ratio2;
 
-        CHECK(wstl::RatioGreaterEqual<Ratio2, Ratio1>::Value);
-        CHECK(wstl::RatioGreaterEqual<Ratio1, Ratio1>::Value);
-        CHECK_FALSE(wstl::RatioGreaterEqual<Ratio1, Ratio2>::Value);
+        CHECK((wstl::RatioGreaterEqual<Ratio2, Ratio1>::Value));
+        CHECK((wstl::RatioGreaterEqual<Ratio1, Ratio1>::Value));
+        CHECK_FALSE((wstl::RatioGreaterEqual<Ratio1, Ratio2>::Value));
 
         #ifdef __WSTL_CXX17__
         CHECK(wstl::RatioGreaterEqualValue<Ratio2, Ratio1>);
