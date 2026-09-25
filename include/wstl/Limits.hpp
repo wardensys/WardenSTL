@@ -1,5 +1,5 @@
 // Part of WardenSTL - https://github.com/WardenHD/WardenSTL
-// Copyright (c) 2025 Artem Bezruchko (WardenHD)
+// Copyright (c) 2026 Artem Bezruchko (WardenHD)
 //
 // This file is inspired by the Embedded Template Library (ETL)'s limits utilities,
 // and some concepts and functions have been adapted for WardenSTL.
@@ -839,19 +839,18 @@ namespace wstl {
 
     // long long
 
-    #ifdef __WSTL_CXX11__
     template<>
     class NumericLimits<long long> : public __private::__IntegralLimitsInteger<long long> {
     public:        
-        static constexpr long long Min() __WSTL_NOEXCEPT__ { return LLONG_MIN; }
-        static constexpr long long Max() __WSTL_NOEXCEPT__ { return LLONG_MAX; }
-        static constexpr long long Lowest() __WSTL_NOEXCEPT__ { return LLONG_MIN; }
-        static constexpr long long Epsilon() __WSTL_NOEXCEPT__ { return 0LL; }
-        static constexpr long long RoundError() __WSTL_NOEXCEPT__ { return 0LL; }
-        static constexpr long long Infinity() __WSTL_NOEXCEPT__ { return 0LL; }
-        static constexpr long long QuietNaN() __WSTL_NOEXCEPT__ { return 0LL; }
-        static constexpr long long SignalingNaN() __WSTL_NOEXCEPT__ { return 0LL; }
-        static constexpr long long DenormalizedMin() __WSTL_NOEXCEPT__ { return 0LL; }
+        static __WSTL_CONSTEXPR__ long long Min() __WSTL_NOEXCEPT__ { return LLONG_MIN; }
+        static __WSTL_CONSTEXPR__ long long Max() __WSTL_NOEXCEPT__ { return LLONG_MAX; }
+        static __WSTL_CONSTEXPR__ long long Lowest() __WSTL_NOEXCEPT__ { return LLONG_MIN; }
+        static __WSTL_CONSTEXPR__ long long Epsilon() __WSTL_NOEXCEPT__ { return 0LL; }
+        static __WSTL_CONSTEXPR__ long long RoundError() __WSTL_NOEXCEPT__ { return 0LL; }
+        static __WSTL_CONSTEXPR__ long long Infinity() __WSTL_NOEXCEPT__ { return 0LL; }
+        static __WSTL_CONSTEXPR__ long long QuietNaN() __WSTL_NOEXCEPT__ { return 0LL; }
+        static __WSTL_CONSTEXPR__ long long SignalingNaN() __WSTL_NOEXCEPT__ { return 0LL; }
+        static __WSTL_CONSTEXPR__ long long DenormalizedMin() __WSTL_NOEXCEPT__ { return 0LL; }
     };
 
     // unsigned long long
@@ -859,17 +858,16 @@ namespace wstl {
     template<>
     class NumericLimits<unsigned long long> : public __private::__IntegralLimitsUnsignedInteger<unsigned long long> {
     public:
-        static constexpr unsigned long long Min() __WSTL_NOEXCEPT__ { return 0ULL; }
-        static constexpr unsigned long long Max() __WSTL_NOEXCEPT__ { return ULLONG_MAX; }
-        static constexpr unsigned long long Lowest() __WSTL_NOEXCEPT__ { return 0ULL; }
-        static constexpr unsigned long long Epsilon() __WSTL_NOEXCEPT__ { return 0ULL; }
-        static constexpr unsigned long long RoundError() __WSTL_NOEXCEPT__ { return 0ULL; }
-        static constexpr unsigned long long Infinity() __WSTL_NOEXCEPT__ { return 0ULL; }
-        static constexpr unsigned long long QuietNaN() __WSTL_NOEXCEPT__ { return 0ULL; }
-        static constexpr unsigned long long SignalingNaN() __WSTL_NOEXCEPT__ { return 0ULL; }
-        static constexpr unsigned long long DenormalizedMin() __WSTL_NOEXCEPT__ { return 0ULL; }
+        static __WSTL_CONSTEXPR__ unsigned long long Min() __WSTL_NOEXCEPT__ { return 0ULL; }
+        static __WSTL_CONSTEXPR__ unsigned long long Max() __WSTL_NOEXCEPT__ { return ULLONG_MAX; }
+        static __WSTL_CONSTEXPR__ unsigned long long Lowest() __WSTL_NOEXCEPT__ { return 0ULL; }
+        static __WSTL_CONSTEXPR__ unsigned long long Epsilon() __WSTL_NOEXCEPT__ { return 0ULL; }
+        static __WSTL_CONSTEXPR__ unsigned long long RoundError() __WSTL_NOEXCEPT__ { return 0ULL; }
+        static __WSTL_CONSTEXPR__ unsigned long long Infinity() __WSTL_NOEXCEPT__ { return 0ULL; }
+        static __WSTL_CONSTEXPR__ unsigned long long QuietNaN() __WSTL_NOEXCEPT__ { return 0ULL; }
+        static __WSTL_CONSTEXPR__ unsigned long long SignalingNaN() __WSTL_NOEXCEPT__ { return 0ULL; }
+        static __WSTL_CONSTEXPR__ unsigned long long DenormalizedMin() __WSTL_NOEXCEPT__ { return 0ULL; }
     };
-    #endif
 
     // float
 
@@ -918,6 +916,248 @@ namespace wstl {
         static __WSTL_CONSTEXPR__ long double SignalingNaN() __WSTL_NOEXCEPT__ { return __WSTL_NANL__; }
         static __WSTL_CONSTEXPR__ long double DenormalizedMin() __WSTL_NOEXCEPT__ { return LDBL_MIN; }
     };
+
+    // Integral limits
+
+    namespace __private {
+        template<typename T>
+        struct __IntegralTypesLimitsCommon {
+            static const __WSTL_CONSTEXPR__ int Bits = CHAR_BIT * sizeof(T);
+            static const __WSTL_CONSTEXPR__ bool IsSigned = wstl::IsSigned<T>::Value;
+        };
+
+        template<typename T>
+        const __WSTL_CONSTEXPR__ int __IntegralTypesLimitsCommon<T>::Bits;
+
+        template<typename T>
+        const __WSTL_CONSTEXPR__ bool __IntegralTypesLimitsCommon<T>::IsSigned;
+
+        template<typename T = bool>
+        struct __IntegralTypesLimitsBool : __IntegralTypesLimitsCommon<T> {
+            static const __WSTL_CONSTEXPR__ bool Min = false;
+            static const __WSTL_CONSTEXPR__ bool Max = true;
+        };
+
+        template<typename T>
+        const __WSTL_CONSTEXPR__ bool __IntegralTypesLimitsBool<T>::Min;
+
+        template<typename T>
+        const __WSTL_CONSTEXPR__ bool __IntegralTypesLimitsBool<T>::Max;
+
+        template<typename T = char>
+        struct __IntegralTypesLimitsChar : __IntegralTypesLimitsCommon<T> {
+            static const __WSTL_CONSTEXPR__ char Min = CHAR_MIN;
+            static const __WSTL_CONSTEXPR__ char Max = CHAR_MAX;
+        };
+
+        template<typename T>
+        const __WSTL_CONSTEXPR__ char __IntegralTypesLimitsChar<T>::Min;
+
+        template<typename T>
+        const __WSTL_CONSTEXPR__ char __IntegralTypesLimitsChar<T>::Max;
+
+        template<typename T = signed char>
+        struct __IntegralTypesLimitsSignedChar : __IntegralTypesLimitsCommon<T> {
+            static const __WSTL_CONSTEXPR__ signed char Min = SCHAR_MIN;
+            static const __WSTL_CONSTEXPR__ signed char Max = SCHAR_MAX;
+        };
+
+        template<typename T>
+        const __WSTL_CONSTEXPR__ signed char __IntegralTypesLimitsSignedChar<T>::Min;
+
+        template<typename T>
+        const __WSTL_CONSTEXPR__ signed char __IntegralTypesLimitsSignedChar<T>::Max;
+
+        template<typename T = unsigned char>
+        struct __IntegralTypesLimitsUnsignedChar : __IntegralTypesLimitsCommon<T> {
+            static const __WSTL_CONSTEXPR__ unsigned char Min = 0U;
+            static const __WSTL_CONSTEXPR__ unsigned char Max = UCHAR_MAX;
+        };
+
+        template<typename T>
+        const __WSTL_CONSTEXPR__ unsigned char __IntegralTypesLimitsUnsignedChar<T>::Min;
+
+        template<typename T>
+        const __WSTL_CONSTEXPR__ unsigned char __IntegralTypesLimitsUnsignedChar<T>::Max;
+
+        #ifdef __WSTL_CXX20__
+        template<typename T = char8_t>
+        struct __IntegralTypesLimitsChar8 : __IntegralTypesLimitsCommon<T> {
+            static constexpr char8_t Min = 0U;
+            static constexpr char8_t Max = UCHAR_MAX;
+        };
+
+        template<typename T>
+        constexpr char8_t __IntegralTypesLimitsChar8<T>::Min;
+
+        template<typename T>
+        constexpr char8_t __IntegralTypesLimitsChar8<T>::Max;
+        #endif
+
+        #ifdef __WSTL_CXX11__
+        template<typename T = char16_t>
+        struct __IntegralTypesLimitsChar16 : __IntegralTypesLimitsCommon<T> {
+            static constexpr char16_t Min = 0U;
+            static constexpr char16_t Max = UINT_LEAST16_MAX;
+        };
+
+        template<typename T>
+        constexpr char16_t __IntegralTypesLimitsChar16<T>::Min;
+
+        template<typename T>
+        constexpr char16_t __IntegralTypesLimitsChar16<T>::Max;
+
+        template<typename T = char32_t>
+        struct __IntegralTypesLimitsChar32 : __IntegralTypesLimitsCommon<T> {
+            static constexpr char32_t Min = 0U;
+            static constexpr char32_t Max = UINT_LEAST32_MAX;
+        };
+
+        template<typename T>
+        constexpr char32_t __IntegralTypesLimitsChar32<T>::Min;
+
+        template<typename T>
+        constexpr char32_t __IntegralTypesLimitsChar32<T>::Max;
+        #endif
+
+        template<typename T = wchar_t>
+        struct __IntegralTypesLimitsWchar : __IntegralTypesLimitsCommon<T> {
+            static const __WSTL_CONSTEXPR__ wchar_t Min = WCHAR_MIN;
+            static const __WSTL_CONSTEXPR__ wchar_t Max = WCHAR_MAX;
+        };
+
+        template<typename T>
+        const __WSTL_CONSTEXPR__ wchar_t __IntegralTypesLimitsWchar<T>::Min;
+
+        template<typename T>
+        const __WSTL_CONSTEXPR__ wchar_t __IntegralTypesLimitsWchar<T>::Max;
+
+        template<typename T = short>
+        struct __IntegralTypesLimitsShort : __IntegralTypesLimitsCommon<T> {
+            static const __WSTL_CONSTEXPR__ short Min = SHRT_MIN;
+            static const __WSTL_CONSTEXPR__ short Max = SHRT_MAX;
+        };
+
+        template<typename T>
+        const __WSTL_CONSTEXPR__ short __IntegralTypesLimitsShort<T>::Min;
+
+        template<typename T>
+        const __WSTL_CONSTEXPR__ short __IntegralTypesLimitsShort<T>::Max;
+
+        template<typename T = unsigned short>
+        struct __IntegralTypesLimitsUnsignedShort : __IntegralTypesLimitsCommon<T> {
+            static const __WSTL_CONSTEXPR__ unsigned short Min = 0U;
+            static const __WSTL_CONSTEXPR__ unsigned short Max = USHRT_MAX;
+        };
+
+        template<typename T>
+        const __WSTL_CONSTEXPR__ unsigned short __IntegralTypesLimitsUnsignedShort<T>::Min;
+
+        template<typename T>
+        const __WSTL_CONSTEXPR__ unsigned short __IntegralTypesLimitsUnsignedShort<T>::Max;
+
+        template<typename T = int>
+        struct __IntegralTypesLimitsInteger : __IntegralTypesLimitsCommon<T> {
+            static const __WSTL_CONSTEXPR__ int Min = INT_MIN;
+            static const __WSTL_CONSTEXPR__ int Max = INT_MAX;
+        };
+        
+        template<typename T>
+        const __WSTL_CONSTEXPR__ int __IntegralTypesLimitsInteger<T>::Min;
+
+        template<typename T>
+        const __WSTL_CONSTEXPR__ int __IntegralTypesLimitsInteger<T>::Max;
+
+        template<typename T = unsigned int>
+        struct __IntegralTypesLimitsUnsignedInteger : __IntegralTypesLimitsCommon<T> {
+            static const __WSTL_CONSTEXPR__ unsigned int Min = 0U;
+            static const __WSTL_CONSTEXPR__ unsigned int Max = UINT_MAX;
+        };
+
+        template<typename T>
+        const __WSTL_CONSTEXPR__ unsigned int __IntegralTypesLimitsUnsignedInteger<T>::Min;
+
+        template<typename T>
+        const __WSTL_CONSTEXPR__ unsigned int __IntegralTypesLimitsUnsignedInteger<T>::Max;
+
+        template<typename T = long>
+        struct __IntegralTypesLimitsLong : __IntegralTypesLimitsCommon<T> {
+            static const __WSTL_CONSTEXPR__ long Min = LONG_MIN;
+            static const __WSTL_CONSTEXPR__ long Max = LONG_MAX;
+        };
+
+        template<typename T>
+        const __WSTL_CONSTEXPR__ long __IntegralTypesLimitsLong<T>::Min;
+
+        template<typename T>
+        const __WSTL_CONSTEXPR__ long __IntegralTypesLimitsLong<T>::Max;
+
+        template<typename T = unsigned long>
+        struct __IntegralTypesLimitsUnsignedLong : __IntegralTypesLimitsCommon<T> {
+            static const __WSTL_CONSTEXPR__ unsigned long Min = 0U;
+            static const __WSTL_CONSTEXPR__ unsigned long Max = ULONG_MAX;
+        };
+
+        template<typename T>
+        const __WSTL_CONSTEXPR__ unsigned long __IntegralTypesLimitsUnsignedLong<T>::Min;
+
+        template<typename T>
+        const __WSTL_CONSTEXPR__ unsigned long __IntegralTypesLimitsUnsignedLong<T>::Max;
+
+        template<typename T = long long>
+        struct __IntegralTypesLimitsLongLong : __IntegralTypesLimitsCommon<T> {
+            static const __WSTL_CONSTEXPR__ long long Min = LLONG_MIN;
+            static const __WSTL_CONSTEXPR__ long long Max = LLONG_MAX;
+        };
+
+        template<typename T>
+        const __WSTL_CONSTEXPR__ long long __IntegralTypesLimitsLongLong<T>::Min;
+
+        template<typename T>
+        const __WSTL_CONSTEXPR__ long long __IntegralTypesLimitsLongLong<T>::Max;
+
+        template<typename T = unsigned long long>
+        struct __IntegralTypesLimitsUnsignedLongLong : __IntegralTypesLimitsCommon<T> {
+            static const __WSTL_CONSTEXPR__ unsigned long long Min = 0U;
+            static const __WSTL_CONSTEXPR__ unsigned long long Max = ULLONG_MAX;
+        };
+
+        template<typename T>
+        const __WSTL_CONSTEXPR__ unsigned long long __IntegralTypesLimitsUnsignedLongLong<T>::Min;
+
+        template<typename T>
+        const __WSTL_CONSTEXPR__ unsigned long long __IntegralTypesLimitsUnsignedLongLong<T>::Max;
+    }
+
+    /// @brief Provides an interface to query the limits of integral types in compile-time
+    /// @tparam T The integral type to query
+    /// @ingroup limits
+    template<typename T>
+    struct IntegralLimits;
+
+    template<> struct IntegralLimits<bool> : __private::__IntegralTypesLimitsBool<> {};
+    template<> struct IntegralLimits<char> : __private::__IntegralTypesLimitsChar<> {};
+    template<> struct IntegralLimits<signed char> : __private::__IntegralTypesLimitsSignedChar<> {};
+    template<> struct IntegralLimits<unsigned char> : __private::__IntegralTypesLimitsUnsignedChar<> {};
+
+    #ifdef __WSTL_CXX20__
+    template<> struct IntegralLimits<char8_t> : __private::__IntegralTypesLimitsChar8<> {};
+    #endif
+
+    #ifdef __WSTL_CXX11__
+    template<> struct IntegralLimits<char16_t> : __private::__IntegralTypesLimitsChar16<> {};
+    template<> struct IntegralLimits<char32_t> : __private::__IntegralTypesLimitsChar32<> {};
+    #endif
+
+    template<> struct IntegralLimits<wchar_t> : __private::__IntegralTypesLimitsWchar<> {};
+    template<> struct IntegralLimits<short> : __private::__IntegralTypesLimitsShort<> {};
+    template<> struct IntegralLimits<unsigned short> : __private::__IntegralTypesLimitsUnsignedShort<> {};
+    template<> struct IntegralLimits<int> : __private::__IntegralTypesLimitsInteger<> {};
+    template<> struct IntegralLimits<unsigned int> : __private::__IntegralTypesLimitsUnsignedInteger<> {};
+    template<> struct IntegralLimits<long> : __private::__IntegralTypesLimitsLong<> {};
+    template<> struct IntegralLimits<unsigned long> : __private::__IntegralTypesLimitsUnsignedLong<> {};
+    template<> struct IntegralLimits<long long> : __private::__IntegralTypesLimitsLongLong<> {};
+    template<> struct IntegralLimits<unsigned long long> : __private::__IntegralTypesLimitsUnsignedLongLong<> {};
 }
 
 #endif
