@@ -5,6 +5,7 @@
 
 #include <doctest.h>
 #include <wstl/TypeList.hpp>
+#include <string>
 
 
 typedef wstl::TypeList<int, char, double, std::string, short, long> Data;
