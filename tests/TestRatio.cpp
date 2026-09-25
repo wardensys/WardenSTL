@@ -11,7 +11,7 @@
 
 #include <doctest.h>
 #include <wstl/Ratio.hpp>
-#include <ratio>
+#include <type_traits>
 
 
 TEST_SUITE("Ratio") {

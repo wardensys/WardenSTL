@@ -24,6 +24,65 @@ namespace wstl {
 }
 #endif
 
+template<typename C>
+inline typename C::iterator BeginImpl(C& c) {
+    return c.begin();
+}
+
+template<typename C>
+inline typename C::const_iterator BeginImpl(const C& c) {
+    return c.begin();
+}
+
+template<typename C>
+inline typename C::const_iterator ConstBeginImpl(const C& c) {
+    return c.cbegin();
+}
+
+template<typename C>
+inline typename C::iterator EndImpl(C& c) {
+    return c.end();
+}
+
+template<typename C>
+inline typename C::const_iterator EndImpl(const C& c) {
+    return c.end();
+}
+
+template<typename C>
+inline typename C::const_iterator ConstEndImpl(const C& c) {
+    return c.cend();
+}
+
+template<typename T, size_t N>
+inline T* BeginImpl(T (&array)[N]) {
+    return &array[0];
+}
+
+template<typename T, size_t N>
+inline const T* BeginImpl(const T (&array)[N]) {
+    return &array[0];
+}
+
+template<typename T, size_t N>
+inline const T* ConstBeginImpl(const T (&array)[N]) {
+    return &array[0];
+}
+
+template<typename T, size_t N>
+inline T* EndImpl(T (&array)[N]) {
+    return &array[N];
+}
+
+template<typename T, size_t N>
+inline const T* EndImpl(const T (&array)[N]) {
+    return &array[N];
+}
+
+template<typename T, size_t N>
+inline const T* ConstEndImpl(const T (&array)[N]) {
+    return &array[N];
+}
 
 struct NonDefaultConstructible {
     NonDefaultConstructible(int value) : Value(value) {}

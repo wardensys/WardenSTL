@@ -2630,7 +2630,8 @@ TEST_SUITE("Functional") {
 
         wstl::NotFunctionType<BoolFunctor1> ff1 = wstl::NotFunction(BoolFunctor1());
 
-        FakeInteger vi = {.Value = 100};
+        FakeInteger vi;
+        vi.Value = 100;
 
         CHECK_FALSE(ff1(VALUE3));
         CHECK(ff1(vi));

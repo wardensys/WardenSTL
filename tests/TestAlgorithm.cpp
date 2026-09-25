@@ -27,16 +27,18 @@
 
 
 namespace {
+    #ifdef __WSTL_CXX11__
     std::random_device rd;
     std::mt19937 urng(rd());
+    #endif
 
     const std::size_t SIZE = 9;
 
     int dataA[SIZE] = {4, 5, 7, 1, 10, 6, 3, 7, 7};
     int dataB[SIZE] = {1, 60, 4, 3, 9, 10, 5, 4, 10};
 
-    std::list<int> dataLA(std::begin(dataA), std::end(dataA));
-    std::list<int> dataLB(std::begin(dataB), std::end(dataB));
+    std::list<int> dataLA(BeginImpl(dataA), EndImpl(dataA));
+    std::list<int> dataLB(BeginImpl(dataB), EndImpl(dataB));
 
     const std::size_t NONTRIVIAL_SIZE = 7;
 
@@ -73,8 +75,8 @@ namespace {
 
 TEST_SUITE("Algorithm") {
     TEST_CASE("Find") {
-        int* it1 = std::find(std::begin(dataA), std::end(dataA), 3);
-        int* it2 = wstl::Find(std::begin(dataA), std::end(dataA), 3);
+        int* it1 = std::find(BeginImpl(dataA), EndImpl(dataA), 3);
+        int* it2 = wstl::Find(BeginImpl(dataA), EndImpl(dataA), 3);
 
         CHECK_EQ(it1, it2);
     }
@@ -86,8 +88,8 @@ TEST_SUITE("Algorithm") {
         std::binder2nd<std::equal_to<int> > predicate(std::equal_to<int>(), 5);
         #endif
 
-        int* it1 = std::find_if(std::begin(dataA), std::end(dataA), predicate);
-        int* it2 = wstl::FindIf(std::begin(dataA), std::end(dataA), predicate);
+        int* it1 = std::find_if(BeginImpl(dataA), EndImpl(dataA), predicate);
+        int* it2 = wstl::FindIf(BeginImpl(dataA), EndImpl(dataA), predicate);
 
         CHECK_EQ(it1, it2);
     }
@@ -99,8 +101,8 @@ TEST_SUITE("Algorithm") {
         std::binder2nd<std::equal_to<int> > predicate(std::equal_to<int>(), 3);
         #endif
 
-        int* it1 = std::find_if_not(std::begin(dataA), std::end(dataA), predicate);
-        int* it2 = wstl::FindIfNot(std::begin(dataA), std::end(dataA), predicate);
+        int* it1 = std::find_if_not(BeginImpl(dataA), EndImpl(dataA), predicate);
+        int* it2 = wstl::FindIfNot(BeginImpl(dataA), EndImpl(dataA), predicate);
 
         CHECK_EQ(it1, it2);
     }
@@ -114,13 +116,13 @@ TEST_SUITE("Algorithm") {
         std::binder2nd<std::greater<int> > falsePredicate(std::greater<int>(), 3);
         #endif
 
-        bool expected = std::all_of(std::begin(dataA), std::end(dataA), truePredicate);
-        bool result = wstl::AllOf(std::begin(dataA), std::end(dataA), truePredicate);
+        bool expected = std::all_of(BeginImpl(dataA), EndImpl(dataA), truePredicate);
+        bool result = wstl::AllOf(BeginImpl(dataA), EndImpl(dataA), truePredicate);
 
         CHECK_EQ(expected, result);
 
-        expected = std::all_of(std::begin(dataA), std::end(dataA), falsePredicate);
-        result = wstl::AllOf(std::begin(dataA), std::end(dataA), falsePredicate);
+        expected = std::all_of(BeginImpl(dataA), EndImpl(dataA), falsePredicate);
+        result = wstl::AllOf(BeginImpl(dataA), EndImpl(dataA), falsePredicate);
 
         CHECK_EQ(expected, result);
     }
@@ -134,13 +136,13 @@ TEST_SUITE("Algorithm") {
         std::binder2nd<std::less<int> > falsePredicate(std::less<int>(), 3);
         #endif
 
-        bool expected = std::any_of(std::begin(dataA), std::end(dataA), truePredicate);
-        bool result = wstl::AnyOf(std::begin(dataA), std::end(dataA), truePredicate);
+        bool expected = std::any_of(BeginImpl(dataA), EndImpl(dataA), truePredicate);
+        bool result = wstl::AnyOf(BeginImpl(dataA), EndImpl(dataA), truePredicate);
 
         CHECK_EQ(expected, result);
 
-        expected = std::any_of(std::begin(dataA), std::end(dataA), falsePredicate);
-        result = wstl::AnyOf(std::begin(dataA), std::end(dataA), falsePredicate);
+        expected = std::any_of(BeginImpl(dataA), EndImpl(dataA), falsePredicate);
+        result = wstl::AnyOf(BeginImpl(dataA), EndImpl(dataA), falsePredicate);
 
         CHECK_EQ(expected, result);
     }
@@ -154,13 +156,13 @@ TEST_SUITE("Algorithm") {
         std::binder2nd<std::less<int> > falsePredicate(std::less<int>(), 3);
         #endif
 
-        bool expected = std::none_of(std::begin(dataA), std::end(dataA), truePredicate);
-        bool result = wstl::NoneOf(std::begin(dataA), std::end(dataA), truePredicate);
+        bool expected = std::none_of(BeginImpl(dataA), EndImpl(dataA), truePredicate);
+        bool result = wstl::NoneOf(BeginImpl(dataA), EndImpl(dataA), truePredicate);
 
         CHECK_EQ(expected, result);
 
-        expected = std::none_of(std::begin(dataA), std::end(dataA), falsePredicate);
-        result = wstl::NoneOf(std::begin(dataA), std::end(dataA), falsePredicate);
+        expected = std::none_of(BeginImpl(dataA), EndImpl(dataA), falsePredicate);
+        result = wstl::NoneOf(BeginImpl(dataA), EndImpl(dataA), falsePredicate);
 
         CHECK_EQ(expected, result);
     }
@@ -169,30 +171,30 @@ TEST_SUITE("Algorithm") {
         int data[] = {4, 3, 1, 6, 7, 4};
         int expected[] = {8, 6, 2, 12, 14, 8};
 
-        wstl::ForEach(std::begin(data), std::end(data), &DoubleFunction);
+        wstl::ForEach(BeginImpl(data), EndImpl(data), &DoubleFunction);
 
-        CHECK(std::equal(std::begin(data), std::end(data), std::begin(expected)));
+        CHECK(std::equal(BeginImpl(data), EndImpl(data), BeginImpl(expected)));
     }
 
     TEST_CASE("ForEachInRange") {
         int data[] = {4, 3, 1, 6, 7, 4};
         int expected[] = {8, 6, 2, 12, 14, 8};
         
-        wstl::ForEachInRange(std::begin(data), 6, &DoubleFunction);
+        wstl::ForEachInRange(BeginImpl(data), 6, &DoubleFunction);
 
-        CHECK(std::equal(std::begin(data), std::end(data), std::begin(expected)));
+        CHECK(std::equal(BeginImpl(data), EndImpl(data), BeginImpl(expected)));
     }
 
     TEST_CASE("Count") {
-        ptrdiff_t c1 = wstl::Count(std::begin(dataA), std::end(dataA), 7);
-        ptrdiff_t c2 = std::count(std::begin(dataA), std::end(dataA), 7);
+        ptrdiff_t c1 = wstl::Count(BeginImpl(dataA), EndImpl(dataA), 7);
+        ptrdiff_t c2 = std::count(BeginImpl(dataA), EndImpl(dataA), 7);
 
         CHECK_EQ(c1, c2);
     }
 
     TEST_CASE("CountIf") {
-        ptrdiff_t c1 = wstl::CountIf(std::begin(dataA), std::end(dataA), &wstl::IsEven<int>);
-        ptrdiff_t c2 = std::count_if(std::begin(dataA), std::end(dataA), &wstl::IsEven<int>);
+        ptrdiff_t c1 = wstl::CountIf(BeginImpl(dataA), EndImpl(dataA), &wstl::IsEven<int>);
+        ptrdiff_t c2 = std::count_if(BeginImpl(dataA), EndImpl(dataA), &wstl::IsEven<int>);
 
         CHECK_EQ(c1, c2);
     }
@@ -202,33 +204,33 @@ TEST_SUITE("Algorithm") {
         int data2[] = {1, 2, 3, 4, 5, 6, 7};
         int data3[] = {1, 2, 3, 4, 5, 6, 7, 8};
 
-        wstl::Pair<int*, int*> result = wstl::Mismatch(std::begin(data1), std::end(data1), std::begin(data2));
-        std::pair<int*, int*> expected = std::mismatch(std::begin(data1), std::end(data1), std::begin(data2));
+        wstl::Pair<int*, int*> result = wstl::Mismatch(BeginImpl(data1), EndImpl(data1), BeginImpl(data2));
+        std::pair<int*, int*> expected = std::mismatch(BeginImpl(data1), EndImpl(data1), BeginImpl(data2));
 
         CHECK_EQ(result.First, expected.first);
         CHECK_EQ(result.Second, expected.second);
 
-        result = wstl::Mismatch(std::begin(data1), std::end(data1), std::begin(data2), std::equal_to<int>());
-        expected = std::mismatch(std::begin(data1), std::end(data1), std::begin(data2), std::equal_to<int>());
+        result = wstl::Mismatch(BeginImpl(data1), EndImpl(data1), BeginImpl(data2), std::equal_to<int>());
+        expected = std::mismatch(BeginImpl(data1), EndImpl(data1), BeginImpl(data2), std::equal_to<int>());
 
         CHECK_EQ(result.First, expected.first);
         CHECK_EQ(result.Second, expected.second);
 
-        result = wstl::Mismatch(std::begin(data2), std::end(data2), std::begin(data3));
-        expected = std::mismatch(std::begin(data2), std::end(data2), std::begin(data3));
+        result = wstl::Mismatch(BeginImpl(data2), EndImpl(data2), BeginImpl(data3));
+        expected = std::mismatch(BeginImpl(data2), EndImpl(data2), BeginImpl(data3));
 
         CHECK_EQ(result.First, expected.first);
         CHECK_EQ(result.Second, expected.second);
 
         #ifdef __WSTL_CXX14__
-        result = wstl::Mismatch(std::begin(data2), std::end(data2), std::begin(data3), std::end(data3));
-        expected = std::mismatch(std::begin(data2), std::end(data2), std::begin(data3), std::end(data3));
+        result = wstl::Mismatch(BeginImpl(data2), EndImpl(data2), BeginImpl(data3), EndImpl(data3));
+        expected = std::mismatch(BeginImpl(data2), EndImpl(data2), BeginImpl(data3), EndImpl(data3));
 
         CHECK_EQ(result.First, expected.first);
         CHECK_EQ(result.Second, expected.second);
 
-        result = wstl::Mismatch(std::begin(data2), std::end(data2), std::begin(data3), std::end(data3), std::equal_to<int>());
-        expected = std::mismatch(std::begin(data2), std::end(data2), std::begin(data3), std::end(data3), std::equal_to<int>());
+        result = wstl::Mismatch(BeginImpl(data2), EndImpl(data2), BeginImpl(data3), EndImpl(data3), std::equal_to<int>());
+        expected = std::mismatch(BeginImpl(data2), EndImpl(data2), BeginImpl(data3), EndImpl(data3), std::equal_to<int>());
 
         CHECK_EQ(result.First, expected.first);
         CHECK_EQ(result.Second, expected.second);
@@ -295,13 +297,13 @@ TEST_SUITE("Algorithm") {
     }
 
     TEST_CASE("AdjacentFind") {
-        int* it1 = wstl::AdjacentFind(std::begin(dataA), std::end(dataA));
-        int* it2 = std::adjacent_find(std::begin(dataA), std::end(dataA));
+        int* it1 = wstl::AdjacentFind(BeginImpl(dataA), EndImpl(dataA));
+        int* it2 = std::adjacent_find(BeginImpl(dataA), EndImpl(dataA));
 
         CHECK_EQ(it1, it2);
 
-        it1 = wstl::AdjacentFind(std::begin(dataA), std::end(dataA), &AdjacentFindPredicate);
-        it2 = std::adjacent_find(std::begin(dataA), std::end(dataA), &AdjacentFindPredicate);
+        it1 = wstl::AdjacentFind(BeginImpl(dataA), EndImpl(dataA), &AdjacentFindPredicate);
+        it2 = std::adjacent_find(BeginImpl(dataA), EndImpl(dataA), &AdjacentFindPredicate);
 
         CHECK_EQ(it1, it2);
     }
@@ -311,42 +313,42 @@ TEST_SUITE("Algorithm") {
         int buffer1[SIZE] = {0};
         int buffer2[SIZE] = {0};
 
-        int* p1 = wstl::Copy(std::begin(dataA), std::end(dataA), std::begin(buffer1));
-        int* p2 = std::copy(std::begin(dataA), std::end(dataA), std::begin(buffer2));
+        int* p1 = wstl::Copy(BeginImpl(dataA), EndImpl(dataA), BeginImpl(buffer1));
+        int* p2 = std::copy(BeginImpl(dataA), EndImpl(dataA), BeginImpl(buffer2));
 
         ptrdiff_t d1 = std::distance(buffer1, p1);
         ptrdiff_t d2 = std::distance(buffer2, p2);
         CHECK_EQ(d1, d2);
 
-        bool result = std::equal(std::begin(buffer1), std::end(buffer1), std::begin(buffer2));
+        bool result = std::equal(BeginImpl(buffer1), EndImpl(buffer1), BeginImpl(buffer2));
         CHECK(result);
 
         // Non-POD pointer
         NonTrivialData bufferN1[NONTRIVIAL_SIZE];
         NonTrivialData bufferN2[NONTRIVIAL_SIZE];
 
-        NonTrivialData* pn1 = wstl::Copy(std::begin(dataN), std::end(dataN), std::begin(bufferN1));
-        NonTrivialData* pn2 = std::copy(std::begin(dataN), std::end(dataN), std::begin(bufferN2));
+        NonTrivialData* pn1 = wstl::Copy(BeginImpl(dataN), EndImpl(dataN), BeginImpl(bufferN1));
+        NonTrivialData* pn2 = std::copy(BeginImpl(dataN), EndImpl(dataN), BeginImpl(bufferN2));
 
         d1 = std::distance(bufferN1, pn1);
         d2 = std::distance(bufferN2, pn2);
         CHECK_EQ(d1, d2);
 
-        result = std::equal(std::begin(bufferN1), std::end(bufferN1), std::begin(bufferN2));
+        result = std::equal(BeginImpl(bufferN1), EndImpl(bufferN1), BeginImpl(bufferN2));
         CHECK(result);
 
         // Non-random iterator
         std::list<int> list1(SIZE);
         std::list<int> list2(SIZE);
 
-        std::list<int>::iterator pl1 = wstl::Copy(std::begin(dataLA), std::end(dataLA), std::begin(list1));
-        std::list<int>::iterator pl2 = std::copy(std::begin(dataLA), std::end(dataLA), std::begin(list2));
+        std::list<int>::iterator pl1 = wstl::Copy(BeginImpl(dataLA), EndImpl(dataLA), BeginImpl(list1));
+        std::list<int>::iterator pl2 = std::copy(BeginImpl(dataLA), EndImpl(dataLA), BeginImpl(list2));
 
         d1 = std::distance(list1.begin(), pl1);
         d2 = std::distance(list2.begin(), pl2);
         CHECK_EQ(d1, d2);
 
-        result = std::equal(std::begin(list1), std::end(list1), std::begin(list2));
+        result = std::equal(BeginImpl(list1), EndImpl(list1), BeginImpl(list2));
         CHECK(result);
     }
 
@@ -355,42 +357,42 @@ TEST_SUITE("Algorithm") {
         int buffer1[SIZE] = {0};
         int buffer2[SIZE] = {0};
 
-        int* p1 = wstl::CopyIf(std::begin(dataA), std::end(dataA), std::begin(buffer1), &wstl::IsEven<int>);
-        int* p2 = std::copy_if(std::begin(dataA), std::end(dataA), std::begin(buffer2), &wstl::IsEven<int>);
+        int* p1 = wstl::CopyIf(BeginImpl(dataA), EndImpl(dataA), BeginImpl(buffer1), &wstl::IsEven<int>);
+        int* p2 = std::copy_if(BeginImpl(dataA), EndImpl(dataA), BeginImpl(buffer2), &wstl::IsEven<int>);
 
         ptrdiff_t d1 = std::distance(buffer1, p1);
         ptrdiff_t d2 = std::distance(buffer2, p2);
         CHECK_EQ(d1, d2);
 
-        bool result = std::equal(std::begin(buffer1), std::end(buffer1), std::begin(buffer2));
+        bool result = std::equal(BeginImpl(buffer1), EndImpl(buffer1), BeginImpl(buffer2));
         CHECK(result);
 
         // Non-POD pointer
         NonTrivialData bufferN1[NONTRIVIAL_SIZE];
         NonTrivialData bufferN2[NONTRIVIAL_SIZE];
 
-        NonTrivialData* pn1 = wstl::CopyIf(std::begin(dataN), std::end(dataN), std::begin(bufferN1), &CopyIfPredicate2);
-        NonTrivialData* pn2 = std::copy_if(std::begin(dataN), std::end(dataN), std::begin(bufferN2), &CopyIfPredicate2);
+        NonTrivialData* pn1 = wstl::CopyIf(BeginImpl(dataN), EndImpl(dataN), BeginImpl(bufferN1), &CopyIfPredicate2);
+        NonTrivialData* pn2 = std::copy_if(BeginImpl(dataN), EndImpl(dataN), BeginImpl(bufferN2), &CopyIfPredicate2);
 
         d1 = std::distance(bufferN1, pn1);
         d2 = std::distance(bufferN2, pn2);
         CHECK_EQ(d1, d2);
 
-        result = std::equal(std::begin(bufferN1), std::end(bufferN1), std::begin(bufferN2));
+        result = std::equal(BeginImpl(bufferN1), EndImpl(bufferN1), BeginImpl(bufferN2));
         CHECK(result);
 
         // Non-random iterator
         std::list<int> list1(SIZE);
         std::list<int> list2(SIZE);
 
-        std::list<int>::iterator pl1 = wstl::CopyIf(std::begin(dataLA), std::end(dataLA), std::begin(list1), &wstl::IsEven<int>);
-        std::list<int>::iterator pl2 = std::copy_if(std::begin(dataLA), std::end(dataLA), std::begin(list2), &wstl::IsEven<int>);
+        std::list<int>::iterator pl1 = wstl::CopyIf(BeginImpl(dataLA), EndImpl(dataLA), BeginImpl(list1), &wstl::IsEven<int>);
+        std::list<int>::iterator pl2 = std::copy_if(BeginImpl(dataLA), EndImpl(dataLA), BeginImpl(list2), &wstl::IsEven<int>);
 
         d1 = std::distance(list1.begin(), pl1);
         d2 = std::distance(list2.begin(), pl2);
         CHECK_EQ(d1, d2);
 
-        result = std::equal(std::begin(list1), std::end(list1), std::begin(list2));
+        result = std::equal(BeginImpl(list1), EndImpl(list1), BeginImpl(list2));
         CHECK(result);
     }
 
@@ -399,42 +401,42 @@ TEST_SUITE("Algorithm") {
         int buffer1[SIZE] = {0};
         int buffer2[SIZE] = {0};
 
-        int* p1 = wstl::CopyInRange(std::begin(dataA), SIZE, std::begin(buffer1));
-        int* p2 = std::copy_n(std::begin(dataA), SIZE, std::begin(buffer2));
+        int* p1 = wstl::CopyInRange(BeginImpl(dataA), SIZE, BeginImpl(buffer1));
+        int* p2 = std::copy_n(BeginImpl(dataA), SIZE, BeginImpl(buffer2));
 
         ptrdiff_t d1 = std::distance(buffer1, p1);
         ptrdiff_t d2 = std::distance(buffer2, p2);
         CHECK_EQ(d1, d2);
 
-        bool result = std::equal(std::begin(buffer1), std::end(buffer1), std::begin(buffer2));
+        bool result = std::equal(BeginImpl(buffer1), EndImpl(buffer1), BeginImpl(buffer2));
         CHECK(result);
 
         // Non-POD pointer
         NonTrivialData bufferN1[NONTRIVIAL_SIZE];
         NonTrivialData bufferN2[NONTRIVIAL_SIZE];
 
-        NonTrivialData* pn1 = wstl::CopyInRange(std::begin(dataN), NONTRIVIAL_SIZE, std::begin(bufferN1));
-        NonTrivialData* pn2 = std::copy_n(std::begin(dataN), NONTRIVIAL_SIZE, std::begin(bufferN2));
+        NonTrivialData* pn1 = wstl::CopyInRange(BeginImpl(dataN), NONTRIVIAL_SIZE, BeginImpl(bufferN1));
+        NonTrivialData* pn2 = std::copy_n(BeginImpl(dataN), NONTRIVIAL_SIZE, BeginImpl(bufferN2));
 
         d1 = std::distance(bufferN1, pn1);
         d2 = std::distance(bufferN2, pn2);
         CHECK_EQ(d1, d2);
 
-        result = std::equal(std::begin(bufferN1), std::end(bufferN1), std::begin(bufferN2));
+        result = std::equal(BeginImpl(bufferN1), EndImpl(bufferN1), BeginImpl(bufferN2));
         CHECK(result);
 
         // Non-random iterator
         std::list<int> list1(SIZE);
         std::list<int> list2(SIZE);
 
-        std::list<int>::iterator pl1 = wstl::CopyInRange(std::begin(dataLA), SIZE, std::end(list1));
-        std::list<int>::iterator pl2 = std::copy_n(std::begin(dataLA), SIZE, std::end(list2));
+        std::list<int>::iterator pl1 = wstl::CopyInRange(BeginImpl(dataLA), SIZE, EndImpl(list1));
+        std::list<int>::iterator pl2 = std::copy_n(BeginImpl(dataLA), SIZE, EndImpl(list2));
 
         d1 = std::distance(list1.begin(), pl1);
         d2 = std::distance(list2.begin(), pl2);
         CHECK_EQ(d1, d2);
 
-        result = std::equal(std::begin(list1), std::end(list1), std::begin(list2));
+        result = std::equal(BeginImpl(list1), EndImpl(list1), BeginImpl(list2));
         CHECK(result);
     }
 
@@ -443,42 +445,42 @@ TEST_SUITE("Algorithm") {
         int buffer1[SIZE] = {0};
         int buffer2[SIZE] = {0};
 
-        int* p1 = wstl::CopyBackward(std::begin(dataA), std::end(dataA), std::end(buffer1));
-        int* p2 = std::copy_backward(std::begin(dataA), std::end(dataA), std::end(buffer2));
+        int* p1 = wstl::CopyBackward(BeginImpl(dataA), EndImpl(dataA), EndImpl(buffer1));
+        int* p2 = std::copy_backward(BeginImpl(dataA), EndImpl(dataA), EndImpl(buffer2));
 
         ptrdiff_t d1 = std::distance(buffer1, p1);
         ptrdiff_t d2 = std::distance(buffer2, p2);
         CHECK_EQ(d1, d2);
 
-        bool result = std::equal(std::begin(buffer1), std::end(buffer1), std::begin(buffer2));
+        bool result = std::equal(BeginImpl(buffer1), EndImpl(buffer1), BeginImpl(buffer2));
         CHECK(result);
 
         // Non-POD pointer
         NonTrivialData bufferN1[NONTRIVIAL_SIZE];
         NonTrivialData bufferN2[NONTRIVIAL_SIZE];
 
-        NonTrivialData* pn1 = wstl::CopyBackward(std::begin(dataN), std::end(dataN), std::end(bufferN1));
-        NonTrivialData* pn2 = std::copy_backward(std::begin(dataN), std::end(dataN), std::end(bufferN2));
+        NonTrivialData* pn1 = wstl::CopyBackward(BeginImpl(dataN), EndImpl(dataN), EndImpl(bufferN1));
+        NonTrivialData* pn2 = std::copy_backward(BeginImpl(dataN), EndImpl(dataN), EndImpl(bufferN2));
 
         d1 = std::distance(bufferN1, pn1);
         d2 = std::distance(bufferN2, pn2);
         CHECK_EQ(d1, d2);
 
-        result = std::equal(std::begin(bufferN1), std::end(bufferN1), std::begin(bufferN2));
+        result = std::equal(BeginImpl(bufferN1), EndImpl(bufferN1), BeginImpl(bufferN2));
         CHECK(result);
 
         // Non-random iterator
         std::list<int> list1(SIZE);
         std::list<int> list2(SIZE);
 
-        std::list<int>::iterator pl1 = wstl::CopyBackward(std::begin(dataLA), std::end(dataLA), std::end(list1));
-        std::list<int>::iterator pl2 = std::copy_backward(std::begin(dataLA), std::end(dataLA), std::end(list2));
+        std::list<int>::iterator pl1 = wstl::CopyBackward(BeginImpl(dataLA), EndImpl(dataLA), EndImpl(list1));
+        std::list<int>::iterator pl2 = std::copy_backward(BeginImpl(dataLA), EndImpl(dataLA), EndImpl(list2));
 
         d1 = std::distance(list1.begin(), pl1);
         d2 = std::distance(list2.begin(), pl2);
         CHECK_EQ(d1, d2);
 
-        result = std::equal(std::begin(list1), std::end(list1), std::begin(list2));
+        result = std::equal(BeginImpl(list1), EndImpl(list1), BeginImpl(list2));
         CHECK(result);
     }
 
@@ -603,9 +605,9 @@ TEST_SUITE("Algorithm") {
         std::binder2nd<std::equal_to<int> > predicate(std::equal_to<int>(), 5);
         #endif
 
-        wstl::Fill(std::begin(buffer), std::end(buffer), 5);
+        wstl::Fill(BeginImpl(buffer), EndImpl(buffer), 5);
         
-        bool result = std::all_of(std::begin(buffer), std::end(buffer), predicate);
+        bool result = std::all_of(BeginImpl(buffer), EndImpl(buffer), predicate);
         CHECK(result);
     }
 
@@ -618,9 +620,9 @@ TEST_SUITE("Algorithm") {
         std::binder2nd<std::equal_to<int> > predicate(std::equal_to<int>(), 5);
         #endif
 
-        wstl::FillInRange(std::begin(buffer), SIZE, 5);
+        wstl::FillInRange(BeginImpl(buffer), SIZE, 5);
         
-        bool result = std::all_of(std::begin(buffer), std::end(buffer), predicate);
+        bool result = std::all_of(BeginImpl(buffer), EndImpl(buffer), predicate);
         CHECK(result);
     }
 
@@ -634,16 +636,16 @@ TEST_SUITE("Algorithm") {
         std::binder2nd<std::multiplies<int> > transform(std::multiplies<int>(), 2);
         #endif
 
-        wstl::Transform(std::begin(dataA), std::end(dataA), buffer1, transform);
-        std::transform(std::begin(dataA), std::end(dataA), buffer2, transform);
+        wstl::Transform(BeginImpl(dataA), EndImpl(dataA), buffer1, transform);
+        std::transform(BeginImpl(dataA), EndImpl(dataA), buffer2, transform);
 
-        bool result = std::equal(std::begin(buffer1), std::end(buffer1), std::begin(buffer2));
+        bool result = std::equal(BeginImpl(buffer1), EndImpl(buffer1), BeginImpl(buffer2));
         CHECK(result);
 
-        wstl::Transform(std::begin(dataA), std::end(dataA), std::begin(dataB), buffer1, std::plus<int>());
-        std::transform(std::begin(dataA), std::end(dataA), std::begin(dataB), buffer2, std::plus<int>());
+        wstl::Transform(BeginImpl(dataA), EndImpl(dataA), BeginImpl(dataB), buffer1, std::plus<int>());
+        std::transform(BeginImpl(dataA), EndImpl(dataA), BeginImpl(dataB), buffer2, std::plus<int>());
 
-        result = std::equal(std::begin(buffer1), std::end(buffer1), std::begin(buffer2));
+        result = std::equal(BeginImpl(buffer1), EndImpl(buffer1), BeginImpl(buffer2));
         CHECK(result);
     }
 
@@ -651,10 +653,10 @@ TEST_SUITE("Algorithm") {
         int buffer1[SIZE];
         int buffer2[SIZE];
 
-        wstl::Generate(std::begin(buffer1), std::end(buffer1), ConstantGenerator<int, 5>());
-        std::generate(std::begin(buffer2), std::end(buffer2), ConstantGenerator<int, 5>());
+        wstl::Generate(BeginImpl(buffer1), EndImpl(buffer1), ConstantGenerator<int, 5>());
+        std::generate(BeginImpl(buffer2), EndImpl(buffer2), ConstantGenerator<int, 5>());
 
-        bool result = std::equal(std::begin(buffer1), std::end(buffer1), std::begin(buffer2));
+        bool result = std::equal(BeginImpl(buffer1), EndImpl(buffer1), BeginImpl(buffer2));
         CHECK(result);
     }
 
@@ -662,10 +664,10 @@ TEST_SUITE("Algorithm") {
         int buffer1[SIZE];
         int buffer2[SIZE];
 
-        wstl::GenerateInRange(std::begin(buffer1), SIZE, ConstantGenerator<int, 5>());
-        std::generate_n(std::begin(buffer2), SIZE, ConstantGenerator<int, 5>());
+        wstl::GenerateInRange(BeginImpl(buffer1), SIZE, ConstantGenerator<int, 5>());
+        std::generate_n(BeginImpl(buffer2), SIZE, ConstantGenerator<int, 5>());
 
-        bool result = std::equal(std::begin(buffer1), std::end(buffer1), std::begin(buffer2));
+        bool result = std::equal(BeginImpl(buffer1), EndImpl(buffer1), BeginImpl(buffer2));
         CHECK(result);
     }
 
@@ -673,9 +675,9 @@ TEST_SUITE("Algorithm") {
         int data[] = {1, 2, 3, 4, 4, 4, 5, 6, 7};
         int expected[] = {1, 2, 3, 5, 6, 7};
 
-        wstl::Remove(std::begin(data), std::end(data), 4);
+        wstl::Remove(BeginImpl(data), EndImpl(data), 4);
 
-        bool result = std::equal(std::begin(expected), std::end(expected), data);
+        bool result = std::equal(BeginImpl(expected), EndImpl(expected), data);
         CHECK(result);
     }
 
@@ -683,9 +685,9 @@ TEST_SUITE("Algorithm") {
         int data[] = {1, 2, 3, 4, 4, 4, 5, 6, 7};
         int expected[] = {2, 4, 4, 4, 6};
 
-        wstl::RemoveIf(std::begin(data), std::end(data), &IsNotEven);
+        wstl::RemoveIf(BeginImpl(data), EndImpl(data), &IsNotEven);
 
-        bool result = std::equal(std::begin(expected), std::end(expected), data);
+        bool result = std::equal(BeginImpl(expected), EndImpl(expected), data);
         CHECK(result);
     }
 
@@ -694,9 +696,9 @@ TEST_SUITE("Algorithm") {
         int expected[] = {1, 2, 3, 5, 6, 7};
         int buffer[9];
 
-        wstl::RemoveCopy(std::begin(data), std::end(data), buffer, 4);
+        wstl::RemoveCopy(BeginImpl(data), EndImpl(data), buffer, 4);
 
-        bool result = std::equal(std::begin(expected), std::end(expected), buffer);
+        bool result = std::equal(BeginImpl(expected), EndImpl(expected), buffer);
         CHECK(result);
     }
 
@@ -705,9 +707,9 @@ TEST_SUITE("Algorithm") {
         int expected[] = {2, 4, 4, 4, 6};
         int buffer[9];
 
-        wstl::RemoveCopyIf(std::begin(data), std::end(data), buffer, &IsNotEven);
+        wstl::RemoveCopyIf(BeginImpl(data), EndImpl(data), buffer, &IsNotEven);
 
-        bool result = std::equal(std::begin(expected), std::end(expected), buffer);
+        bool result = std::equal(BeginImpl(expected), EndImpl(expected), buffer);
         CHECK(result);
     }
 
@@ -715,9 +717,9 @@ TEST_SUITE("Algorithm") {
         int data[] = {1, 2, 3, 4, 4, 4, 5, 6, 7};
         int expected[] = {1, 2, 3, 10, 10, 10, 5, 6, 7};
 
-        wstl::Replace(std::begin(data), std::end(data), 4, 10);
+        wstl::Replace(BeginImpl(data), EndImpl(data), 4, 10);
 
-        bool result = std::equal(std::begin(expected), std::end(expected), data);
+        bool result = std::equal(BeginImpl(expected), EndImpl(expected), data);
         CHECK(result);
     }
 
@@ -725,9 +727,9 @@ TEST_SUITE("Algorithm") {
         int data[] = {1, 2, 3, 4, 4, 4, 5, 6, 7};
         int expected[] = {10, 2, 10, 4, 4, 4, 10, 6, 10};
 
-        wstl::ReplaceIf(std::begin(data), std::end(data), &IsNotEven, 10);
+        wstl::ReplaceIf(BeginImpl(data), EndImpl(data), &IsNotEven, 10);
 
-        bool result = std::equal(std::begin(expected), std::end(expected), data);
+        bool result = std::equal(BeginImpl(expected), EndImpl(expected), data);
         CHECK(result);
     }
 
@@ -736,9 +738,9 @@ TEST_SUITE("Algorithm") {
         int expected[] = {1, 2, 3, 10, 10, 10, 5, 6, 7};
         int buffer[9];
 
-        wstl::ReplaceCopy(std::begin(data), std::end(data), buffer, 4, 10);
+        wstl::ReplaceCopy(BeginImpl(data), EndImpl(data), buffer, 4, 10);
 
-        bool result = std::equal(std::begin(expected), std::end(expected), buffer);
+        bool result = std::equal(BeginImpl(expected), EndImpl(expected), buffer);
         CHECK(result);
     }
 
@@ -747,9 +749,9 @@ TEST_SUITE("Algorithm") {
         int expected[] = {10, 2, 10, 4, 4, 4, 10, 6, 10};
         int buffer[9];
 
-        wstl::ReplaceCopyIf(std::begin(data), std::end(data), buffer, &IsNotEven, 10);
+        wstl::ReplaceCopyIf(BeginImpl(data), EndImpl(data), buffer, &IsNotEven, 10);
 
-        bool result = std::equal(std::begin(expected), std::end(expected), buffer);
+        bool result = std::equal(BeginImpl(expected), EndImpl(expected), buffer);
         CHECK(result);
     }
 
@@ -766,7 +768,7 @@ TEST_SUITE("Algorithm") {
         int data1[] = {1, 2, 3};
         int data2[] = {4, 5, 6};
 
-        wstl::SwapRanges(std::begin(data1), std::end(data1), std::begin(data2));
+        wstl::SwapRanges(BeginImpl(data1), EndImpl(data1), BeginImpl(data2));
 
         CHECK_EQ(data1[0], 4);
         CHECK_EQ(data1[1], 5);
@@ -780,9 +782,9 @@ TEST_SUITE("Algorithm") {
         int data[] = {1, 2, 3, 4, 5};
         int expected[] = {5, 4, 3, 2, 1};
 
-        wstl::Reverse(std::begin(data), std::end(data));
+        wstl::Reverse(BeginImpl(data), EndImpl(data));
 
-        bool result = std::equal(std::begin(expected), std::end(expected), data);
+        bool result = std::equal(BeginImpl(expected), EndImpl(expected), data);
         CHECK(result);
     }
 
@@ -790,14 +792,14 @@ TEST_SUITE("Algorithm") {
         int result[SIZE];
         int expected[SIZE];
 
-        int* ptr1 = wstl::ReverseCopy(std::begin(dataA), std::end(dataA), result);
-        int* ptr2 = std::reverse_copy(std::begin(dataA), std::end(dataA), expected);
+        int* ptr1 = wstl::ReverseCopy(BeginImpl(dataA), EndImpl(dataA), result);
+        int* ptr2 = std::reverse_copy(BeginImpl(dataA), EndImpl(dataA), expected);
         
         ptrdiff_t d1 = std::distance(result, ptr1);
         ptrdiff_t d2 = std::distance(expected, ptr2);
         CHECK_EQ(d1, d2);
 
-        bool equal = std::equal(std::begin(expected), std::end(expected), result);
+        bool equal = std::equal(BeginImpl(expected), EndImpl(expected), result);
         CHECK(equal);
     }
 
@@ -817,7 +819,7 @@ TEST_SUITE("Algorithm") {
         }
 
         // Non-POD
-        std::vector<NonTrivialData> initial2(std::begin(dataN), std::end(dataN));
+        std::vector<NonTrivialData> initial2(BeginImpl(dataN), EndImpl(dataN));
 
         for(size_t i = 0; i < initial2.size(); ++i) {
             std::vector<NonTrivialData> data1(initial2);
@@ -846,7 +848,7 @@ TEST_SUITE("Algorithm") {
         }
 
         // Non-POD
-        std::vector<NonTrivialData> initial2(std::begin(dataN), std::end(dataN));
+        std::vector<NonTrivialData> initial2(BeginImpl(dataN), EndImpl(dataN));
         
         for(size_t i = 0; i < initial2.size(); ++i) {
             std::vector<NonTrivialData> data1(initial2.size());
@@ -865,14 +867,14 @@ TEST_SUITE("Algorithm") {
         int data2[] = {1, 2, 1, 1, 3, 3, 3, 4, 5, 4};
         int expected[] = {1, 2, 1, 3, 4, 5, 4};
 
-        wstl::Unique(std::begin(data1), std::end(data1));
+        wstl::Unique(BeginImpl(data1), EndImpl(data1));
 
-        bool result = std::equal(std::begin(expected), std::end(expected), data1);
+        bool result = std::equal(BeginImpl(expected), EndImpl(expected), data1);
         CHECK(result);
 
-        wstl::Unique(std::begin(data2), std::end(data2), std::equal_to<int>());
+        wstl::Unique(BeginImpl(data2), EndImpl(data2), std::equal_to<int>());
 
-        result = std::equal(std::begin(expected), std::end(expected), data2);
+        result = std::equal(BeginImpl(expected), EndImpl(expected), data2);
         CHECK(result);
     }
 
@@ -882,14 +884,14 @@ TEST_SUITE("Algorithm") {
         int buffer1[10];
         int buffer2[10];
 
-        wstl::UniqueCopy(std::begin(data), std::end(data), buffer1);
+        wstl::UniqueCopy(BeginImpl(data), EndImpl(data), buffer1);
 
-        bool result = std::equal(std::begin(expected), std::end(expected), buffer1);
+        bool result = std::equal(BeginImpl(expected), EndImpl(expected), buffer1);
         CHECK(result);
 
-        wstl::UniqueCopy(std::begin(data), std::end(data), buffer2, std::equal_to<int>());
+        wstl::UniqueCopy(BeginImpl(data), EndImpl(data), buffer2, std::equal_to<int>());
 
-        result = std::equal(std::begin(expected), std::end(expected), buffer2);
+        result = std::equal(BeginImpl(expected), EndImpl(expected), buffer2);
         CHECK(result);
     }
 
@@ -902,14 +904,14 @@ TEST_SUITE("Algorithm") {
         std::binder2nd<std::greater<int> > predicate(std::greater<int>(), 4);
         #endif
 
-        bool expected = std::is_partitioned(std::begin(data), std::end(data), predicate);
-        bool result = wstl::IsPartitioned(std::begin(data), std::end(data), predicate);
+        bool expected = std::is_partitioned(BeginImpl(data), EndImpl(data), predicate);
+        bool result = wstl::IsPartitioned(BeginImpl(data), EndImpl(data), predicate);
         CHECK_EQ(expected, result);
 
-        std::partition(std::begin(data), std::end(data), predicate);
+        std::partition(BeginImpl(data), EndImpl(data), predicate);
 
-        expected = std::is_partitioned(std::begin(data), std::end(data), predicate);
-        result = wstl::IsPartitioned(std::begin(data), std::end(data), predicate);
+        expected = std::is_partitioned(BeginImpl(data), EndImpl(data), predicate);
+        result = wstl::IsPartitioned(BeginImpl(data), EndImpl(data), predicate);
         CHECK_EQ(expected, result);
     }
 
@@ -917,8 +919,8 @@ TEST_SUITE("Algorithm") {
         // Forward iterator
         std::array<int, 6> initial = {1, 2, 3, 4, 5, 6};
 
-        std::forward_list<int> expected1(std::begin(initial), std::end(initial));
-        std::forward_list<int> data1(std::begin(initial), std::end(initial));
+        std::forward_list<int> expected1(BeginImpl(initial), EndImpl(initial));
+        std::forward_list<int> data1(BeginImpl(initial), EndImpl(initial));
 
         bool complete = false;
 
@@ -935,10 +937,10 @@ TEST_SUITE("Algorithm") {
             bool result = std::equal(expected1.begin(), expected1.end(), data1.begin());
             CHECK(result);
 
-            complete = !std::next_permutation(std::begin(initial), std::end(initial));
+            complete = !std::next_permutation(BeginImpl(initial), EndImpl(initial));
 
-            expected1.assign(std::begin(initial), std::end(initial));
-            data1.assign(std::begin(initial), std::end(initial));
+            expected1.assign(BeginImpl(initial), EndImpl(initial));
+            data1.assign(BeginImpl(initial), EndImpl(initial));
         }
 
         // Bidirectional iterator
@@ -960,7 +962,7 @@ TEST_SUITE("Algorithm") {
             bool result = std::equal(expected2.begin(), expected2.end(), data2.begin());
             CHECK(result);
 
-            complete = !std::next_permutation(std::begin(initial), std::end(initial));
+            complete = !std::next_permutation(BeginImpl(initial), EndImpl(initial));
 
             expected2 = initial;
             data2 = initial;
@@ -979,13 +981,13 @@ TEST_SUITE("Algorithm") {
         std::binder2nd<std::greater<int> > predicate(std::greater<int>(), 4);
         #endif
 
-        wstl::PartitionCopy(std::begin(dataA), std::end(dataA), data1True, data1False, predicate);
-        std::partition_copy(std::begin(dataA), std::end(dataA), data2True, data2False, predicate);
+        wstl::PartitionCopy(BeginImpl(dataA), EndImpl(dataA), data1True, data1False, predicate);
+        std::partition_copy(BeginImpl(dataA), EndImpl(dataA), data2True, data2False, predicate);
 
-        bool result = std::equal(std::begin(data2True), std::end(data2True), std::begin(data1True));
+        bool result = std::equal(BeginImpl(data2True), EndImpl(data2True), BeginImpl(data1True));
         CHECK(result);
 
-        result = std::equal(std::begin(data2False), std::end(data2False), std::begin(data1False));
+        result = std::equal(BeginImpl(data2False), EndImpl(data2False), BeginImpl(data1False));
         CHECK(result);
     }
 
@@ -1023,35 +1025,35 @@ TEST_SUITE("Algorithm") {
         std::binder2nd<std::greater<int> > predicate2(std::greater<int>(), 8);
         #endif
 
-        std::partition(std::begin(data), std::end(data), predicate1);
+        std::partition(BeginImpl(data), EndImpl(data), predicate1);
 
-        int* p1 = wstl::PartitionPoint(std::begin(data), std::end(data), predicate1);
-        int* p2 = std::partition_point(std::begin(data), std::end(data), predicate1);
+        int* p1 = wstl::PartitionPoint(BeginImpl(data), EndImpl(data), predicate1);
+        int* p2 = std::partition_point(BeginImpl(data), EndImpl(data), predicate1);
         CHECK_EQ(p1, p2);
 
-        std::partition(std::begin(data), std::end(data), predicate2);
+        std::partition(BeginImpl(data), EndImpl(data), predicate2);
 
-        p1 = wstl::PartitionPoint(std::begin(data), std::end(data), predicate2);
-        p2 = std::partition_point(std::begin(data), std::end(data), predicate2);
+        p1 = wstl::PartitionPoint(BeginImpl(data), EndImpl(data), predicate2);
+        p2 = std::partition_point(BeginImpl(data), EndImpl(data), predicate2);
         CHECK_EQ(p1, p2);
     }
 
     TEST_CASE("MinElement") {
         // Normal
-        int* expected = std::min_element(std::begin(dataA), std::end(dataA));
-        int* result = wstl::MinElement(std::begin(dataA), std::end(dataA));
+        int* expected = std::min_element(BeginImpl(dataA), EndImpl(dataA));
+        int* result = wstl::MinElement(BeginImpl(dataA), EndImpl(dataA));
         CHECK_EQ(expected, result);
 
         // Compare
-        expected = std::min_element(std::begin(dataA), std::end(dataA), std::greater<int>());
-        result = wstl::MinElement(std::begin(dataA), std::end(dataA), std::greater<int>());
+        expected = std::min_element(BeginImpl(dataA), EndImpl(dataA), std::greater<int>());
+        result = wstl::MinElement(BeginImpl(dataA), EndImpl(dataA), std::greater<int>());
         CHECK_EQ(expected, result);
 
         // Empty
         std::array<int, 0> empty;
 
-        std::array<int, 0>::iterator expectedEmpty = std::min_element(std::begin(empty), std::end(empty), std::greater<int>());
-        std::array<int, 0>::iterator resultEmpty = wstl::MinElement(std::begin(empty), std::end(empty), std::greater<int>());
+        std::array<int, 0>::iterator expectedEmpty = std::min_element(BeginImpl(empty), EndImpl(empty), std::greater<int>());
+        std::array<int, 0>::iterator resultEmpty = wstl::MinElement(BeginImpl(empty), EndImpl(empty), std::greater<int>());
         CHECK_EQ(expectedEmpty, resultEmpty);
     }
 
@@ -1067,20 +1069,20 @@ TEST_SUITE("Algorithm") {
 
     TEST_CASE("MaxElement") {
         // Normal
-        int* expected = std::max_element(std::begin(dataA), std::end(dataA));
-        int* result = wstl::MaxElement(std::begin(dataA), std::end(dataA));
+        int* expected = std::max_element(BeginImpl(dataA), EndImpl(dataA));
+        int* result = wstl::MaxElement(BeginImpl(dataA), EndImpl(dataA));
         CHECK_EQ(expected, result);
 
         // Compare
-        expected = std::max_element(std::begin(dataA), std::end(dataA), std::greater<int>());
-        result = wstl::MaxElement(std::begin(dataA), std::end(dataA), std::greater<int>());
+        expected = std::max_element(BeginImpl(dataA), EndImpl(dataA), std::greater<int>());
+        result = wstl::MaxElement(BeginImpl(dataA), EndImpl(dataA), std::greater<int>());
         CHECK_EQ(expected, result);
 
         // Empty
         std::array<int, 0> empty;
 
-        std::array<int, 0>::iterator expectedEmpty = std::max_element(std::begin(empty), std::end(empty), std::greater<int>());
-        std::array<int, 0>::iterator resultEmpty = wstl::MaxElement(std::begin(empty), std::end(empty), std::greater<int>());
+        std::array<int, 0>::iterator expectedEmpty = std::max_element(BeginImpl(empty), EndImpl(empty), std::greater<int>());
+        std::array<int, 0>::iterator resultEmpty = wstl::MaxElement(BeginImpl(empty), EndImpl(empty), std::greater<int>());
         CHECK_EQ(expectedEmpty, resultEmpty);
     }
 
@@ -1096,14 +1098,14 @@ TEST_SUITE("Algorithm") {
 
     TEST_CASE("MinMaxElement") {
         // Normal
-        std::pair<int*, int*> expected = std::minmax_element(std::begin(dataA), std::end(dataA));
-        wstl::Pair<int*, int*> result = wstl::MinMaxElement(std::begin(dataA), std::end(dataA));
+        std::pair<int*, int*> expected = std::minmax_element(BeginImpl(dataA), EndImpl(dataA));
+        wstl::Pair<int*, int*> result = wstl::MinMaxElement(BeginImpl(dataA), EndImpl(dataA));
         CHECK_EQ(expected.first, result.First);
         CHECK_EQ(expected.second, result.Second);
 
         // Compare
-        expected = std::minmax_element(std::begin(dataA), std::end(dataA), std::greater<int>());
-        result = wstl::MinMaxElement(std::begin(dataA), std::end(dataA), std::greater<int>());
+        expected = std::minmax_element(BeginImpl(dataA), EndImpl(dataA), std::greater<int>());
+        result = wstl::MinMaxElement(BeginImpl(dataA), EndImpl(dataA), std::greater<int>());
         CHECK_EQ(expected.first, result.First);
         CHECK_EQ(expected.second, result.Second);
 
@@ -1111,8 +1113,8 @@ TEST_SUITE("Algorithm") {
         typedef std::array<int, 0> EmptyArray;
         EmptyArray empty;
 
-        std::pair<EmptyArray::iterator, EmptyArray::iterator> expectedEmpty = std::minmax_element(std::begin(empty), std::end(empty), std::greater<int>());
-        wstl::Pair<EmptyArray::iterator, EmptyArray::iterator> resultEmpty = wstl::MinMaxElement(std::begin(empty), std::end(empty), std::greater<int>());
+        std::pair<EmptyArray::iterator, EmptyArray::iterator> expectedEmpty = std::minmax_element(BeginImpl(empty), EndImpl(empty), std::greater<int>());
+        wstl::Pair<EmptyArray::iterator, EmptyArray::iterator> resultEmpty = wstl::MinMaxElement(BeginImpl(empty), EndImpl(empty), std::greater<int>());
         CHECK_EQ(expectedEmpty.first, resultEmpty.First);
         CHECK_EQ(expectedEmpty.second, resultEmpty.Second);
     }
@@ -1157,10 +1159,10 @@ TEST_SUITE("Algorithm") {
     TEST_CASE("Equal") {
         int dataSmall[] = {1, 2, 3};
 
-        CHECK(wstl::Equal(std::begin(dataA), std::end(dataA), std::begin(dataLA)));
-        CHECK(!wstl::Equal(std::begin(dataA), std::end(dataA), std::begin(dataB)));
-        CHECK(wstl::Equal(std::begin(dataA), std::end(dataA), std::begin(dataLA), std::end(dataLA)));
-        CHECK(!wstl::Equal(std::begin(dataA), std::end(dataA), std::begin(dataSmall), std::end(dataSmall)));
+        CHECK(wstl::Equal(BeginImpl(dataA), EndImpl(dataA), BeginImpl(dataLA)));
+        CHECK(!wstl::Equal(BeginImpl(dataA), EndImpl(dataA), BeginImpl(dataB)));
+        CHECK(wstl::Equal(BeginImpl(dataA), EndImpl(dataA), BeginImpl(dataLA), EndImpl(dataLA)));
+        CHECK(!wstl::Equal(BeginImpl(dataA), EndImpl(dataA), BeginImpl(dataSmall), EndImpl(dataSmall)));
     }
 
     TEST_CASE("LexicographicalCompare") {
@@ -1178,8 +1180,8 @@ TEST_SUITE("Algorithm") {
 
     TEST_CASE("Heap") {
         int arr[] = {1, 2, 3, 4, 5, 6, 7, 8};
-        std::vector<uint32_t> data1(std::begin(arr), std::end(arr));
-        std::vector<uint32_t> data2(std::begin(arr), std::end(arr));
+        std::vector<uint32_t> data1(BeginImpl(arr), EndImpl(arr));
+        std::vector<uint32_t> data2(BeginImpl(arr), EndImpl(arr));
 
         wstl::MakeHeap(data1.begin(), data1.end());
         std::make_heap(data2.begin(), data2.end());
@@ -1337,12 +1339,12 @@ TEST_SUITE("Algorithm") {
         int data1[] = { 1, 2, 3, 4, 6, 5, 7, 8, 9, 10 };
         int data2[] = { 10, 9, 8, 7, 5, 6, 4, 3, 4, 2, 1 };
 
-        int* p1 = wstl::IsSortedUntil(std::begin(data1), std::end(data1));
-        int* p2 = std::is_sorted_until(std::begin(data1), std::end(data1));
+        int* p1 = wstl::IsSortedUntil(BeginImpl(data1), EndImpl(data1));
+        int* p2 = std::is_sorted_until(BeginImpl(data1), EndImpl(data1));
         CHECK_EQ(p1, p2);
 
-        p1 = wstl::IsSortedUntil(std::begin(data2), std::end(data2));
-        p2 = std::is_sorted_until(std::begin(data2), std::end(data2));
+        p1 = wstl::IsSortedUntil(BeginImpl(data2), EndImpl(data2));
+        p2 = std::is_sorted_until(BeginImpl(data2), EndImpl(data2));
         CHECK_EQ(p1, p2); 
     }
 
@@ -1352,16 +1354,16 @@ TEST_SUITE("Algorithm") {
         int data2[] = { 10, 9, 8, 7, 5, 6, 4, 3, 2, 1 };
         int data2Sorted[] = { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
 
-        bool result = wstl::IsSorted(std::begin(data1), std::end(data1));
+        bool result = wstl::IsSorted(BeginImpl(data1), EndImpl(data1));
         CHECK(!result);
 
-        bool result2 = wstl::IsSorted(std::begin(data1Sorted), std::end(data1Sorted));
+        bool result2 = wstl::IsSorted(BeginImpl(data1Sorted), EndImpl(data1Sorted));
         CHECK(result2);
 
-        result = wstl::IsSorted(std::begin(data2), std::end(data2), std::greater<int>());
+        result = wstl::IsSorted(BeginImpl(data2), EndImpl(data2), std::greater<int>());
         CHECK(!result);
 
-        result = wstl::IsSorted(std::begin(data2Sorted), std::end(data2Sorted), std::greater<int>());
+        result = wstl::IsSorted(BeginImpl(data2Sorted), EndImpl(data2Sorted), std::greater<int>());
         CHECK(result);
     }
 
@@ -1370,7 +1372,11 @@ TEST_SUITE("Algorithm") {
         std::iota(data.begin(), data.end(), 1);
 
         for(int i = 0; i < 100; ++i) {
+            #ifdef __WSTL_CXX11__
             std::shuffle(data.begin(), data.end(), urng);
+            #else
+            std::random_shuffle(data.begin(), data.end());
+            #endif
 
             std::vector<int> data1 = data;
             std::vector<int> data2 = data;
@@ -1472,8 +1478,8 @@ TEST_SUITE("Algorithm") {
         std::vector<int> result;
         std::vector<int> expected;
 
-        wstl::Merge(std::begin(data1), std::end(data1), std::begin(data2), std::end(data2), std::back_inserter(result));
-        std::merge(std::begin(data1), std::end(data1), std::begin(data2), std::end(data2), std::back_inserter(expected));
+        wstl::Merge(BeginImpl(data1), EndImpl(data1), BeginImpl(data2), EndImpl(data2), std::back_inserter(result));
+        std::merge(BeginImpl(data1), EndImpl(data1), BeginImpl(data2), EndImpl(data2), std::back_inserter(expected));
 
         bool equal = std::equal(expected.begin(), expected.end(), result.begin());
         CHECK(equal);
@@ -1481,8 +1487,8 @@ TEST_SUITE("Algorithm") {
         result.clear();
         expected.clear();
 
-        wstl::Merge(std::begin(data1), std::end(data1), std::begin(data2), std::end(data2), std::back_inserter(result), std::greater<int>());
-        std::merge(std::begin(data1), std::end(data1), std::begin(data2), std::end(data2), std::back_inserter(expected), std::greater<int>());
+        wstl::Merge(BeginImpl(data1), EndImpl(data1), BeginImpl(data2), EndImpl(data2), std::back_inserter(result), std::greater<int>());
+        std::merge(BeginImpl(data1), EndImpl(data1), BeginImpl(data2), EndImpl(data2), std::back_inserter(expected), std::greater<int>());
 
         equal = std::equal(expected.begin(), expected.end(), result.begin());
         CHECK(equal);
@@ -1517,7 +1523,11 @@ TEST_SUITE("Algorithm") {
         std::vector<int> buffer(100);
 
         for(int i = 0; i < 100; ++i) {
+            #ifdef __WSTL_CXX11__
             std::shuffle(data.begin(), data.end(), urng);
+            #else
+            std::random_shuffle(data.begin(), data.end());
+            #endif
 
             std::vector<int> data1 = data;
             std::vector<int> data2 = data;
@@ -1544,7 +1554,11 @@ TEST_SUITE("Algorithm") {
         std::iota(data.begin(), data.end(), 1);
 
         for(int i = 0; i < 100; ++i) {
+            #ifdef __WSTL_CXX11__
             std::shuffle(data.begin(), data.end(), urng);
+            #else
+            std::random_shuffle(data.begin(), data.end());
+            #endif
 
             // Random access iterator
             std::vector<int> data1 = data;
@@ -1591,7 +1605,11 @@ TEST_SUITE("Algorithm") {
         std::iota(data.begin(), data.end(), 1);
 
         for(int i = 0; i < 100; ++i) {
+            #ifdef __WSTL_CXX11__
             std::shuffle(data.begin(), data.end(), urng);
+            #else
+            std::random_shuffle(data.begin(), data.end());
+            #endif
 
             std::vector<int> data1 = data;
             std::vector<int> data2 = data;
@@ -1646,7 +1664,11 @@ TEST_SUITE("Algorithm") {
         std::iota(data.begin(), data.end(), 1);
 
         for(int i = 0; i < 100; ++i) {
+            #ifdef __WSTL_CXX11__
             std::shuffle(data.begin(), data.end(), urng);
+            #else
+            std::random_shuffle(data.begin(), data.end());
+            #endif
 
             std::vector<int> data1 = data;
             std::vector<int> data2 = data;
@@ -1703,13 +1725,13 @@ TEST_SUITE("Algorithm") {
     TEST_CASE("LowerBound") {
         for(int i = 0; i < 9; ++i) {
             // Random access iterator
-            int* expected1 = std::lower_bound(std::begin(dataA), std::end(dataA), i);
-            int* result1 = wstl::LowerBound(std::begin(dataA), std::end(dataA), i);
+            int* expected1 = std::lower_bound(BeginImpl(dataA), EndImpl(dataA), i);
+            int* result1 = wstl::LowerBound(BeginImpl(dataA), EndImpl(dataA), i);
             CHECK_EQ(expected1, result1);
 
             // Non-random access iterator
-            std::list<int>::iterator expected2 = std::lower_bound(std::begin(dataLA), std::end(dataLA), i);
-            std::list<int>::iterator result2 = wstl::LowerBound(std::begin(dataLA), std::end(dataLA), i);
+            std::list<int>::iterator expected2 = std::lower_bound(BeginImpl(dataLA), EndImpl(dataLA), i);
+            std::list<int>::iterator result2 = wstl::LowerBound(BeginImpl(dataLA), EndImpl(dataLA), i);
             CHECK_EQ(expected2, result2);
         }
     }
@@ -1717,13 +1739,13 @@ TEST_SUITE("Algorithm") {
     TEST_CASE("UpperBound") {
         for(int i = 0; i < 9; ++i) {
             // Random access iterator
-            int* expected1 = std::upper_bound(std::begin(dataA), std::end(dataA), i);
-            int* result1 = wstl::UpperBound(std::begin(dataA), std::end(dataA), i);
+            int* expected1 = std::upper_bound(BeginImpl(dataA), EndImpl(dataA), i);
+            int* result1 = wstl::UpperBound(BeginImpl(dataA), EndImpl(dataA), i);
             CHECK_EQ(expected1, result1);
 
             // Non-random access iterator
-            std::list<int>::iterator expected2 = std::upper_bound(std::begin(dataLA), std::end(dataLA), i);
-            std::list<int>::iterator result2 = wstl::UpperBound(std::begin(dataLA), std::end(dataLA), i);
+            std::list<int>::iterator expected2 = std::upper_bound(BeginImpl(dataLA), EndImpl(dataLA), i);
+            std::list<int>::iterator result2 = wstl::UpperBound(BeginImpl(dataLA), EndImpl(dataLA), i);
             CHECK_EQ(expected2, result2);
         }
     }
@@ -1732,13 +1754,13 @@ TEST_SUITE("Algorithm") {
         int data1[] = {1, 3, 4, 5, 8, 9};
         int data2[] = {9, 8, 6, 5, 2, 0};
 
-        bool expected = std::binary_search(std::begin(data1), std::end(data1), 5);
-        bool result = wstl::BinarySearch(std::begin(data1), std::end(data1), 5);
+        bool expected = std::binary_search(BeginImpl(data1), EndImpl(data1), 5);
+        bool result = wstl::BinarySearch(BeginImpl(data1), EndImpl(data1), 5);
 
         CHECK_EQ(expected, result);
 
-        expected = std::binary_search(std::begin(data2), std::end(data2), 5, std::greater<int>());
-        result = wstl::BinarySearch(std::begin(data2), std::end(data2), 5, std::greater<int>());
+        expected = std::binary_search(BeginImpl(data2), EndImpl(data2), 5, std::greater<int>());
+        result = wstl::BinarySearch(BeginImpl(data2), EndImpl(data2), 5, std::greater<int>());
 
         CHECK_EQ(expected, result);
     }
@@ -1746,16 +1768,16 @@ TEST_SUITE("Algorithm") {
     TEST_CASE("EqualRange") {
         for(int i = 0; i < 9; ++i) {
             // Random access iterator
-            std::pair<int*, int*> expected1 = std::equal_range(std::begin(dataA), std::end(dataA), i);
-            wstl::Pair<int*, int*> result1 = wstl::EqualRange(std::begin(dataA), std::end(dataA), i);
+            std::pair<int*, int*> expected1 = std::equal_range(BeginImpl(dataA), EndImpl(dataA), i);
+            wstl::Pair<int*, int*> result1 = wstl::EqualRange(BeginImpl(dataA), EndImpl(dataA), i);
 
             CHECK_EQ(expected1.first, result1.First);
             CHECK_EQ(expected1.second, result1.Second);
 
             // Non-random access iterator
             typedef std::list<int>::iterator Iterator;
-            std::pair<Iterator, Iterator> expected2 = std::equal_range(std::begin(dataLA), std::end(dataLA), i);
-            wstl::Pair<Iterator, Iterator> result2 = wstl::EqualRange(std::begin(dataLA), std::end(dataLA), i);
+            std::pair<Iterator, Iterator> expected2 = std::equal_range(BeginImpl(dataLA), EndImpl(dataLA), i);
+            wstl::Pair<Iterator, Iterator> result2 = wstl::EqualRange(BeginImpl(dataLA), EndImpl(dataLA), i);
             
             CHECK_EQ(expected2.first, result2.First);
             CHECK_EQ(expected2.second, result2.Second);
@@ -1766,13 +1788,13 @@ TEST_SUITE("Algorithm") {
         int data1[] = {1, 3, 4, 5, 8, 9};
         int data2[] = {9, 8, 6, 5, 3, 0};
 
-        int* it1 = std::find(std::begin(data1), std::end(data1), 3);
-        int* it2 = wstl::BinaryFind(std::begin(data1), std::end(data1), 3);
+        int* it1 = std::find(BeginImpl(data1), EndImpl(data1), 3);
+        int* it2 = wstl::BinaryFind(BeginImpl(data1), EndImpl(data1), 3);
 
         CHECK_EQ(it1, it2);
 
-        it1 = std::find(std::begin(data2), std::end(data2), 5);
-        it2 = wstl::BinaryFind(std::begin(data2), std::end(data2), 5, std::greater<int>(), std::less_equal<int>());
+        it1 = std::find(BeginImpl(data2), EndImpl(data2), 5);
+        it2 = wstl::BinaryFind(BeginImpl(data2), EndImpl(data2), 5, std::greater<int>(), std::less_equal<int>());
 
         CHECK_EQ(it1, it2);
     }
@@ -1785,16 +1807,16 @@ TEST_SUITE("Algorithm") {
         int sequence2True[] = {12, 8, 2};
         int sequence2False[] = {7, 6, 6, 1};
 
-        bool result = wstl::Includes(std::begin(data1), std::end(data1), std::begin(sequence1True), std::end(sequence1True));
+        bool result = wstl::Includes(BeginImpl(data1), EndImpl(data1), BeginImpl(sequence1True), EndImpl(sequence1True));
         CHECK(result);
 
-        result = wstl::Includes(std::begin(data1), std::end(data1), std::begin(sequence1False), std::end(sequence1False));
+        result = wstl::Includes(BeginImpl(data1), EndImpl(data1), BeginImpl(sequence1False), EndImpl(sequence1False));
         CHECK(!result);
 
-        result = wstl::Includes(std::begin(data2), std::end(data2), std::begin(sequence2True), std::end(sequence2True), std::greater<int>());
+        result = wstl::Includes(BeginImpl(data2), EndImpl(data2), BeginImpl(sequence2True), EndImpl(sequence2True), std::greater<int>());
         CHECK(result);
 
-        result = wstl::Includes(std::begin(data2), std::end(data2), std::begin(sequence2False), std::end(sequence2False), std::greater<int>());
+        result = wstl::Includes(BeginImpl(data2), EndImpl(data2), BeginImpl(sequence2False), EndImpl(sequence2False), std::greater<int>());
         CHECK(!result);
     }
 
@@ -1807,14 +1829,14 @@ TEST_SUITE("Algorithm") {
         std::vector<int> result;
         std::vector<int> expected;
 
-        wstl::SetDifference(std::begin(data1), std::end(data1), std::begin(sequence1), std::end(sequence1), std::back_inserter(result));
-        std::set_difference(std::begin(data1), std::end(data1), std::begin(sequence1), std::end(sequence1), std::back_inserter(expected));
+        wstl::SetDifference(BeginImpl(data1), EndImpl(data1), BeginImpl(sequence1), EndImpl(sequence1), std::back_inserter(result));
+        std::set_difference(BeginImpl(data1), EndImpl(data1), BeginImpl(sequence1), EndImpl(sequence1), std::back_inserter(expected));
 
         bool equal = std::equal(expected.begin(), expected.end(), result.begin());
         CHECK(equal);
 
-        wstl::SetDifference(std::begin(data2), std::end(data2), std::begin(sequence2), std::end(sequence2), std::back_inserter(result), std::greater<int>());
-        std::set_difference(std::begin(data2), std::end(data2), std::begin(sequence2), std::end(sequence2), std::back_inserter(expected), std::greater<int>());
+        wstl::SetDifference(BeginImpl(data2), EndImpl(data2), BeginImpl(sequence2), EndImpl(sequence2), std::back_inserter(result), std::greater<int>());
+        std::set_difference(BeginImpl(data2), EndImpl(data2), BeginImpl(sequence2), EndImpl(sequence2), std::back_inserter(expected), std::greater<int>());
 
         equal = std::equal(expected.begin(), expected.end(), result.begin());
         CHECK(equal);
@@ -1829,14 +1851,14 @@ TEST_SUITE("Algorithm") {
         std::vector<int> result;
         std::vector<int> expected;
 
-        wstl::SetIntersection(std::begin(data1), std::end(data1), std::begin(sequence1), std::end(sequence1), std::back_inserter(result));
-        std::set_intersection(std::begin(data1), std::end(data1), std::begin(sequence1), std::end(sequence1), std::back_inserter(expected));
+        wstl::SetIntersection(BeginImpl(data1), EndImpl(data1), BeginImpl(sequence1), EndImpl(sequence1), std::back_inserter(result));
+        std::set_intersection(BeginImpl(data1), EndImpl(data1), BeginImpl(sequence1), EndImpl(sequence1), std::back_inserter(expected));
 
         bool equal = std::equal(expected.begin(), expected.end(), result.begin());
         CHECK(equal);
 
-        wstl::SetIntersection(std::begin(data2), std::end(data2), std::begin(sequence2), std::end(sequence2), std::back_inserter(result), std::greater<int>());
-        std::set_intersection(std::begin(data2), std::end(data2), std::begin(sequence2), std::end(sequence2), std::back_inserter(expected), std::greater<int>());
+        wstl::SetIntersection(BeginImpl(data2), EndImpl(data2), BeginImpl(sequence2), EndImpl(sequence2), std::back_inserter(result), std::greater<int>());
+        std::set_intersection(BeginImpl(data2), EndImpl(data2), BeginImpl(sequence2), EndImpl(sequence2), std::back_inserter(expected), std::greater<int>());
 
         equal = std::equal(expected.begin(), expected.end(), result.begin());
         CHECK(equal);
@@ -1851,14 +1873,14 @@ TEST_SUITE("Algorithm") {
         std::vector<int> result;
         std::vector<int> expected;
 
-        wstl::SetDifference(std::begin(data1), std::end(data1), std::begin(sequence1), std::end(sequence1), std::back_inserter(result));
-        std::set_difference(std::begin(data1), std::end(data1), std::begin(sequence1), std::end(sequence1), std::back_inserter(expected));
+        wstl::SetDifference(BeginImpl(data1), EndImpl(data1), BeginImpl(sequence1), EndImpl(sequence1), std::back_inserter(result));
+        std::set_difference(BeginImpl(data1), EndImpl(data1), BeginImpl(sequence1), EndImpl(sequence1), std::back_inserter(expected));
 
         bool equal = std::equal(expected.begin(), expected.end(), result.begin());
         CHECK(equal);
 
-        wstl::SetDifference(std::begin(data2), std::end(data2), std::begin(sequence2), std::end(sequence2), std::back_inserter(result), std::greater<int>());
-        std::set_difference(std::begin(data2), std::end(data2), std::begin(sequence2), std::end(sequence2), std::back_inserter(expected), std::greater<int>());
+        wstl::SetDifference(BeginImpl(data2), EndImpl(data2), BeginImpl(sequence2), EndImpl(sequence2), std::back_inserter(result), std::greater<int>());
+        std::set_difference(BeginImpl(data2), EndImpl(data2), BeginImpl(sequence2), EndImpl(sequence2), std::back_inserter(expected), std::greater<int>());
 
         equal = std::equal(expected.begin(), expected.end(), result.begin());
         CHECK(equal);
@@ -1873,14 +1895,14 @@ TEST_SUITE("Algorithm") {
         std::vector<int> result;
         std::vector<int> expected;
 
-        wstl::SetSymmetricDifference(std::begin(data1), std::end(data1), std::begin(sequence1), std::end(sequence1), std::back_inserter(result));
-        std::set_symmetric_difference(std::begin(data1), std::end(data1), std::begin(sequence1), std::end(sequence1), std::back_inserter(expected));
+        wstl::SetSymmetricDifference(BeginImpl(data1), EndImpl(data1), BeginImpl(sequence1), EndImpl(sequence1), std::back_inserter(result));
+        std::set_symmetric_difference(BeginImpl(data1), EndImpl(data1), BeginImpl(sequence1), EndImpl(sequence1), std::back_inserter(expected));
 
         bool equal = std::equal(expected.begin(), expected.end(), result.begin());
         CHECK(equal);
 
-        wstl::SetSymmetricDifference(std::begin(data2), std::end(data2), std::begin(sequence2), std::end(sequence2), std::back_inserter(result), std::greater<int>());
-        std::set_symmetric_difference(std::begin(data2), std::end(data2), std::begin(sequence2), std::end(sequence2), std::back_inserter(expected), std::greater<int>());
+        wstl::SetSymmetricDifference(BeginImpl(data2), EndImpl(data2), BeginImpl(sequence2), EndImpl(sequence2), std::back_inserter(result), std::greater<int>());
+        std::set_symmetric_difference(BeginImpl(data2), EndImpl(data2), BeginImpl(sequence2), EndImpl(sequence2), std::back_inserter(expected), std::greater<int>());
 
         equal = std::equal(expected.begin(), expected.end(), result.begin());
         CHECK(equal);
@@ -1895,14 +1917,14 @@ TEST_SUITE("Algorithm") {
         std::vector<int> result;
         std::vector<int> expected;
 
-        wstl::SetUnion(std::begin(data1), std::end(data1), std::begin(sequence1), std::end(sequence1), std::back_inserter(result));
-        std::set_union(std::begin(data1), std::end(data1), std::begin(sequence1), std::end(sequence1), std::back_inserter(expected));
+        wstl::SetUnion(BeginImpl(data1), EndImpl(data1), BeginImpl(sequence1), EndImpl(sequence1), std::back_inserter(result));
+        std::set_union(BeginImpl(data1), EndImpl(data1), BeginImpl(sequence1), EndImpl(sequence1), std::back_inserter(expected));
 
         bool equal = std::equal(expected.begin(), expected.end(), result.begin());
         CHECK(equal);
 
-        wstl::SetUnion(std::begin(data2), std::end(data2), std::begin(sequence2), std::end(sequence2), std::back_inserter(result), std::greater<int>());
-        std::set_union(std::begin(data2), std::end(data2), std::begin(sequence2), std::end(sequence2), std::back_inserter(expected), std::greater<int>());
+        wstl::SetUnion(BeginImpl(data2), EndImpl(data2), BeginImpl(sequence2), EndImpl(sequence2), std::back_inserter(result), std::greater<int>());
+        std::set_union(BeginImpl(data2), EndImpl(data2), BeginImpl(sequence2), EndImpl(sequence2), std::back_inserter(expected), std::greater<int>());
 
         equal = std::equal(expected.begin(), expected.end(), result.begin());
         CHECK(equal);
@@ -1913,28 +1935,28 @@ TEST_SUITE("Algorithm") {
         int permutation[] = {1, 3, 2, 4, 6, 5, 7, 8};
         int notPermutation[] = {1, 3, 2, 2, 6, 5, 7, 8};
 
-        bool result = wstl::IsPermutation(std::begin(data), std::end(data), std::begin(permutation));
+        bool result = wstl::IsPermutation(BeginImpl(data), EndImpl(data), BeginImpl(permutation));
         CHECK(result);
 
-        result = wstl::IsPermutation(std::begin(data), std::end(data), std::begin(notPermutation));
+        result = wstl::IsPermutation(BeginImpl(data), EndImpl(data), BeginImpl(notPermutation));
         CHECK(!result);
 
-        result = wstl::IsPermutation(std::begin(data), std::end(data), std::begin(permutation), wstl::EqualTo<int>());
+        result = wstl::IsPermutation(BeginImpl(data), EndImpl(data), BeginImpl(permutation), wstl::EqualTo<int>());
         CHECK(result);
 
-        result = wstl::IsPermutation(std::begin(data), std::end(data), std::begin(notPermutation), wstl::EqualTo<int>());
+        result = wstl::IsPermutation(BeginImpl(data), EndImpl(data), BeginImpl(notPermutation), wstl::EqualTo<int>());
         CHECK(!result);
 
-        result = wstl::IsPermutation(std::begin(data), std::end(data), std::begin(permutation), std::end(permutation));
+        result = wstl::IsPermutation(BeginImpl(data), EndImpl(data), BeginImpl(permutation), EndImpl(permutation));
         CHECK(result);
 
-        result = wstl::IsPermutation(std::begin(data), std::end(data), std::begin(notPermutation), std::end(notPermutation));
+        result = wstl::IsPermutation(BeginImpl(data), EndImpl(data), BeginImpl(notPermutation), EndImpl(notPermutation));
         CHECK(!result);
 
-        result = wstl::IsPermutation(std::begin(data), std::end(data), std::begin(permutation), std::end(permutation), wstl::EqualTo<int>());
+        result = wstl::IsPermutation(BeginImpl(data), EndImpl(data), BeginImpl(permutation), EndImpl(permutation), wstl::EqualTo<int>());
         CHECK(result);
 
-        result = wstl::IsPermutation(std::begin(data), std::end(data), std::begin(notPermutation), std::end(notPermutation), wstl::EqualTo<int>());
+        result = wstl::IsPermutation(BeginImpl(data), EndImpl(data), BeginImpl(notPermutation), EndImpl(notPermutation), wstl::EqualTo<int>());
         CHECK(!result);
     }
 
@@ -2031,8 +2053,8 @@ TEST_SUITE("Algorithm") {
     TEST_CASE("CopySafe") {
         int data1[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
         int data2[] = { 1, 2, 3, 4, 5 };
-        std::list<int> data3(std::begin(data1), std::end(data1));
-        std::list<int> data4(std::begin(data2), std::end(data2));
+        std::list<int> data3(BeginImpl(data1), EndImpl(data1));
+        std::list<int> data4(BeginImpl(data2), EndImpl(data2));
 
         int out1[10];
         int out2[5];
@@ -2046,55 +2068,55 @@ TEST_SUITE("Algorithm") {
         // Same size
 
         // Random access iterator
-        std::fill(std::begin(out1), std::end(out1), 0);
-        result = wstl::CopySafe(std::begin(data1), std::end(data1), std::begin(out1), std::end(out1));
-        CHECK_EQ(std::end(out1), result);
+        std::fill(BeginImpl(out1), EndImpl(out1), 0);
+        result = wstl::CopySafe(BeginImpl(data1), EndImpl(data1), BeginImpl(out1), EndImpl(out1));
+        CHECK_EQ(EndImpl(out1), result);
 
-        bool equal = std::equal(std::begin(out1), std::end(out1), std::begin(check1));
+        bool equal = std::equal(BeginImpl(out1), EndImpl(out1), BeginImpl(check1));
         CHECK(equal);
 
         // Non-random access iterator
-        std::fill(std::begin(out1), std::end(out1), 0);
-        result = wstl::CopySafe(std::begin(data3), std::end(data3), std::begin(out1), std::end(out1));
-        CHECK_EQ(std::end(out1), result);
+        std::fill(BeginImpl(out1), EndImpl(out1), 0);
+        result = wstl::CopySafe(BeginImpl(data3), EndImpl(data3), BeginImpl(out1), EndImpl(out1));
+        CHECK_EQ(EndImpl(out1), result);
 
-        equal = std::equal(std::begin(out1), std::end(out1), std::begin(check1));
+        equal = std::equal(BeginImpl(out1), EndImpl(out1), BeginImpl(check1));
         CHECK(equal);
 
         // Destination smaller
 
         // Random access iterator
-        std::fill(std::begin(out2), std::end(out2), 0);
-        result = wstl::CopySafe(std::begin(data1), std::end(data1), std::begin(out2), std::end(out2));
-        CHECK_EQ(std::end(out2), result);
+        std::fill(BeginImpl(out2), EndImpl(out2), 0);
+        result = wstl::CopySafe(BeginImpl(data1), EndImpl(data1), BeginImpl(out2), EndImpl(out2));
+        CHECK_EQ(EndImpl(out2), result);
 
-        equal = std::equal(std::begin(out2), std::end(out2), std::begin(check2));
+        equal = std::equal(BeginImpl(out2), EndImpl(out2), BeginImpl(check2));
         CHECK(equal);
 
         // Non-random access iterator
-        std::fill(std::begin(out2), std::end(out2), 0);
-        result = wstl::CopySafe(std::begin(data3), std::end(data3), std::begin(out2), std::end(out2));
-        CHECK_EQ(std::end(out2), result);
+        std::fill(BeginImpl(out2), EndImpl(out2), 0);
+        result = wstl::CopySafe(BeginImpl(data3), EndImpl(data3), BeginImpl(out2), EndImpl(out2));
+        CHECK_EQ(EndImpl(out2), result);
 
-        equal = std::equal(std::begin(out2), std::end(out2), std::begin(check2));
+        equal = std::equal(BeginImpl(out2), EndImpl(out2), BeginImpl(check2));
         CHECK(equal);
 
         // Source smaller
 
         // Random access iterator
-        std::fill(std::begin(out1), std::end(out1), 0);
-        result = wstl::CopySafe(std::begin(data4), std::end(data4), std::begin(out1), std::end(out1));
-        CHECK_EQ(std::begin(out1) + 5, result);
+        std::fill(BeginImpl(out1), EndImpl(out1), 0);
+        result = wstl::CopySafe(BeginImpl(data4), EndImpl(data4), BeginImpl(out1), EndImpl(out1));
+        CHECK_EQ(BeginImpl(out1) + 5, result);
 
-        equal = std::equal(std::begin(out1), std::end(out1), std::begin(check3));
+        equal = std::equal(BeginImpl(out1), EndImpl(out1), BeginImpl(check3));
         CHECK(equal);
 
         // Non-random access iterator
-        std::fill(std::begin(out1), std::end(out1), 0);
-        result = wstl::CopySafe(std::begin(data4), std::end(data4), std::begin(out1), std::end(out1));
-        CHECK_EQ(std::begin(out1) + 5, result);
+        std::fill(BeginImpl(out1), EndImpl(out1), 0);
+        result = wstl::CopySafe(BeginImpl(data4), EndImpl(data4), BeginImpl(out1), EndImpl(out1));
+        CHECK_EQ(BeginImpl(out1) + 5, result);
 
-        equal = std::equal(std::begin(out1), std::end(out1), std::begin(check3));
+        equal = std::equal(BeginImpl(out1), EndImpl(out1), BeginImpl(check3));
         CHECK(equal);
     }
 

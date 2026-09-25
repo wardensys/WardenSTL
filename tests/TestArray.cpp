@@ -223,18 +223,18 @@ TEST_SUITE("Array") {
         Data data = {0};
 
         // Initial data
-        data.Assign(std::begin(initial), std::end(initial));
-        bool equal = std::equal(data.Begin(), data.End(), std::begin(initial));
+        data.Assign(BeginImpl(initial), EndImpl(initial));
+        bool equal = std::equal(data.Begin(), data.End(), BeginImpl(initial));
         CHECK(equal);
 
         // Smaller
-        data.Assign(std::begin(source), std::end(source));
-        equal = std::equal(data.Begin(), data.End(), std::begin(check1));
+        data.Assign(BeginImpl(source), EndImpl(source));
+        equal = std::equal(data.Begin(), data.End(), BeginImpl(check1));
         CHECK(equal);
 
         // Smaller, default
-        data.Assign(std::begin(source), std::end(source), 67);
-        equal = std::equal(data.Begin(), data.End(), std::begin(check2));
+        data.Assign(BeginImpl(source), EndImpl(source), 67);
+        equal = std::equal(data.Begin(), data.End(), BeginImpl(check2));
         CHECK(equal);
     }
 
@@ -256,70 +256,70 @@ TEST_SUITE("Array") {
         Data::Iterator result;
 
         // Single, begin
-        data.Assign(std::begin(initial), std::end(initial));
+        data.Assign(BeginImpl(initial), EndImpl(initial));
         result = data.Insert(data.Begin(), 67);
         CHECK_EQ(data[0], *result);
 
-        bool equal = std::equal(data.Begin(), data.End(), std::begin(checkSingle1));
+        bool equal = std::equal(data.Begin(), data.End(), BeginImpl(checkSingle1));
         CHECK(equal);
 
         // Single, middle
-        data.Assign(std::begin(initial), std::end(initial));
+        data.Assign(BeginImpl(initial), EndImpl(initial));
         result = data.Insert(data.Begin() + 5, 67);
         CHECK_EQ(data[5], *result);
 
-        equal = std::equal(data.Begin(), data.End(), std::begin(checkSingle2));
+        equal = std::equal(data.Begin(), data.End(), BeginImpl(checkSingle2));
         CHECK(equal);
 
         // Single, end
-        data.Assign(std::begin(initial), std::end(initial));
+        data.Assign(BeginImpl(initial), EndImpl(initial));
         result = data.Insert(data.End() - 1, 67);
         CHECK_EQ(data[9], *result);
 
-        equal = std::equal(data.Begin(), data.End(), std::begin(checkSingle3));
+        equal = std::equal(data.Begin(), data.End(), BeginImpl(checkSingle3));
         CHECK(equal);
 
         // Single, out of range
         CHECK_THROWS_AS({ result = data.Insert(data.End(), 67); }, wstl::OutOfRange);
 
         // Small range, begin
-        data.Assign(std::begin(initial), std::end(initial));
-        result = data.Insert(data.Begin(), std::begin(range1), std::end(range1));
+        data.Assign(BeginImpl(initial), EndImpl(initial));
+        result = data.Insert(data.Begin(), BeginImpl(range1), EndImpl(range1));
         CHECK_EQ(data[0], *result);
 
-        equal = std::equal(data.Begin(), data.End(), std::begin(checkRange1));
+        equal = std::equal(data.Begin(), data.End(), BeginImpl(checkRange1));
         CHECK(equal);
 
         // Small range, middle
-        data.Assign(std::begin(initial), std::end(initial));
-        result = data.Insert(data.Begin() + 5, std::begin(range1), std::end(range1));
+        data.Assign(BeginImpl(initial), EndImpl(initial));
+        result = data.Insert(data.Begin() + 5, BeginImpl(range1), EndImpl(range1));
         CHECK_EQ(data[5], *result);
 
-        equal = std::equal(data.Begin(), data.End(), std::begin(checkRange2));
+        equal = std::equal(data.Begin(), data.End(), BeginImpl(checkRange2));
         CHECK(equal);
 
         // Small range, end
-        data.Assign(std::begin(initial), std::end(initial));
-        result = data.Insert(data.Begin() + 7, std::begin(range1), std::end(range1));
+        data.Assign(BeginImpl(initial), EndImpl(initial));
+        result = data.Insert(data.Begin() + 7, BeginImpl(range1), EndImpl(range1));
         CHECK_EQ(data[7], *result);
 
-        equal = std::equal(data.Begin(), data.End(), std::begin(checkRange3));
+        equal = std::equal(data.Begin(), data.End(), BeginImpl(checkRange3));
         CHECK(equal);
 
         // Large range, begin
-        data.Assign(std::begin(initial), std::end(initial));
-        result = data.Insert(data.Begin(), std::begin(range2), std::end(range2));
+        data.Assign(BeginImpl(initial), EndImpl(initial));
+        result = data.Insert(data.Begin(), BeginImpl(range2), EndImpl(range2));
         CHECK_EQ(data[0], *result);
 
-        equal = std::equal(data.Begin(), data.End(), std::begin(checkRange4));
+        equal = std::equal(data.Begin(), data.End(), BeginImpl(checkRange4));
         CHECK(equal);
 
         // Large range, middle
-        data.Assign(std::begin(initial), std::end(initial));
-        result = data.Insert(data.Begin() + 5, std::begin(range2), std::end(range2));
+        data.Assign(BeginImpl(initial), EndImpl(initial));
+        result = data.Insert(data.Begin() + 5, BeginImpl(range2), EndImpl(range2));
         CHECK_EQ(data[5], *result);
 
-        equal = std::equal(data.Begin(), data.End(), std::begin(checkRange5));
+        equal = std::equal(data.Begin(), data.End(), BeginImpl(checkRange5));
         CHECK(equal);
     }
 
@@ -343,96 +343,96 @@ TEST_SUITE("Array") {
         Data::Iterator result;
 
         // Single, begin
-        data.Assign(std::begin(initial), std::end(initial));
+        data.Assign(BeginImpl(initial), EndImpl(initial));
         result = data.Erase(data.Begin());
         CHECK_EQ(data[0], *result);
 
-        bool equal = std::equal(data.Begin(), data.End(), std::begin(checkSingle1));
+        bool equal = std::equal(data.Begin(), data.End(), BeginImpl(checkSingle1));
         CHECK(equal);
 
-        data.Assign(std::begin(initial), std::end(initial));
+        data.Assign(BeginImpl(initial), EndImpl(initial));
         result = data.Erase(data.Begin(), 67);
         CHECK_EQ(data[0], *result);
 
-        equal = std::equal(data.Begin(), data.End(), std::begin(checkSingle2));
+        equal = std::equal(data.Begin(), data.End(), BeginImpl(checkSingle2));
         CHECK(equal);
 
         // Single, middle
-        data.Assign(std::begin(initial), std::end(initial));
+        data.Assign(BeginImpl(initial), EndImpl(initial));
         result = data.Erase(data.Begin() + 5);
         CHECK_EQ(data[5], *result);
 
-        equal = std::equal(data.Begin(), data.End(), std::begin(checkSingle3));
+        equal = std::equal(data.Begin(), data.End(), BeginImpl(checkSingle3));
         CHECK(equal);
 
-        data.Assign(std::begin(initial), std::end(initial));
+        data.Assign(BeginImpl(initial), EndImpl(initial));
         result = data.Erase(data.Begin() + 5, 67);
         CHECK_EQ(data[5], *result);
 
-        equal = std::equal(data.Begin(), data.End(), std::begin(checkSingle4));
+        equal = std::equal(data.Begin(), data.End(), BeginImpl(checkSingle4));
         CHECK(equal);
 
         // Single, end
-        data.Assign(std::begin(initial), std::end(initial));
+        data.Assign(BeginImpl(initial), EndImpl(initial));
         result = data.Erase(data.End() - 1);
         CHECK_EQ(data[9], *result);
 
-        equal = std::equal(data.Begin(), data.End(), std::begin(checkSingle5));
+        equal = std::equal(data.Begin(), data.End(), BeginImpl(checkSingle5));
         CHECK(equal);
 
-        data.Assign(std::begin(initial), std::end(initial));
+        data.Assign(BeginImpl(initial), EndImpl(initial));
         result = data.Erase(data.End() - 1, 67);
         CHECK_EQ(data[9], *result);
 
-        equal = std::equal(data.Begin(), data.End(), std::begin(checkSingle6));
+        equal = std::equal(data.Begin(), data.End(), BeginImpl(checkSingle6));
         CHECK(equal);
 
         // Single, out of range
         CHECK_THROWS_AS({ result = data.Erase(data.End(), 67); }, wstl::OutOfRange);
 
         // Range, begin
-        data.Assign(std::begin(initial), std::end(initial));
+        data.Assign(BeginImpl(initial), EndImpl(initial));
         result = data.Erase(data.Begin(), data.Begin() + 4);
         CHECK_EQ(data[0], *result);
 
-        equal = std::equal(data.Begin(), data.End(), std::begin(checkRange1));
+        equal = std::equal(data.Begin(), data.End(), BeginImpl(checkRange1));
         CHECK(equal);
 
-        data.Assign(std::begin(initial), std::end(initial));
+        data.Assign(BeginImpl(initial), EndImpl(initial));
         result = data.Erase(data.Begin(), data.Begin() + 4, 67);
         CHECK_EQ(data[0], *result);
 
-        equal = std::equal(data.Begin(), data.End(), std::begin(checkRange2));
+        equal = std::equal(data.Begin(), data.End(), BeginImpl(checkRange2));
         CHECK(equal);
 
         // Range, middle
-        data.Assign(std::begin(initial), std::end(initial));
+        data.Assign(BeginImpl(initial), EndImpl(initial));
         result = data.Erase(data.Begin() + 4, data.Begin() + 7);
         CHECK_EQ(data[4], *result);
 
-        equal = std::equal(data.Begin(), data.End(), std::begin(checkRange3));
+        equal = std::equal(data.Begin(), data.End(), BeginImpl(checkRange3));
         CHECK(equal);
 
-        data.Assign(std::begin(initial), std::end(initial));
+        data.Assign(BeginImpl(initial), EndImpl(initial));
         result = data.Erase(data.Begin() + 4, data.Begin() + 7, 67);
         CHECK_EQ(data[4], *result);
 
-        equal = std::equal(data.Begin(), data.End(), std::begin(checkRange4));
+        equal = std::equal(data.Begin(), data.End(), BeginImpl(checkRange4));
         CHECK(equal);
 
         // Range, end
-        data.Assign(std::begin(initial), std::end(initial));
+        data.Assign(BeginImpl(initial), EndImpl(initial));
         result = data.Erase(data.End() - 3, data.End());
         CHECK_EQ(data[7], *result);
 
-        equal = std::equal(data.Begin(), data.End(), std::begin(checkRange5));
+        equal = std::equal(data.Begin(), data.End(), BeginImpl(checkRange5));
         CHECK(equal);
 
-        data.Assign(std::begin(initial), std::end(initial));
+        data.Assign(BeginImpl(initial), EndImpl(initial));
         result = data.Erase(data.End() - 3, data.End(), 67);
         CHECK_EQ(data[7], *result);
 
-        equal = std::equal(data.Begin(), data.End(), std::begin(checkRange6));
+        equal = std::equal(data.Begin(), data.End(), BeginImpl(checkRange6));
         CHECK(equal);
 
         // Range, out of range

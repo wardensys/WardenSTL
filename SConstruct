@@ -38,13 +38,13 @@ GNU_COMPILER_FLAGS = [
     '-Wshadow', 
     '-Werror',
     '-Wno-variadic-macros',
-    '-Wno-c++11-long-long',
+    '-Wno-long-long',
     '-Wno-deprecated-declarations'
 ]
 
 COMPILER_FLAGS = {
     'g++': GNU_COMPILER_FLAGS,
-    'clang++': [*GNU_COMPILER_FLAGS, '-Wno-unused-command-line-argument'],
+    'clang++': [*GNU_COMPILER_FLAGS, '-Wno-unused-command-line-argument', '-Wno-c2y-extensions'],
     'icpx': [*GNU_COMPILER_FLAGS, '-Wno-unused-command-line-argument'],
     "cl": [f"/std:c++{cppstd}", "/W4", "/WX", "/permissive-", "/Zc:__cplusplus", "/Zc:preprocessor", "/EHsc"]
 }

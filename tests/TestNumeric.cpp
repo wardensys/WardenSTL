@@ -19,27 +19,29 @@
 #include <deque>
 #include <array>
 
+#include "Utils.hpp"
+
 
 TEST_SUITE("Numeric") {
     TEST_CASE("Iota") {
         int result[10] = {0};
         int expected[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-        wstl::Iota(std::begin(result), std::end(result), 0);
+        wstl::Iota(BeginImpl(result), EndImpl(result), 0);
 
-        bool equal = std::equal(std::begin(expected), std::end(expected), std::begin(result));
+        bool equal = std::equal(BeginImpl(expected), EndImpl(expected), BeginImpl(result));
         CHECK(equal);
     }
 
     TEST_CASE("Accumulate") {
         int data[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-        int sum1 = wstl::Accumulate(std::begin(data), std::end(data), 0);
-        int sum2 = std::accumulate(std::begin(data), std::end(data), 0);
+        int sum1 = wstl::Accumulate(BeginImpl(data), EndImpl(data), 0);
+        int sum2 = std::accumulate(BeginImpl(data), EndImpl(data), 0);
         CHECK_EQ(sum1, sum2);
 
-        int product1 = wstl::Accumulate(std::begin(data), std::end(data), 1, std::multiplies<int>());
-        int product2 = std::accumulate(std::begin(data), std::end(data), 1, std::multiplies<int>());
+        int product1 = wstl::Accumulate(BeginImpl(data), EndImpl(data), 1, std::multiplies<int>());
+        int product2 = std::accumulate(BeginImpl(data), EndImpl(data), 1, std::multiplies<int>());
         CHECK_EQ(product1, product2);
     }
 
@@ -47,13 +49,13 @@ TEST_SUITE("Numeric") {
         int data1[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
         int data2[10] = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
 
-        int result = wstl::InnerProduct(std::begin(data1), std::end(data1), std::begin(data2), 0);
-        int expected = std::inner_product(std::begin(data1), std::end(data1), std::begin(data2), 0);
+        int result = wstl::InnerProduct(BeginImpl(data1), EndImpl(data1), BeginImpl(data2), 0);
+        int expected = std::inner_product(BeginImpl(data1), EndImpl(data1), BeginImpl(data2), 0);
         CHECK_EQ(result, expected);
 
         // Number of pairwise matches
-        result = wstl::InnerProduct(std::begin(data1), std::end(data1), std::begin(data2), 0, std::plus<int>(), std::equal_to<int>());
-        expected = std::inner_product(std::begin(data1), std::end(data1), std::begin(data2), 0, std::plus<int>(), std::equal_to<int>());
+        result = wstl::InnerProduct(BeginImpl(data1), EndImpl(data1), BeginImpl(data2), 0, std::plus<int>(), std::equal_to<int>());
+        expected = std::inner_product(BeginImpl(data1), EndImpl(data1), BeginImpl(data2), 0, std::plus<int>(), std::equal_to<int>());
         CHECK_EQ(result, expected);
     }
 
@@ -62,24 +64,24 @@ TEST_SUITE("Numeric") {
         int result[10];
         int expected[10];
 
-        int* resultPtr = wstl::AdjacentDifference(std::begin(data), std::end(data), std::begin(result));
-        int* expectedPtr = std::adjacent_difference(std::begin(data), std::end(data), std::begin(expected));   
+        int* resultPtr = wstl::AdjacentDifference(BeginImpl(data), EndImpl(data), BeginImpl(result));
+        int* expectedPtr = std::adjacent_difference(BeginImpl(data), EndImpl(data), BeginImpl(expected));   
         
         ptrdiff_t d1 = std::distance(result, resultPtr);
         ptrdiff_t d2 = std::distance(expected, expectedPtr);
         CHECK_EQ(d1, d2);
 
-        bool equal = std::equal(std::begin(expected), std::end(expected), std::begin(result));
+        bool equal = std::equal(BeginImpl(expected), EndImpl(expected), BeginImpl(result));
         CHECK(equal);
 
-        resultPtr = wstl::AdjacentDifference(std::begin(data), std::end(data), std::begin(result), std::plus<int>());
-        expectedPtr = std::adjacent_difference(std::begin(data), std::end(data), std::begin(expected), std::plus<int>());   
+        resultPtr = wstl::AdjacentDifference(BeginImpl(data), EndImpl(data), BeginImpl(result), std::plus<int>());
+        expectedPtr = std::adjacent_difference(BeginImpl(data), EndImpl(data), BeginImpl(expected), std::plus<int>());   
         
         d1 = std::distance(result, resultPtr);
         d2 = std::distance(expected, expectedPtr);
         CHECK_EQ(d1, d2);
 
-        equal = std::equal(std::begin(expected), std::end(expected), std::begin(result));
+        equal = std::equal(BeginImpl(expected), EndImpl(expected), BeginImpl(result));
         CHECK(equal);
     }
 
@@ -88,24 +90,24 @@ TEST_SUITE("Numeric") {
         int result[10];
         int expected[10];
 
-        int* resultPtr = wstl::PartialSum(std::begin(data), std::end(data), std::begin(result));
-        int* expectedPtr = std::partial_sum(std::begin(data), std::end(data), std::begin(expected));   
+        int* resultPtr = wstl::PartialSum(BeginImpl(data), EndImpl(data), BeginImpl(result));
+        int* expectedPtr = std::partial_sum(BeginImpl(data), EndImpl(data), BeginImpl(expected));   
 
         ptrdiff_t d1 = std::distance(result, resultPtr);
         ptrdiff_t d2 = std::distance(expected, expectedPtr);
         CHECK_EQ(d1, d2);
 
-        bool equal = std::equal(std::begin(expected), std::end(expected), std::begin(result));
+        bool equal = std::equal(BeginImpl(expected), EndImpl(expected), BeginImpl(result));
         CHECK(equal);
 
-        resultPtr = wstl::PartialSum(std::begin(data), std::end(data), std::begin(result), std::multiplies<int>());
-        expectedPtr = std::partial_sum(std::begin(data), std::end(data), std::begin(expected), std::multiplies<int>());   
+        resultPtr = wstl::PartialSum(BeginImpl(data), EndImpl(data), BeginImpl(result), std::multiplies<int>());
+        expectedPtr = std::partial_sum(BeginImpl(data), EndImpl(data), BeginImpl(expected), std::multiplies<int>());   
         
         d1 = std::distance(result, resultPtr);
         d2 = std::distance(expected, expectedPtr);
         CHECK_EQ(d1, d2);
 
-        equal = std::equal(std::begin(expected), std::end(expected), std::begin(result));
+        equal = std::equal(BeginImpl(expected), EndImpl(expected), BeginImpl(result));
         CHECK(equal);
     }
 

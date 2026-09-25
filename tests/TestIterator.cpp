@@ -322,8 +322,8 @@ namespace {
 TEST_SUITE("Iterator") {
     TEST_CASE("Advance") {
         // Forward iterator
-        ForwardIterator<int> fit1 = std::begin(dataA);
-        int* fit2 = std::begin(dataA);
+        ForwardIterator<int> fit1 = BeginImpl(dataA);
+        int* fit2 = BeginImpl(dataA);
 
         wstl::Advance(fit1, 4);
         std::advance(fit2, 4);
@@ -333,8 +333,8 @@ TEST_SUITE("Iterator") {
         CHECK_EQ(*fit1, *fit2);
 
         // Bidirectionl iterator
-        BidirectionalIterator<int> bit1 = std::begin(dataA);
-        int* bit2 = std::begin(dataA);
+        BidirectionalIterator<int> bit1 = BeginImpl(dataA);
+        int* bit2 = BeginImpl(dataA);
 
         wstl::Advance(bit1, 4);
         std::advance(bit2, 4);
@@ -345,8 +345,8 @@ TEST_SUITE("Iterator") {
         CHECK_EQ(*bit1, *bit2);
 
         // Random access iterator
-        RandomAccessIterator<int> rit1 = std::begin(dataA);
-        int* rit2 = std::begin(dataA);
+        RandomAccessIterator<int> rit1 = BeginImpl(dataA);
+        int* rit2 = BeginImpl(dataA);
         
         wstl::Advance(rit1, 4);
         std::advance(rit2, 4);
@@ -827,8 +827,8 @@ TEST_SUITE("Iterator") {
         int arr[] = {1, 2, 3};
         const int carr[] = {1, 2, 3};
 
-        wstl::Deque<int, 3> deq(std::begin(arr), std::end(arr));
-        const wstl::Deque<int, 3> cdeq(std::begin(arr), std::end(arr));
+        wstl::Deque<int, 3> deq(BeginImpl(arr), EndImpl(arr));
+        const wstl::Deque<int, 3> cdeq(BeginImpl(arr), EndImpl(arr));
 
         // Raw arrays
         CHECK_EQ(wstl::Begin(arr), arr);
@@ -920,8 +920,8 @@ TEST_SUITE("Iterator") {
     TEST_CASE("Size") {
         int arr[] = {1, 2, 3, 4, 5};
         const int carr[] = {1, 2, 3, 4, 5};
-        wstl::Deque<int, 5> deq(std::begin(arr), std::end(arr));
-        const wstl::Deque<int, 5> cdeq(std::begin(arr), std::end(arr));
+        wstl::Deque<int, 5> deq(BeginImpl(arr), EndImpl(arr));
+        const wstl::Deque<int, 5> cdeq(BeginImpl(arr), EndImpl(arr));
         
         wstl::Deque<int, 2> zero;
 
@@ -935,8 +935,8 @@ TEST_SUITE("Iterator") {
     TEST_CASE("Empty") {
         int arr[] = {1, 2, 3, 4, 5};
         const int carr[] = {1, 2, 3, 4, 5};
-        wstl::Deque<int, 5> deq(std::begin(arr), std::end(arr));
-        const wstl::Deque<int, 5> cdeq(std::begin(arr), std::end(arr));
+        wstl::Deque<int, 5> deq(BeginImpl(arr), EndImpl(arr));
+        const wstl::Deque<int, 5> cdeq(BeginImpl(arr), EndImpl(arr));
         
         wstl::Deque<int, 2> zero;
 
