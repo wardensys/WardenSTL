@@ -1,5 +1,5 @@
 // Part of WardenSTL - https://github.com/WardenHD/WardenSTL
-// Copyright (c) 2025 Artem Bezruchko (WardenHD)
+// Copyright (c) 2026 Artem Bezruchko (WardenHD)
 //
 // This file is inspired by the Embedded Template Library (ETL)'s math utilities,
 // and several custom functions have been added for WardenSTL.
@@ -118,7 +118,7 @@ namespace wstl {
 
         template<typename T, T N>
         struct __Absolute<T, N, true, void> : IntegralConstant<T, ((N < T(0)) ? -N : N)> {
-            WSTL_STATIC_ASSERT(N != NumericLimits<T>::Min(), "Absolute value of minimum signed integer is undefined");
+            WSTL_STATIC_ASSERT(N != IntegralLimits<T>::Min, "Absolute value of minimum signed integer is undefined");
         };
 
         template<typename T, T N, bool = IsSigned<T>::Value, typename = typename EnableIf<IsIntegral<T>::Value>::Type>
@@ -128,8 +128,8 @@ namespace wstl {
         struct __AbsoluteUnsigned<T, N, true, void> {
             typedef typename MakeUnsigned<T>::Type Return;
 
-            typedef IntegralConstant<Return, (N == NumericLimits<T>::Min()) ? 
-                (NumericLimits<Return>::Max() / 2U) + 1U : ((N < T(0)) ? (Return(0) - Return(N)) : Return(N))> Type;
+            typedef IntegralConstant<Return, (N == IntegralLimits<T>::Min) ? 
+                (IntegralLimits<Return>::Max / 2U) + 1U : ((N < T(0)) ? (Return(0) - Return(N)) : Return(N))> Type;
         };
 
         template<typename T, T N>
@@ -188,7 +188,15 @@ namespace wstl {
     template<typename T>
     __WSTL_NODISCARD__ __WSTL_CONSTEXPR__
     inline typename EnableIf<IsIntegral<T>::Value, DivisionType<T> >::Type Divide(T x, T y) {
-        return { x / y, x % y };
+        #ifdef __WSTL_CXX11__
+        return {x / y, x % y};
+        #else
+        DivisionType<T> result;
+        result.Quotient = x / y;
+        result.Remainder = x % y;
+
+        return result;
+        #endif
     }
 
     // Power
@@ -697,6 +705,7 @@ namespace wstl {
     // Math constants
 
     namespace __private {
+        #ifdef __WSTL_CXX11__
         template<typename T = void>
         struct __MathConstants {
             static const __WSTL_CONSTEXPR__ double PI = 3.14159265358979;
@@ -740,6 +749,52 @@ namespace wstl {
 
         template<typename T>
         const __WSTL_CONSTEXPR__ double __MathConstants<T>::GOLDEN_RATIO;
+
+        #else
+        template<typename T = void>
+        struct __MathConstants {
+            static const __WSTL_CONSTEXPR__ double PI;
+            static const __WSTL_CONSTEXPR__ double PI_RECIRPOCAL;
+            static const __WSTL_CONSTEXPR__ double PI_SQUARED;
+            static const __WSTL_CONSTEXPR__ double E;
+            static const __WSTL_CONSTEXPR__ double E_RECIPROCAL;
+            static const __WSTL_CONSTEXPR__ double E_SQUARED;
+            static const __WSTL_CONSTEXPR__ double ROOT2;
+            static const __WSTL_CONSTEXPR__ double ROOT2_RECIPROCAL;
+            static const __WSTL_CONSTEXPR__ double EULER;
+            static const __WSTL_CONSTEXPR__ double GOLDEN_RATIO;
+        };
+
+        template<typename T>
+        const __WSTL_CONSTEXPR__ double __MathConstants<T>::PI = 3.14159265358979;
+
+        template<typename T>
+        const __WSTL_CONSTEXPR__ double __MathConstants<T>::PI_RECIRPOCAL = 0.31830988618379;
+
+        template<typename T>
+        const __WSTL_CONSTEXPR__ double __MathConstants<T>::PI_SQUARED = 9.86960440108936;
+
+        template<typename T>
+        const __WSTL_CONSTEXPR__ double __MathConstants<T>::E = 2.71828182845905;
+
+        template<typename T>
+        const __WSTL_CONSTEXPR__ double __MathConstants<T>::E_RECIPROCAL = 0.36787944117144;
+
+        template<typename T>
+        const __WSTL_CONSTEXPR__ double __MathConstants<T>::E_SQUARED = 7.38905609893065;
+
+        template<typename T>
+        const __WSTL_CONSTEXPR__ double __MathConstants<T>::ROOT2 = 1.41421356237310;
+
+        template<typename T>
+        const __WSTL_CONSTEXPR__ double __MathConstants<T>::ROOT2_RECIPROCAL = 0.70710678118655;
+
+        template<typename T>
+        const __WSTL_CONSTEXPR__ double __MathConstants<T>::EULER = 0.57721566490153;
+
+        template<typename T>
+        const __WSTL_CONSTEXPR__ double __MathConstants<T>::GOLDEN_RATIO = 1.61803398874989;
+        #endif
     }
 
     /// @brief Class that defines various mathematical constants

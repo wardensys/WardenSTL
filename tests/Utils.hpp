@@ -1,5 +1,5 @@
 // Part of WardenSTL - https://github.com/WardenHD/WardenSTL
-// Copyright (c) 2025 Artem Bezruchko (WardenHD)
+// Copyright (c) 2026 Artem Bezruchko (WardenHD)
 //
 // Licensed under the MIT License. See LICENSE file for details.
 
@@ -8,6 +8,21 @@
 
 #include <iostream>
 #include <algorithm>
+#include <wstl/NullPointer.hpp>
+
+#ifndef __WSTL_CXX11__
+namespace doctest {
+    inline String toString(const wstl::NullPointerType&) {
+        return "NullPointer";
+    }
+}
+
+namespace wstl {
+    inline std::ostream& operator<<(std::ostream& stream, const NullPointerType&) {
+        return stream << "NullPointer";
+    }
+}
+#endif
 
 
 struct NonDefaultConstructible {
@@ -90,6 +105,7 @@ inline bool operator>=(const NonTrivialData& a, const NonTrivialData& b) {
     return !(a < b);
 }
 
+#ifdef __WSTL_CXX11__
 template<typename T>
 struct MovableData {
     MovableData() : Value(), Valid(true) {}
@@ -165,11 +181,5 @@ bool operator!=(const MovableData<T>& a, const MovableData<T>& b) {
     return !(a == b);
 }
 
-template<typename Range>
-void PrintRange(const Range& range, const char* fmt) {
-    for(auto& e : range) {
-        printf(fmt, e);
-        putchar('\n');
-    }
-}
+#endif
 #endif

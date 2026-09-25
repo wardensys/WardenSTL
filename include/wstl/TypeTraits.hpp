@@ -1,5 +1,5 @@
 // Part of WardenSTL - https://github.com/WardenHD/WardenSTL
-// Copyright (c) 2025 Artem Bezruchko (WardenHD)
+// Copyright (c) 2026 Artem Bezruchko (WardenHD)
 //
 // Licensed under the MIT License. See LICENSE file for details.
 
@@ -541,10 +541,10 @@ namespace wstl {
     struct AlignmentOf : IntegralConstant<size_t, alignof(T)> {};
     #elif defined(__WSTL_MSVC__)
     template<typename T>
-    struct AlignmentOf : IntegralConstant<size_t, size_t(__alingof(T))> {};
+    struct AlignmentOf : IntegralConstant<size_t, size_t(__alignof(T))> {};
     #else
     template<typename T>
-    struct AlignmentOf : IntegralConstant<size_t, size_t(__alingof__(T))> {};
+    struct AlignmentOf : IntegralConstant<size_t, size_t(__alignof__(T))> {};
     #endif
 
     #ifdef __WSTL_CXX17__
@@ -672,17 +672,264 @@ namespace wstl {
     // Result of
 
     namespace __private {
+        template<typename F>
+        struct __StripFunction { typedef F Type; };
+
+        #ifdef __WSTL_CXX11__
+        #ifdef __WSTL_CXX17__
+        template<typename R, typename... Args>
+        struct __StripFunction<R(Args...) noexcept> { typedef R Type(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args...) noexcept> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args...) const noexcept> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args...) volatile noexcept> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args...) const volatile noexcept> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args...) & noexcept> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args...) const & noexcept> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args...) volatile & noexcept> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args...) const volatile & noexcept> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args...) && noexcept> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args...) const && noexcept> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args...) volatile && noexcept> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args...) const volatile && noexcept> { typedef R(O::*Type)(Args...); };
+        
+        template<typename R, typename... Args>
+        struct __StripFunction<R(Args..., ...) noexcept> { typedef R Type(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args..., ...) noexcept> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args..., ...) const noexcept> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args..., ...) volatile noexcept> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args..., ...) const volatile noexcept> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args..., ...) & noexcept> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args..., ...) const & noexcept> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args..., ...) volatile & noexcept> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args..., ...) const volatile & noexcept> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args..., ...) && noexcept> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args..., ...) const && noexcept> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args..., ...) volatile && noexcept> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args..., ...) const volatile && noexcept> { typedef R(O::*Type)(Args...); };
+        #endif
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args...) const> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args...) volatile> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args...) const volatile> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args...) &> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args...) const &> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args...) volatile &> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args...) const volatile &> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args...) &&> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args...) const &&> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args...) volatile &&> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args...) const volatile &&> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename... Args>
+        struct __StripFunction<R(Args..., ...)> { typedef R Type(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args..., ...) const> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args..., ...) volatile> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args..., ...) const volatile> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args..., ...) &> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args..., ...) const &> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args..., ...) volatile &> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args..., ...) const volatile &> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args..., ...) &&> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args..., ...) const &&> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args..., ...) volatile &&> { typedef R(O::*Type)(Args...); };
+
+        template<typename R, typename O, typename... Args>
+        struct __StripFunction<R(O::*)(Args..., ...) const volatile &&> { typedef R(O::*Type)(Args...); };
+        
+        #else
+        template<typename R, typename O, typename A1, typename A2, typename A3>
+        struct __StripFunction<R(O::*)(A1, A2, A3) const> { typedef R(O::*Type)(A1, A2, A3); };
+
+        template<typename R, typename O, typename A1, typename A2, typename A3>
+        struct __StripFunction<R(O::*)(A1, A2, A3) volatile> { typedef R(O::*Type)(A1, A2, A3); };
+
+        template<typename R, typename O, typename A1, typename A2, typename A3>
+        struct __StripFunction<R(O::*)(A1, A2, A3) const volatile> { typedef R(O::*Type)(A1, A2, A3); };
+
+        template<typename R, typename O, typename A1, typename A2>
+        struct __StripFunction<R(O::*)(A1, A2) const> { typedef R(O::*Type)(A1, A2); };
+
+        template<typename R, typename O, typename A1, typename A2>
+        struct __StripFunction<R(O::*)(A1, A2) volatile> { typedef R(O::*Type)(A1, A2); };
+
+        template<typename R, typename O, typename A1, typename A2>
+        struct __StripFunction<R(O::*)(A1, A2) const volatile> { typedef R(O::*Type)(A1, A2); };
+
+        template<typename R, typename O, typename A>
+        struct __StripFunction<R(O::*)(A) const> { typedef R(O::*Type)(A); };
+
+        template<typename R, typename O, typename A>
+        struct __StripFunction<R(O::*)(A) volatile> { typedef R(O::*Type)(A); };
+
+        template<typename R, typename O, typename A>
+        struct __StripFunction<R(O::*)(A) const volatile> { typedef R(O::*Type)(A); };
+
+        template<typename R, typename O>
+        struct __StripFunction<R(O::*)() const> { typedef R(O::*Type)(); };
+
+        template<typename R, typename O>
+        struct __StripFunction<R(O::*)() volatile> { typedef R(O::*Type)(); };
+
+        template<typename R, typename O>
+        struct __StripFunction<R(O::*)() const volatile> { typedef R(O::*Type)(); };
+
+        template<typename R, typename A1, typename A2, typename A3>
+        struct __StripFunction<R(A1, A2, A3, ...)> { typedef R Type(A1, A2, A3); };
+
+        template<typename R, typename A1, typename A2>
+        struct __StripFunction<R(A1, A2, ...)> { typedef R Type(A1, A2); };
+
+        template<typename R, typename A>
+        struct __StripFunction<R(A, ...)> { typedef R Type(A); };
+
+        template<typename R>
+        struct __StripFunction<R(...)> { typedef R Type(); };
+
+        template<typename R, typename O, typename A1, typename A2, typename A3>
+        struct __StripFunction<R(O::*)(A1, A2, A3, ...) const> { typedef R(O::*Type)(A1, A2, A3); };
+
+        template<typename R, typename O, typename A1, typename A2, typename A3>
+        struct __StripFunction<R(O::*)(A1, A2, A3, ...) volatile> { typedef R(O::*Type)(A1, A2, A3); };
+
+        template<typename R, typename O, typename A1, typename A2, typename A3>
+        struct __StripFunction<R(O::*)(A1, A2, A3, ...) const volatile> { typedef R(O::*Type)(A1, A2, A3); };
+
+        template<typename R, typename O, typename A1, typename A2>
+        struct __StripFunction<R(O::*)(A1, A2, ...) const> { typedef R(O::*Type)(A1, A2); };
+
+        template<typename R, typename O, typename A1, typename A2>
+        struct __StripFunction<R(O::*)(A1, A2, ...) volatile> { typedef R(O::*Type)(A1, A2); };
+
+        template<typename R, typename O, typename A1, typename A2>
+        struct __StripFunction<R(O::*)(A1, A2, ...) const volatile> { typedef R(O::*Type)(A1, A2); };
+
+        template<typename R, typename O, typename A>
+        struct __StripFunction<R(O::*)(A, ...) const> { typedef R(O::*Type)(A); };
+
+        template<typename R, typename O, typename A>
+        struct __StripFunction<R(O::*)(A, ...) volatile> { typedef R(O::*Type)(A); };
+
+        template<typename R, typename O, typename A>
+        struct __StripFunction<R(O::*)(A, ...) const volatile> { typedef R(O::*Type)(A); };
+
+        template<typename R, typename O>
+        struct __StripFunction<R(O::*)(...) const> { typedef R(O::*Type)(); };
+
+        template<typename R, typename O>
+        struct __StripFunction<R(O::*)(...) volatile> { typedef R(O::*Type)(); };
+
+        template<typename R, typename O>
+        struct __StripFunction<R(O::*)(...) const volatile> { typedef R(O::*Type)(); };
+        #endif
+
         WSTL_DECLARE_TYPEDEF_TEST(__TestResultType, ResultType)
 
         template<typename Functor, bool IsFunctor = WSTL_TYPEDEF_TEST_RESULT(__TestResultType, Functor, 1)>
-        struct __ResultOfFunctor;
+        struct __ResultOfFunctor {};
 
         template<typename Functor>
         struct __ResultOfFunctor<Functor, true> { typedef typename Functor::ResultType Type; };
 
         template<typename Functor>
-        struct __ResultOf : __private::__ResultOfFunctor<Functor> {};
+        struct __ResultOf : __ResultOfFunctor<Functor> {};
 
+        #ifdef __WSTL_CXX11__
+        template<typename Return, typename... Args>
+        struct __ResultOf<Return(Args...)> { typedef Return Type; };
+
+        template<typename Object, typename Return, typename... Args>
+        struct __ResultOf<Return(Object::*)(Args...)> { typedef Return Type; };
+
+        #else
         template<typename Return, typename Arg1, typename Arg2, typename Arg3>
         struct __ResultOf<Return(Arg1, Arg2, Arg3)> { typedef Return Type; };
 
@@ -695,30 +942,6 @@ namespace wstl {
         template<typename Return>
         struct __ResultOf<Return()> { typedef Return Type; };
 
-        template<typename Return, typename Arg1, typename Arg2, typename Arg3>
-        struct __ResultOf<Return(*)(Arg1, Arg2, Arg3)> { typedef Return Type; };
-
-        template<typename Return, typename Arg1, typename Arg2>
-        struct __ResultOf<Return(*)(Arg1, Arg2)> { typedef Return Type; };
-
-        template<typename Return, typename Arg>
-        struct __ResultOf<Return(*)(Arg)> { typedef Return Type; };
-
-        template<typename Return>
-        struct __ResultOf<Return(*)()> { typedef Return Type; };
-
-        template<typename Return, typename Arg1, typename Arg2, typename Arg3>
-        struct __ResultOf<Return(&)(Arg1, Arg2, Arg3)> { typedef Return Type; };
-
-        template<typename Return, typename Arg1, typename Arg2>
-        struct __ResultOf<Return(&)(Arg1, Arg2)> { typedef Return Type; };
-
-        template<typename Return, typename Arg>
-        struct __ResultOf<Return(&)(Arg)> { typedef Return Type; };
-
-        template<typename Return>
-        struct __ResultOf<Return(&)()> { typedef Return Type; };
-
         template<typename Object, typename Return, typename Arg1, typename Arg2, typename Arg3>
         struct __ResultOf<Return(Object::*)(Arg1, Arg2, Arg3)> { typedef Return Type; };
 
@@ -730,52 +953,18 @@ namespace wstl {
 
         template<typename Object, typename Return>
         struct __ResultOf<Return(Object::*)()> { typedef Return Type; };
-
-        template<typename Object, typename Return, typename Arg1, typename Arg2, typename Arg3>
-        struct __ResultOf<Return(Object::*)(Arg1, Arg2, Arg3) const> { typedef Return Type; };
-
-        template<typename Object, typename Return, typename Arg1, typename Arg2>
-        struct __ResultOf<Return(Object::*)(Arg1, Arg2) const> { typedef Return Type; };
-
-        template<typename Object, typename Return, typename Arg>
-        struct __ResultOf<Return(Object::*)(Arg) const> { typedef Return Type; };
-
-        template<typename Object, typename Return>
-        struct __ResultOf<Return(Object::*)() const> { typedef Return Type; };
-
-        template<typename Object, typename Return, typename Arg1, typename Arg2, typename Arg3>
-        struct __ResultOf<Return(Object::*)(Arg1, Arg2, Arg3) volatile> { typedef Return Type; };
-
-        template<typename Object, typename Return, typename Arg1, typename Arg2>
-        struct __ResultOf<Return(Object::*)(Arg1, Arg2) volatile> { typedef Return Type; };
-
-        template<typename Object, typename Return, typename Arg>
-        struct __ResultOf<Return(Object::*)(Arg) volatile> { typedef Return Type; };
-
-        template<typename Object, typename Return>
-        struct __ResultOf<Return(Object::*)() volatile> { typedef Return Type; };
-
-        template<typename Object, typename Return, typename Arg1, typename Arg2, typename Arg3>
-        struct __ResultOf<Return(Object::*)(Arg1, Arg2, Arg3) const volatile> { typedef Return Type; };
-
-        template<typename Object, typename Return, typename Arg1, typename Arg2>
-        struct __ResultOf<Return(Object::*)(Arg1, Arg2) const volatile> { typedef Return Type; };
-
-        template<typename Object, typename Return, typename Arg>
-        struct __ResultOf<Return(Object::*)(Arg) const volatile> { typedef Return Type; };
-
-        template<typename Object, typename Return>
-        struct __ResultOf<Return(Object::*)() const volatile> { typedef Return Type; };
+        #endif
     }
 
     /// @brief Deduces the result/return type of callable object
     /// @tparam Callable Type of callable object
     /// @ingroup type_traits
     /// @deprecated Recommended below C++11. Otherwise better use `wstl::InvokeResult`
-    /// @note Maximum argument count is 3
+    /// @note In C++98 maximum argument count is 3
     /// @see https://en.cppreference.com/w/cpp/types/result_of
     template<typename Callable>
-    struct ResultOf : __private::__ResultOf<Callable> {};
+    struct ResultOf : __private::__ResultOf<typename __private::__StripFunction<
+        typename RemovePointer<typename RemoveCVReference<Callable>::Type>::Type>::Type> {};
 
     #ifdef __WSTL_CXX11__
     /// @copydoc ResultOf
@@ -783,6 +972,14 @@ namespace wstl {
     template<typename Callable>
     using ResultOfType = typename ResultOf<Callable>::Type;
     #endif
+
+    namespace __private {
+        template<typename T>
+        static long __TestResultOf(typename ResultOf<T>::Type*);
+
+        template<typename>
+        static char __TestResultOf(...);
+    }
 
     // Conjunction
 
@@ -1390,6 +1587,20 @@ namespace wstl {
 
         template<typename From>
         static From& __TestConvertFrom();
+
+        template<typename From, typename To>
+        struct __IsConvertible : BoolConstant<
+            sizeof(__private::__TestImplicitlyConvertible<To>(__private::__TestConvertFrom<From>())) == sizeof(long)
+        > {};
+
+        template<typename From>
+        struct __IsConvertible<From, void> : FalseType {};
+
+        template<typename To>
+        struct __IsConvertible<void, To> : FalseType {};
+
+        template<>
+        struct __IsConvertible<void, void> : TrueType {};
         #endif
     }
 
@@ -1405,7 +1616,7 @@ namespace wstl {
         #ifdef __WSTL_CXX11__
         decltype(__private::__TestImplicitlyConvertible<From, To>(0))::Value) ||
         #else
-        sizeof(__private::__TestImplicitlyConvertible<To>(__private::__TestConvertFrom<From>())) == sizeof(long)) ||
+        __private::__IsConvertible<From, To>::Value) ||
         #endif
         (IsVoid<From>::Value && IsVoid<To>::Value)
     > {};
@@ -1595,15 +1806,15 @@ namespace wstl {
     #else
     /// @brief Checks whether type is constructor
     /// @tparam T Constructor type
-    /// @tparam Args Argument types
+    /// @tparam Arg Argument type
     /// @note This trait may not work correctly on some compilers that do not support `__is_constructible` builtin. 
     /// In such cases, it will always return false.
     /// @ingroup type_traits
     /// @see https://en.cppreference.com/w/cpp/types/is_constructible
-    template<typename T, typename Args = void>
+    template<typename T, typename Arg = void>
     struct IsConstructible : BoolConstant<
         #if defined(__WSTL_SUPPORTED_COMPILER__) && !defined(__WSTL_TYPETRAITS_NO_BUILTINS__)
-        __is_constructible(T, Args)
+        __is_constructible(T, Arg)
         #else
         false
         #endif
@@ -1639,7 +1850,7 @@ namespace wstl {
     /// @tparam T Constructor type
     /// @tparam Args Argument types
     /// @note This trait may not work correctly on some compilers that do not support `__is_trivially_constructible` builtin. 
-    /// In such cases, it will always return false. In C++98 arguments are not supported.
+    /// In such cases, it will always return false. In C++98 arguments are not supported if `__has_trivial_constructor` is used.
     /// @ingroup type_traits
     /// @see https://en.cppreference.com/w/cpp/types/is_constructible
     template<typename T, typename... Args>
@@ -1653,14 +1864,38 @@ namespace wstl {
     #else
     /// @brief Checks whether type is trivially constructible (does not call not trivial operations)
     /// @tparam T Constructor type
+    /// @tparam Arg Argument type (partially supported in C++98 if `__is_trivially_constructible` is used)
     /// @note This trait may not work correctly on some compilers that do not support `__has_trivial_constructor` builtin. 
-    /// In such cases, it will always return false. In C++98 arguments are not supported.
+    /// In such cases, it will always return false.
+    /// @ingroup type_traits
+    /// @see https://en.cppreference.com/w/cpp/types/is_constructible
+    template<typename T, typename Arg = void>
+    struct IsTriviallyConstructible : BoolConstant<
+        #if defined(__WSTL_SUPPORTED_COMPILER__) && !defined(__WSTL_TYPETRAITS_NO_BUILTINS__)
+        #if __WSTL_HAS_BUILTIN__(__is_trivially_constructible)
+        __is_trivially_constructible(T, Arg)
+        #else
+        __has_trivial_constructor(T)
+        #endif
+        #else
+        false 
+        #endif
+    > {};
+
+    /// @brief Checks whether type is trivially constructible (does not call not trivial operations)
+    /// @tparam T Constructor type
+    /// @note This trait may not work correctly on some compilers that do not support `__has_trivial_constructor` builtin. 
+    /// In such cases, it will always return false. In C++98 arguments are not supported if `__has_trivial_constructor` is used.
     /// @ingroup type_traits
     /// @see https://en.cppreference.com/w/cpp/types/is_constructible
     template<typename T>
-    struct IsTriviallyConstructible : BoolConstant<
+    struct IsTriviallyConstructible<T, void> : BoolConstant<
         #if defined(__WSTL_SUPPORTED_COMPILER__) && !defined(__WSTL_TYPETRAITS_NO_BUILTINS__)
+        #if __WSTL_HAS_BUILTIN__(__is_trivially_constructible)
+        __is_trivially_constructible(T)
+        #else
         __has_trivial_constructor(T)
+        #endif
         #else
         false 
         #endif
@@ -1706,17 +1941,21 @@ namespace wstl {
     #else
     /// @brief Checks whether type is nothrow constructible (noexcept)
     /// @tparam T Constructor type
-    /// @tparam Args Arguments type (does nothing, not supported in C++98)
+    /// @tparam Arg Argument type (partially supported in C++98 if `__is_nothrow_constructible` is used)
     /// @note This trait may not work correctly on some compilers that do not support used builtin.
     /// In such cases, it will always return false. Requires `__WSTL_EXCEPTIONS__` to be defined.
     /// @ingroup type_traits
     /// @see https://en.cppreference.com/w/cpp/types/is_constructible
-    template<typename T, typename Args = void>
+    template<typename T, typename Arg = void>
     struct IsNothrowConstructible : BoolConstant<
         #ifdef __WSTL_TYPETRAITS_NO_BUILTINS__
         false
         #elif defined(__WSTL_GCC__) || defined(__WSTL_CLANG__) || defined(__WSTL_ICC__)
+        #if __WSTL_HAS_BUILTIN__(__is_nothrow_constructible)
+        __is_nothrow_constructible(T, Arg)
+        #else
         __has_nothrow_constructor(T)
+        #endif
         #elif defined(__WSTL_MSVC__)
         _has_nothrow_constructor(T)
         #else
@@ -1735,7 +1974,11 @@ namespace wstl {
     #ifdef __WSTL_TYPETRAITS_NO_BUILTINS__
     false
     #elif defined(__WSTL_GCC__) || defined(__WSTL_CLANG__) || defined(__WSTL_ICC__)
+    #if __WSTL_HAS_BUILTIN__(__is_nothrow_constructible)
+    __is_nothrow_constructible(T)
+    #else
     __has_nothrow_constructor(T)
+    #endif
     #elif defined(__WSTL_MSVC__)
     _has_nothrow_constructor(T)
     #else
@@ -1807,7 +2050,7 @@ namespace wstl {
 
     // Is nothrow default constructible
 
-    #if defined(__WSTL_CXX11__) && defined(__WSTL_EXCEPTIONS__)
+    #ifdef __WSTL_EXCEPTIONS__
     /// @brief Checks whether type can be nothrow (noexcept) constructed without arguments (T, T())
     /// @tparam T Constructor type
     /// @ingroup type_traits
@@ -1998,7 +2241,11 @@ namespace wstl {
         #else
         IsAssignable<T, U>::Value && 
         #if defined(__WSTL_GCC__) || defined(__WSTL_ICC__) || defined(__WSTL_CLANG__)
+        #if __WSTL_HAS_BUILTIN__(__is_trivially_assignable)
+        __is_trivially_assignable(T, U)
+        #else
         __has_trivial_assign(T) && __has_trivial_assign(U)
+        #endif
         #elif defined(__WSTL_MSVC__)
         __is_pod(T) && __is_pod(U)
         #else
@@ -2319,39 +2566,26 @@ namespace wstl {
 
     // Is signed
 
+    namespace __private {
+        template<typename T, bool = IsIntegral<T>::Value, bool = IsFloatingPoint<T>::Value>
+        struct __IsSigned : FalseType {};
+
+        template<typename T>
+        struct __IsSigned<T, true, false> : BoolConstant<(T(-1) < T(0))> {};
+
+        template<typename T>
+        struct __IsSigned<T, false, true> : TrueType {};
+
+        template<> 
+        struct __IsSigned<bool, true, false> : FalseType {};
+    }
+
     /// @brief Checks whether type is signed
     /// @tparam T Type to check
     /// @ingroup type_traits
     /// @see https://en.cppreference.com/w/cpp/types/is_signed
     template<typename T>
-    struct IsSigned;
-
-    template<typename T>
-    struct IsSigned : FalseType {};
-
-    template<> struct IsSigned<signed char> : TrueType {};
-    template<> struct IsSigned<char> : BoolConstant<(char(-1) < char(0))> {};
-    template<> struct IsSigned<wchar_t> : BoolConstant<(wchar_t(-1) < wchar_t(0))> {};
-    template<> struct IsSigned<short> : TrueType {};
-    template<> struct IsSigned<int> : TrueType {};
-    template<> struct IsSigned<long> : TrueType {};
-    template<> struct IsSigned<long long> : TrueType {};
-    template<> struct IsSigned<float> : TrueType {};
-    template<> struct IsSigned<double> : TrueType {};
-    template<> struct IsSigned<long double> : TrueType {};
-
-    #ifdef __WSTL_CXX20__
-    template<> struct IsSigned<char8_t> : BoolConstant<(char8_t(-1) < char8_t(0))> {};
-    #endif
-
-    #ifdef __WSTL_CXX11__
-    template<> struct IsSigned<char16_t> : BoolConstant<(char16_t(-1) < char16_t(0))> {};
-    template<> struct IsSigned<char32_t> : BoolConstant<(char32_t(-1) < char32_t(0))> {};
-    #endif
-
-    template<typename T> struct IsSigned<const T> : IsSigned<T> {};
-    template<typename T> struct IsSigned<volatile T> : IsSigned<T> {};
-    template<typename T> struct IsSigned<const volatile T> : IsSigned<T> {};
+    struct IsSigned : __private::__IsSigned<typename RemoveCV<T>::Type> {};
 
     #ifdef __WSTL_CXX17__
     /// @copydoc IsSigned
@@ -2360,39 +2594,22 @@ namespace wstl {
     inline constexpr bool IsSignedValue = IsSigned<T>::Value;
     #endif
 
-    // IsUnsigned
+    // Is unsigned
+
+    namespace __private {
+        template<typename T, bool = IsArithmetic<T>::Value>
+        struct __IsUnsigned : FalseType {};
+
+        template<typename T>
+        struct __IsUnsigned<T, true> : Negation<IsSigned<T> > {};
+    }
 
     /// @brief Checks whether type is unsigned
     /// @tparam T Type to check
     /// @ingroup type_traits
     /// @see https://en.cppreference.com/w/cpp/types/is_unsigned
     template<typename T>
-    struct IsUnsigned;
-
-    template<typename T>
-    struct IsUnsigned : FalseType {};
-
-    template<> struct IsUnsigned<bool> : TrueType {};
-    template<> struct IsUnsigned<char> : BoolConstant<(char(-1) > char(0))> {};
-    template<> struct IsUnsigned<wchar_t> : BoolConstant<(wchar_t(-1) > wchar_t(0))> {};
-    template<> struct IsUnsigned<unsigned char> : TrueType {};
-    template<> struct IsUnsigned<unsigned short> : TrueType {};
-    template<> struct IsUnsigned<unsigned int> : TrueType {};
-    template<> struct IsUnsigned<unsigned long> : TrueType {};
-    template<> struct IsUnsigned<unsigned long long> : TrueType {};
-
-    #ifdef __WSTL_CXX20__
-    template<> struct IsUnsigned<char8_t> : BoolConstant<(char8_t(-1) > char8_t(0))> {};
-    #endif
-
-    #ifdef __WSTL_CXX11__
-    template<> struct IsUnsigned<char16_t> : BoolConstant<(char16_t(-1) > char16_t(0))> {};
-    template<> struct IsUnsigned<char32_t> : BoolConstant<(char32_t(-1) > char32_t(0))> {};
-    #endif
-
-    template<typename T> struct IsUnsigned<const T> : IsUnsigned<T> {};
-    template<typename T> struct IsUnsigned<volatile T> : IsUnsigned<T> {};
-    template<typename T> struct IsUnsigned<const volatile T> : IsUnsigned<T> {};
+    struct IsUnsigned : __private::__IsUnsigned<typename RemoveCV<T>::Type> {};
 
     #ifdef __WSTL_CXX17__
     /// @copydoc IsUnsigned
@@ -2625,6 +2842,7 @@ namespace wstl {
 
     /// @brief Provides a type with specified alignment
     /// @tparam Alignment Alignment in bytes
+    /// @note Supports alignment up to 8 bytes in C++98
     /// @ingroup type_traits
     template<size_t Alignment>
     struct TypeWithAlignment;
@@ -2646,10 +2864,7 @@ namespace wstl {
     __MATCH_ALIGNMENT(int_least8_t);
     __MATCH_ALIGNMENT(int_least16_t);
     __MATCH_ALIGNMENT(int32_t);
-    __MATCH_ALIGNMENT(int64_t);
-    __MATCH_ALIGNMENT(float);
     __MATCH_ALIGNMENT(double);
-    __MATCH_ALIGNMENT(void*);
 
     #undef __MATCH_ALIGNMENT
     #endif
