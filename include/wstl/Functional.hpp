@@ -1,5 +1,5 @@
 // Part of WardenSTL - https://github.com/WardenHD/WardenSTL
-// Copyright (c) 2025 Artem Bezruchko (WardenHD)
+// Copyright (c) 2026 Artem Bezruchko (WardenHD)
 //
 // Licensed under the MIT License. See LICENSE file for details.
 
@@ -10,6 +10,7 @@
 #include "private/ns/compile.hpp"
 #include "private/Error.hpp"
 #include "Tuple.hpp"
+#include "FunctionTraits.hpp"
 
 
 /// @defgroup functional Functional
@@ -42,9 +43,20 @@ namespace wstl {
         }
     };
 
+    // Nullary function
+    
+    /// @brief Template for nullary function traits, functions that take no arguments
+    /// @tparam Return Return type of the function
+    /// @deprecated Use `wstl::Function` instead
+    /// @ingroup functional
+    template<typename Return>
+    struct NullaryFunction {
+        typedef Return ResultType;
+    };
+
     // Unary function
     
-    /// @brief Template for unary function traits
+    /// @brief Template for unary function traits, functions that take one argument
     /// @tparam Arg Type of the argument
     /// @tparam Return Return type of the function
     /// @deprecated Use `wstl::Function` instead
@@ -58,7 +70,7 @@ namespace wstl {
 
     // Binary function
 
-    /// @brief Template for binary function traits
+    /// @brief Template for binary function traits, functions that take two arguments
     /// @tparam Arg1 Type of the first argument
     /// @tparam Arg2 Type of the second argument
     /// @tparam Return Return type of the function
@@ -79,48 +91,39 @@ namespace wstl {
     /// @note In C++98 it supports maximum two arguments
     /// @ingroup functional
     template<typename Signature>
-    class FunctionInterface;
+    class FunctionBase;
 
     #ifdef __WSTL_CXX11__
-    template<typename Signature>
-    class FunctionInterface;
-
     template<typename Return, typename... Args>
-    class FunctionInterface<Return(Args...)> {
+    class FunctionBase<Return(Args...)> {
     public:
         typedef Return ResultType;
 
-        virtual ~FunctionInterface() {}
+        virtual ~FunctionBase() {}
 
         virtual Return operator()(Args...) const = 0;
     };
     #else
     template<typename Return, typename Arg1, typename Arg2>
-    class FunctionInterface<Return(Arg1, Arg2)> {
+    class FunctionBase<Return(Arg1, Arg2)> : BinaryFunction<Arg1, Arg2, Return> {
     public:
-        typedef Return ResultType;
-
-        virtual ~FunctionInterface() {}
+        virtual ~FunctionBase() {}
 
         virtual Return operator()(Arg1, Arg2) const = 0;
     };
 
     template<typename Return, typename Arg>
-    class FunctionInterface<Return(Arg)> {
+    class FunctionBase<Return(Arg)> : UnaryFunction<Arg, Return> {
     public:
-        typedef Return ResultType;
-
-        virtual ~FunctionInterface() {}
+        virtual ~FunctionBase() {}
 
         virtual Return operator()(Arg) const = 0;
     };
 
     template<typename Return>
-    class FunctionInterface<Return()> {
+    class FunctionBase<Return()> : NullaryFunction<Return> {
     public:
-        typedef Return ResultType;
-
-        virtual ~FunctionInterface() {}
+        virtual ~FunctionBase() {}
 
         virtual Return operator()() const = 0;
     };
@@ -141,50 +144,86 @@ namespace wstl {
     // Function (many parameters)
     
     template<typename Return, typename... Args>
-    class Function<Return(Args...)> : public FunctionInterface<Return(Args...)> {
+    class Function<Return(Args...)> : public FunctionBase<Return(Args...)> {
     public:
+        /// @brief Default constructor
         __WSTL_CONSTEXPR14__ Function() __WSTL_NOEXCEPT__ : m_Function(nullptr) {}
 
+        /// @brief Creates an empty `Function` object
+        __WSTL_CONSTEXPR14__ Function(NullPointerType) __WSTL_NOEXCEPT__ : m_Function(nullptr) {}
+
+        /// @brief Parameterized constructor
+        /// @param function Pointer to a free function
         __WSTL_CONSTEXPR14__ Function(Return(*function)(Args...)) : m_Function(function) {}
 
+        /// @brief Copy constructor
+        /// @param other Another `Function` object to copy from
         __WSTL_CONSTEXPR14__ Function(const Function& other) : m_Function(other.m_Function) {}
 
+        /// @brief Move constructor
+        /// @param other Another `Function` object to move from
         __WSTL_CONSTEXPR14__ Function(Function&& other) __WSTL_NOEXCEPT__ : m_Function(other.m_Function) {
             other.m_Function = nullptr;
         }
 
-        __WSTL_CONSTEXPR14__ void Swap(Function& other) {
-            wstl::Swap(m_Function, other.m_Function);
-        }
-
-        __WSTL_CONSTEXPR14__ Function& operator=(Return(*function)(Args...)) {
-            m_Function = function;
-            return *this;
-        }
-
+        /// @brief Copy assignment operator
+        /// @param other Another `Function` object to copy from
         __WSTL_CONSTEXPR14__ Function& operator=(const Function& other) {
-            if(this != &other) m_Function = other.m_Function;
+            m_Function = other.m_Function;
             return *this;
         }
 
+        /// @brief Move assignment operator
+        /// @param other Another `Function` object to move from
         __WSTL_CONSTEXPR14__ Function& operator=(Function&& other) {
             if(this != &other) {
                 m_Function = other.m_Function;
                 other.m_Function = nullptr;
             }
+
             return *this;
         }
 
-        virtual Return operator()(Args&&... args) const override {
+        /// @brief Assignment operator for a null pointer, resets to an empty state
+        __WSTL_CONSTEXPR14__ Function& operator=(NullPointerType) __WSTL_NOEXCEPT__ {
+            m_Function = nullptr;
+            return *this;
+        }
+
+        /// @brief Assignment operator for a free function pointer
+        /// @param function Pointer to a free function to assign
+        __WSTL_CONSTEXPR14__ Function& operator=(Return(*function)(Args...)) {
+            m_Function = function;
+            return *this;
+        }
+
+        /// @brief Resets the `Function` to hold a new free function pointer
+        /// @param function Pointer to a free function to assign
+        __WSTL_CONSTEXPR14__ void Reset(Return(*function)(Args...)) {
+            m_Function = function;
+        }
+
+        /// @brief Swap the contents of this `Function` with another
+        /// @param other Another `Function` object to swap with
+        __WSTL_CONSTEXPR14__ void Swap(Function& other) __WSTL_NOEXCEPT__ {
+            wstl::Swap(m_Function, other.m_Function);
+        }
+
+        /// @brief Conversion operator to check if the `Function` is valid (i.e. has a callable)
+        __WSTL_CONSTEXPR14__ operator bool() const __WSTL_NOEXCEPT__ {
+            return m_Function != nullptr;
+        }
+
+        /// @brief Function call operator to invoke the stored callable
+        /// @param ...args Arguments to pass to the callable
+        /// @return The result of invoking the callable
+        virtual Return operator()(Args... args) const override {
             __WSTL_ASSERT_RETURNVALUE__(this->operator bool(), WSTL_MAKE_EXCEPTION(BadFunctionCall), static_cast<Return>(-1));
             return (*m_Function)(Forward<Args>(args)...);
         }
 
-        __WSTL_CONSTEXPR14__ operator bool() const {
-            return m_Function != nullptr;
-        }
-
-        __WSTL_CONSTEXPR14__ Return(*Target() const)(Args...) {
+        /// @brief Gets the target function pointer
+        __WSTL_CONSTEXPR14__ Return(*Target() const __WSTL_NOEXCEPT__)(Args...) {
             return m_Function;
         }
 
@@ -195,46 +234,44 @@ namespace wstl {
     // Member
 
     template<typename Object, typename Return, typename... Args>
-    class Function<Return(Args...), Object> : public FunctionInterface<Return(Args...)> {
+    class Function<Return(Args...), Object> : public FunctionBase<Return(Args...)> {
     public:
         typedef Object ObjectType;
         
-        __WSTL_CONSTEXPR14__ Function() __WSTL_NOEXCEPT__ 
-            : m_Function(nullptr), m_Object(nullptr) {}
+        /// @brief Default constructor
+        __WSTL_CONSTEXPR14__ Function() __WSTL_NOEXCEPT__ : m_Function(nullptr), m_Object(nullptr) {}
 
-        __WSTL_CONSTEXPR14__ Function(Object& object, Return(Object::*function)(Args...)) 
-            : m_Function(function), m_Object(&object) {}
+        /// @brief Creates an empty `Function` object
+        __WSTL_CONSTEXPR14__ Function(NullPointerType) __WSTL_NOEXCEPT__ : m_Function(nullptr), m_Object(nullptr) {}
 
+        /// @brief Parameterized constructor
+        /// @param object Pointer to the object instance
+        /// @param function Pointer to the member function of the object
+        __WSTL_CONSTEXPR14__ Function(Object* object, Return(Object::*function)(Args...)) 
+            : m_Function(function), m_Object(object) {}
+
+        /// @brief Copy constructor
+        /// @param other Another `Function` object to copy from
         __WSTL_CONSTEXPR14__ Function(const Function& other) 
             : m_Function(other.m_Function), m_Object(other.m_Object) {}
 
-        __WSTL_CONSTEXPR14__ Function(Function&& other) __WSTL_NOEXCEPT__ 
-            : m_Function(other.m_Function), m_Object(other.m_Object) {
+        /// @brief Move constructor
+        /// @param other Another `Function` object to move from
+        __WSTL_CONSTEXPR14__ Function(Function&& other) __WSTL_NOEXCEPT__ : m_Function(other.m_Function), m_Object(other.m_Object) {
             other.m_Object = nullptr;
             other.m_Function = nullptr;
         }
 
-        __WSTL_CONSTEXPR14__ void Swap(Function& other) {
-            wstl::Swap(m_Function, other.m_Function);
-            wstl::Swap(m_Object, other.m_Object);
-        }
-
-        __WSTL_CONSTEXPR14__ 
-        Function& operator=(const Pair<Object&, Return(Object::*)(Args...)>& pair) {
-            m_Function = pair.Second;
-            m_Object = &pair.First;
-            return *this;
-        }
-
+        /// @brief Copy assignment operator
+        /// @param other Another `Function` object to copy from
         __WSTL_CONSTEXPR14__ Function& operator=(const Function& other) {
-            if(this != &other) {
-                m_Function = other.m_Function;
-                m_Object = other.m_Object;
-            }
-
+            m_Function = other.m_Function;
+            m_Object = other.m_Object;
             return *this;
         }
 
+        /// @brief Move assignment operator
+        /// @param other Another `Function` object to move from
         __WSTL_CONSTEXPR14__ Function& operator=(Function&& other) {
             if(this != &other) {
                 m_Function = other.m_Function;
@@ -246,67 +283,98 @@ namespace wstl {
             return *this;
         }
 
-        virtual Return operator()(Args&&... args) const override {
+        /// @brief Assignment operator for a null pointer, resets to an empty state
+        __WSTL_CONSTEXPR14__ Function& operator=(NullPointerType) __WSTL_NOEXCEPT__ {
+            m_Function = nullptr;
+            m_Object = nullptr;
+            return *this;
+        }
+
+        /// @brief Resets the `Function` to hold a new member function pointer and an object
+        /// @param object Pointer to the object instance
+        /// @param function Pointer to the member function of the object
+        __WSTL_CONSTEXPR14__ void Reset(Object* object, Return (Object::*function)(Args...)) {
+            m_Object = object;
+            m_Function = function;
+        }
+
+        /// @brief Swaps the contents of this `Function` with another
+        /// @param other Another `Function` object to swap with
+        __WSTL_CONSTEXPR14__ void Swap(Function& other) __WSTL_NOEXCEPT__ {
+            wstl::Swap(m_Function, other.m_Function);
+            wstl::Swap(m_Object, other.m_Object);
+        }
+
+        /// @brief Conversion operator to check if the `Function` is valid (i.e. has a callable)
+        __WSTL_CONSTEXPR14__ operator bool() const __WSTL_NOEXCEPT__ {
+            return (m_Function != nullptr) && (m_Object != nullptr);
+        }
+
+        /// @brief Function call operator to invoke the stored member function on the object
+        /// @param ...args Arguments to pass to the member function
+        /// @return The result of invoking the member function
+        virtual Return operator()(Args... args) const override {
             __WSTL_ASSERT_RETURNVALUE__(this->operator bool(), WSTL_MAKE_EXCEPTION(BadFunctionCall), static_cast<Return>(-1));
             return (m_Object->*m_Function)(Forward<Args>(args)...);
         }
 
-        __WSTL_CONSTEXPR14__ operator bool() const {
-            return (m_Function != nullptr) && (m_Object != nullptr);
-        }
-
-        __WSTL_CONSTEXPR14__ Return(Object::*Target() const)(Args...) {
+        /// @brief Gets the target member function pointer
+        __WSTL_CONSTEXPR14__ Return(Object::*Target() const __WSTL_NOEXCEPT__)(Args...) {
             return m_Function;
         }
 
+        /// @brief Gets the target const object pointer
+        __WSTL_CONSTEXPR14__ const Object* TargetObject() const __WSTL_NOEXCEPT__ {
+            return m_Object;
+        }
+
     private:
-        Object* m_Object;
         Return (Object::*m_Function)(Args...);
+        Object* m_Object;
     };
 
     // Const member
 
     template<typename Object, typename Return, typename... Args>
-    class Function<Return(Args...), const Object> : public FunctionInterface<Return(Args...)> {
+    class Function<Return(Args...), const Object> : public FunctionBase<Return(Args...)> {
     public:
         typedef const Object ObjectType;
 
-        __WSTL_CONSTEXPR14__ Function() __WSTL_NOEXCEPT__ 
-            : m_Function(nullptr), m_Object(nullptr) {}
+        /// @brief Default constructor
+        __WSTL_CONSTEXPR14__ Function() __WSTL_NOEXCEPT__ : m_Function(nullptr), m_Object(nullptr) {}
 
-        __WSTL_CONSTEXPR14__ Function(const Object& object, Return(Object::*function)(Args...) const) 
-            : m_Function(function), m_Object(&object) {}
+        /// @brief Creates an empty `Function` object
+        __WSTL_CONSTEXPR14__ Function(NullPointerType) __WSTL_NOEXCEPT__ : m_Function(nullptr), m_Object(nullptr) {}
 
+        /// @brief Parameterized constructor
+        /// @param object Pointer to the const object instance
+        /// @param function Pointer to the const member function of the object
+        __WSTL_CONSTEXPR14__ Function(const Object* object, Return(Object::*function)(Args...) const) 
+            : m_Function(function), m_Object(object) {}
+
+        /// @brief Copy constructor
+        /// @param other Another `Function` object to copy from
         __WSTL_CONSTEXPR14__ Function(const Function& other) 
             : m_Function(other.m_Function), m_Object(other.m_Object) {}
 
-        __WSTL_CONSTEXPR14__ Function(Function&& other) __WSTL_NOEXCEPT__ 
-            : m_Function(other.m_Function), m_Object(other.m_Object) {
+        /// @brief Move constructor
+        /// @param other Another `Function` object to move from
+        __WSTL_CONSTEXPR14__ Function(Function&& other) __WSTL_NOEXCEPT__ : m_Function(other.m_Function), m_Object(other.m_Object) {
             other.m_Object = nullptr;
             other.m_Function = nullptr;
         }
 
-        __WSTL_CONSTEXPR14__ void Swap(Function& other) {
-            wstl::Swap(m_Function, other.m_Function);
-            wstl::Swap(m_Object, other.m_Object);
-        }
-
-        __WSTL_CONSTEXPR14__ 
-        Function& operator=(const Pair<const Object&, Return(Object::*)(Args...) const>& pair) {
-            m_Function = pair.Second;
-            m_Object = &pair.First;
-            return *this;
-        }
-
+        /// @brief Copy assignment operator
+        /// @param other Another `Function` object to copy from
         __WSTL_CONSTEXPR14__ Function& operator=(const Function& other) {
-            if(this != &other) {
-                m_Function = other.m_Function;
-                m_Object = other.m_Object;
-            }
+            m_Function = other.m_Function;
+            m_Object = other.m_Object;
 
             return *this;
         }
 
+        /// @brief Move assignment operator
+        /// @param other Another `Function` object to move from
         __WSTL_CONSTEXPR14__ Function& operator=(Function&& other) {
             if(this != &other) {
                 m_Function = other.m_Function;
@@ -318,22 +386,54 @@ namespace wstl {
             return *this;
         }
 
-        virtual Return operator()(Args&&... args) const override {
-            return (m_Object->*m_Function)(Forward<Args>(args)...);
+        /// @brief Assignment operator for a null pointer, resets to an empty state
+        __WSTL_CONSTEXPR14__ Function& operator=(NullPointerType) __WSTL_NOEXCEPT__ {
+            m_Function = nullptr;
+            m_Object = nullptr;
+            return *this;
+        }
+        
+        /// @brief Resets the `Function` to hold a new const member function pointer and an object
+        /// @param object Pointer to the const object instance
+        /// @param function Pointer to the const member function of the object
+        __WSTL_CONSTEXPR14__ void Reset(const Object* object, Return (Object::*function)(Args...) const) {
+            m_Object = object;
+            m_Function = function;
         }
 
-        __WSTL_CONSTEXPR14__ operator bool() const {
-            __WSTL_ASSERT_RETURNVALUE__(this->operator bool(), WSTL_MAKE_EXCEPTION(BadFunctionCall), static_cast<Return>(-1));
+        /// @brief Swaps the contents of this `Function` with another
+        /// @param other Another `Function` object to swap with
+        __WSTL_CONSTEXPR14__ void Swap(Function& other) __WSTL_NOEXCEPT__ {
+            wstl::Swap(m_Function, other.m_Function);
+            wstl::Swap(m_Object, other.m_Object);
+        }
+
+        /// @brief Conversion operator to check if the `Function` is valid (i.e. has a callable)
+        __WSTL_CONSTEXPR14__ operator bool() const __WSTL_NOEXCEPT__ {
             return (m_Function != nullptr) && (m_Object != nullptr);
         }
 
-        __WSTL_CONSTEXPR14__ Return(Object::*Target() const)(Args...) const {
+        /// @brief Function call operator to invoke the stored const member function on the object
+        /// @param ...args Arguments to pass to the const member function
+        /// @return The result of invoking the const member function
+        virtual Return operator()(Args... args) const override {
+            __WSTL_ASSERT_RETURNVALUE__(this->operator bool(), WSTL_MAKE_EXCEPTION(BadFunctionCall), static_cast<Return>(-1));
+            return (m_Object->*m_Function)(Forward<Args>(args)...);
+        }
+
+        /// @brief Gets the target const member function pointer
+        __WSTL_CONSTEXPR14__ Return(Object::*Target() const __WSTL_NOEXCEPT__)(Args...) const {
             return m_Function;
         }
 
+        /// @brief Gets the target const object pointer
+        __WSTL_CONSTEXPR14__ const Object* TargetObject() const __WSTL_NOEXCEPT__ {
+            return m_Object;
+        }
+
     private:
-        const Object* m_Object;
         Return (Object::*m_Function)(Args...) const;
+        const Object* m_Object;
     };
 
     // Comparison operators with NullPointerType (nullptr_t)
@@ -388,38 +488,70 @@ namespace wstl {
 
     #else
     template<typename Return, typename Arg1, typename Arg2>
-    class Function<Return(Arg1, Arg2)> : public FunctionInterface<Return(Arg1, Arg2)> {
+    class Function<Return(Arg1, Arg2)> : public FunctionBase<Return(Arg1, Arg2)> {
     public:
+        /// @brief Default constructor
         Function() __WSTL_NOEXCEPT__ : m_Function(NullPointer) {}
 
+        /// @brief Creates an empty `Function` object
+        Function(NullPointerType) __WSTL_NOEXCEPT__ : m_Function(NullPointer) {}
+
+        /// @brief Parameterized constructor
+        /// @param function Pointer to a free function
         Function(Return(*function)(Arg1, Arg2)) : m_Function(function) {}
 
+        /// @brief Copy constructor
+        /// @param other Another `Function` object to copy from
         Function(const Function& other) : m_Function(other.m_Function) {}
 
-        void Swap(Function& other) {
-            wstl::Swap(m_Function, other.m_Function);
+        /// @brief Copy assignment operator
+        /// @param other Another `Function` object to copy from
+        Function& operator=(const Function& other) {
+            m_Function = other.m_Function;
+            return *this;
         }
 
+        /// @brief Assignment operator for a null pointer, resets to an empty state
+        Function& operator=(NullPointerType) __WSTL_NOEXCEPT__ {
+            m_Function = NullPointer;
+            return *this;
+        }
+
+        /// @brief Assignment operator for a free function pointer
+        /// @param function Pointer to a free function to assign
         Function& operator=(Return(*function)(Arg1, Arg2)) {
             m_Function = function;
             return *this;
         }
 
-        Function& operator=(const Function& other) {
-            if(this != &other) m_Function = other.m_Function;
-            return *this;
+        /// @brief Resets the `Function` to hold a new free function pointer
+        /// @param function Pointer to a free function to assign
+        void Reset(Return(*function)(Arg1, Arg2)) {
+            m_Function = function;
         }
 
+        /// @brief Swaps the contents of this `Function` with another
+        /// @param other Another `Function` object to swap with
+        void Swap(Function& other) {
+            wstl::Swap(m_Function, other.m_Function);
+        }
+
+        /// @brief Conversion operator to check if the `Function` is valid (i.e. has a callable)
+        operator bool() const __WSTL_NOEXCEPT__ {
+            return m_Function != NullPointer;
+        }
+
+        /// @brief Function call operator to invoke the stored callable
+        /// @param arg1 First argument to pass to the callable
+        /// @param arg2 Second argument to pass to the callable
+        /// @return The result of invoking the callable
         virtual Return operator()(Arg1 arg1, Arg2 arg2) const {
             __WSTL_ASSERT_RETURNVALUE__(this->operator bool(), WSTL_MAKE_EXCEPTION(BadFunctionCall), static_cast<Return>(-1));
             return (*m_Function)(arg1, arg2);
         }
 
-        operator bool() const {
-            return m_Function != NullPointer;
-        }
-
-        Return(*Target() const)(Arg1, Arg2) {
+        /// @brief Gets the target function pointer
+        Return(*Target() const __WSTL_NOEXCEPT__)(Arg1, Arg2) {
             return m_Function;
         }
 
@@ -430,103 +562,165 @@ namespace wstl {
     // Member 
 
     template<typename Object, typename Return, typename Arg1, typename Arg2>
-    class Function<Return(Arg1, Arg2), Object> : public FunctionInterface<Return(Arg1, Arg2)> {
+    class Function<Return(Arg1, Arg2), Object> : public FunctionBase<Return(Arg1, Arg2)> {
     public:
         typedef Object ObjectType;
 
+        /// @brief Default constructor
         Function() __WSTL_NOEXCEPT__ : m_Function(NullPointer), m_Object(NullPointer) {}
 
-        Function(Object& object, Return(Object::*function)(Arg1, Arg2)) 
-            : m_Function(function), m_Object(&object) {}
+        /// @brief Creates an empty `Function` object
+        Function(NullPointerType) __WSTL_NOEXCEPT__ : m_Function(NullPointer), m_Object(NullPointer) {}
 
+        /// @brief Parameterized constructor
+        /// @param object Pointer to the object instance
+        /// @param function Pointer to the member function of the object
+        Function(Object* object, Return(Object::*function)(Arg1, Arg2)) 
+            : m_Function(function), m_Object(object) {}
+
+        /// @brief Copy constructor
+        /// @param other Another `Function` object to copy from
         Function(const Function& other) : m_Function(other.m_Function), m_Object(other.m_Object) {}
 
-        void Swap(Function& other) {
+        /// @brief Copy assignment operator
+        /// @param other Another `Function` object to copy from
+        Function& operator=(const Function& other) {
+            m_Function = other.m_Function;
+            m_Object = other.m_Object;
+            return *this;
+        }
+
+        /// @brief Assignment operator for a null pointer, resets to an empty state
+        Function& operator=(NullPointerType) __WSTL_NOEXCEPT__ {
+            m_Function = NullPointer;
+            m_Object = NullPointer;
+            return *this;
+        }
+
+        /// @brief Resets the `Function` to hold a new member function pointer and an object
+        /// @param object Pointer to the object instance
+        /// @param function Pointer to the member function of the object
+        void Reset(Object* object, Return (Object::*function)(Arg1, Arg2)) {
+            m_Object = object;
+            m_Function = function;
+        }
+
+        /// @brief Swaps the contents of this `Function` with another
+        /// @param other Another `Function` object to swap with
+        void Swap(Function& other) __WSTL_NOEXCEPT__ {
             wstl::Swap(m_Function, other.m_Function);
             wstl::Swap(m_Object, other.m_Object);
         }
 
-        Function& operator=(const Pair<Object&, Return(Object::*)(Arg1, Arg2)>& pair) {
-            m_Function = pair.Second;
-            m_Object = &pair.First;
-            return *this;
+        /// @brief Conversion operator to check if the `Function` is valid (i.e. has a callable)
+        operator bool() const __WSTL_NOEXCEPT__ {
+            return (m_Function != NullPointer) && (m_Object != NullPointer);
         }
 
-        Function& operator=(const Function& other) {
-            if(this != &other) {
-                m_Function = other.m_Function;
-                m_Object = other.m_Object;
-            }
-            return *this;
-        }
-
+        /// @brief Function call operator to invoke the stored member function on the object
+        /// @param arg1 First argument to pass to the member function
+        /// @param arg2 Second argument to pass to the member function
+        /// @return The result of invoking the member function
         virtual Return operator()(Arg1 arg1, Arg2 arg2) const {
             __WSTL_ASSERT_RETURNVALUE__(this->operator bool(), WSTL_MAKE_EXCEPTION(BadFunctionCall), static_cast<Return>(-1));
             return (m_Object->*m_Function)(arg1, arg2);
         }
 
-        operator bool() const {
-            return (m_Function != NullPointer) && (m_Object != NullPointer);
-        }
-
-        Return(Object::*Target() const)(Arg1, Arg2) {
+        /// @brief Gets the target member function pointer
+        Return(Object::*Target() const __WSTL_NOEXCEPT__)(Arg1, Arg2) {
             return m_Function;
         }
 
+        /// @brief Gets the target const object pointer
+        const Object* TargetObject() const __WSTL_NOEXCEPT__ {
+            return m_Object;
+        }
+
     private:
-        Object* m_Object;
         Return (Object::*m_Function)(Arg1, Arg2);
+        Object* m_Object;
     };
 
     // Const member
 
     template<typename Object, typename Return, typename Arg1, typename Arg2>
-    class Function<Return(Arg1, Arg2), const Object> : public FunctionInterface<Return(Arg1, Arg2)> {
+    class Function<Return(Arg1, Arg2), const Object> : public FunctionBase<Return(Arg1, Arg2)> {
     public:
         typedef const Object ObjectType;
 
+        /// @brief Default constructor
         Function() __WSTL_NOEXCEPT__ : m_Function(NullPointer), m_Object(NullPointer) {}
 
-        Function(const Object& object, Return(Object::*function)(Arg1, Arg2) const) 
-            : m_Function(function), m_Object(&object) {}
+        /// @brief Creates an empty `Function` object
+        Function(NullPointerType) __WSTL_NOEXCEPT__ : m_Function(NullPointer), m_Object(NullPointer) {}
 
+        /// @brief Parameterized constructor
+        /// @param object Pointer to the const object instance
+        /// @param function Pointer to the const member function of the object
+        Function(const Object* object, Return(Object::*function)(Arg1, Arg2) const) 
+            : m_Function(function), m_Object(object) {}
+
+        /// @brief Copy constructor
+        /// @param other Another `Function` object to copy from
         Function(const Function& other) : m_Function(other.m_Function), m_Object(other.m_Object) {}
 
-        void Swap(Function& other) {
+        /// @brief Copy assignment operator
+        /// @param other Another `Function` object to copy from
+        Function& operator=(const Function& other) {
+            m_Function = other.m_Function;
+            m_Object = other.m_Object;
+            return *this;
+        }
+
+        /// @brief Assignment operator for a null pointer, resets to an empty state
+        Function& operator=(NullPointerType) __WSTL_NOEXCEPT__ {
+            m_Function = NullPointer;
+            m_Object = NullPointer;
+            return *this;
+        }
+
+        /// @brief Resets the `Function` to hold a new const member function pointer and an object
+        /// @param object Pointer to the const object instance
+        /// @param function Pointer to the const member function of the object
+        void Reset(const Object* object, Return (Object::*function)(Arg1, Arg2) const) {
+            m_Object = object;
+            m_Function = function;
+        }
+
+        /// @brief Swaps the contents of this `Function` with another
+        /// @param other Another `Function` object to swap with
+        void Swap(Function& other) __WSTL_NOEXCEPT__ {
             wstl::Swap(m_Function, other.m_Function);
             wstl::Swap(m_Object, other.m_Object);
         }
 
-        Function& operator=(const Pair<const Object&, Return(Object::*)(Arg1, Arg2) const>& pair) {
-            m_Function = pair.Second;
-            m_Object = &pair.First;
-            return *this;
+        /// @brief Conversion operator to check if the `Function` is valid (i.e. has a callable)
+        operator bool() const __WSTL_NOEXCEPT__ {
+            return (m_Function != NullPointer) && (m_Object != NullPointer);
         }
 
-        Function& operator=(const Function& other) {
-            if(this != &other) {
-                m_Function = other.m_Function;
-                m_Object = other.m_Object;
-            }
-            return *this;
-        }
-
+        /// @brief Function call operator to invoke the stored const member function on the object
+        /// @param arg1 First argument to pass to the const member function
+        /// @param arg2 Second argument to pass to the const member function
+        /// @return The result of invoking the const member function
         virtual Return operator()(Arg1 arg1, Arg2 arg2) const {
             __WSTL_ASSERT_RETURNVALUE__(this->operator bool(), WSTL_MAKE_EXCEPTION(BadFunctionCall), static_cast<Return>(-1));
             return (m_Object->*m_Function)(arg1, arg2);
         }
 
-        operator bool() const {
-            return (m_Function != NullPointer) && (m_Object != NullPointer);
-        }
-
-        Return(Object::*Target() const)(Arg1, Arg2) const {
+        /// @brief Gets the target const member function pointer
+        Return(Object::*Target() const __WSTL_NOEXCEPT__)(Arg1, Arg2) const {
             return m_Function;
         }
 
+        /// @brief Gets the target const object pointer
+        const Object* TargetObject() const __WSTL_NOEXCEPT__ {
+            return m_Object;
+        }
+
     private:
-        const Object* m_Object;
         Return (Object::*m_Function)(Arg1, Arg2) const;
+        const Object* m_Object;
     };
 
     // Comparison operators with NullPointerType (nullptr_t)
@@ -575,38 +769,69 @@ namespace wstl {
     // Function (1 argument)
 
     template<typename Return, typename Arg>
-    class Function<Return(Arg)> : public FunctionInterface<Return(Arg)> {
+    class Function<Return(Arg)> : public FunctionBase<Return(Arg)> {
     public:
+        /// @brief Default constructor
         Function() __WSTL_NOEXCEPT__ : m_Function(NullPointer) {}
 
+        /// @brief Creates an empty `Function` object
+        Function(NullPointerType) __WSTL_NOEXCEPT__ : m_Function(NullPointer) {}
+
+        /// @brief Parameterized constructor
+        /// @param function Pointer to a free function
         Function(Return(*function)(Arg)) : m_Function(function) {}
 
+        /// @brief Copy constructor
+        /// @param other Another `Function` object to copy from
         Function(const Function& other) : m_Function(other.m_Function) {}
 
-        void Swap(Function& other) {
-            wstl::Swap(m_Function, other.m_Function);
+        /// @brief Copy assignment operator
+        /// @param other Another `Function` object to copy from
+        Function& operator=(const Function& other) {
+            m_Function = other.m_Function;
+            return *this;
         }
 
+        /// @brief Assignment operator for a null pointer, resets to an empty state
+        Function& operator=(NullPointerType) __WSTL_NOEXCEPT__ {
+            m_Function = NullPointer;
+            return *this;
+        }
+
+        /// @brief Assignment operator for a free function pointer
+        /// @param function Pointer to a free function to assign
         Function& operator=(Return(*function)(Arg)) {
             m_Function = function;
             return *this;
         }
 
-        Function& operator=(const Function& other) {
-            if(this != &other) m_Function = other.m_Function;
-            return *this;
+        /// @brief Resets the `Function` to hold a new free function pointer
+        /// @param function Pointer to a free function to assign
+        void Reset(Return(*function)(Arg)) {
+            m_Function = function;
         }
 
+        /// @brief Swaps the contents of this `Function` with another
+        /// @param other Another `Function` object to swap with
+        void Swap(Function& other) __WSTL_NOEXCEPT__ {
+            wstl::Swap(m_Function, other.m_Function);
+        }
+
+        /// @brief Conversion operator to check if the `Function` is valid (i.e. has a callable)
+        operator bool() const __WSTL_NOEXCEPT__ {
+            return m_Function != NullPointer;
+        }
+
+        /// @brief Function call operator to invoke the stored callable
+        /// @param arg Argument to pass to the callable
+        /// @return The result of invoking the callable
         virtual Return operator()(Arg arg) const {
             __WSTL_ASSERT_RETURNVALUE__(this->operator bool(), WSTL_MAKE_EXCEPTION(BadFunctionCall), static_cast<Return>(-1));
             return (*m_Function)(arg);
         }
 
-        operator bool() const {
-            return m_Function != NullPointer;
-        }
-
-        Return(*Target() const)(Arg) {
+        /// @brief Gets the target function pointer
+        Return(*Target() const __WSTL_NOEXCEPT__)(Arg) {
             return m_Function;
         }
 
@@ -617,105 +842,162 @@ namespace wstl {
     // Member
 
     template<typename Object, typename Return, typename Arg>
-    class Function<Return(Arg), Object> : public FunctionInterface<Return(Arg)> {
+    class Function<Return(Arg), Object> : public FunctionBase<Return(Arg)> {
     public:
         typedef Object ObjectType;
 
-        Function() __WSTL_NOEXCEPT__ : m_Function(NullPointer) {}
+        /// @brief Default constructor
+        Function() __WSTL_NOEXCEPT__ : m_Function(NullPointer), m_Object(NullPointer) {}
 
-        Function(Object& object, Return(Object::*function)(Arg)) 
-            : m_Function(function), m_Object(&object) {}
+        /// @brief Creates an empty `Function` object
+        Function(NullPointerType) __WSTL_NOEXCEPT__ : m_Function(NullPointer), m_Object(NullPointer) {}
 
+        /// @brief Parameterized constructor
+        /// @param object Pointer to the object instance
+        /// @param function Pointer to the member function of the object
+        Function(Object* object, Return(Object::*function)(Arg)) : m_Function(function), m_Object(object) {}
+
+        /// @brief Copy constructor
+        /// @param other Another `Function` object to copy from
         Function(const Function& other) : m_Function(other.m_Function), m_Object(other.m_Object) {}
 
-        void Swap(Function& other) {
+        /// @brief Copy assignment operator
+        /// @param other Another `Function` object to copy from
+        Function& operator=(const Function& other) {
+            m_Function = other.m_Function;
+            m_Object = other.m_Object;
+            return *this;
+        }
+
+        /// @brief Assignment operator for a null pointer, resets to an empty state
+        Function& operator=(NullPointerType) __WSTL_NOEXCEPT__ {
+            m_Function = NullPointer;
+            m_Object = NullPointer;
+            return *this;
+        }
+
+        /// @brief Resets the `Function` to hold a new member function pointer and an object
+        /// @param object Pointer to the object instance
+        /// @param function Pointer to the member function of the object
+        void Reset(Object* object, Return (Object::*function)(Arg)) {
+            m_Object = object;
+            m_Function = function;
+        }
+
+        /// @brief Swaps the contents of this `Function` with another
+        /// @param other Another `Function` object to swap with
+        void Swap(Function& other) __WSTL_NOEXCEPT__ {
             wstl::Swap(m_Function, other.m_Function);
             wstl::Swap(m_Object, other.m_Object);
         }
 
-        Function& operator=(const Pair<Object&, Return(Object::*)(Arg)>& pair) {
-            m_Function = pair.Second;
-            m_Object = &pair.First;
-            return *this;
+        /// @brief Conversion operator to check if the `Function` is valid (i.e. has a callable)
+        operator bool() const __WSTL_NOEXCEPT__ {
+            return (m_Function != NullPointer) && (m_Object != NullPointer);
         }
 
-        Function& operator=(const Function& other) {
-            if(this != &other) {
-                m_Function = other.m_Function;
-                m_Object = other.m_Object;
-            }
-
-            return *this;
-        }
-
-        virtual Return operator()(Arg arg) const override {
+        /// @brief Function call operator to invoke the stored member function on the object
+        /// @param arg Argument to pass to the member function
+        /// @return The result of invoking the member function
+        virtual Return operator()(Arg arg) const {
             __WSTL_ASSERT_RETURNVALUE__(this->operator bool(), WSTL_MAKE_EXCEPTION(BadFunctionCall), static_cast<Return>(-1));
             return (m_Object->*m_Function)(arg);
         }
 
-        operator bool() const {
-            return (m_Function != NullPointer) && (m_Object != NullPointer);
-        }
-
-        Return(Object::*Target() const)(Arg) {
+        /// @brief Gets the target member function pointer
+        Return(Object::*Target() const __WSTL_NOEXCEPT__)(Arg) {
             return m_Function;
         }
 
+        /// @brief Gets the target const object pointer
+        const Object* TargetObject() const __WSTL_NOEXCEPT__ {
+            return m_Object;
+        }
+
     private:
-        Object* m_Object;
         Return (Object::*m_Function)(Arg);
+        Object* m_Object;
     };
 
     // Const member
 
     template<typename Object, typename Return, typename Arg>
-    class Function<Return(Arg), const Object> : public FunctionInterface<Return(Arg)> {
+    class Function<Return(Arg), const Object> : public FunctionBase<Return(Arg)> {
     public:
         typedef const Object ObjectType;
 
-        Function() __WSTL_NOEXCEPT__ : m_Function(NullPointer) {}
+        /// @brief Default constructor
+        Function() __WSTL_NOEXCEPT__ : m_Function(NullPointer), m_Object(NullPointer) {}
 
-        Function(const Object& object, Return(Object::*function)(Arg) const) 
-            : m_Function(function), m_Object(&object) {}
+        /// @brief Creates an empty `Function` object
+        Function(NullPointerType) __WSTL_NOEXCEPT__ : m_Function(NullPointer), m_Object(NullPointer) {}
 
+        /// @brief Parameterized constructor
+        /// @param object Pointer to the const object instance
+        /// @param function Pointer to the const member function of the object
+        Function(const Object* object, Return(Object::*function)(Arg) const) 
+            : m_Function(function), m_Object(object) {}
+
+        /// @brief Copy constructor
+        /// @param other Another `Function` object to copy from
         Function(const Function& other) : m_Function(other.m_Function), m_Object(other.m_Object) {}
 
-        void Swap(Function& other) {
+        /// @brief Copy assignment operator
+        /// @param other Another `Function` object to copy from
+        Function& operator=(const Function& other) {
+            m_Function = other.m_Function;
+            m_Object = other.m_Object;
+            return *this;
+        }
+
+        /// @brief Assignment operator for a null pointer, resets to an empty state
+        Function& operator=(NullPointerType) __WSTL_NOEXCEPT__ {
+            m_Function = NullPointer;
+            m_Object = NullPointer;
+            return *this;
+        }
+
+        /// @brief Resets the `Function` to hold a new const member function pointer and an object
+        /// @param object Pointer to the const object instance
+        /// @param function Pointer to the const member function of the object
+        void Reset(const Object* object, Return (Object::*function)(Arg) const) {
+            m_Object = object;
+            m_Function = function;
+        }
+
+        /// @brief Swaps the contents of this `Function` with another
+        /// @param other Another `Function` object to swap with
+        void Swap(Function& other) __WSTL_NOEXCEPT__ {
             wstl::Swap(m_Function, other.m_Function);
             wstl::Swap(m_Object, other.m_Object);
         }
 
-        Function& operator=(const Pair<const Object&, Return(Object::*)(Arg) const>& pair) {
-            m_Function = pair.Second;
-            m_Object = &pair.First;
-            return *this;
+        /// @brief Conversion operator to check if the `Function` is valid (i.e. has a callable)
+        operator bool() const __WSTL_NOEXCEPT__ {
+            return (m_Function != NullPointer) && (m_Object != NullPointer);
         }
 
-        Function& operator=(const Function& other) {
-            if(this != &other) {
-                m_Function = other.m_Function;
-                m_Object = other.m_Object;
-            }
-
-            return *this;
-        }
-
-        virtual Return operator()(Arg arg) const override {
+        /// @brief Function call operator to invoke the stored const member function on the object
+        /// @param arg Argument to pass to the const member function
+        /// @return The result of invoking the const member function
+        virtual Return operator()(Arg arg) const {
             __WSTL_ASSERT_RETURNVALUE__(this->operator bool(), WSTL_MAKE_EXCEPTION(BadFunctionCall), static_cast<Return>(-1));
             return (m_Object->*m_Function)(arg);
         }
 
-        operator bool() const {
-            return (m_Function != NullPointer) && (m_Object != NullPointer);
-        }
-
-        Return(Object::*Target() const)(Arg) const {
+        /// @brief Gets the target const member function pointer
+        Return(Object::*Target() const __WSTL_NOEXCEPT__)(Arg) const {
             return m_Function;
         }
 
+        /// @brief Gets the target const object pointer
+        const Object* TargetObject() const __WSTL_NOEXCEPT__ {
+            return m_Object;
+        }
+
     private:
-        const Object* m_Object;
         Return (Object::*m_Function)(Arg) const;
+        const Object* m_Object;
     };
 
     // Comparison operators with NullPointerType (nullptr_t)
@@ -764,38 +1046,68 @@ namespace wstl {
     // Function (no arguments)
 
     template<typename Return>
-    class Function<Return()> : public FunctionInterface<Return()> {
+    class Function<Return()> : public FunctionBase<Return()> {
     public:
+        /// @brief Default constructor
         Function() __WSTL_NOEXCEPT__ : m_Function(NullPointer) {}
 
+        /// @brief Creates an empty `Function` object
+        Function(NullPointerType) __WSTL_NOEXCEPT__ : m_Function(NullPointer) {}
+
+        /// @brief Parameterized constructor
+        /// @param function Pointer to a free function
         Function(Return(*function)()) : m_Function(function) {}
 
+        /// @brief Copy constructor
+        /// @param other Another `Function` object to copy from
         Function(const Function& other) : m_Function(other.m_Function) {}
 
-        void Swap(Function& other) {
-            wstl::Swap(m_Function, other.m_Function);
+        /// @brief Copy assignment operator
+        /// @param other Another `Function` object to copy from
+        Function& operator=(const Function& other) {
+            m_Function = other.m_Function;
+            return *this;
         }
 
+        /// @brief Assignment operator for a null pointer, resets to an empty state
+        Function& operator=(NullPointerType) __WSTL_NOEXCEPT__ {
+            m_Function = NullPointer;
+            return *this;
+        }
+
+        /// @brief Assignment operator for a free function pointer
+        /// @param function Pointer to a free function to assign
         Function& operator=(Return(*function)()) {
             m_Function = function;
             return *this;
         }
 
-        Function& operator=(const Function& other) {
-            if(this != &other) m_Function = other.m_Function;
-            return *this;
+        /// @brief Resets the `Function` to hold a new free function pointer
+        /// @param function Pointer to a free function to assign
+        void Reset(Return(*function)()) {
+            m_Function = function;
         }
 
+        /// @brief Swaps the contents of this `Function` with another
+        /// @param other Another `Function` object to swap with
+        void Swap(Function& other) __WSTL_NOEXCEPT__ {
+            wstl::Swap(m_Function, other.m_Function);
+        }
+
+        /// @brief Conversion operator to check if the `Function` is valid (i.e. has a callable)
+        operator bool() const __WSTL_NOEXCEPT__ {
+            return m_Function != NullPointer;
+        }
+
+        /// @brief Function call operator to invoke the stored callable
+        /// @return The result of invoking the callable
         virtual Return operator()() const {
             __WSTL_ASSERT_RETURNVALUE__(this->operator bool(), WSTL_MAKE_EXCEPTION(BadFunctionCall), static_cast<Return>(-1));
             return (*m_Function)();
         }
 
-        operator bool() const {
-            return m_Function != NullPointer;
-        }
-
-        Return(*Target() const)() {
+        /// @brief Gets the target function pointer
+        Return(*Target() const __WSTL_NOEXCEPT__)() {
             return m_Function;
         }
 
@@ -806,105 +1118,160 @@ namespace wstl {
     // Member
 
     template<typename Object, typename Return>
-    class Function<Return(), Object> : public FunctionInterface<Return()> {
+    class Function<Return(), Object> : public FunctionBase<Return()> {
     public:
         typedef Object ObjectType;
 
+        /// @brief Default constructor
         Function() __WSTL_NOEXCEPT__ : m_Function(NullPointer), m_Object(NullPointer) {}
 
-        Function(Object& object, Return(Object::*function)()) 
-            : m_Function(function), m_Object(&object) {}
+        /// @brief Creates an empty `Function` object
+        Function(NullPointerType) __WSTL_NOEXCEPT__ : m_Function(NullPointer), m_Object(NullPointer) {}
 
+        /// @brief Parameterized constructor
+        /// @param object Pointer to the object instance
+        /// @param function Pointer to the member function of the object
+        Function(Object* object, Return(Object::*function)()) : m_Function(function), m_Object(object) {}
+
+        /// @brief Copy constructor
+        /// @param other Another `Function` object to copy from
         Function(const Function& other) : m_Function(other.m_Function), m_Object(other.m_Object) {}
 
-        void Swap(Function& other) {
+        /// @brief Copy assignment operator
+        /// @param other Another `Function` object to copy from
+        Function& operator=(const Function& other) {
+            m_Function = other.m_Function;
+            m_Object = other.m_Object;
+            return *this;
+        }
+
+        /// @brief Assignment operator for a null pointer, resets to an empty state
+        Function& operator=(NullPointerType) __WSTL_NOEXCEPT__ {
+            m_Function = NullPointer;
+            m_Object = NullPointer;
+            return *this;
+        }
+
+        /// @brief Resets the `Function` to hold a new member function pointer and an object
+        /// @param object Pointer to the object instance
+        /// @param function Pointer to the member function of the object
+        void Reset(Object* object, Return (Object::*function)()) {
+            m_Object = object;
+            m_Function = function;
+        }
+
+        /// @brief Swaps the contents of this `Function` with another
+        /// @param other Another `Function` object to swap with
+        void Swap(Function& other) __WSTL_NOEXCEPT__ {
             wstl::Swap(m_Function, other.m_Function);
             wstl::Swap(m_Object, other.m_Object);
         }
 
-        Function& operator=(const Pair<Object&, Return(Object::*)()>& pair) {
-            m_Function = pair.Second;
-            m_Object = &pair.First;
-            return *this;
+        /// @brief Conversion operator to check if the `Function` is valid (i.e. has a callable)
+        operator bool() const __WSTL_NOEXCEPT__ {
+            return (m_Function != NullPointer) && (m_Object != NullPointer);
         }
 
-        Function& operator=(const Function& other) {
-            if(this != &other) {
-                m_Function = other.m_Function;
-                m_Object = other.m_Object;
-            }
-
-            return *this;
-        }
-
+        /// @brief Function call operator to invoke the stored member function on the object
+        /// @return The result of invoking the member function
         virtual Return operator()() const {
             __WSTL_ASSERT_RETURNVALUE__(this->operator bool(), WSTL_MAKE_EXCEPTION(BadFunctionCall), static_cast<Return>(-1));
             return (m_Object->*m_Function)();
         }
 
-        operator bool() const {
-            return (m_Function != NullPointer) && (m_Object != NullPointer);
-        }
-
-        Return(Object::*Target() const)() {
+        /// @brief Gets the target member function pointer
+        Return(Object::*Target() const __WSTL_NOEXCEPT__)() {
             return m_Function;
         }
 
+        /// @brief Gets the target const object pointer
+        const Object* TargetObject() const __WSTL_NOEXCEPT__ {
+            return m_Object;
+        }
+
     private:
-        Object* m_Object;
         Return (Object::*m_Function)();
+        Object* m_Object;
     };
 
     // Const member
 
     template<typename Object, typename Return>
-    class Function<Return(), const Object> : public FunctionInterface<Return()> {
+    class Function<Return(), const Object> : public FunctionBase<Return()> {
     public:
         typedef const Object ObjectType;
 
+        /// @brief Default constructor
         Function() __WSTL_NOEXCEPT__ : m_Function(NullPointer), m_Object(NullPointer) {}
 
-        Function(const Object& object, Return(Object::*function)() const) 
-            : m_Function(function), m_Object(&object) {}
+        /// @brief Creates an empty `Function` object
+        Function(NullPointerType) __WSTL_NOEXCEPT__ : m_Function(NullPointer), m_Object(NullPointer) {}
 
+        /// @brief Parameterized constructor
+        /// @param object Pointer to the const object instance
+        /// @param function Pointer to the const member function of the object
+        Function(const Object* object, Return(Object::*function)() const) 
+            : m_Function(function), m_Object(object) {}
+
+        /// @brief Copy constructor
+        /// @param other Another `Function` object to copy from
         Function(const Function& other) : m_Function(other.m_Function), m_Object(other.m_Object) {}
 
-        void Swap(Function& other) {
+        /// @brief Copy assignment operator
+        /// @param other Another `Function` object to copy from
+        Function& operator=(const Function& other) {
+            m_Function = other.m_Function;
+            m_Object = other.m_Object;
+            return *this;
+        }
+
+        /// @brief Assignment operator for a null pointer, resets to an empty state
+        Function& operator=(NullPointerType) __WSTL_NOEXCEPT__ {
+            m_Function = NullPointer;
+            m_Object = NullPointer;
+            return *this;
+        }
+
+        /// @brief Resets the `Function` to hold a new const member function pointer and an object
+        /// @param object Pointer to the const object instance
+        /// @param function Pointer to the const member function of the object
+        void Reset(const Object* object, Return (Object::*function)() const) {
+            m_Object = object;
+            m_Function = function;
+        }
+
+        /// @brief Swaps the contents of this `Function` with another
+        /// @param other Another `Function` object to swap with
+        void Swap(Function& other) __WSTL_NOEXCEPT__ {
             wstl::Swap(m_Function, other.m_Function);
             wstl::Swap(m_Object, other.m_Object);
         }
 
-        Function& operator=(const Pair<const Object&, Return(Object::*)() const>& pair) {
-            m_Function = pair.Second;
-            m_Object = &pair.First;
-            return *this;
+        /// @brief Conversion operator to check if the `Function` is valid (i.e. has a callable)
+        operator bool() const __WSTL_NOEXCEPT__ {
+            return (m_Function != NullPointer) && (m_Object != NullPointer);
         }
 
-        Function& operator=(const Function& other) {
-            if(this != &other) {
-                m_Function = other.m_Function;
-                m_Object = other.m_Object;
-            }
-
-            return *this;
-        }
-
+        /// @brief Function call operator to invoke the stored const member function on the object
+        /// @return The result of invoking the const member function
         virtual Return operator()() const {
             __WSTL_ASSERT_RETURNVALUE__(this->operator bool(), WSTL_MAKE_EXCEPTION(BadFunctionCall), static_cast<Return>(-1));
             return (m_Object->*m_Function)();
         }
 
-        operator bool() const {
-            return (m_Function != NullPointer) && (m_Object != NullPointer);
-        }
-
-        Return(Object::*Target() const)() const {
+        /// @brief Gets the target const member function pointer
+        Return(Object::*Target() const __WSTL_NOEXCEPT__)() const {
             return m_Function;
         }
 
+        /// @brief Gets the target const object pointer
+        const Object* TargetObject() const __WSTL_NOEXCEPT__ {
+            return m_Object;
+        }
+
     private:
-        const Object* m_Object;
         Return (Object::*m_Function)() const;
+        const Object* m_Object;
     };
 
     // Comparison operators with NullPointerType (nullptr_t)
@@ -955,12 +1322,14 @@ namespace wstl {
 
     /// @brief Invokes a callable object with the provided arguments by forwarding them
     /// @param function The callable object to invoke
-    /// @param args... The arguments to be forwarded
+    /// @param ...args The arguments to be forwarded
     /// @return The result of invoking the callable object
     /// @since C++11
     /// @see https://en.cppreference.com/w/cpp/utility/functional/invoke
     template<typename Function, typename... Args>
-    constexpr auto Invoke(Function&& function, Args&&... args) -> decltype(__private::__Invoke(Forward<Function>(function), Forward<Args>(args)...)) {
+    constexpr auto Invoke(Function&& function, Args&&... args) __WSTL_NOEXCEPT_EXPR__(
+        noexcept(__private::__Invoke(Forward<Function>(function), Forward<Args>(args)...))
+    ) -> decltype(__private::__Invoke(Forward<Function>(function), Forward<Args>(args)...)) {
         return __private::__Invoke(Forward<Function>(function), Forward<Args>(args)...);
     }
 
@@ -970,12 +1339,14 @@ namespace wstl {
     /// and returns the result cast to the specified type, void oveload
     /// @tparam Result The type to cast the result to
     /// @param function The callable object to invoke
-    /// @param args... The arguments to be forwarded
+    /// @param ...args The arguments to be forwarded
     /// @since C++11
     /// @see https://en.cppreference.com/w/cpp/utility/functional/invoke
     template<typename Result, typename Function, typename... Args>
     constexpr EnableIfType<IsVoid<Result>::Value && IsInvocableReturn<Result, Function, Args...>::Value, void> 
-    InvokeReturn(Function&& function, Args&&... args) {
+    InvokeReturn(Function&& function, Args&&... args) __WSTL_NOEXCEPT_EXPR__(
+        noexcept(Invoke(Forward<Function>(function), Forward<Args>(args)...))
+    ) {
         return (void) Invoke(Forward<Function>(function), Forward<Args>(args)...);
     }
 
@@ -983,24 +1354,111 @@ namespace wstl {
     /// and returns the result cast to the specified type, non-void overload
     /// @tparam Result The type to cast the result to
     /// @param function The callable object to invoke
-    /// @param args... The arguments to be forwarded
+    /// @param ...args The arguments to be forwarded
     /// @return The result of invoking the callable object, cast to the specified type
     /// @since C++11
     /// @see https://en.cppreference.com/w/cpp/utility/functional/invoke
     template<typename Result, typename Function, typename... Args>
     constexpr EnableIfType<!IsVoid<Result>::Value && IsInvocableReturn<Result, Function, Args...>::Value, Result> 
-    InvokeReturn(Function&& function, Args&&... args) {
+    InvokeReturn(Function&& function, Args&&... args) __WSTL_NOEXCEPT_EXPR__(
+        noexcept(static_cast<Result>(Invoke(Forward<Function>(function), Forward<Args>(args)...)))
+    ) {
         return static_cast<Result>(Invoke(Forward<Function>(function), Forward<Args>(args)...));
     }
     #endif
 
     // Reference wrapper
 
+    #ifndef __WSTL_CXX11__
+    namespace __private {
+        template<typename T, bool = sizeof(__private::__TestResultOf<T>(0)) == sizeof(long)>
+        class __ReferenceWrapper;
+
+        template<typename T>
+        class __ReferenceWrapper<T, true> {
+        public:
+            /// @brief Calls the referenced object with two arguments
+            /// @param arg1 Value of the first argument
+            /// @param arg2 Value of the second argument
+            /// @return The result of calling the referenced object
+            template<typename Arg1, typename Arg2>
+            typename ResultOf<T>::Type operator()(Arg1 arg1, Arg2 arg2) const {
+                return (*m_Pointer)(arg1, arg2);
+            }
+
+            /// @brief Calls the referenced object with one argument
+            /// @param arg Value of the argument
+            /// @return The result of calling the referenced object
+            template<typename Arg>
+            typename ResultOf<T>::Type operator()(Arg arg) const {
+                return (*m_Pointer)(arg);
+            }
+
+            /// @brief Calls the referenced object with no arguments
+            /// @return The result of calling the referenced object
+            typename ResultOf<T>::Type operator()() const {
+                return (*m_Pointer)();
+            }
+        
+        protected:
+            T* m_Pointer;
+
+            explicit __ReferenceWrapper(T* value) __WSTL_NOEXCEPT__ : m_Pointer(value) {}
+        };
+
+        template<typename T>
+        class __ReferenceWrapper<T, false> {
+        protected:
+            T* m_Pointer;
+
+            explicit __ReferenceWrapper(T* value) __WSTL_NOEXCEPT__ : m_Pointer(value) {}
+        };
+    }
+
     /// @brief Wrapper class to store references
     /// @tparam T Type of the object to wrap
     /// @ingroup functional
     /// @note In C++98 it supports maximum two arguments for callable objects
-    /// @see https://en.cppreference.com/w/cpp/utility/functional/reference_wrapper 
+    /// @see https://en.cppreference.com/w/cpp/utility/functional/reference_wrapper
+    template<typename T>
+    class ReferenceWrapper : public __private::__ReferenceWrapper<T> {
+    public:
+        /// @brief Alias for the wrapped type
+        typedef T Type;
+
+        /// @brief Constructor
+        /// @param value The reference to the object to wrap
+        explicit ReferenceWrapper(T& value) __WSTL_NOEXCEPT__ : __private::__ReferenceWrapper<T>(&value) {}
+
+        /// @brief Copy constructor
+        /// @param other Reference wrapper to copy from
+        ReferenceWrapper(const ReferenceWrapper& other) __WSTL_NOEXCEPT__ 
+            : __private::__ReferenceWrapper<T>(other.m_Pointer) {}      
+        
+        /// @brief Copy assignment operator
+        /// @param other Reference wrapper to copy from
+        ReferenceWrapper& operator=(const ReferenceWrapper& other) __WSTL_NOEXCEPT__ {
+            this->m_Pointer = other.m_Pointer;
+            return *this;
+        }
+
+        /// @brief Gets the wrapped reference to the object
+        T& Get() const __WSTL_NOEXCEPT__ {
+            return *this->m_Pointer;
+        }
+
+        /// @brief Implicit conversion operator to the wrapped reference
+        operator T&() const __WSTL_NOEXCEPT__ {
+            return *this->m_Pointer;
+        }
+    };
+
+    #else
+    /// @brief Wrapper class to store references
+    /// @tparam T Type of the object to wrap
+    /// @ingroup functional
+    /// @note In C++98 it supports maximum two arguments for callable objects
+    /// @see https://en.cppreference.com/w/cpp/utility/functional/reference_wrapper
     template<typename T>
     class ReferenceWrapper {
     public:
@@ -1009,224 +1467,44 @@ namespace wstl {
 
         /// @brief Constructor
         /// @param value The reference to the object to wrap
-        __WSTL_CONSTEXPR14__ explicit ReferenceWrapper(T& value) __WSTL_NOEXCEPT__ : m_Pointer(&value)  {}
+        constexpr explicit ReferenceWrapper(T& value) __WSTL_NOEXCEPT__ : m_Pointer(&value)  {}
         
         /// @brief Copy constructor
         /// @param other Reference wrapper to copy from
-        __WSTL_CONSTEXPR14__ ReferenceWrapper(const ReferenceWrapper& other) __WSTL_NOEXCEPT__ 
+        constexpr ReferenceWrapper(const ReferenceWrapper& other) __WSTL_NOEXCEPT__ 
             : m_Pointer(other.m_Pointer) {}      
         
-        /// @brief Assignment operator
-        /// @param other Reference wrapper to assign from
-        __WSTL_CONSTEXPR14__
-        ReferenceWrapper& operator=(const ReferenceWrapper& other) __WSTL_NOEXCEPT__ {
-            if(this != &other) m_Pointer = other.m_Pointer;
+        /// @brief Copy assignment operator
+        /// @param other Reference wrapper to copy from
+        __WSTL_CONSTEXPR14__ ReferenceWrapper& operator=(const ReferenceWrapper& other) __WSTL_NOEXCEPT__ {
+            m_Pointer = other.m_Pointer;
             return *this;
         }
 
-        /// @brief Gets the wrapped reference
-        /// @return The wrapped reference to the object
-        __WSTL_CONSTEXPR14__ T& Get() const __WSTL_NOEXCEPT__ {
+        /// @brief Gets the wrapped reference to the object
+        constexpr T& Get() const __WSTL_NOEXCEPT__ {
             return *m_Pointer;
         }
 
         /// @brief Implicit conversion operator to the wrapped reference
-        /// @return The wrapped reference to the object
-        __WSTL_CONSTEXPR14__ operator T&() const __WSTL_NOEXCEPT__ {
+        constexpr operator T&() const __WSTL_NOEXCEPT__ {
             return *m_Pointer;
         }
         
-        #ifdef __WSTL_CXX11__
         /// @brief Calls the referenced object with the provided arguments, forwarding them
         /// @param args The arguments to be forwarded
         /// @return The result of calling the referenced object
         template<typename... Args>
-        __WSTL_CONSTEXPR14__
-        ResultOfType<T&(Args&&...)> operator()(Args&&... args) const {
-            return (*m_Pointer)(Forward<Args>(args)...);
+        constexpr InvokeResultType<T&, Args...> operator()(Args&&... args) const __WSTL_NOEXCEPT_EXPR__(
+            noexcept(Invoke(Get(), Forward<Args>(args)...))
+        ) {
+            return Invoke(Get(), Forward<Args>(args)...);
         }
-        #else
-        /// @brief Calls the referenced object with two arguments
-        /// @param arg1 Value of the first argument
-        /// @param arg2 Value of the second argument
-        /// @return The result of calling the referenced object
-        template<typename Arg1, typename Arg2>
-        typename ResultOf<T&(const Arg1&, const Arg2&)>::Type operator()(Arg1 arg1, Arg2 arg2) const {
-            return (*m_Pointer)(arg1, arg2);
-        }
-
-        /// @brief Calls the referenced object with one argument
-        /// @param arg Value of the argument
-        /// @return The result of calling the referenced object
-        template<typename Arg>
-        typename ResultOf<T&(const Arg&)>::Type operator()(Arg arg) const {
-            return (*m_Pointer)(arg);
-        }
-
-        /// @brief Calls the referenced object with no arguments
-        /// @return The result of calling the referenced object
-        typename ResultOf<T&()>::Type operator()() const {
-            return (*m_Pointer)();
-        }
-        #endif
 
     private:
         T* m_Pointer;
     };
-
-    /// @brief Wrapper class to store volatile references
-    /// @tparam T Type of the object to wrap
-    /// @ingroup functional
-    /// @note In C++98 it supports maximum two arguments for callable objects
-    template<typename T>
-    class ReferenceWrapper<volatile T> {
-    public:
-        /// @brief Alias for the wrapped type
-        typedef volatile T Type;
-
-        /// @brief Constructor
-        /// @param value The volatile reference to the object to wrap
-        __WSTL_CONSTEXPR14__ explicit ReferenceWrapper(volatile T& value) __WSTL_NOEXCEPT__ : m_Pointer(&value)  {}
-        
-        /// @brief Copy constructor
-        /// @param other Reference wrapper to copy from
-        __WSTL_CONSTEXPR14__ ReferenceWrapper(const ReferenceWrapper& other) __WSTL_NOEXCEPT__ 
-            : m_Pointer(other.m_Pointer) {}      
-        
-        /// @brief Assignment operator
-        /// @param other Reference wrapper to assign from
-        __WSTL_CONSTEXPR14__
-        ReferenceWrapper& operator=(const ReferenceWrapper& other) __WSTL_NOEXCEPT__ {
-            if(this != &other) m_Pointer = other.m_Pointer;
-            return *this;
-        }
-
-        /// @brief Gets the wrapped reference
-        /// @return The wrapped volatile reference to the object
-        __WSTL_CONSTEXPR14__ volatile T& Get() const volatile __WSTL_NOEXCEPT__ {
-            return *m_Pointer;
-        }
-
-        /// @brief Implicit conversion operator to the wrapped reference
-        /// @return The wrapped volatile reference to the object
-        __WSTL_CONSTEXPR14__ operator volatile T&() const volatile __WSTL_NOEXCEPT__ {
-            return *m_Pointer;
-        }
-        
-        #ifdef __WSTL_CXX11__
-        /// @brief Calls the referenced object with the provided arguments, forwarding them
-        /// @param args The arguments to be forwarded
-        /// @return The result of calling the referenced object
-        template<typename... Args>
-        __WSTL_CONSTEXPR14__
-        ResultOfType<volatile T&(Args&&...)> operator()(Args&&... args) const volatile {
-            return (*m_Pointer)(Forward<Args>(args)...);
-        }
-        #else
-        /// @brief Calls the referenced object with the two arguments
-        /// @param arg1 Value of the first argument
-        /// @param arg2 Value of the second argument
-        /// @return The result of calling the referenced object
-        template<typename Arg1, typename Arg2>
-        typename ResultOf<volatile T&(const Arg1&, const Arg2&)>::Type operator()(Arg1 arg1, Arg2 arg2) const volatile {
-            return (*m_Pointer)(arg1, arg2);
-        }
-
-        /// @brief Calls the referenced object with the one arguments
-        /// @param arg Value of the argument
-        /// @return The result of calling the referenced object
-        template<typename Arg>
-        typename ResultOf<volatile T&(const Arg&)>::Type operator()(Arg arg) const volatile {
-            return (*m_Pointer)(arg);
-        }
-
-        /// @brief Calls the referenced object with the no arguments
-        /// @return The result of calling the referenced object
-        typename ResultOf<volatile T&()>::Type operator()() const volatile {
-            return (*m_Pointer)();
-        }
-        #endif
-
-    private:
-        volatile T* m_Pointer;
-    };
-
-    /// @brief Wrapper class to store const volatile references
-    /// @tparam T Type of the object to wrap
-    /// @ingroup functional
-    /// @note In C++98 it supports maximum two arguments for callable objects
-    template<typename T>
-    class ReferenceWrapper<const volatile T> {
-    public:
-        /// @brief Alias for the wrapped type
-        typedef const volatile T Type;
-
-        /// @brief Constructor
-        /// @param value The const volatile reference to the object to wrap
-        __WSTL_CONSTEXPR14__ explicit ReferenceWrapper(const volatile T& value) __WSTL_NOEXCEPT__ : m_Pointer(&value) {}
-        
-        /// @brief Copy constructor
-        /// @param other Reference wrapper to copy from
-        __WSTL_CONSTEXPR14__ ReferenceWrapper(const ReferenceWrapper& other) __WSTL_NOEXCEPT__ 
-            : m_Pointer(other.m_Pointer) {}      
-        
-        /// @brief Assignment operator
-        /// @param other Reference wrapper to assign from
-        __WSTL_CONSTEXPR14__
-        ReferenceWrapper& operator=(const ReferenceWrapper& other) __WSTL_NOEXCEPT__ {
-            if(this != &other) m_Pointer = other.m_Pointer;
-            return *this;
-        }
-
-        /// @brief Gets the wrapped reference
-        /// @return The wrapped const volatile reference to the object
-        __WSTL_CONSTEXPR14__ const volatile T& Get() const volatile __WSTL_NOEXCEPT__ {
-            return *m_Pointer;
-        }
-
-        /// @brief Implicit conversion operator to the wrapped reference
-        /// @return The wrapped const volatile reference to the object
-        __WSTL_CONSTEXPR14__ operator const volatile T&() const volatile __WSTL_NOEXCEPT__ {
-            return *m_Pointer;
-        }
-        
-        #ifdef __WSTL_CXX11__
-        /// @brief Calls the referenced object with the provided arguments, forwarding them
-        /// @param args The arguments to be forwarded
-        /// @return The result of calling the referenced object
-        template<typename... Args>
-        __WSTL_CONSTEXPR14__
-        ResultOfType<const volatile T&(Args&&...)> operator()(Args&&... args) const volatile {
-            return (*m_Pointer)(Forward<Args>(args)...);
-        }
-        #else
-        /// @brief Calls the referenced object with the two arguments
-        /// @param arg1 Value of the first argument
-        /// @param arg2 Value of the second argument
-        /// @return The result of calling the referenced object
-        template<typename Arg1, typename Arg2>
-        typename ResultOf<const volatile T&(const Arg1&, const Arg2&)>::Type operator()(Arg1 arg1, Arg2 arg2) const volatile {
-            return (*m_Pointer)(arg1, arg2);
-        }
-
-        /// @brief Calls the referenced object with the one arguments
-        /// @param arg Value of the argument
-        /// @return The result of calling the referenced object
-        template<typename Arg>
-        typename ResultOf<const volatile T&(const Arg&)>::Type operator()(Arg arg) const volatile {
-            return (*m_Pointer)(arg);
-        }
-
-        /// @brief Calls the referenced object with the no arguments
-        /// @return The result of calling the referenced object
-        typename ResultOf<const volatile T&()>::Type operator()() const volatile {
-            return (*m_Pointer)();
-        }
-        #endif
-
-    private:
-        const volatile T* m_Pointer;
-    };
+    #endif
 
     // Reference
 
@@ -1236,7 +1514,7 @@ namespace wstl {
     /// @ingroup functional
     /// @see https://en.cppreference.com/w/cpp/utility/functional/ref
     template<typename T>
-    inline ReferenceWrapper<T> Reference(T& t) {
+    __WSTL_CONSTEXPR__ inline ReferenceWrapper<T> Reference(T& t) {
         return ReferenceWrapper<T>(t);
     }
 
@@ -1246,7 +1524,7 @@ namespace wstl {
     /// @ingroup functional
     /// @see https://en.cppreference.com/w/cpp/utility/functional/ref
     template<typename T>
-    inline ReferenceWrapper<T> Reference(ReferenceWrapper<T> t) {
+    __WSTL_CONSTEXPR__ inline ReferenceWrapper<T> Reference(ReferenceWrapper<T> t) {
         return ReferenceWrapper<T>(t.Get());
     }
 
@@ -1258,7 +1536,7 @@ namespace wstl {
     /// @ingroup functional
     /// @see https://en.cppreference.com/w/cpp/utility/functional/ref
     template<typename T>
-    inline ReferenceWrapper<const T> ConstReference(const T& t) {
+    __WSTL_CONSTEXPR__ inline ReferenceWrapper<const T> ConstReference(const T& t) {
         return ReferenceWrapper<const T>(t);
     }
 
@@ -1268,54 +1546,27 @@ namespace wstl {
     /// @ingroup functional
     /// @see https://en.cppreference.com/w/cpp/utility/functional/ref
     template<typename T>
-    ReferenceWrapper<const T> ConstReference(ReferenceWrapper<T> t) {
+    __WSTL_CONSTEXPR__ inline ReferenceWrapper<const T> ConstReference(ReferenceWrapper<T> t) {
         return ReferenceWrapper<const T>(t.Get());
-    }
-
-    // Volatile reference
-
-    /// @brief Creates a `ReferenceWrapper` for volatile reference
-    /// @param t Object to wrap
-    /// @return A `ReferenceWrapper` that holds a reference to given object
-    /// @ingroup functional
-    template<typename T>
-    ReferenceWrapper<volatile T> VolatileReference(volatile T& t) {
-        return ReferenceWrapper<volatile T>(t);
-    }
-
-    /// @brief Creates a `ReferenceWrapper` from another `ReferenceWrapper` for volatile reference
-    /// @param t The `ReferenceWrapper` object to convert
-    /// @return A `ReferenceWrapper` that holds a reference to object in given `ReferenceWrapper`
-    /// @ingroup functional
-    template<typename T>
-    ReferenceWrapper<volatile T> VolatileReference(ReferenceWrapper<T> t) {
-        return ReferenceWrapper<volatile T>(t.Get());
-    }
-
-    // Const volatile reference
-
-    /// @brief Creates a `ReferenceWrapper` for const volatile reference
-    /// @param t Object to wrap
-    /// @return A `ReferenceWrapper` that holds a reference to given object
-    /// @ingroup functional
-    template<typename T>
-    ReferenceWrapper<const volatile T> CVReference(const volatile T& t) {
-        return ReferenceWrapper<const volatile T>(t);
-    }
-
-    /// @brief Creates a `ReferenceWrapper` from another `ReferenceWrapper` for const volatile reference
-    /// @param t The `ReferenceWrapper` object to convert
-    /// @return A `ReferenceWrapper` that holds a reference to object in given `ReferenceWrapper`
-    /// @ingroup functional
-    template<typename T>    
-    ReferenceWrapper<const volatile T> CVReference(ReferenceWrapper<T> t) {
-        return ReferenceWrapper<const volatile T>(t.Get());
     }
 
     // UnwrapReference specialization
 
     template<typename T>
     struct UnwrapReference<ReferenceWrapper<T> > { typedef T& Type; };
+
+    // HasIsTransparent
+
+    namespace __private {
+        WSTL_DECLARE_TYPEDEF_TEST(__TestIsTransparent, IsTransparent)
+    }
+
+    /// @brief Checks if a functor has a nested type `IsTransparent`, 
+    /// indicating it is heterogeneous and can accept different types of arguments
+    /// @tparam T Type of the functor to check
+    /// @ingroup functional
+    template<typename T>
+    struct HasIsTransparent : BoolConstant<WSTL_TYPEDEF_TEST_RESULT(__private::__TestIsTransparent, T, 1)> {};
 
     // Plus
 
@@ -1351,7 +1602,7 @@ namespace wstl {
     template<>
     struct Plus<void> : BinaryFunction<void, void, void> {
         /// @brief Type definition indicating the functor is transparent
-        typedef int IsTransparent;
+        typedef void IsTransparent;
 
         /// @brief Applies the functor to two arguments of potentially different types
         /// @param a Value of the first argument
@@ -1412,7 +1663,7 @@ namespace wstl {
     template<>
     struct Minus<void> : BinaryFunction<void, void, void> {
         /// @brief Type definition indicating the functor is transparent
-        typedef int IsTransparent;
+        typedef void IsTransparent;
 
         /// @brief Applies the functor to two arguments of potentially different types
         /// @param a Value of the first argument
@@ -1473,7 +1724,7 @@ namespace wstl {
     template<>
     struct Multiplies<void> : BinaryFunction<void, void, void> {
         /// @brief Type definition indicating the functor is transparent
-        typedef int IsTransparent;
+        typedef void IsTransparent;
 
         /// @brief Applies the functor to two arguments of potentially different types
         /// @param a Value of the first argument
@@ -1534,7 +1785,7 @@ namespace wstl {
     template<>
     struct Divides<void> : BinaryFunction<void, void, void> {
         /// @brief Type definition indicating the functor is transparent
-        typedef int IsTransparent;
+        typedef void IsTransparent;
 
         /// @brief Applies the functor to two arguments of potentially different types
         /// @param a Value of the first argument
@@ -1595,7 +1846,7 @@ namespace wstl {
     template<>
     struct Modulus<void> : BinaryFunction<void, void, void> {
         /// @brief Type definition indicating the functor is transparent
-        typedef int IsTransparent;
+        typedef void IsTransparent;
 
         /// @brief Applies the functor to two arguments of potentially different types
         /// @param a Value of the first argument
@@ -1655,13 +1906,13 @@ namespace wstl {
     template<>
     struct Negate<void> : UnaryFunction<void, void> {
         /// @brief Type definition indicating the functor is transparent
-        typedef int IsTransparent;
+        typedef void IsTransparent;
 
         /// @brief Applies the functor to an argument
         /// @param x Value of the argument
         /// @return The negation of the argument
         template<typename T>
-        constexpr auto operator()(T&& x) const -> decltype(Forward<T>(x)) {
+        constexpr auto operator()(T&& x) const -> decltype(-Forward<T>(x)) {
             return -Forward<T>(x);
         } 
     };
@@ -1714,7 +1965,7 @@ namespace wstl {
     template<>
     struct EqualTo<void> : BinaryFunction<void, void, void> {
         /// @brief Type definition indicating the functor is transparent
-        typedef int IsTransparent;
+        typedef void IsTransparent;
 
         /// @brief Applies the functor to two arguments of potentially different types
         /// @param a Value of the first argument
@@ -1775,7 +2026,7 @@ namespace wstl {
     template<>
     struct NotEqualTo<void> : BinaryFunction<void, void, void> {
         /// @brief Type definition indicating the functor is transparent
-        typedef int IsTransparent;
+        typedef void IsTransparent;
     
         /// @brief Applies the functor to two arguments of potentially different types
         /// @param a Value of the first argument
@@ -1836,7 +2087,7 @@ namespace wstl {
     template<>
     struct Greater<void> : BinaryFunction<void, void, void> {
         /// @brief Type definition indicating the functor is transparent
-        typedef int IsTransparent;
+        typedef void IsTransparent;
 
         /// @brief Applies the functor to two arguments of potentially different types
         /// @param a Value of the first argument
@@ -1897,7 +2148,7 @@ namespace wstl {
     template<>
     struct Less<void> : public BinaryFunction<void, void, void> {
         /// @brief Type definition indicating the functor is transparent
-        typedef int IsTransparent;
+        typedef void IsTransparent;
 
         /// @brief Applies the functor to two arguments of potentially different types
         /// @param a Value of the first argument
@@ -1958,7 +2209,7 @@ namespace wstl {
     template<>
     struct GreaterEqual<void> : BinaryFunction<void, void, void> {
         /// @brief Type definition indicating the functor is transparent
-        typedef int IsTransparent;
+        typedef void IsTransparent;
 
         /// @brief Applies the functor to two arguments of potentially different types
         /// @param a Value of the first argument
@@ -2019,7 +2270,7 @@ namespace wstl {
     template<>
     struct LessEqual<void> : BinaryFunction<void, void, void> {
         /// @brief Type definition indicating the functor is transparent
-        typedef int IsTransparent;
+        typedef void IsTransparent;
 
         /// @brief Applies the functor to two arguments of potentially different types
         /// @param a Value of the first argument
@@ -2080,7 +2331,7 @@ namespace wstl {
     template<>
     struct LogicalAnd<void> : BinaryFunction<void, void, void> {
         /// @brief Type definition indicating the functor is transparent
-        typedef int IsTransparent;
+        typedef void IsTransparent;
 
         /// @brief Applies the functor to two arguments of potentially different types
         /// @param a Value of the first argument
@@ -2141,7 +2392,7 @@ namespace wstl {
     template<>
     struct LogicalOr<void> : BinaryFunction<void, void, void> {
         /// @brief Type definition indicating the functor is transparent
-        typedef int IsTransparent;
+        typedef void IsTransparent;
 
         /// @brief Applies the functor to two arguments of potentially different types
         /// @param a Value of the first argument
@@ -2201,7 +2452,7 @@ namespace wstl {
     template<>
     struct LogicalNot<void> : UnaryFunction<void, void> {
         /// @brief Type definition indicating the functor is transparent
-        typedef int IsTransparent;
+        typedef void IsTransparent;
 
         /// @brief Applies the functor to an argument
         /// @param x Value of the argument
@@ -2260,7 +2511,7 @@ namespace wstl {
     template<>
     struct BitwiseAnd<void> : BinaryFunction<void, void, void> {
         /// @brief Type definition indicating the functor is transparent
-        typedef int IsTransparent;
+        typedef void IsTransparent;
 
         /// @brief Applies the functor to two arguments of potentially different types
         /// @param a Value of the first argument
@@ -2321,7 +2572,7 @@ namespace wstl {
     template<>
     struct BitwiseOr<void> : BinaryFunction<void, void, void> {
         /// @brief Type definition indicating the functor is transparent
-        typedef int IsTransparent;
+        typedef void IsTransparent;
 
         /// @brief Applies the functor to two arguments of potentially different types
         /// @param a Value of the first argument
@@ -2382,7 +2633,7 @@ namespace wstl {
     template<>
     struct BitwiseXor<void> : BinaryFunction<void, void, void> {
         /// @brief Type definition indicating the functor is transparent
-        typedef int IsTransparent;
+        typedef void IsTransparent;
 
         /// @brief Applies the functor to two arguments of potentially different types
         /// @param a Value of the first argument
@@ -2442,12 +2693,12 @@ namespace wstl {
     template<>
     struct BitwiseNot<void> : UnaryFunction<void, void> {
         /// @brief Type definition indicating the functor is transparent
-        typedef int IsTransparent;
+        typedef void IsTransparent;
         
         /// @brief Applies the functor to an argument
         /// @param x Value of the argument
         /// @return Bitwise NOT of the argument
-        template<typename T, typename U>
+        template<typename T>
         constexpr auto operator()(T&& x) const -> decltype(~Forward<T>(x)) {
             return ~Forward<T>(x);
         } 
@@ -2469,23 +2720,28 @@ namespace wstl {
 
     // Identity
 
-    #ifdef __WSTL_CXX11__
-    template<typename T = void>
-    struct Identity;
-    #else
-    template<typename T>
-    struct Identity;
-    #endif
-
     /// @brief Functor that returns its input unchanged for non-void types
     /// @tparam T Type of the input and output
     /// @ingroup functional
     /// @see https://en.cppreference.com/w/cpp/utility/functional/identity
-    template<typename T>
-    struct Identity : UnaryFunction<T, T> {
+    struct Identity {
+        /// @brief Type definition indicating the functor is transparent
+        typedef void IsTransparent;
+
+        #ifdef __WSTL_CXX11__
         /// @brief Applies the functor to an argument
         /// @param x Value of the argument
         /// @return The argument itself
+        template<typename T>
+        constexpr T&& operator()(T&& x) const __WSTL_NOEXCEPT__ {
+            return Forward<T>(x);
+        }
+
+        #else
+        /// @brief Applies the functor to an argument
+        /// @param x Value of the argument
+        /// @return The argument itself
+        template<typename T>
         __WSTL_CONSTEXPR__ T& operator()(T& x) const __WSTL_NOEXCEPT__ {
             return x;
         }
@@ -2493,53 +2749,58 @@ namespace wstl {
         /// @brief Applies the functor to an argument
         /// @param x Const value of the argument
         /// @return The argument itself
+        template<typename T>
         __WSTL_CONSTEXPR__ const T& operator()(const T& x) const __WSTL_NOEXCEPT__ {
             return x;
         }
+        #endif
     };
-
-    #ifdef __WSTL_CXX11__
-    /// @brief Functor that returns its input unchanged for arbitrary types
-    /// @since C++11
-    /// @ingroup functional
-    /// @see https://en.cppreference.com/w/cpp/utility/functional/identity_void
-    template<>
-    struct Identity<void> : UnaryFunction<void, void> {
-        /// @brief Type definition indicating the functor is transparent
-        typedef int IsTransparent;
-        
-        /// @brief Applies the functor to an argument
-        /// @param x Value of the argument
-        /// @return The argument itself
-        template<typename T>
-        constexpr T&& operator()(T&& x) const __WSTL_NOEXCEPT__ {
-            return Forward<T>(x);
-        } 
-    };
-    #endif
 
     // Not function
 
     #ifdef __WSTL_CXX11__
-    namespace __private {
-        template<typename Function>
-        class __NotFunction {
-        public:
-            explicit constexpr __NotFunction(Function&& function) : m_Function(Forward<Function>(function)) {}
-            constexpr __NotFunction(const Function& function) : m_Function(function) {}
-            
-            constexpr __NotFunction(__NotFunction&& other) : m_Function(Move(other.m_Function)) {}
-            constexpr __NotFunction(const __NotFunction& other) : m_Function(other.m_Function) {}
+    /// @brief Functor that negates the result of a given callable
+    /// @tparam Function Type of the callable object
+    /// @ingroup functional
+    /// @see https://en.cppreference.com/w/cpp/utility/functional/not_fn
+    template<typename Function>
+    class NotFunctionType {
+    public:
+        /// @brief Constructor that initializes the functor with a callable object
+        /// @param function The callable object to wrap and negate
+        explicit constexpr NotFunctionType(Function&& function) : m_Function(Forward<Function>(function)) {}
 
-            template<typename... Args>
-            constexpr ResultOfType<Function(Args...)> operator()(Args&&... args) const {
-                return !m_Function(Forward<Args>(args)...);
-            }
+        template<typename... Args>
+        __WSTL_CONSTEXPR14__ auto operator()(Args&&... args) & __WSTL_NOEXCEPT_EXPR__(
+            noexcept(!Invoke(DeclareValue<Function&>(), Forward<Args>(args)...))
+        ) -> decltype(!Invoke(DeclareValue<Function&>(), Forward<Args>(args)...)) {
+            return !Invoke(m_Function, Forward<Args>(args)...);
+        }
 
-        private:
-            Function m_Function;
-        };
-    }
+        template<typename... Args>
+        constexpr auto operator()(Args&&... args) const& __WSTL_NOEXCEPT_EXPR__(
+            noexcept(!Invoke(DeclareValue<const Function&>(), Forward<Args>(args)...))
+        ) -> decltype(!Invoke(DeclareValue<const Function&>(), Forward<Args>(args)...)) {
+            return !Invoke(m_Function, Forward<Args>(args)...);
+        }
+
+        template<typename... Args>
+        __WSTL_CONSTEXPR14__ auto operator()(Args&&... args) && __WSTL_NOEXCEPT_EXPR__(
+            noexcept(!Invoke(DeclareValue<Function&&>(), Forward<Args>(args)...))
+        ) -> decltype(!Invoke(DeclareValue<Function&&>(), Forward<Args>(args)...)) {
+            return !Invoke(wstl::Move(m_Function), Forward<Args>(args)...);
+        }
+
+        template<typename... Args>
+        constexpr auto operator()(Args&&... args) const&& __WSTL_NOEXCEPT_EXPR__(
+            noexcept(!Invoke(DeclareValue<const Function&&>(), Forward<Args>(args)...))
+        ) -> decltype(!Invoke(DeclareValue<const Function&&>(), Forward<Args>(args)...)) {
+            return !Invoke(wstl::Move(m_Function), Forward<Args>(args)...);
+        }
+
+    private:
+        Function m_Function;
+    };
 
     /// @brief Creates a functor that negates the result of a given callable
     /// @param function The callable object to wrap and negate
@@ -2548,74 +2809,104 @@ namespace wstl {
     /// @ingroup functional
     /// @see https://en.cppreference.com/w/cpp/utility/functional/not_fn
     template<typename Function>
-    constexpr __private::__NotFunction<DecayType<Function>> NotFunction(Function&& function) {
-        return __private::__NotFunction<DecayType<Function>>(Forward<Function>(function));
+    constexpr NotFunctionType<DecayType<Function>> NotFunction(Function&& function) {
+        return NotFunctionType<DecayType<Function>>(Forward<Function>(function));
     }
     #else
     namespace __private {
+        template<typename Function, size_t = FunctionTraits<Function>::Arity>
+        struct __NotFunctionType;
+
         template<typename Function>
-        class __NotFunction {
-        public:
-            explicit __NotFunction(Function function) : m_Function(function) {}
-            explicit __NotFunction(const Function& function) : m_Function(function) {}
-            explicit __NotFunction(const __NotFunction& other) : m_Function(other.m_Function) {}
+        struct __NotFunctionType<Function, 0> {
+            typedef bool ResultType;
 
-            typename ResultOf<Function>::Type operator()() const {
-                return !m_Function();
-            }
-
-            template<typename Arg>
-            typename ResultOf<Function>::Type operator()(Arg arg) const {
-                return !m_Function(arg);
-            }
-
-            template<typename Arg1, typename Arg2>
-            typename ResultOf<Function>::Type operator()(Arg1 arg1, Arg2 arg2) const {
-                return !m_Function(arg1, arg2);
+            bool operator()() const {
+                return !(m_Function());
             }
 
         private:
             Function m_Function;
+
+        protected:
+            explicit __NotFunctionType(const Function& function) : m_Function(function) {}
+        };
+        
+        template<typename Function>
+        struct __NotFunctionType<Function, 1> {
+            typedef typename TupleElement<0, typename FunctionTraits<Function>::ArgumentTypes>::Type ArgumentType;
+            typedef bool ResultType;
+
+            bool operator()(ArgumentType arg) const {
+                return !(m_Function(arg));
+            }
+
+        private:
+            Function m_Function;
+
+        protected:
+            explicit __NotFunctionType(const Function& function) : m_Function(function) {}
+        };
+
+        template<typename Function>
+        struct __NotFunctionType<Function, 2> {
+            typedef typename TupleElement<0, typename FunctionTraits<Function>::ArgumentTypes>::Type FirstArgumentType;
+            typedef typename TupleElement<1, typename FunctionTraits<Function>::ArgumentTypes>::Type SecondArgumentType;
+            typedef bool ResultType;
+
+            bool operator()(FirstArgumentType arg1, SecondArgumentType arg2) const {
+                return !(m_Function(arg1, arg2));
+            }
+
+        private:
+            Function m_Function;
+
+        protected:
+            explicit __NotFunctionType(const Function& function) : m_Function(function) {}
         };
     }
 
+    /// @brief Functor that negates the result of a given callable
+    /// @tparam Function Type of the callable object (max 2 arguments)
+    /// @ingroup functional
+    template<typename Function>
+    struct NotFunctionType : __private::__NotFunctionType<Function> {
+        /// @brief Constructor that initializes the functor with a callable object
+        /// @param function The callable object to wrap and negate
+        explicit NotFunctionType(const Function& function) : __private::__NotFunctionType<Function>(function) {}
+    };
+
     /// @brief Creates a functor that negates the result of a given callable
-    /// @param function The callable object to wrap and negate
+    /// @param function The callable object to wrap and negate (max 2 arguments)
     /// @return A functor that negates the result of the given callable
-    /// @note It supports maximum two arguments
     /// @ingroup functional
     /// @see https://en.cppreference.com/w/cpp/utility/functional/not_fn
     template<typename Function>
-    inline __private::__NotFunction<Function> NotFunction(Function function) {
-        return __private::__NotFunction<Function>(function);
+    inline NotFunctionType<typename Decay<Function>::Type> NotFunction(const Function& function) {
+        return NotFunctionType<typename Decay<Function>::Type>(function);
     }
     #endif
 
     #ifdef __WSTL_CXX11__
-    // Is placeholder
-
-    /// @brief Checks whether type is placeholder, stores int `IntegralConstant` 
-    /// with the value of placeholder number
-    /// @tparam T Type to check
-    /// @ingroup functional
-    /// @since C++11
-    /// @see https://en.cppreference.com/w/cpp/utility/functional/is_placeholder
-    template<typename T>
-    struct IsPlaceholder : IntegralConstant<int, 0> {};
-
     // Placeholders
 
     namespace __private {
         template<int N>
-        struct __Placeholder : IntegralConstant<int, N> {};
+        struct __Placeholder {};
+
+        template<typename T>
+        struct __IsPlaceholder : IntegralConstant<int, 0> {};
+
+        template<int N>
+        struct __IsPlaceholder<__Placeholder<N>> : IntegralConstant<int, N> {};
     }
 
     /// @brief Namespace that contain placeholders (unbound arguments) for `wstl::Bind` function
     namespace placeholders {
-        #ifdef __WSTL_CXX17__
-            #define __WSTL_PLACEHOLDER__ inline constexpr
+        #ifdef __WSTL_CXX11__
+            #define __WSTL_PLACEHOLDER__ __WSTL_INLINE_VARIABLE__ constexpr
         #else
-            #define __WSTL_PLACEHOLDER__ extern const
+            #define __WSTL_PLACEHOLDER__ static const
         #endif
         
         __WSTL_PLACEHOLDER__ __private::__Placeholder<1> _1;
@@ -2629,11 +2920,16 @@ namespace wstl {
         __WSTL_PLACEHOLDER__ __private::__Placeholder<9> _9;
     }
 
-    template<int N>
-    struct IsPlaceholder<__private::__Placeholder<N>> : IntegralConstant<int, N> {};
+    // Is placeholder
 
-    template<int N>
-    struct IsPlaceholder<const __private::__Placeholder<N>> : IntegralConstant<int, N> {};
+    /// @brief Checks whether type is placeholder, stores int `IntegralConstant` 
+    /// with the value of placeholder number
+    /// @tparam T Type to check
+    /// @ingroup functional
+    /// @since C++11
+    /// @see https://en.cppreference.com/w/cpp/utility/functional/is_placeholder
+    template<typename T>
+    struct IsPlaceholder : __private::__IsPlaceholder<typename RemoveCVReference<T>::Type> {};
 
     #ifdef __WSTL_CXX17__
     /// @copydoc IsPlaceholder
@@ -2644,13 +2940,155 @@ namespace wstl {
 
     // Is bind expression
 
+    namespace __private {
+        template<typename Function, typename... BoundArgs>
+        class __Bind;
+
+        template<typename Result, typename Function, typename... BoundArgs>
+        class __BindReturn;
+
+        template<typename T>
+        struct __IsBindExpression : FalseType {};
+
+        template<typename Function, typename... BoundArgs>
+        struct __IsBindExpression<__Bind<Function, BoundArgs...>> : TrueType {};
+
+        template<typename Result, typename Function, typename... BoundArgs>
+        struct __IsBindExpression<__BindReturn<Result, Function, BoundArgs...>> : TrueType {};
+    }
+
     /// @brief Checks whether type is bind expression
     /// @tparam T Type to check
     /// @since C++11
     /// @ingroup functional
     /// @see https://en.cppreference.com/w/cpp/utility/functional/is_bind_expression
     template<typename T>
-    struct IsBindExpression : FalseType {};
+    struct IsBindExpression : __private::__IsBindExpression<typename RemoveCVReference<T>::Type> {};
+
+    // Bind
+
+    namespace __private {
+        
+        template<typename T, typename Tuple>
+        constexpr T& __EvaluateBindArg(ReferenceWrapper<T> ref, Tuple&&) __WSTL_NOEXCEPT__ {
+            return ref.Get();
+        }
+
+        template<typename T, typename... Args, size_t... Indices>
+        constexpr auto __ExpandBindExpression(T&& bind, Tuple<Args...>&& args, IndexSequence<Indices...>) __WSTL_NOEXCEPT_EXPR__(
+            noexcept(Forward<T>(bind)(Forward<Args>(Get<Indices>(args))...))
+        ) -> decltype(Forward<T>(bind)(Forward<Args>(Get<Indices>(args))...)) {
+            return Forward<T>(bind)(Forward<Args>(Get<Indices>(args))...);
+        }
+
+        template<typename T, typename... Args, EnableIfType<IsBindExpression<T>::Value, int> = 0>
+        constexpr auto __EvaluateBindArg(T&& bind, Tuple<Args...>&& args) __WSTL_NOEXCEPT_EXPR__(
+            noexcept(__ExpandBindExpression(Forward<T>(bind), Forward<Tuple<Args...>>(args), IndexSequenceFor<Args...>{}))
+        ) -> decltype(__ExpandBindExpression(Forward<T>(bind), Forward<Tuple<Args...>>(args), IndexSequenceFor<Args...>{})) {
+            return __ExpandBindExpression(Forward<T>(bind), Forward<Tuple<Args...>>(args), IndexSequenceFor<Args...>{});
+        }
+
+        template<typename T, typename Tuple, EnableIfType<(IsPlaceholder<T>::Value > 0), int> = 0>
+        constexpr TupleElementType<IsPlaceholder<T>::Value - 1, Tuple> __EvaluateBindArg(T&&, Tuple&& args) __WSTL_NOEXCEPT__ {
+            return Forward<TupleElementType<IsPlaceholder<T>::Value - 1, Tuple>>(Get<IsPlaceholder<T>::Value - 1>(args));
+        }
+
+        template<typename T, typename Tuple, EnableIfType<(!IsBindExpression<T>::Value && IsPlaceholder<T>::Value == 0), int> = 0>
+        constexpr T&& __EvaluateBindArg(T&& arg, Tuple&&) __WSTL_NOEXCEPT__ {
+            return Forward<T>(arg);
+        }
+
+        template<typename Function, typename... BoundArgs>
+        class __Bind {
+            DecayType<Function> m_Function;
+            Tuple<DecayType<BoundArgs>...> m_BoundArgs;
+
+            template<typename Self, typename... Args, size_t... Indices>
+            static constexpr auto __Call(Self&& self, IndexSequence<Indices...>, Args&&... args) __WSTL_NOEXCEPT_EXPR__(
+                noexcept(Invoke(self.m_Function, __EvaluateBindArg(Get<Indices>(ForwardLike<Self>(self.m_BoundArgs)), ForwardAsTuple(args...))...))
+            ) -> decltype(Invoke(self.m_Function, __EvaluateBindArg(Get<Indices>(ForwardLike<Self>(self.m_BoundArgs)), ForwardAsTuple(args...))...)) {
+                return Invoke(self.m_Function, __EvaluateBindArg(Get<Indices>(ForwardLike<Self>(self.m_BoundArgs)), ForwardAsTuple(args...))...);
+            }
+
+        public:
+            constexpr __Bind(Function&& function, BoundArgs&&... boundArgs) 
+                : m_Function(Forward<Function>(function)), m_BoundArgs(Forward<BoundArgs>(boundArgs)...) {}
+
+            template<typename... Args>
+            __WSTL_CONSTEXPR14__ auto operator()(Args&&... args) & __WSTL_NOEXCEPT_EXPR__(
+                noexcept(__Call(*this, IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...))
+            ) -> decltype(__Call(*this, IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...)) {
+                return __Call(*this, IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...);
+            }
+
+            template<typename... Args>
+            constexpr auto operator()(Args&&... args) const& __WSTL_NOEXCEPT_EXPR__(
+                noexcept(__Call(*this, IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...))
+            ) -> decltype(__Call(*this, IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...)) {
+                return __Call(*this, IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...);
+            }
+
+            template<typename... Args>
+            __WSTL_CONSTEXPR14__ auto operator()(Args&&... args) && __WSTL_NOEXCEPT_EXPR__(
+                noexcept(__Call(Move(*this), IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...))
+            ) -> decltype(__Call(Move(*this), IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...)) {
+                return __Call(Move(*this), IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...);
+            }
+            
+            template<typename... Args>
+            constexpr auto operator()(Args&&... args) const&& __WSTL_NOEXCEPT_EXPR__(
+                noexcept(__Call(Move(*this), IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...))
+            ) -> decltype(__Call(Move(*this), IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...)) {
+                return __Call(Move(*this), IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...);
+            }
+        };
+
+        template<typename Result, typename Function, typename... BoundArgs>
+        class __BindReturn {
+        private:
+            DecayType<Function> m_Function;
+            Tuple<DecayType<BoundArgs>...> m_BoundArgs;
+
+            template<typename Self, typename... Args, size_t... Indices>
+            static constexpr Result __Call(Self&& self, IndexSequence<Indices...>, Args&&... args) __WSTL_NOEXCEPT_EXPR__(
+                noexcept(InvokeReturn<Result>(self.m_Function, __EvaluateBindArg(Get<Indices>(ForwardLike<Self>(self.m_BoundArgs)), ForwardAsTuple(args...))...))
+            ) {
+                return InvokeReturn<Result>(self.m_Function, __EvaluateBindArg(Get<Indices>(ForwardLike<Self>(self.m_BoundArgs)), ForwardAsTuple(args...))...);
+            }
+
+        public:
+            constexpr __BindReturn(Function&& function, BoundArgs&&... boundArgs) 
+                : m_Function(Forward<Function>(function)), m_BoundArgs(Forward<BoundArgs>(boundArgs)...) {} 
+
+            template<typename... Args>
+            __WSTL_CONSTEXPR14__ Result operator()(Args&&... args) & __WSTL_NOEXCEPT_EXPR__(
+                noexcept(__Call(*this, IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...))
+            ) {
+                return __Call(*this, IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...);
+            }
+
+            template<typename... Args>
+            constexpr Result operator()(Args&&... args) const& __WSTL_NOEXCEPT_EXPR__(
+                noexcept(__Call(*this, IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...))
+            ) {
+                return __Call(*this, IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...);
+            }
+
+            template<typename... Args>
+            __WSTL_CONSTEXPR14__ Result operator()(Args&&... args) && __WSTL_NOEXCEPT_EXPR__(
+                noexcept(__Call(Move(*this), IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...))
+            ) {
+                return __Call(Move(*this), IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...);
+            }
+            
+            template<typename... Args>
+            constexpr Result operator()(Args&&... args) const&& __WSTL_NOEXCEPT_EXPR__(
+                noexcept(__Call(Move(*this), IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...))
+            ) {
+                return __Call(Move(*this), IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...);
+            }
+        };
+    }
 
     #ifdef __WSTL_CXX17__
     /// @copydoc IsBindExpression
@@ -2659,97 +3097,227 @@ namespace wstl {
     inline constexpr bool IsBindExpressionValue = IsBindExpression<T>::Value;
     #endif
 
-    // Bind 
-
-    namespace __private {
-        template<typename Arg, typename Tuple>
-        constexpr auto __ReplacePlaceholder(Arg&& arg, Tuple&&) -> decltype(Forward<Arg>(arg)) {
-            return Forward<Arg>(arg);
-        }
-
-        template<int N, typename Tuple>
-        constexpr auto __ReplacePlaceholder(const __Placeholder<N>&, Tuple&& tuple) -> decltype(Get<N - 1>(Forward<Tuple>(tuple))) {
-            return Get<N - 1>(Forward<Tuple>(tuple));
-        }
-
-        template<typename Function, typename... Args>
-        class __Bind {
-        private:
-            Function m_Function;
-            Tuple<Args...> m_Args;
-
-            template<typename Arg, typename Tuple>
-            using __ResultType = decltype(__ReplacePlaceholder(DeclareValue<Arg>(), DeclareValue<Tuple>()));
-
-            template<typename... CallArgs>
-            using ResultType = decltype(DeclareValue<Function>()(DeclareValue<__ResultType<Args, Tuple<CallArgs...>>>()...));
-
-            template<typename... CallArgs, size_t... Indices>
-            constexpr ResultType<CallArgs...> Invoke(IndexSequence<Indices...>, CallArgs&&... callArgs) const {
-                return m_Function(__ReplacePlaceholder(Get<Indices>(m_Args), ForwardAsTuple(callArgs...))...);
-            }
-
-        public:
-            constexpr __Bind(Function&& function, Args&&... args) 
-                : m_Function(Forward<Function>(function)), m_Args(Forward<Args>(args)...) {} 
-
-            template<typename... CallArgs>
-            constexpr ResultType<CallArgs...> operator()(CallArgs&&... callArgs) const {
-                return Invoke(IndexSequenceFor<Args...>{}, Forward<CallArgs>(callArgs)...);
-            }
-        };
-    }
-
-    // Is bind expression specialization
-
-    template<typename Function, typename... Args>
-    struct IsBindExpression<__private::__Bind<Function, Args...>> : TrueType {};
-
     /// @brief Binds a function with specified arguments, including placeholders if needed
     /// @param function The function to bind
-    /// @param args The arguments to bind, which may include placeholders
+    /// @param ...boundArgs The arguments to bind, which may include placeholders
     /// @return A bound function object with the provided arguments
     /// @ingroup functional
     /// @since C++11
     /// @see https://en.cppreference.com/w/cpp/utility/functional/bind
-    template<typename Function, typename... Args>
-    constexpr __private::__Bind<Function, Args...> Bind(Function&& function, Args&&... args) {
-        return __private::__Bind<Function, Args...>(Forward<Function>(function), Forward<Args>(args)...);
+    template<typename Function, typename... BoundArgs>
+    constexpr __private::__Bind<Function, BoundArgs...> Bind(Function&& function, BoundArgs&&... boundArgs) {
+        return {Forward<Function>(function), Forward<BoundArgs>(boundArgs)...};
     }
+
+    /// @brief Binds a function with specified arguments, including placeholders if needed, and specifies the return type
+    /// @tparam Result The return type of the bound function
+    /// @param function The function to bind
+    /// @param ...boundArgs The arguments to bind, which may include placeholders
+    /// @return A bound function object with the provided arguments and specified return type
+    /// @ingroup functional
+    /// @since C++11
+    /// @see https://en.cppreference.com/w/cpp/utility/functional/bind
+    template<typename Result, typename Function, typename... BoundArgs>
+    constexpr __private::__BindReturn<Result, Function, BoundArgs...> Bind(Function&& function, BoundArgs&&... boundArgs) {
+        return {Forward<Function>(function), Forward<BoundArgs>(boundArgs)...};
+    }
+
+    // Bind front & bind back
+
+    namespace __private {        
+        template<typename Function, bool Back, typename... BoundArgs>
+        class __BindDirection {
+            DecayType<Function> m_Function;
+            Tuple<DecayType<BoundArgs>...> m_BoundArgs;
+
+            template<bool B, typename Self, typename... Args, size_t... Indices, EnableIfType<!B, int> = 0>
+            static constexpr auto __Call(Self&& self, IndexSequence<Indices...>, Args&&... args) __WSTL_NOEXCEPT_EXPR__(
+                noexcept(Invoke(self.m_Function, Get<Indices>(ForwardLike<Self>(self.m_BoundArgs))..., Forward<Args>(args)...))
+            ) -> decltype(Invoke(self.m_Function, Get<Indices>(ForwardLike<Self>(self.m_BoundArgs))..., Forward<Args>(args)...)) {
+                return Invoke(self.m_Function, Get<Indices>(ForwardLike<Self>(self.m_BoundArgs))..., Forward<Args>(args)...);
+            }
+
+            template<bool B, typename Self, typename... Args, size_t... Indices, EnableIfType<B, int> = 0>
+            static constexpr auto __Call(Self&& self, IndexSequence<Indices...>, Args&&... args) __WSTL_NOEXCEPT_EXPR__(
+                noexcept(Invoke(self.m_Function, Forward<Args>(args)..., Get<Indices>(ForwardLike<Self>(self.m_BoundArgs))...))
+            ) -> decltype(Invoke(self.m_Function, Forward<Args>(args)..., Get<Indices>(ForwardLike<Self>(self.m_BoundArgs))...)) {
+                return Invoke(self.m_Function, Forward<Args>(args)..., Get<Indices>(ForwardLike<Self>(self.m_BoundArgs))...);
+            }
+
+        public:
+            constexpr __BindDirection(Function&& function, BoundArgs&&... boundArgs) 
+                : m_Function(Forward<Function>(function)), m_BoundArgs(Forward<BoundArgs>(boundArgs)...) {}
+
+            template<typename... Args>
+            __WSTL_CONSTEXPR14__ auto operator()(Args&&... args) & __WSTL_NOEXCEPT_EXPR__(
+                noexcept(__Call<Back>(*this, IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...))
+            ) -> decltype(__Call<Back>(*this, IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...)) {
+                return __Call<Back>(*this, IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...);
+            }
+
+            template<typename... Args>
+            constexpr auto operator()(Args&&... args) const& __WSTL_NOEXCEPT_EXPR__(
+                noexcept(__Call<Back>(*this, IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...))
+            ) -> decltype(__Call<Back>(*this, IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...)) {
+                return __Call<Back>(*this, IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...);
+            }
+
+            template<typename... Args>
+            __WSTL_CONSTEXPR14__ auto operator()(Args&&... args) && __WSTL_NOEXCEPT_EXPR__(
+                noexcept(__Call<Back>(Move(*this), IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...))
+            ) -> decltype(__Call<Back>(Move(*this), IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...)) {
+                return __Call<Back>(Move(*this), IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...);
+            }
+            
+            template<typename... Args>
+            constexpr auto operator()(Args&&... args) const&& __WSTL_NOEXCEPT_EXPR__(
+                noexcept(__Call<Back>(Move(*this), IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...))
+            ) -> decltype(__Call<Back>(Move(*this), IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...)) {
+                return __Call<Back>(Move(*this), IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...);
+            }
+        };
+
+        #ifdef __WSTL_CXX17__
+        template<auto ConstFunction, bool Back, typename... BoundArgs>
+        class __BindDirectionConst {
+            Tuple<DecayType<BoundArgs>...> m_BoundArgs;
+
+            template<bool B, typename Self, typename... Args, size_t... Indices, EnableIfType<!B, int> = 0>
+            static constexpr auto __Call(Self&& self, IndexSequence<Indices...>, Args&&... args) __WSTL_NOEXCEPT_EXPR__(
+                noexcept(Invoke(ConstFunction, Get<Indices>(ForwardLike<Self>(self.m_BoundArgs))..., Forward<Args>(args)...))
+            ) -> decltype(Invoke(ConstFunction, Get<Indices>(ForwardLike<Self>(self.m_BoundArgs))..., Forward<Args>(args)...)) {
+                return Invoke(ConstFunction, Get<Indices>(ForwardLike<Self>(self.m_BoundArgs))..., Forward<Args>(args)...);
+            }
+
+            template<bool B, typename Self, typename... Args, size_t... Indices, EnableIfType<B, int> = 0>
+            static constexpr auto __Call(Self&& self, IndexSequence<Indices...>, Args&&... args) __WSTL_NOEXCEPT_EXPR__(
+                noexcept(Invoke(ConstFunction, Forward<Args>(args)..., Get<Indices>(ForwardLike<Self>(self.m_BoundArgs))...))
+            ) -> decltype(Invoke(ConstFunction, Forward<Args>(args)..., Get<Indices>(ForwardLike<Self>(self.m_BoundArgs))...)) {
+                return Invoke(ConstFunction, Forward<Args>(args)..., Get<Indices>(ForwardLike<Self>(self.m_BoundArgs))...);
+            }
+
+        public:
+            constexpr __BindDirectionConst(BoundArgs&&... boundArgs) : m_BoundArgs(Forward<BoundArgs>(boundArgs)...) {}
+
+            template<typename... Args>
+            __WSTL_CONSTEXPR14__ auto operator()(Args&&... args) & __WSTL_NOEXCEPT_EXPR__(
+                noexcept(__Call<Back>(*this, IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...))
+            ) -> decltype(__Call<Back>(*this, IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...)) {
+                return __Call<Back>(*this, IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...);
+            }
+
+            template<typename... Args>
+            constexpr auto operator()(Args&&... args) const& __WSTL_NOEXCEPT_EXPR__(
+                noexcept(__Call<Back>(*this, IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...))
+            ) -> decltype(__Call<Back>(*this, IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...)) {
+                return __Call<Back>(*this, IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...);
+            }
+
+            template<typename... Args>
+            __WSTL_CONSTEXPR14__ auto operator()(Args&&... args) && __WSTL_NOEXCEPT_EXPR__(
+                noexcept(__Call<Back>(Move(*this), IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...))
+            ) -> decltype(__Call<Back>(Move(*this), IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...)) {
+                return __Call<Back>(Move(*this), IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...);
+            }
+            
+            template<typename... Args>
+            constexpr auto operator()(Args&&... args) const&& __WSTL_NOEXCEPT_EXPR__(
+                noexcept(__Call<Back>(Move(*this), IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...))
+            ) -> decltype(__Call<Back>(Move(*this), IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...)) {
+                return __Call<Back>(Move(*this), IndexSequenceFor<BoundArgs...>{}, Forward<Args>(args)...);
+            }
+        };
+        #endif
+    }
+
+    /// @brief Binds a function with specified arguments to the front
+    /// @details Arguments are not processed and are passed as-is to the function
+    /// @param function The function to bind
+    /// @param ...boundArgs The arguments to bind
+    /// @return A bound function object with the provided arguments bound to the front
+    /// @ingroup functional
+    /// @since C++11
+    /// @see https://cppreference.com/cpp/utility/functional/bind_front
+    template<typename Function, typename... BoundArgs>
+    constexpr __private::__BindDirection<Function, false, BoundArgs...> BindFront(Function&& function, BoundArgs&&... boundArgs) {
+        return {Forward<Function>(function), Forward<BoundArgs>(boundArgs)...};
+    }
+
+    /// @brief Binds a function with specified arguments to the back
+    /// @details Arguments are not processed and are passed as-is to the function
+    /// @param function The function to bind
+    /// @param ...boundArgs The arguments to bind
+    /// @return A bound function object with the provided arguments bound to the back
+    /// @ingroup functional
+    /// @since C++11
+    /// @see https://cppreference.com/cpp/utility/functional/bind_front
+    template<typename Function, typename... BoundArgs>
+    constexpr __private::__BindDirection<Function, true, BoundArgs...> BindBack(Function&& function, BoundArgs&&... boundArgs) {
+        return {Forward<Function>(function), Forward<BoundArgs>(boundArgs)...};
+    }
+
+    #ifdef __WSTL_CXX17__
+    /// @brief Binds a constant function with specified arguments to the front
+    /// @details Arguments are not processed and are passed as-is to the function.
+    /// Only from C++20 can be used with `constexpr` function objects.
+    /// @tparam ConstFunction The constant function to bind
+    /// @param ...boundArgs The arguments to bind
+    /// @return A bound function object with the provided arguments bound to the front
+    /// @ingroup functional
+    /// @since C++17
+    /// @see https://cppreference.com/cpp/utility/functional/bind_front
+    template<auto ConstFunction, typename... BoundArgs>
+    constexpr __private::__BindDirectionConst<ConstFunction, false, BoundArgs...> BindFront(BoundArgs&&... boundArgs) {
+        return {Forward<BoundArgs>(boundArgs)...};
+    }
+
+    /// @brief Binds a constant function with specified arguments to the back
+    /// @details Arguments are not processed and are passed as-is to the function.
+    /// Only from C++20 can be used with `constexpr` function objects.
+    /// @tparam ConstFunction The constant function to bind
+    /// @param ...boundArgs The arguments to bind
+    /// @return A bound function object with the provided arguments bound to the back
+    /// @ingroup functional
+    /// @since C++17
+    /// @see https://cppreference.com/cpp/utility/functional/bind_front
+    template<auto ConstFunction, typename... BoundArgs>
+    constexpr __private::__BindDirectionConst<ConstFunction, true, BoundArgs...> BindBack(BoundArgs&&... boundArgs) {
+        return {Forward<BoundArgs>(boundArgs)...};
+    }
+    #endif
+
     #endif
 
     // Binder first
 
     /// @brief Functor that binds the first argument of a callable object
     /// @tparam Function Type of the callable object
+    /// @tparam BoundArgument Type of the argument to bind
     /// @ingroup functional
-    /// @deprecated Recommended below C++11. Otherwise better use `wstl::Bind`
+    /// @deprecated Recommended below C++11 or for older API compatibility. Otherwise better use `wstl::Bind`
     /// @see https://en.cppreference.com/w/cpp/utility/functional/binder12
-    template<typename Function>
-    class BinderFirst : public UnaryFunction<typename Function::SecondArgumentType, 
-    typename Function::ResultType> {
+    template<typename Function, typename BoundArgument>
+    class BinderFirst {
     public:
+        typedef typename FunctionTraits<Function>::ResultType ResultType;
+        typedef typename TupleElement<1, typename FunctionTraits<Function>::ArgumentTypes>::Type ArgumentType;
+
         /// @brief Constructor
         /// @param function Callable object to bind
         /// @param arg Value of the first argument to bind
-        BinderFirst(const Function& function, const typename Function::FirstArgumentType& arg) :
+        __WSTL_CONSTEXPR__ BinderFirst(const Function& function, const BoundArgument& arg) :
             m_Function(function), m_Arg(arg) {}
 
         /// @brief Invokes the callable object
         /// @param arg Value of the second argument
         /// @return Result of the callable object
-        typename Function::ResultType operator()(typename Function::SecondArgumentType& arg) const {
-            return m_Function(m_Arg, arg);
-        }
-    
-        /// @copydoc BinderFirst::operator()()
-        typename Function::ResultType operator()(const typename Function::SecondArgumentType& arg) const {
+        __WSTL_CONSTEXPR__ ResultType operator()(ArgumentType arg) const {
             return m_Function(m_Arg, arg);
         }
 
     protected:
         Function m_Function;
-        typename Function::FirstArgumentType m_Arg;
+        BoundArgument m_Arg;
     };
 
     /// @brief Creates a `BinderFirst` object that binds the first argument of a callable object
@@ -2757,11 +3325,11 @@ namespace wstl {
     /// @param arg Value of the first argument to bind
     /// @return A `BinderFirst` object that wraps the callable object with the first argument bound
     /// @ingroup functional
-    /// @deprecated Recommended below C++11. Otherwise better use `wstl::Bind`
+    /// @deprecated Recommended below C++11 or for older API compatibility. Otherwise better use `wstl::Bind`
     /// @see https://en.cppreference.com/w/cpp/utility/functional/bind12
     template<typename Function, typename T>
-    BinderFirst<Function> BindFirst(const Function& function, const T& arg) {
-        return BinderFirst<Function>(function, typename Function::FirstArgumentType(arg));
+    __WSTL_CONSTEXPR__ BinderFirst<Function, T> BindFirst(const Function& function, const T& arg) {
+        return BinderFirst<Function, T>(function, arg);
     }
 
     // Binder second
@@ -2771,31 +3339,28 @@ namespace wstl {
     /// @ingroup functional
     /// @deprecated Recommended below C++11. Otherwise better use `wstl::Bind`
     /// @see https://en.cppreference.com/w/cpp/utility/functional/binder12
-    template<typename Function>
-    class BinderSecond : public UnaryFunction<typename Function::FirstArgumentType, 
-    typename Function::ResultType> {
+    template<typename Function, typename BoundArgument>
+    class BinderSecond {
     public:
+        typedef typename FunctionTraits<Function>::ResultType ResultType;
+        typedef typename TupleElement<0, typename FunctionTraits<Function>::ArgumentTypes>::Type ArgumentType;
+
         /// @brief Constructor
         /// @param function Callable object to bind
         /// @param arg Value of the second argument to bind
-        BinderSecond(const Function& function, const typename Function::SecondArgumentType& arg) :
+        __WSTL_CONSTEXPR__ BinderSecond(const Function& function, const BoundArgument arg) :
             m_Function(function), m_Arg(arg) {}
         
         /// @brief Invokes the callable object
         /// @param arg Value of the first argument
         /// @return Result of the callable object
-        typename Function::ResultType operator()(typename Function::FirstArgumentType& arg) const {
-            return m_Function(m_Arg, arg);
-        }
-
-        /// @copydoc BinderSecond::operator()()
-        typename Function::ResultType operator()(const typename Function::FirstArgumentType& arg) const {
-            return m_Function(m_Arg, arg);
+        __WSTL_CONSTEXPR__ ResultType operator()(ArgumentType arg) const {
+            return m_Function(arg, m_Arg);
         }
 
     protected:
         Function m_Function;
-        typename Function::SecondArgumentType m_Arg;
+        BoundArgument m_Arg;
     };
 
     /// @brief Creates a `BinderSecond` object that binds the second argument of a callable object
@@ -2806,456 +3371,274 @@ namespace wstl {
     /// @deprecated Recommended below C++11. Otherwise better use `wstl::Bind`
     /// @see https://en.cppreference.com/w/cpp/utility/functional/bind12
     template<typename Function, typename T>
-    BinderSecond<Function> BindSecond(const Function& function, const T& arg) {
-        return BinderSecond<Function>(function, typename Function::SecondArgumentType(arg));
+    __WSTL_CONSTEXPR__ BinderSecond<Function, T> BindSecond(const Function& function, const T& arg) {
+        return BinderSecond<Function, T>(function, arg);
     }
 
-    // Pointer to unary function
+    // Member function
 
-    /// @brief Functor that wraps a pointer to unary function
-    /// @tparam Arg Type of the argument
-    /// @tparam Return Result type of the function
+    namespace __private {
+        #ifdef __WSTL_CXX11__
+        template<typename T, typename = typename EnableIf<IsMemberPointer<T>::Value>::Type>
+        class __MemberFunctionType;
+        
+        template<typename T>
+        class __MemberFunctionType<T, void> {
+        public:
+            /// @brief Invokes the member function on the given object with the provided arguments
+            /// @param args Arguments to pass to the member function (first argument must be the object on which to invoke the member function)
+            /// @return Result of the member function invocation
+            template<typename... Args>
+            constexpr InvokeResultType<T, Args...> operator()(Args&&... args) const __WSTL_NOEXCEPT_EXPR__(
+                noexcept(Invoke(m_Function, Forward<Args>(args)...))
+            ) {
+                return Invoke(m_Function, Forward<Args>(args)...);
+            }
+            
+        protected:
+            T m_Function;
+
+            explicit constexpr __MemberFunctionType(T function) : m_Function(function) {}
+        };
+        #else
+        template<typename T, bool = IsMemberFunctionPointer<T>::Value>
+        struct __MemberFunctionArity;
+
+        template<typename T>
+        struct __MemberFunctionArity<T, true> {
+            static const size_t Value = FunctionTraits<T>::Arity;
+        };
+
+        template<typename T>
+        const size_t __MemberFunctionArity<T, true>::Value;
+
+        template<typename T>
+        struct __MemberFunctionArity<T, false> {
+            static const size_t Value = size_t(-1);
+        };
+
+        template<typename T>
+        const size_t __MemberFunctionArity<T, false>::Value;
+
+        template<typename T>
+        struct __MemberObjectTypes;
+
+        template<typename T, typename M>
+        struct __MemberObjectTypes<T M::*> { 
+            typedef T ValueType;
+            typedef M MemberType;
+        };
+
+        template<typename T, bool = IsMemberFunctionPointer<T>::Value, 
+        bool = IsMemberObjectPointer<T>::Value, size_t = __MemberFunctionArity<T>::Value>
+        class __MemberFunctionType;
+
+        template<typename T>
+        class __MemberFunctionType<T, true, false, 2> {
+        private:
+            typedef typename FunctionTraits<T>::ObjectType ObjectType;
+
+        public:
+            typedef typename FunctionTraits<T>::ResultType ResultType;
+            typedef typename TupleElement<0, typename FunctionTraits<T>::ArgumentTypes>::Type FirstArgumentType;
+            typedef typename TupleElement<1, typename FunctionTraits<T>::ArgumentTypes>::Type SecondArgumentType;
+            
+            /// @brief Invokes the member function on the given object with the provided arguments
+            /// @param object Pointer to the object on which to invoke the member function
+            /// @param arg1 First argument to pass to the member function
+            /// @param arg2 Second argument to pass to the member function
+            /// @return Result of the member function invocation
+            ResultType operator()(ObjectType* object, FirstArgumentType arg1, SecondArgumentType arg2) const {
+                return (object->*m_Function)(arg1, arg2);
+            }
+
+            /// @brief Invokes the member function on the given const object with the provided arguments
+            /// @param object Pointer to the const object on which to invoke the member function
+            /// @param arg1 First argument to pass to the member function
+            /// @param arg2 Second argument to pass to the member function
+            /// @return Result of the member function invocation
+            ResultType operator()(const ObjectType* object, FirstArgumentType arg1, SecondArgumentType arg2) const {
+                return (object->*m_Function)(arg1, arg2);
+            }
+
+            /// @brief Invokes the member function on the given object reference with the provided arguments
+            /// @param object Reference to the object on which to invoke the member function
+            /// @param arg1 First argument to pass to the member function
+            /// @param arg2 Second argument to pass to the member function
+            /// @return Result of the member function invocation
+            ResultType operator()(ObjectType& object, FirstArgumentType arg1, SecondArgumentType arg2) const {
+                return (object.*m_Function)(arg1, arg2);
+            }
+
+            /// @brief Invokes the member function on the given const object reference with the provided arguments
+            /// @param object Reference to the const object on which to invoke the member function
+            /// @param arg1 First argument to pass to the member function
+            /// @param arg2 Second argument to pass to the member function
+            /// @return Result of the member function invocation
+            ResultType operator()(const ObjectType& object, FirstArgumentType arg1, SecondArgumentType arg2) const {
+                return (object.*m_Function)(arg1, arg2);
+            }
+
+        protected:
+            T m_Function;
+
+            explicit __MemberFunctionType(T function) : m_Function(function) {}
+        };
+
+        template<typename T>
+        class __MemberFunctionType<T, true, false, 1> {
+        private:
+            typedef typename FunctionTraits<T>::ObjectType ObjectType;
+
+        public:
+            typedef typename FunctionTraits<T>::ResultType ResultType;
+            typedef typename TupleElement<0, typename FunctionTraits<T>::ArgumentTypes>::Type ArgumentType;
+            
+            /// @brief Invokes the member function on the given object with the provided argument
+            /// @param object Pointer to the object on which to invoke the member function
+            /// @param arg Argument to pass to the member function
+            /// @return Result of the member function invocation
+            ResultType operator()(ObjectType* object, ArgumentType arg) const {
+                return (object->*m_Function)(arg);
+            }
+
+            /// @brief Invokes the member function on the given const object with the provided argument
+            /// @param object Pointer to the const object on which to invoke the member function
+            /// @param arg Argument to pass to the member function
+            /// @return Result of the member function invocation
+            ResultType operator()(const ObjectType* object, ArgumentType arg) const {
+                return (object->*m_Function)(arg);
+            }
+
+            /// @brief Invokes the member function on the given object reference with the provided argument
+            /// @param object Reference to the object on which to invoke the member function
+            /// @param arg Argument to pass to the member function
+            /// @return Result of the member function invocation
+            ResultType operator()(ObjectType& object, ArgumentType arg) const {
+                return (object.*m_Function)(arg);
+            }
+
+            /// @brief Invokes the member function on the given const object reference with the provided argument
+            /// @param object Reference to the const object on which to invoke the member function
+            /// @param arg Argument to pass to the member function
+            /// @return Result of the member function invocation
+            ResultType operator()(const ObjectType& object, ArgumentType arg) const {
+                return (object.*m_Function)(arg);
+            }
+
+        protected:
+            T m_Function;
+
+            explicit __MemberFunctionType(T function) : m_Function(function) {}
+        };
+
+        template<typename T>
+        class __MemberFunctionType<T, true, false, 0> {
+        private:
+            typedef typename FunctionTraits<T>::ObjectType ObjectType;
+
+        public:
+            typedef typename FunctionTraits<T>::ResultType ResultType;
+
+            /// @brief Invokes the member function on the given object
+            /// @param object Pointer to the object on which to invoke the member function
+            /// @return Result of the member function invocation
+            ResultType operator()(ObjectType* object) const {
+                return (object->*m_Function)();
+            }
+
+            /// @brief Invokes the member function on the given const object
+            /// @param object Pointer to the const object on which to invoke the member function
+            /// @return Result of the member function invocation
+            ResultType operator()(const ObjectType* object) const {
+                return (object->*m_Function)();
+            }
+
+            /// @brief Invokes the member function on the given object reference
+            /// @param object Reference to the object on which to invoke the member function
+            /// @return Result of the member function invocation
+            ResultType operator()(ObjectType& object) const {
+                return (object.*m_Function)();
+            }
+
+            /// @brief Invokes the member function on the given const object reference
+            /// @param object Reference to the const object on which to invoke the member function
+            /// @return Result of the member function invocation
+            ResultType operator()(const ObjectType& object) const {
+                return (object.*m_Function)();
+            }
+
+        protected:
+            T m_Function;
+
+            explicit __MemberFunctionType(T function) : m_Function(function) {}
+        };
+
+        template<typename T>
+        class __MemberFunctionType<T, false, true, size_t(-1)> {
+        private:
+            typedef typename __MemberObjectTypes<T>::MemberType ObjectType;
+
+        public:
+            typedef typename __MemberObjectTypes<T>::ValueType ResultType;
+            
+            /// @brief Accesses the member object of the given object
+            /// @param object Pointer to the object on which to access the member object
+            /// @return Reference to the member object
+            ResultType& operator()(ObjectType* object) const {
+                return object->*m_Pointer;
+            }
+
+            /// @brief Accesses the member object of the given const object
+            /// @param object Pointer to the const object on which to access the member object
+            /// @return Const reference to the member object
+            const ResultType& operator()(const ObjectType* object) const {
+                return object->*m_Pointer;
+            }
+
+            /// @brief Accesses the member object of the given object reference
+            /// @param object Reference to the object on which to access the member object
+            /// @return Reference to the member object
+            ResultType& operator()(ObjectType& object) const {
+                return object.*m_Pointer;
+            }
+
+            /// @brief Accesses the member object of the given const object reference
+            /// @param object Reference to the const object on which to access the member object
+            /// @return Const reference to the member object
+            const ResultType& operator()(const ObjectType& object) const {
+                return object.*m_Pointer;
+            }
+
+        protected:
+            T m_Pointer;
+
+            explicit __MemberFunctionType(T pointer) : m_Pointer(pointer) {}
+        };
+        #endif
+    }
+
+    /// @brief Wraps a member pointer into a functor
+    /// @tparam T Type of the member pointer (function or object)
+    /// @note In C++98 maximum 2 arguments are supported
     /// @ingroup functional
-    /// @deprecated Use `wstl::Function` instead
-    /// @see https://en.cppreference.com/w/cpp/utility/functional/pointer_to_unary_function
-    template<typename Arg, typename Return>
-    class PointerToUnaryFunction : public UnaryFunction<Arg, Return> {
+    /// @see https://en.cppreference.com/w/cpp/utility/functional/mem_fn
+    template<typename T>
+    class MemberFunctionType : public __private::__MemberFunctionType<T> {
     public:
         /// @brief Constructor
-        /// @param function Pointer to the function with one argument
-        explicit PointerToUnaryFunction(Return(*function)(Arg)) : m_Function(function) {}
-
-        /// @brief Calls wrapped function with one argument
-        /// @param arg Value of the argument
-        /// @return Result of the function
-        Return operator()(Arg arg) const {
-            return (*m_Function)(arg);
-        }
-
-    private:
-        Return(*m_Function)(Arg);
+        /// @param function Pointer to the member function or member object to be wrapped
+        explicit MemberFunctionType(T function) : __private::__MemberFunctionType<T>(function) {}
     };
 
-    // Pointer to binary function
-
-    /// @brief Functor that wraps a pointer to binary function
-    /// @tparam Arg1 Type of the first argument
-    /// @tparam Arg2 Type of the second argument
-    /// @tparam Return Result type of the function
+    /// @brief Creates a functor from a member pointer
+    /// @param pointer Pointer to the member function or member object
+    /// @return A `MemberFunctionType` object wrapping the member pointer
     /// @ingroup functional
-    /// @deprecated Use `wstl::Function` instead
-    /// @see https://en.cppreference.com/w/cpp/utility/functional/pointer_to_binary_function
-    template<typename Arg1, typename Arg2, typename Return>
-    class PointerToBinaryFunction : public BinaryFunction<Arg1, Arg2, Return> {
-    public:
-        /// @brief Constructor
-        /// @param function Pointer to the function with two arguments
-        explicit PointerToBinaryFunction(Return(*function)(Arg1, Arg2)) : m_Function(function) {}
-
-        /// @brief Calls wrapped function with two arguments
-        /// @param arg1 Value of the first argument
-        /// @param arg2 Value of the second argument
-        /// @return Result of the function
-        Return operator()(Arg1 arg1, Arg2 arg2) const {
-            return (*m_Function)(arg1, arg2);
-        }
-
-    private:
-        Return(*m_Function)(Arg1, Arg2);
-    };
-
-    // Pointer function
-
-    /// @brief Converts a unary function pointer into a `PointerToUnaryFunction` object
-    /// @param function Pointer to a unary function
-    /// @return A `PointerToUnaryFunction` object wrapping the provided function pointer
-    /// @ingroup functional
-    /// @deprecated Use `wstl::Function` instead
-    /// @see https://en.cppreference.com/w/cpp/utility/functional/ptr_fun
-    template<typename Arg, typename Return>
-    PointerToUnaryFunction<Arg, Return> PointerFunction(Return(*function)(Arg)) {
-        return PointerToUnaryFunction<Arg, Return>(function);
-    }
-
-    /// @brief Converts a binary function pointer into a `PointerToBinaryFunction` object
-    /// @param function Pointer to a binary function
-    /// @return A `PointerToBinaryFunction` object wrapping the provided function pointer
-    /// @ingroup functional
-    /// @deprecated Use `wstl::Function` instead
-    /// @see https://en.cppreference.com/w/cpp/utility/functional/ptr_fun
-    template<typename Arg1, typename Arg2, typename Return>
-    PointerToBinaryFunction<Arg1, Arg2, Return> PointerFunction(Return(*function)(Arg1, Arg2)) {
-        return PointerToBinaryFunction<Arg1, Arg2, Return>(function);
-    }
-
-    // Member function (old)
-    
-    /// @brief Wraps a non-const member function pointer into a callable object
-    /// @tparam Return Return type of the member function
-    /// @tparam T Type of the class containing the member function
-    /// @ingroup functional
-    /// @deprecated Use `wstl::Function` instead
-    /// @see https://en.cppreference.com/w/cpp/utility/functional/mem_fun_t
-    template<typename Return, typename T>
-    class MemberFunctionType : public UnaryFunction<T*, Return> {
-    public:
-        /// @brief Constructor
-        /// @param function Pointer to the non-const member function to be wrapped
-        explicit MemberFunctionType(Return(T::*function)()) : m_Function(function) {}
-
-        /// @brief Calls wrapped function on the given object
-        /// @param object Pointer to the object on which to call
-        /// @return Result of the function
-        Return operator()(T* object) const {
-            return (object->*m_Function)();
-        }
-
-    private:
-        Return(T::*m_Function)();
-    };
-
-    /// @brief Wraps a const member function pointer into a callable object
-    /// @tparam Return Return type of the member function
-    /// @tparam T Type of the class containing the member function
-    /// @ingroup functional
-    /// @deprecated Use `wstl::Function` instead
-    /// @see https://en.cppreference.com/w/cpp/utility/functional/mem_fun_t
-    template<typename Return, typename T>
-    class ConstMemberFunctionType : public UnaryFunction<const T*, Return> {
-    public:
-        /// @brief Constructor
-        /// @param function Pointer to the const member function to be wrapped
-        explicit ConstMemberFunctionType(Return(T::*function)() const) : m_Function(function) {}
-
-        /// @brief Calls wrapped function on the given object
-        /// @param object Pointer to the object on which to call
-        /// @return Result of the function
-        Return operator()(const T* object) const {
-            return (object->*m_Function)();
-        }
-
-    private:
-        Return(T::*m_Function)() const;
-    };
-
-    /// @brief Creates a callable object from a non-const member function pointer
-    /// @param function Pointer to the non-const member function
-    /// @return A `MemberFunctionType` object wrapping the member function pointer
-    /// @ingroup functional
-    /// @deprecated Use `wstl::Function` instead
-    /// @see https://en.cppreference.com/w/cpp/utility/functional/mem_fun
-    template<typename Return, typename T>
-    MemberFunctionType<Return, T> MemberFunction(Return(T::*function)()) {
-        return MemberFunctionType<Return, T>(function);
-    }
-
-    /// @brief Creates a callable object from a const member function pointer
-    /// @param function Pointer to the const member function
-    /// @return A `ConstMemberFunctionType` object wrapping the member function pointer
-    /// @ingroup functional
-    /// @deprecated Use `wstl::Function` instead
-    /// @see https://en.cppreference.com/w/cpp/utility/functional/mem_fun
-    template<typename Return, typename T>
-    ConstMemberFunctionType<Return, T> MemberFunction(Return(T::*function)() const) {
-        return ConstMemberFunctionType<Return, T>(function);
-    }
-
-    // Member function (1 argument)
-
-    /// @brief Wraps a non-const member function pointer with one argument into a callable object
-    /// @tparam Arg Type of the argument
-    /// @tparam Return Return type of the member function
-    /// @tparam T Type of the class containing the member function
-    /// @ingroup functional
-    /// @deprecated Use `wstl::Function` instead
-    /// @see https://en.cppreference.com/w/cpp/utility/functional/mem_fun_t
-    template<typename Arg, typename Return, typename T>
-    class MemberFunction1Type : public BinaryFunction<T*, Arg, Return> {
-    public:
-        /// @brief Constructor
-        /// @param function Pointer to the non-const member function to be wrapped
-        explicit MemberFunction1Type(Return(T::*function)(Arg)) : m_Function(function) {}
-
-        /// @brief Calls wrapped function on the given object with one argument
-        /// @param object Pointer to the object on which to call
-        /// @param arg Argument to pass to the function
-        /// @return Result of the function
-        Return operator()(T* object, Arg arg) const {
-            return (object->*m_Function)(arg);
-        }
-
-    protected:
-        Return(T::*m_Function)(Arg);
-    };
-
-    /// @brief Wraps a const member function pointer with one argument into a callable object
-    /// @tparam Arg Type of the argument
-    /// @tparam Return Return type of the member function
-    /// @tparam T Type of the class containing the member function
-    /// @ingroup functional
-    /// @deprecated Use `wstl::Function` instead
-    /// @see https://en.cppreference.com/w/cpp/utility/functional/mem_fun_t
-    template<typename Arg, typename Return, typename T>
-    class ConstMemberFunction1Type : public BinaryFunction<const T*, Arg, Return> {
-    public:
-        /// @brief Constructor
-        /// @param function Pointer to the const member function to be wrapped
-        explicit ConstMemberFunction1Type(Return(T::*function)(Arg) const) : m_Function(function) {}
-
-        /// @brief Calls wrapped function on the given object with one argument
-        /// @param object Pointer to the object on which to call
-        /// @param arg Argument to pass to the function
-        /// @return Result of the function
-        Return operator()(const T* object, Arg arg) const {
-            return (object->*m_Function)(arg);
-        }
-
-    protected:
-        Return(T::*m_Function)(Arg) const;
-    };
-
-    /// @brief Creates a callable object from a non-const member function pointer with one argument
-    /// @param function Pointer to the non-const member function
-    /// @return A `MemberFunction1Type` object wrapping the member function pointer
-    /// @ingroup functional
-    /// @deprecated Use `wstl::Function` instead
-    /// @see https://en.cppreference.com/w/cpp/utility/functional/mem_fun
-    template<typename Arg, typename Return, typename T>
-    MemberFunction1Type<Arg, Return, T> MemberFunction(Return(T::*function)(Arg)) {
-        return MemberFunction1Type<Arg, Return, T>(function);
-    }
-
-    /// @brief Creates a callable object from a const member function pointer with one argument
-    /// @param function Pointer to the const member function
-    /// @return A `ConstMemberFunction1Type` object wrapping the member function pointer
-    /// @ingroup functional
-    /// @deprecated Use `wstl::Function` instead
-    /// @see https://en.cppreference.com/w/cpp/utility/functional/mem_fun
-    template<typename Arg, typename Return, typename T>
-    ConstMemberFunction1Type<Arg, Return, T> MemberFunction(Return(T::*function)(Arg) const) {
-        return ConstMemberFunction1Type<Arg, Return, T>(function);
-    }
-
-    // Member function reference (old)
-
-    /// @brief Wraps a non-const member function, 
-    /// operating on an object reference, into a callable object
-    /// @tparam Return Return type of the member function
-    /// @tparam T Type of the class containing the member function  
-    /// @ingroup functional
-    /// @deprecated Use `wstl::Function` instead
-    /// @see https://en.cppreference.com/w/cpp/utility/functional/mem_fun_ref_t
-    template<typename Return, typename T>
-    class MemberFunctionReferenceType : public UnaryFunction<T, Return> {
-    public:
-        /// @brief Constructor
-        /// @param function Pointer to the non-const member function to be wrapped
-        explicit MemberFunctionReferenceType(Return(T::*function)()) : m_Function(function) {}
-
-        /// @brief Calls wrapped function on the given object
-        /// @param object Reference to the object on which to call
-        /// @return Result of the function
-        Return operator()(T& object) const {
-            return (object.*m_Function)();
-        }
-
-    protected:
-        Return(T::*m_Function)();
-    };
-
-    /// @brief Wraps a const member function, 
-    /// operating on an object reference, into a callable object
-    /// @tparam Return Return type of the member function
-    /// @tparam T Type of the class containing the member function  
-    /// @ingroup functional
-    /// @deprecated Use `wstl::Function` instead
-    /// @see https://en.cppreference.com/w/cpp/utility/functional/mem_fun_ref_t
-    template<typename Return, typename T>
-    class ConstMemberFunctionReferenceType : public UnaryFunction<T, Return> {
-    public:
-        /// @brief Constructor
-        /// @param function Pointer to the const member function to be wrapped
-        explicit ConstMemberFunctionReferenceType(Return(T::*function)() const) : m_Function(function) {}
-
-        /// @brief Calls wrapped function on the given object
-        /// @param object Reference to the object on which to call
-        /// @return Result of the function
-        Return operator()(const T& object) const {
-            return (object.*m_Function)();
-        }
-
-    protected:
-        Return(T::*m_Function)() const;
-    };
-
-    /// @brief Creates a callable object from a non-const member function,
-    /// operating on an object reference
-    /// @param function Pointer to the non-const member function
-    /// @return A `MemberFunctionReferenceType` object wrapping the member function pointer
-    /// @ingroup functional
-    /// @deprecated Use `wstl::Function` instead
-    /// @see https://en.cppreference.com/w/cpp/utility/functional/mem_fun_ref
-    template<typename Return, typename T>
-    MemberFunctionReferenceType<Return, T> MemberFunctionReference(Return(T::*function)()) {
-        return MemberFunctionReferenceType<Return, T>(function);
-    }
-
-    /// @brief Creates a callable object from a const member function,
-    /// operating on an object reference
-    /// @param function Pointer to the const member function
-    /// @return A `ConstMemberFunctionReferenceType` object wrapping the member function pointer
-    /// @ingroup functional
-    /// @deprecated Use `wstl::Function` instead
-    /// @see https://en.cppreference.com/w/cpp/utility/functional/mem_fun_ref
-    template<typename Return, typename T>
-    ConstMemberFunctionReferenceType<Return, T> MemberFunctionReference(Return(T::*function)() const) {
-        return ConstMemberFunctionReferenceType<Return, T>(function);
-    }
-
-    // Member function reference (1 argument)
-
-    /// @brief Wraps a non-const member function with one argument, 
-    /// operating on an object reference, into a callable object
-    /// @tparam Arg Type of the argument
-    /// @tparam Return Return type of the member function
-    /// @tparam T Type of the class containing the member function  
-    /// @ingroup functional
-    /// @deprecated Use `wstl::Function` instead
-    /// @see https://en.cppreference.com/w/cpp/utility/functional/mem_fun_ref_t
-    template<typename Arg, typename Return, typename T>
-    class MemberFunctionReference1Type : public BinaryFunction<T, Arg, Return> {
-    public:
-        /// @brief Constructor
-        /// @param function Pointer to the non-const member function to be wrapped
-        explicit MemberFunctionReference1Type(Return(T::*function)(Arg)) : m_Function(function) {}
-
-        /// @brief Calls wrapped function with one argument on the given object 
-        /// @param object Reference to the object on which to call
-        /// @param arg Argument to pass to the function
-        /// @return Result of the function
-        Return operator()(T& object, Arg arg) const {
-            return (object.*m_Function)(arg);
-        }
-
-    protected:
-        Return(T::*m_Function)(Arg);
-    };
-
-    template<typename Arg, typename Return, typename T>
-    class ConstMemberFunctionReference1Type : public BinaryFunction<T, Arg, Return> {
-    public:
-        /// @brief Constructor
-        /// @param function Pointer to the const member function to be wrapped
-        explicit ConstMemberFunctionReference1Type(Return(T::*function)(Arg) const) : m_Function(function) {}
-
-        /// @brief Calls wrapped function with one argument on the given object 
-        /// @param object Reference to the object on which to call
-        /// @param arg Argument to pass to the function
-        /// @return Result of the function
-        Return operator()(const T& object, Arg arg) const {
-            return (object.*m_Function)(arg);
-        }
-
-    protected:
-        Return(T::*m_Function)(Arg) const;
-    };
-
-    /// @brief Creates a callable object from a non-const member function with one argument,
-    /// operating on an object reference
-    /// @param function Pointer to the non-const member function
-    /// @return A `MemberFunctionReference1Type` object wrapping the member function pointer
-    /// @ingroup functional
-    /// @deprecated Use `wstl::Function` instead
-    /// @see https://en.cppreference.com/w/cpp/utility/functional/mem_fun_ref
-    template<typename Arg, typename Return, typename T>
-    MemberFunctionReference1Type<Arg, Return, T> MemberFunctionReference(Return(T::*function)(Arg)) {
-        return MemberFunctionReference1Type<Arg, Return, T>(function);
-    }
-
-    /// @brief Creates a callable object from a const member function with one argument,
-    /// operating on an object reference
-    /// @param function Pointer to the const member function
-    /// @return A `ConstMemberFunctionReference1Type` object wrapping the member function pointer
-    /// @ingroup functional
-    /// @deprecated Use `wstl::Function` instead
-    /// @see https://en.cppreference.com/w/cpp/utility/functional/mem_fun_ref
-    template<typename Arg, typename Return, typename T>
-    ConstMemberFunctionReference1Type<Arg, Return, T> MemberFunctionReference(Return(T::*function)(Arg) const) {
-        return ConstMemberFunctionReference1Type<Arg, Return, T>(function);
-    }
-
-    // Unary negate (old)
-
-    /// @brief Functor that negates the result of a unary predicate
-    /// @tparam Predicate The type of the predicate to be negated
-    /// @ingroup functional
-    /// @deprecated Use `wstl::NotFunction` instead
-    /// @see https://en.cppreference.com/w/cpp/utility/functional/unary_negate
-    template<typename Predicate>
-    class UnaryNegate : public UnaryFunction<typename Predicate::ArgumentType, bool> {
-    public: 
-        /// @brief Constructor
-        /// @param predicate The predicate to be negated
-        explicit UnaryNegate(const Predicate& predicate) : m_Predicate(predicate) {}
-
-        /// @brief Calls the predicate with the one argument and negates its result
-        /// @param argument The argument to pass to the predicate
-        /// @return The negated result of the predicate
-        bool operator()(const typename Predicate::ArgumentType& argument) const {
-            return !m_Predicate(argument);
-        }
-
-    protected:
-        Predicate m_Predicate;
-    };
-
-    /// @brief Creates a `UnaryNegate` object for a given predicate
-    /// @param predicate The predicate whose result will be negated
-    /// @return A `UnaryNegate` object that negates the result of the predicate
-    /// @ingroup functional
-    /// @deprecated Use `wstl::NotFunction` instead
-    /// @see https://en.cppreference.com/w/cpp/utility/functional/not1
-    template<typename Predicate>
-    UnaryNegate<Predicate> Not1(const Predicate& predicate) {
-        return UnaryNegate<Predicate>(predicate);
-    }
-
-    // Binary negate (old)
-
-    /// @brief Functor that negates the result of a binary predicate
-    /// @tparam Predicate The type of the predicate to be negated
-    /// @ingroup functional
-    /// @deprecated Use `wstl::NotFunction` instead
-    /// @see https://en.cppreference.com/w/cpp/utility/functional/binary_negate
-    template<typename Predicate>
-    class BinaryNegate : public BinaryFunction<typename Predicate::FirstArgumentType, typename Predicate::SecondArgumentType, bool> {
-    public:
-        /// @brief Constructor
-        /// @param predicate The predicate to be negated
-        explicit BinaryNegate(const Predicate& predicate) : m_Predicate(predicate) {}
-
-        /// @brief Calls the predicate with the two arguments and negates its result
-        /// @param arg1 The first argument to pass to the predicate
-        /// @param arg2 The second argument to pass to the predicate
-        /// @return The negated result of the predicate
-        bool operator()(const typename Predicate::FirstArgumentType& arg1, 
-        const typename Predicate::SecondArgumentType& arg2) const {
-            return !m_Predicate(arg1, arg2);
-        }
-
-    protected:
-        Predicate m_Predicate;
-    };
-
-    /// @brief Creates a `BinaryNegate` object for a given predicate
-    /// @param predicate The predicate whose result will be negated
-    /// @return A `BinaryNegate` object that negates the result of the predicate
-    /// @ingroup functional
-    /// @deprecated Use `wstl::NotFunction` instead
-    /// @see https://en.cppreference.com/w/cpp/utility/functional/not2
-    template<typename Predicate>
-    BinaryNegate<Predicate> Not2(const Predicate& predicate) {
-        return BinaryNegate<Predicate>(predicate);
+    /// @see https://en.cppreference.com/w/cpp/utility/functional/mem_fn
+    template<typename M, typename T>
+    __WSTL_CONSTEXPR__ MemberFunctionType<M T::*> MemberFunction(M T::* pointer) {
+        return MemberFunctionType<M T::*>(pointer);
     }
 }
 
