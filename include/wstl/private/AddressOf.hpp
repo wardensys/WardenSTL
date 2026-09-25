@@ -1,5 +1,5 @@
 // Part of WardenSTL - https://github.com/WardenHD/WardenSTL
-// Copyright (c) 2025 Artem Bezruchko (WardenHD)
+// Copyright (c) 2026 Artem Bezruchko (WardenHD)
 //
 // This file is based on the Embedded Template Library (ETL)'s address_of implementation,
 // licensed under the MIT License, with minor modifications made for WardenSTL.
@@ -27,11 +27,13 @@ namespace wstl {
         return reinterpret_cast<T*>(&const_cast<char&>(reinterpret_cast<const volatile char&>(object)));
     }
 
+    #ifdef __WSTL_CXX11__
     /// @brief Returns the address of the given object, const rvalues are deleted
     /// @ingroup memory
     /// @see https://en.cppreference.com/w/cpp/memory/address_of
     template<typename T>
-    __WSTL_CONSTEXPR__ const T* AddressOf(const T&&) __WSTL_DELETE__;
+    constexpr const T* AddressOf(const T&&) = delete;
+    #endif
 
     // To address
 

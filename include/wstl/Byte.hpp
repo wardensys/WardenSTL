@@ -1,5 +1,5 @@
 // Part of WardenSTL - https://github.com/WardenHD/WardenSTL
-// Copyright (c) 2025 Artem Bezruchko (WardenHD)
+// Copyright (c) 2026 Artem Bezruchko (WardenHD)
 //
 // This file is based on the Embedded Template Library (ETL)'s byte.h
 // from https://github.com/ETLCPP/etl, licensed under the MIT License.
@@ -144,7 +144,7 @@ namespace wstl {
 
     template<typename IntegerType>
     typename EnableIf<IsIntegral<IntegerType>::Value, Byte&>::Type operator>>=(Byte& b, IntegerType shift) {
-        b = b >> shift
+        b = b >> shift;
         return b;
     }
 

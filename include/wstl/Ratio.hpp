@@ -1,5 +1,5 @@
 // Part of WardenSTL - https://github.com/WardenHD/WardenSTL
-// Copyright (c) 2025 Artem Bezruchko (WardenHD)
+// Copyright (c) 2026 Artem Bezruchko (WardenHD)
 //
 // This file is based on the Embedded Template Library (ETL)'s ratio utilities,
 // with modifications made for WardenSTL.
@@ -97,31 +97,22 @@ namespace wstl {
     typedef Ratio<326, 120> RatioE;
 
     namespace __private {
-        template<typename R>
-        class __RatioSimplify {
-        private:
-            static const __WSTL_CONSTEXPR__ intmax_t GCD = compile::GCD<intmax_t, R::Numerator, R::Denominator>::Value;
-        
-        public:
-            typedef Ratio<R::Numerator / GCD, R::Denominator / GCD> Type;
-        };
-
         template<typename R1, typename R2>
-        class __RatioAdd {
+        struct __RatioAdd {
         private:
             static const __WSTL_CONSTEXPR__ intmax_t LCM = compile::LCM<intmax_t, R1::Denominator, R2::Denominator>::Value;
 
         public:
-            typedef typename __RatioSimplify<Ratio<R1::Numerator * LCM / R1::Denominator + R2::Numerator * LCM / R2::Denominator, LCM>>::Type Type;
+            typedef typename Ratio<R1::Numerator * LCM / R1::Denominator + R2::Numerator * LCM / R2::Denominator, LCM>::Type Type;
         };
 
         template<typename R1, typename R2>
         struct __RatioSubtract {
-            typedef typename __RatioAdd<R1, Ratio<-R2::Numerator, R2::Denominator>>::Type Type;
+            typedef typename __RatioAdd<R1, Ratio<-R2::Numerator, R2::Denominator> >::Type Type;
         };
 
         template<typename R1, typename R2>
-        class __RatioMultiply {
+        struct __RatioMultiply {
         private:
             static const __WSTL_CONSTEXPR__ intmax_t GCD1 = compile::GCD<intmax_t, R1::Numerator, R2::Denominator>::Value;
             static const __WSTL_CONSTEXPR__ intmax_t GCD2 = compile::GCD<intmax_t, R1::Denominator, R2::Numerator>::Value;
@@ -132,7 +123,7 @@ namespace wstl {
 
         template<typename R1, typename R2>
         struct __RatioDivide {
-            typedef typename __RatioMultiply<R1, Ratio<R2::Denominator, R2::Numerator>>::Type Type;
+            typedef typename __RatioMultiply<R1, Ratio<R2::Denominator, R2::Numerator> >::Type Type;
         };
     }
 
@@ -176,7 +167,7 @@ namespace wstl {
     /// @ingroup ratio
     /// @see https://en.cppreference.com/w/cpp/numeric/ratio/ratio_add
     template<typename R1, typename R2>
-    struct RatioAdd : __private::__RatioAdd<R1, R2> {};
+    struct RatioAdd : __private::__RatioAdd<R1, R2>::Type {};
 
     /// @brief Subtracts two ratios
     /// @tparam R1 First ratio
@@ -184,7 +175,7 @@ namespace wstl {
     /// @ingroup ratio
     /// @see https://en.cppreference.com/w/cpp/numeric/ratio/ratio_subtract
     template<typename R1, typename R2>
-    struct RatioSubtract : __private::__RatioSubtract<R1, R2> {};
+    struct RatioSubtract : __private::__RatioSubtract<R1, R2>::Type {};
 
     /// @brief Multiplies two ratios
     /// @tparam R1 First ratio
@@ -192,7 +183,7 @@ namespace wstl {
     /// @ingroup ratio
     /// @see https://en.cppreference.com/w/cpp/numeric/ratio/ratio_multiply
     template<typename R1, typename R2>
-    struct RatioMultiply : __private::__RatioMultiply<R1, R2> {};
+    struct RatioMultiply : __private::__RatioMultiply<R1, R2>::Type {};
 
     /// @brief Divides two ratios
     /// @tparam R1 First ratio
@@ -200,7 +191,7 @@ namespace wstl {
     /// @ingroup ratio
     /// @see https://en.cppreference.com/w/cpp/numeric/ratio/ratio_divide
     template<typename R1, typename R2>
-    struct RatioDivide : __private::__RatioDivide<R1, R2> {};
+    struct RatioDivide : __private::__RatioDivide<R1, R2>::Type {};
     #endif
 
     /// @brief Checks whether two ratios are equal

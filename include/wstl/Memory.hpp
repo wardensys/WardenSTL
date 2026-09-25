@@ -1,5 +1,5 @@
 // Part of WardenSTL - https://github.com/WardenHD/WardenSTL
-// Copyright (c) 2025 Artem Bezruchko (WardenHD)
+// Copyright (c) 2026 Artem Bezruchko (WardenHD)
 //
 // This file is based on the Embedded Template Library (ETL)'s memory.h,
 // which are licensed under the MIT License.
@@ -200,7 +200,7 @@ namespace wstl {
 
     // Unique pointer
 
-    template<typename T, typename Deleter = DefaultDelete<T>> 
+    template<typename T, typename Deleter = DefaultDelete<T> > 
     class UniquePointer;
     
     /// @brief A smart pointer that owns and manages another object through a pointer
@@ -354,10 +354,17 @@ namespace wstl {
             return m_Deleter;
         }
 
+        #ifdef __WSTL_CXX11__
         /// @brief Returns true if the pointer is not null
         explicit operator bool() const __WSTL_NOEXCEPT__ {
             return m_Pointer != __WSTL_NULLPTR__;
         }
+        #else
+        /// @brief Returns true if the pointer is not null, workaround for C++98
+        operator const void*() const __WSTL_NOEXCEPT__ {
+            return m_Pointer != __WSTL_NULLPTR__;
+        }
+        #endif
 
         /// @brief Dereference operator
         /// @return A reference to the object pointed to by the pointer
@@ -541,10 +548,17 @@ namespace wstl {
             return m_Deleter;
         }
 
+        #ifdef __WSTL_CXX11__
         /// @brief Returns true if the pointer is not null
         explicit operator bool() const __WSTL_NOEXCEPT__ {
             return m_Pointer != __WSTL_NULLPTR__;
         }
+        #else
+        /// @brief Returns true if the pointer is not null, workaround for C++98
+        operator const void*() const __WSTL_NOEXCEPT__ {
+            return m_Pointer != __WSTL_NULLPTR__;
+        }
+        #endif
 
         /// @brief Dereference operator
         /// @return The object pointed to by the pointer
@@ -616,7 +630,7 @@ namespace wstl {
     /// @ingroup memory
     /// @see https://en.cppreference.com/w/cpp/memory/make_unique
     template<typename T>
-    inline typename EnableIf<!IsArray<T>::Value, UniquePointer<T>>::Type MakeUnique() {
+    inline typename EnableIf<!IsArray<T>::Value, UniquePointer<T> >::Type MakeUnique() {
         return UniquePointer<T>(::new T());
     }
 
@@ -627,7 +641,7 @@ namespace wstl {
     /// @ingroup memory
     /// @see https://en.cppreference.com/w/cpp/memory/make_unique
     template<typename T, typename Arg>
-    inline typename EnableIf<!IsArray<T>::Value, UniquePointer<T>>::Type MakeUnique(const Arg& arg) {
+    inline typename EnableIf<!IsArray<T>::Value, UniquePointer<T> >::Type MakeUnique(const Arg& arg) {
         return UniquePointer<T>(::new T(arg));
     }
 
@@ -639,7 +653,7 @@ namespace wstl {
     /// @ingroup memory
     /// @see https://en.cppreference.com/w/cpp/memory/make_unique
     template<typename T, typename Arg1, typename Arg2>
-    inline typename EnableIf<!IsArray<T>::Value, UniquePointer<T>>::Type MakeUnique(const Arg1& arg1, const Arg2& arg2) {
+    inline typename EnableIf<!IsArray<T>::Value, UniquePointer<T> >::Type MakeUnique(const Arg1& arg1, const Arg2& arg2) {
         return UniquePointer<T>(::new T(arg1, arg2));
     }
 
@@ -652,7 +666,7 @@ namespace wstl {
     /// @ingroup memory
     /// @see https://en.cppreference.com/w/cpp/memory/make_unique
     template<typename T, typename Arg1, typename Arg2, typename Arg3>
-    inline typename EnableIf<!IsArray<T>::Value, UniquePointer<T>>::Type MakeUnique(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3) {
+    inline typename EnableIf<!IsArray<T>::Value, UniquePointer<T> >::Type MakeUnique(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3) {
         return UniquePointer<T>(::new T(arg1, arg2, arg3));
     }
     #endif
@@ -665,7 +679,7 @@ namespace wstl {
     /// @see https://en.cppreference.com/w/cpp/memory/make_unique
     template<typename T>
     __WSTL_CONSTEXPR14__
-    inline typename EnableIf<__private::__IsUnboundedArray<T>::Value, UniquePointer<T>>::Type MakeUnique(size_t size) {
+    inline typename EnableIf<__private::__IsUnboundedArray<T>::Value, UniquePointer<T> >::Type MakeUnique(size_t size) {
         return UniquePointer<T>(new typename RemoveAllExtents<T>::Type[size]());
     }
 }

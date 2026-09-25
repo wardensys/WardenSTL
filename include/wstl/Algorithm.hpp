@@ -1,5 +1,5 @@
 // Part of WardenSTL - https://github.com/WardenHD/WardenSTL
-// Copyright (c) 2025 Artem Bezruchko (WardenHD)
+// Copyright (c) 2026 Artem Bezruchko (WardenHD)
 //
 // Licensed under the MIT License. See LICENSE file for details.
 
@@ -1472,7 +1472,7 @@ namespace wstl {
         /// @tparam High Upper boundary
         /// @tparam Compare Binary comparator type
         /// @ingroup algorithm
-        template<typename T, T Value, T Low, T High, typename Compare = Less<T>>
+        template<typename T, T Value, T Low, T High, typename Compare = Less<T> >
         struct Clamp : Min<T, Max<T, Value, Low, Compare>::Value, High, Compare> {};
     }
 
@@ -2199,7 +2199,7 @@ namespace wstl {
     void NthElement(RandomAccessIterator first, RandomAccessIterator nth, RandomAccessIterator last, Compare compare) {
         while (first < last) {
             // Median-of-three pivot selection
-            auto middle = first + (last - first) / 2;
+            RandomAccessIterator middle = first + (last - first) / 2;
             
             // Sort three pivots between themselves
             if (compare(*middle, *first)) IteratorSwap(middle, first);
@@ -2686,7 +2686,7 @@ namespace wstl {
             ForwardIterator2 last2 = Next(first2, Distance(first1, last1));
 
             for(ForwardIterator1 it = first1; it != last1; ++it) {
-                const BinderFirst<BinaryPredicate> predicateIsIt = BindFirst(predicate, *it);
+                const BinderFirst<BinaryPredicate, typename IteratorTraits<ForwardIterator1>::ValueType> predicateIsIt = BindFirst(predicate, *it);
                 if(FindIf(first1, it, predicateIsIt) != it) continue;
                 if(CountIf(first1, last1, predicateIsIt) != CountIf(first2, last2, predicateIsIt)) return false;
             }
@@ -2733,7 +2733,7 @@ namespace wstl {
 
         if(first1 != last1) {
             for(ForwardIterator1 it = first1; it != last1; ++it) {
-                const BinderFirst<BinaryPredicate> predicateIsIt = BindFirst(predicate, *it);
+                const BinderFirst<BinaryPredicate, typename IteratorTraits<ForwardIterator1>::ValueType> predicateIsIt = BindFirst(predicate, *it);
                 if(FindIf(first1, it, predicateIsIt) != it) continue;
                 if(CountIf(first1, last1, predicateIsIt) != CountIf(first2, last2, predicateIsIt)) return false;
             }

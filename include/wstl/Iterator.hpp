@@ -1,5 +1,5 @@
 // Part of WardenSTL - https://github.com/WardenHD/WardenSTL
-// Copyright (c) 2025 Artem Bezruchko (WardenHD)
+// Copyright (c) 2026 Artem Bezruchko (WardenHD)
 //
 // This file is based on the Embedded Template Library (ETL)'s iterator utilities,
 // which are licensed under the MIT License.
@@ -406,16 +406,16 @@ namespace wstl {
         typedef T IteratorType;
 
         /// @brief Default constructor
-        __WSTL_CONSTEXPR14__ ReverseIterator() : m_Current() {}
+        __WSTL_CONSTEXPR__ ReverseIterator() : m_Current() {}
 
         /// @brief Parameterized constructor
         /// @param iterator Base iterator to adapt
-        __WSTL_CONSTEXPR14__ explicit ReverseIterator(IteratorType iterator) : m_Current(iterator) {}
+        __WSTL_CONSTEXPR__ explicit ReverseIterator(IteratorType iterator) : m_Current(iterator) {}
 
         /// @brief Templated copy constructor - copies from reverse iterator of potentially different type
         /// @param other Reverse iterator to copy from
         template<typename U>
-        __WSTL_CONSTEXPR14__ ReverseIterator(const ReverseIterator<U>& other) : m_Current(other.m_Current) {}
+        __WSTL_CONSTEXPR__ ReverseIterator(const ReverseIterator<U>& other) : m_Current(other.m_Current) {}
 
         /// @brief Templated copy assignemt operator - assigns a reverse iterator 
         /// with potentially different type
@@ -427,7 +427,7 @@ namespace wstl {
         }
 
         /// @brief Returns the underlying iterator
-        __WSTL_CONSTEXPR14__ IteratorType Base() const {
+        __WSTL_CONSTEXPR__ IteratorType Base() const {
             return m_Current;
         }
         
@@ -440,7 +440,7 @@ namespace wstl {
         
         /// @brief Arrow operator - provides access to element's member functions or properties
         /// @return Pointer to the element
-        __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__ PointerType operator->() const {
+        __WSTL_NODISCARD__ __WSTL_CONSTEXPR__ PointerType operator->() const {
             return AddressOf(this->operator*());
         }
 
@@ -477,7 +477,7 @@ namespace wstl {
         /// @brief Adds a given offset to the iterator and returns a new reverse iterator
         /// @param n The offset to add (negative for backward movement)
         /// @return A new reverse iterator advanced by `n` positions
-        __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__ ReverseIterator operator+(const DifferenceType n) const {
+        __WSTL_NODISCARD__ __WSTL_CONSTEXPR__ ReverseIterator operator+(const DifferenceType n) const {
             return ReverseIterator(m_Current - n);
         }
 
@@ -492,7 +492,7 @@ namespace wstl {
         /// @brief Subtracts a given offset from the iterator and returns a new reverse iterator
         /// @param n The offset to subtract (negative for forward movement)
         /// @return A new reverse iterator moved back by `n` positions
-        __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__ ReverseIterator operator-(const DifferenceType n) const {
+        __WSTL_NODISCARD__ __WSTL_CONSTEXPR__ ReverseIterator operator-(const DifferenceType n) const {
             return ReverseIterator(m_Current + n);
         }
 
@@ -507,7 +507,7 @@ namespace wstl {
         /// @brief Provides access to the element at a given offset relative to the iterator
         /// @param n The offset from the current position
         /// @return A reference to the element at the specified offset
-        __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__ ReferenceType operator[](const DifferenceType n) const {
+        __WSTL_NODISCARD__ __WSTL_CONSTEXPR__ ReferenceType operator[](const DifferenceType n) const {
             return *(*this + n);
         }
 
@@ -521,32 +521,32 @@ namespace wstl {
     // Comparison operators for ReverseIterator
 
     template<typename T>
-    __WSTL_CONSTEXPR14__ bool operator==(const ReverseIterator<T>& a, const ReverseIterator<T>& b) {
+    __WSTL_CONSTEXPR__ bool operator==(const ReverseIterator<T>& a, const ReverseIterator<T>& b) {
         return a.Base() == b.Base();
     }
 
     template<typename T>
-    __WSTL_CONSTEXPR14__ bool operator!=(const ReverseIterator<T>& a, const ReverseIterator<T>& b) {
+    __WSTL_CONSTEXPR__ bool operator!=(const ReverseIterator<T>& a, const ReverseIterator<T>& b) {
         return !(a == b);
     }
 
     template<typename T>
-    __WSTL_CONSTEXPR14__ bool operator<(const ReverseIterator<T>& a, const ReverseIterator<T>& b) {
+    __WSTL_CONSTEXPR__ bool operator<(const ReverseIterator<T>& a, const ReverseIterator<T>& b) {
         return b.Base() < a.Base();
     }
 
     template<typename T>
-    __WSTL_CONSTEXPR14__ bool operator<=(const ReverseIterator<T>& a, const ReverseIterator<T>& b) {
+    __WSTL_CONSTEXPR__ bool operator<=(const ReverseIterator<T>& a, const ReverseIterator<T>& b) {
         return !(b < a);
     }
 
     template<typename T>
-    __WSTL_CONSTEXPR14__ bool operator>(const ReverseIterator<T>& a, const ReverseIterator<T>& b) {
+    __WSTL_CONSTEXPR__ bool operator>(const ReverseIterator<T>& a, const ReverseIterator<T>& b) {
         return b < a;
     }
 
     template<typename T>
-    __WSTL_CONSTEXPR14__ bool operator>=(const ReverseIterator<T>& a, const ReverseIterator<T>& b) {
+    __WSTL_CONSTEXPR__ bool operator>=(const ReverseIterator<T>& a, const ReverseIterator<T>& b) {
         return !(a < b);
     }
 
@@ -558,7 +558,7 @@ namespace wstl {
     /// @return A new reverse iterator advanced by `offset` positions
     /// @ingroup iterator
     template<typename T>
-    __WSTL_CONSTEXPR14__ ReverseIterator<T> operator+(typename ReverseIterator<T>::DifferenceType offset, const ReverseIterator<T>& x) {
+    __WSTL_CONSTEXPR__ ReverseIterator<T> operator+(typename ReverseIterator<T>::DifferenceType offset, const ReverseIterator<T>& x) {
         return x + offset;
     }
 
@@ -570,7 +570,7 @@ namespace wstl {
     /// @return The difference between the two iterators
     /// @ingroup iterator
     template<typename T>
-    __WSTL_CONSTEXPR14__ typename ReverseIterator<T>::DifferenceType operator-(const ReverseIterator<T>& a, const ReverseIterator<T>& b) {
+    __WSTL_CONSTEXPR__ typename ReverseIterator<T>::DifferenceType operator-(const ReverseIterator<T>& a, const ReverseIterator<T>& b) {
         return b.Base() - a.Base();
     }
 
@@ -580,7 +580,7 @@ namespace wstl {
     /// @ingroup iterator
     /// @see https://en.cppreference.com/w/cpp/iterator/make_reverse_iterator
     template<typename T>
-    __WSTL_CONSTEXPR14__ ReverseIterator<T> MakeReverseIterator(T iterator) {
+    __WSTL_CONSTEXPR__ ReverseIterator<T> MakeReverseIterator(T iterator) {
         return ReverseIterator<T>(iterator);
     }
 }
@@ -623,16 +623,16 @@ namespace wstl {
         typedef T IteratorType;
 
         /// @brief Default constructor
-        __WSTL_CONSTEXPR14__ MoveIterator() : m_Current() {}
+        constexpr MoveIterator() : m_Current() {}
 
         /// @brief Parameterized constructor
         /// @param iterator Base iterator to adapt
-        __WSTL_CONSTEXPR14__ explicit MoveIterator(IteratorType iterator) : m_Current(wstl::Move(iterator)) {}
+        constexpr explicit MoveIterator(IteratorType iterator) : m_Current(wstl::Move(iterator)) {}
 
         /// @brief Templated copy constructor - copies from move iterator of potentially different type
         /// @param other Move iterator to copy from
         template<typename U>
-        __WSTL_CONSTEXPR14__ MoveIterator(const MoveIterator<U>& other) : m_Current(other.m_Current) {}
+        constexpr MoveIterator(const MoveIterator<U>& other) : m_Current(other.m_Current) {}
 
         /// @brief Templated copy assignemt operator - assigns a reverse iterator 
         /// with potentially different type
@@ -644,7 +644,7 @@ namespace wstl {
         }
 
         /// @brief Returns a reference to the underlying iterator
-        __WSTL_CONSTEXPR14__ const IteratorType& Base() const& __WSTL_NOEXCEPT__ {
+        constexpr const IteratorType& Base() const& __WSTL_NOEXCEPT__ {
             return m_Current;
         }
 
@@ -655,13 +655,13 @@ namespace wstl {
         
         /// @brief Arrow operator - provides access to element's member functions or properties
         /// @return Pointer to the element
-        __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__ PointerType operator->() const {
+        __WSTL_NODISCARD__ constexpr PointerType operator->() const {
             return m_Current;
         }
 
         /// @brief Dereference operator
         /// @return Reference to the element that precedes the base iterator
-        __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__ ReferenceType operator*() const {
+        __WSTL_NODISCARD__ constexpr ReferenceType operator*() const {
             return static_cast<ReferenceType>(*m_Current);
         }
 
@@ -698,7 +698,7 @@ namespace wstl {
         /// @brief Adds a given offset to the iterator and returns a new move iterator
         /// @param n The offset to add (negative for backward movement)
         /// @return A new move iterator advanced by `n` positions
-        __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__ MoveIterator operator+(DifferenceType n) const {
+        __WSTL_NODISCARD__ constexpr MoveIterator operator+(DifferenceType n) const {
             return MoveIterator(m_Current + n);
         }
 
@@ -713,7 +713,7 @@ namespace wstl {
         /// @brief Subtracts a given offset from the iterator and returns a new reverse iterator
         /// @param n The offset to subtract (negative for forward movement)
         /// @return A new reverse iterator moved back by `n` positions
-        __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__ MoveIterator operator-(DifferenceType n) const {
+        __WSTL_NODISCARD__ constexpr MoveIterator operator-(DifferenceType n) const {
             return MoveIterator(m_Current - n);
         }
 
@@ -728,7 +728,7 @@ namespace wstl {
         /// @brief Provides access to the element at a given offset relative to the iterator
         /// @param n The offset from the current position
         /// @return A reference to the element at the specified offset
-        __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__ ReferenceType operator[](DifferenceType n) const {
+        __WSTL_NODISCARD__ constexpr ReferenceType operator[](DifferenceType n) const {
             return wstl::Move(m_Current[n]);
         }
     
@@ -742,32 +742,32 @@ namespace wstl {
     // Comparison operators for MoveIterator
 
     template<typename T>
-    __WSTL_CONSTEXPR14__ bool operator==(const MoveIterator<T>& a, const MoveIterator<T>& b) {
+    constexpr bool operator==(const MoveIterator<T>& a, const MoveIterator<T>& b) {
         return a.Base() == b.Base();
     }
 
     template<typename T>
-    __WSTL_CONSTEXPR14__ bool operator!=(const MoveIterator<T>& a, const MoveIterator<T>& b) {
+    constexpr bool operator!=(const MoveIterator<T>& a, const MoveIterator<T>& b) {
         return !(a == b);
     }
 
     template<typename T>
-    __WSTL_CONSTEXPR14__ bool operator<(const MoveIterator<T>& a, const MoveIterator<T>& b) {
+    constexpr bool operator<(const MoveIterator<T>& a, const MoveIterator<T>& b) {
         return a.Base() < b.Base();
     }
 
     template<typename T>
-    __WSTL_CONSTEXPR14__ bool operator<=(const MoveIterator<T>& a, const MoveIterator<T>& b) {
+    constexpr bool operator<=(const MoveIterator<T>& a, const MoveIterator<T>& b) {
         return !(b < a);
     }
 
     template<typename T>
-    __WSTL_CONSTEXPR14__ bool operator>(const MoveIterator<T>& a, const MoveIterator<T>& b) {
+    constexpr bool operator>(const MoveIterator<T>& a, const MoveIterator<T>& b) {
         return b < a;
     }
 
     template<typename T>
-    __WSTL_CONSTEXPR14__ bool operator>=(const MoveIterator<T>& a, const MoveIterator<T>& b) {
+    constexpr bool operator>=(const MoveIterator<T>& a, const MoveIterator<T>& b) {
         return !(a < b);
     }
 
@@ -779,7 +779,7 @@ namespace wstl {
     /// @return A new move iterator advanced by `offset` positions
     /// @ingroup iterator
     template<typename T>
-    __WSTL_CONSTEXPR14__ MoveIterator<T> operator+(typename MoveIterator<T>::DifferenceType offset, const MoveIterator<T>& x) {
+    constexpr MoveIterator<T> operator+(typename MoveIterator<T>::DifferenceType offset, const MoveIterator<T>& x) {
         return x + offset;
     }
 
@@ -791,7 +791,7 @@ namespace wstl {
     /// @return The difference between the two iterators
     /// @ingroup iterator
     template<typename T1, typename T2>
-    __WSTL_CONSTEXPR14__ auto operator-(const MoveIterator<T1>& a, const MoveIterator<T2>& b) -> decltype(a.Base() - b.Base()) {
+    constexpr auto operator-(const MoveIterator<T1>& a, const MoveIterator<T2>& b) -> decltype(a.Base() - b.Base()) {
         return a.Base() - b.Base();
     }
     
@@ -801,13 +801,15 @@ namespace wstl {
     /// @ingroup iterator
     /// @see https://en.cppreference.com/w/cpp/iterator/make_move_iterator
     template<typename T>
-    __WSTL_CONSTEXPR14__ MoveIterator<T> MakeMoveIterator(T iterator) {
+    constexpr MoveIterator<T> MakeMoveIterator(T iterator) {
         return MoveIterator<T>(wstl::Move(iterator));
     }
     #endif
 }
 
+#ifdef __WSTL_CXX11__
 WSTL_ITERATOR_STDTRAITS_COMPAT(template<typename T>, wstl::MoveIterator<T>)
+#endif
 
 namespace wstl {
     // Insert iterator
@@ -827,7 +829,7 @@ namespace wstl {
         /// @brief Constructor
         /// @param container The container to insert elements into
         /// @param iterator The position at which elements should be inserted
-        __WSTL_CONSTEXPR14__ explicit InsertIterator(Container& container, typename Container::Iterator iterator) : 
+        __WSTL_CONSTEXPR__ explicit InsertIterator(Container& container, typename Container::Iterator iterator) : 
             m_Container(AddressOf(container)), m_Iterator(iterator) {}
 
         /// @brief Inserts an element into the container at the current iterator position.
@@ -906,7 +908,7 @@ namespace wstl {
 
         /// @brief Constructor
         /// @param container The container where elements will be inserted at the front
-        __WSTL_CONSTEXPR14__ explicit FrontInsertIterator(Container& container) 
+        __WSTL_CONSTEXPR__ explicit FrontInsertIterator(Container& container) 
             : m_Container(AddressOf(container)) {}
 
         /// @brief Inserts an element at the front of the container
@@ -955,7 +957,7 @@ namespace wstl {
     /// @ingroup iterator
     /// @see https://en.cppreference.com/w/cpp/iterator/front_inserter
     template<typename Container>
-    __WSTL_CONSTEXPR14__ FrontInsertIterator<Container> FrontInserter(Container& container) {
+    __WSTL_CONSTEXPR__ FrontInsertIterator<Container> FrontInserter(Container& container) {
         return FrontInsertIterator<Container>(container);
     }
 }
@@ -978,7 +980,7 @@ namespace wstl {
 
         /// @brief Constructor
         /// @param container The container where elements will be inserted at the back
-        explicit BackInsertIterator(Container& container) : m_Container(AddressOf(container)) {}
+        __WSTL_CONSTEXPR__ explicit BackInsertIterator(Container& container) : m_Container(AddressOf(container)) {}
 
         /// @brief Inserts an element at the back of the container
         /// @param value The value to insert
@@ -1026,7 +1028,7 @@ namespace wstl {
     /// @ingroup iterator
     /// @see https://en.cppreference.com/w/cpp/iterator/back_inserter
     template<typename Container>
-    __WSTL_CONSTEXPR14__ BackInsertIterator<Container> BackInserter(Container& container) {
+    __WSTL_CONSTEXPR__ BackInsertIterator<Container> BackInserter(Container& container) {
         return BackInsertIterator<Container>(container);
     }
 }

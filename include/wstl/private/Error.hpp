@@ -1,5 +1,5 @@
 // Part of WardenSTL - https://github.com/WardenHD/WardenSTL
-// Copyright (c) 2025 Artem Bezruchko (WardenHD)
+// Copyright (c) 2026 Artem Bezruchko (WardenHD)
 //
 // This file is inspired by the Embedded Template Library (ETL)'s error handling utilities,
 // and some concepts and functions have been adapted for WardenSTL.

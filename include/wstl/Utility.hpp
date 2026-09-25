@@ -1,5 +1,5 @@
 // Part of WardenSTL - https://github.com/WardenHD/WardenSTL
-// Copyright (c) 2025 Artem Bezruchko (WardenHD)
+// Copyright (c) 2026 Artem Bezruchko (WardenHD)
 //
 // This file is based on the Embedded Template Library (ETL)'s utility.h
 // from https://github.com/ETLCPP/etl, licensed under the MIT License.
@@ -218,10 +218,12 @@ namespace wstl {
         }
         #endif
     
+    #ifdef __WSTL_CXX11__
     private:
         template<typename... Args1, size_t... Indices1, typename... Args2, size_t... Indices2>
         __WSTL_CONSTEXPR14__ Pair(Tuple<Args1...>& firstArgs, Tuple<Args2...>& secondArgs, 
             IndexSequence<Indices1...>, IndexSequence<Indices2...>) : First(Forward<Args1>(Get<Indices1>(firstArgs))...), Second(Forward<Args2>(Get<Indices2>(secondArgs))...) {}
+    #endif
     };
 
     // Template deduction guide

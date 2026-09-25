@@ -1,5 +1,5 @@
 // Part of WardenSTL - https://github.com/WardenHD/WardenSTL
-// Copyright (c) 2025 Artem Bezruchko (WardenHD)
+// Copyright (c) 2026 Artem Bezruchko (WardenHD)
 //
 // Licensed under the MIT License. See LICENSE file for details.
 
@@ -428,6 +428,7 @@ namespace wstl {
 
 // Macro for range-based loop compatibility for containers
 
+#ifdef __WSTL_CXX11__
 /// @brief Macro that defines hidden friend functions `begin` and `end` for a container type, 
 /// allowing it to be used in range-based for loops, must be used inside the container class definition
 /// @param type The container class to define the functions for
@@ -437,5 +438,13 @@ namespace wstl {
     friend __WSTL_CONSTEXPR__ typename type::ConstIterator begin(const type& x) { return x.Begin(); } \
     friend __WSTL_CONSTEXPR__ typename type::Iterator end(type& x) { return x.End(); } \
     friend __WSTL_CONSTEXPR__ typename type::ConstIterator end(const type& x) { return x.End(); }
+#else
+/// @brief Macro that defines hidden friend functions `begin` and `end` for a container type, 
+/// allowing it to be used in range-based for loops, must be used inside the container class definition.
+/// Does nothing in C++98
+/// @param type The container class to define the functions for
+/// @ingroup containers
+#define __WSTL_CONTAINER_RANGE_COMPAT__(type)
+#endif
 
 #endif

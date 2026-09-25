@@ -1,5 +1,5 @@
 // Part of WardenSTL - https://github.com/WardenHD/WardenSTL
-// Copyright (c) 2025 Artem Bezruchko (WardenHD)
+// Copyright (c) 2026 Artem Bezruchko (WardenHD)
 //
 // This file is inspired by the Embedded Template Library (ETL)'s bit.h and binary.h,
 // but it has been re-implemented with custom logic for WardenSTL.

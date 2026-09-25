@@ -1,5 +1,5 @@
 // Part of WardenSTL - https://github.com/WardenHD/WardenSTL
-// Copyright (c) 2025 Artem Bezruchko (WardenHD)
+// Copyright (c) 2026 Artem Bezruchko (WardenHD)
 //
 // This file is inspired by the Embedded Template Library (ETL)'s array container implementation,
 // and some concepts and functions have been adapted for WardenSTL.
@@ -104,7 +104,7 @@ namespace wstl {
         }
 
         /// @brief Gets const reference to the last element of the array
-        __WSTL_NODISCARD__ __WSTL_CONSTEXPR14__ ConstReferenceType Back() const __WSTL_NOEXCEPT__ {
+        __WSTL_NODISCARD__ __WSTL_CONSTEXPR__ ConstReferenceType Back() const __WSTL_NOEXCEPT__ {
             return __m_Elements[N - 1];
         }
 
@@ -560,7 +560,7 @@ namespace wstl {
     // Tuple element specialization
 
     template<size_t Index, typename T, size_t N>
-    struct TupleElement<Index, Array<T, N>> {
+    struct TupleElement<Index, Array<T, N> > {
         WSTL_STATIC_ASSERT(Index < N, "Index out of bounds");
         typedef T Type;
     };
@@ -568,7 +568,7 @@ namespace wstl {
     // Tuple size specialization
 
     template<typename T, size_t N>
-    struct TupleSize<Array<T, N>> : IntegralConstant<size_t, N> {};
+    struct TupleSize<Array<T, N> > : IntegralConstant<size_t, N> {};
 
     // Get specialization
 
@@ -654,14 +654,12 @@ namespace wstl {
     #ifdef __WSTL_CXX11__
     namespace __private {
         template<typename T, size_t N, size_t... Indices>
-        __WSTL_CONSTEXPR14__
-        inline Array<RemoveCVType<T>, N> __ToArray(T (&array)[N], IndexSequence<Indices...>) {
+        constexpr Array<RemoveCVType<T>, N> __ToArray(T (&array)[N], IndexSequence<Indices...>) {
             return {{array[Indices]...}};
         }
 
         template<typename T, size_t N, size_t... Indices>
-        __WSTL_CONSTEXPR14__
-        inline Array<RemoveCVType<T>, N> __ToArray(T (&&array)[N], IndexSequence<Indices...>) {
+        constexpr Array<RemoveCVType<T>, N> __ToArray(T (&&array)[N], IndexSequence<Indices...>) {
             return {{Move(array[Indices])...}};
         }
     }
@@ -673,8 +671,7 @@ namespace wstl {
     /// @since C++11
     /// @see https://en.cppreference.com/w/cpp/container/array/to_array
     template<typename T, size_t N>
-    __WSTL_CONSTEXPR14__
-    inline Array<RemoveCVType<T>, N> ToArray(T (&array)[N]) {
+    constexpr Array<RemoveCVType<T>, N> ToArray(T (&array)[N]) {
         return __private::__ToArray(array, MakeIndexSequence<N>{});
     }
 
@@ -685,8 +682,7 @@ namespace wstl {
     /// @since C++11
     /// @see https://en.cppreference.com/w/cpp/container/array/to_array
     template<typename T, size_t N>
-    __WSTL_CONSTEXPR14__
-    inline Array<RemoveCVType<T>, N> ToArray(T (&&array)[N]) {
+    constexpr Array<RemoveCVType<T>, N> ToArray(T (&&array)[N]) {
         return __private::__ToArray(Move(array), MakeIndexSequence<N>{});
     }
     #else
@@ -696,7 +692,7 @@ namespace wstl {
     /// @ingroup array
     /// @see https://en.cppreference.com/w/cpp/container/array/to_array
     template<typename T, size_t N>
-    inline Array<typename RemoveCV<T>::Type, N> ToArray(T (&array)[N]) {
+    Array<typename RemoveCV<T>::Type, N> ToArray(T (&array)[N]) {
         Array<typename RemoveCV<T>::Type, N> result;
         Copy(Begin(array), End(array), Begin(result));
         return result;
