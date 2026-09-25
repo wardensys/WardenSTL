@@ -6,6 +6,8 @@
 #include <doctest.h>
 #include <wstl/Functional.hpp>
 #include <functional>
+#include <array>
+#include <vector>
 
 #include "Utils.hpp"
 
