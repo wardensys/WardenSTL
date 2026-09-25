@@ -2968,7 +2968,6 @@ namespace wstl {
     // Bind
 
     namespace __private {
-        
         template<typename T, typename Tuple>
         constexpr T& __EvaluateBindArg(ReferenceWrapper<T> ref, Tuple&&) __WSTL_NOEXCEPT__ {
             return ref.Get();

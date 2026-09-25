@@ -203,6 +203,16 @@ TEST_SUITE("Utility") {
         // wstl::TupleElement<2, wstl::Pair<int, double> >::Type er;
     }
 
+    #ifdef __WSTL_CXX11__
+    TEST_CASE("Pair CommonType specialization") {
+        CHECK(wstl::IsSame<wstl::CommonType<wstl::Pair<int, char>, wstl::Pair<char, float>>::Type, wstl::Pair<int, float>>::Value);
+        CHECK(wstl::IsSame<wstl::CommonType<wstl::Pair<double, char>, wstl::Pair<char, int>>::Type, wstl::Pair<double, int>>::Value);
+
+        // The following line should fail with a compilation error
+        // wstl::CommonType<wstl::Pair<int, char>, wstl::Pair<char, FakeInteger>>::Type;
+    }
+    #endif
+
     TEST_CASE("Pair Get specialization") {
         #ifdef __WSTL_CXX11__
         typedef MovableData<int> SecondType;

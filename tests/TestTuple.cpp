@@ -380,6 +380,18 @@ TEST_SUITE("Tuple") {
         CHECK_FALSE(wstl::TupleIsEmpty<wstl::Tuple<int, char>>::Value);
     }
 
+    TEST_CASE("CommonType specialization") {
+        CHECK(wstl::IsSame<wstl::CommonType<wstl::Tuple<int>>::Type, wstl::Tuple<int>>::Value);
+        CHECK(wstl::IsSame<wstl::CommonType<wstl::Tuple<int>, wstl::Tuple<char>, wstl::Tuple<long>>::Type, wstl::Tuple<long>>::Value);
+        CHECK(wstl::IsSame<wstl::CommonType<wstl::Tuple<int, int>, wstl::Tuple<char, long>>::Type, wstl::Tuple<int, long>>::Value);
+        CHECK(wstl::IsSame<wstl::CommonType<wstl::Tuple<int, char>, wstl::Tuple<float, long>, wstl::Tuple<double, int>>::Type, wstl::Tuple<double, long>>::Value);
+        CHECK(wstl::IsSame<wstl::CommonType<wstl::Tuple<int>, wstl::Tuple<const int>>::Type, wstl::Tuple<int>>::Value);
+        CHECK(wstl::IsSame<wstl::CommonType<wstl::Tuple<int, char, double>, wstl::Tuple<char, int, float>, wstl::Tuple<long, float, int>>::Type, wstl::Tuple<long, float, double>>::Value);
+
+        // The following line should fail with a compilation error
+        // wstl::CommonType<wstl::Tuple<int, int>, wstl::Tuple<long, long>, wstl::Tuple<char>>::Type;
+    }
+
     TEST_CASE("Tuple Get specialization") {
         wstl::Tuple<int, MovableData<int>> data(10, 64);
         const wstl::Tuple<int, MovableData<int>> constData(20, 32);

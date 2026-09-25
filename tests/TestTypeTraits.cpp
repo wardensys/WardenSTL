@@ -1486,16 +1486,16 @@ TEST_SUITE("TypeTraits") {
 
     #ifdef __WSTL_CXX11__
     TEST_CASE("CommonType") {
-        CHECK(wstl::IsSame<wstl::CommonType<int>::Type, int>::Value);
-        CHECK(wstl::IsSame<wstl::CommonType<int, int>::Type, int>::Value);
-        CHECK(wstl::IsSame<wstl::CommonType<int, float>::Type, float>::Value);
-        CHECK(wstl::IsSame<wstl::CommonType<int, double>::Type, double>::Value);
-        CHECK(wstl::IsSame<wstl::CommonType<int, const int>::Type, int>::Value);
-        CHECK(wstl::IsSame<wstl::CommonType<int&, int>::Type, int>::Value);
-        CHECK(wstl::IsSame<wstl::CommonType<int&, const int&>::Type, int>::Value);
-        CHECK(wstl::IsSame<wstl::CommonType<int&&, int>::Type, int>::Value);
-        CHECK(wstl::IsSame<wstl::CommonType<int&&, const int&>::Type, int>::Value);
-        CHECK(wstl::IsSame<wstl::CommonType<int, char, double>::Type, double>::Value);
+        CHECK(wstl::IsSame<wstl::CommonType<int>::Type, std::common_type<int>::type>::Value);
+        CHECK(wstl::IsSame<wstl::CommonType<int, int>::Type, std::common_type<int>::type>::Value);
+        CHECK(wstl::IsSame<wstl::CommonType<int, float>::Type, std::common_type<int, float>::type>::Value);
+        CHECK(wstl::IsSame<wstl::CommonType<int, double>::Type, std::common_type<int, double>::type>::Value);
+        CHECK(wstl::IsSame<wstl::CommonType<int, const int>::Type, std::common_type<int, const int>::type>::Value);
+        CHECK(wstl::IsSame<wstl::CommonType<int&, int>::Type, std::common_type<int&, int>::type>::Value);
+        CHECK(wstl::IsSame<wstl::CommonType<int&, const int&>::Type, std::common_type<int&, const int&>::type>::Value);
+        CHECK(wstl::IsSame<wstl::CommonType<int&&, int>::Type, std::common_type<int&&, int>::type>::Value);
+        CHECK(wstl::IsSame<wstl::CommonType<int&&, const int&>::Type, std::common_type<int&&, const int&>::type>::Value);
+        CHECK(wstl::IsSame<wstl::CommonType<int, char, double>::Type, std::common_type<int, char, double>::type>::Value);
     }
     #endif
 

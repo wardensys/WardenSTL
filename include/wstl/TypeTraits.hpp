@@ -2703,14 +2703,15 @@ namespace wstl {
 
         template<typename T1, typename T2>
         struct __DecayConditionalResult<T1, T2, VoidType<__ConditionalResultType<T1, T2>>> :
-            public Decay<__ConditionalResultType<T1, T2>> {};
+            Decay<__ConditionalResultType<T1, T2>> {};
 
         template<typename T1, typename T2, typename = void>
-        struct __CommonType2 : __DecayConditionalResult<const T1&, const T2&> {};
+        struct __CommonType2 : __DecayConditionalResult<const RemoveReferenceType<T1>&, 
+            const RemoveReferenceType<T2>&> {};
 
         template<typename T1, typename T2>
         struct __CommonType2<T1, T2, VoidType<__ConditionalResultType<T1, T2>>> : 
-            public __DecayConditionalResult<T1, T2> {};
+            __DecayConditionalResult<T1, T2> {};
     }
 
     // Two types
@@ -2728,7 +2729,7 @@ namespace wstl {
 
         template<typename T1, typename T2, typename... R>
         struct __CommonTypeMany<VoidType<typename CommonType<T1, T2>::Type>, T1, T2, R...> :
-            public CommonType<typename CommonType<T1, T2>::Type, R...> {};
+            CommonType<typename CommonType<T1, T2>::Type, R...> {};
     }
 
     template<typename T1, typename T2, typename... R>

@@ -251,6 +251,23 @@ namespace wstl {
     template<typename T1, typename T2>
     struct TupleElement<1, Pair<T1, T2> > { typedef T2 Type; };
 
+    // Common type specialization
+
+    #ifdef __WSTL_CXX11__
+    namespace __private {
+        template<typename, typename, typename = void>
+        struct __PairCommonType;
+
+        template<typename T1, typename T2, typename U1, typename U2>
+        struct __PairCommonType<Pair<T1, T2>, Pair<U1, U2>, VoidType<CommonTypeType<T1, U1>, CommonTypeType<T2, U2>>> {
+            typedef Pair<CommonTypeType<T1, U1>, CommonTypeType<T2, U2>> Type;
+        };
+    }
+
+    template<typename T1, typename T2, typename U1, typename U2>
+    struct CommonType<Pair<T1, T2>, Pair<U1, U2>> : __private::__PairCommonType<Pair<T1, T2>, Pair<U1, U2>> {};
+    #endif
+
     // Get (for Pair)
 
     /// @brief Gets an element from pair

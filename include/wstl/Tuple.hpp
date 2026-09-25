@@ -369,6 +369,22 @@ namespace wstl {
     template<typename... Types>
     struct TupleSize<Tuple<Types...>> : IntegralConstant<size_t, sizeof...(Types)> {};
 
+    // Common type specialization
+
+    namespace __private {
+        template<typename T1, typename T2, typename = EnableIfType<TupleSize<T1>::Value == TupleSize<T2>::Value>>
+        struct __TupleCommonType;
+
+        template<typename... TTypes, typename... UTypes>
+        struct __TupleCommonType<Tuple<TTypes...>, Tuple<UTypes...>, void> {
+            typedef Tuple<CommonTypeType<TTypes, UTypes>...> Type;
+        };
+    }
+
+    template<typename... TTypes, typename... UTypes>
+    struct CommonType<Tuple<TTypes...>, Tuple<UTypes...>> : 
+        __private::__TupleCommonType<Tuple<TTypes...>, Tuple<UTypes...>> {};
+
     // Get specialization
 
     /// TODO: Add selection by type
@@ -495,7 +511,7 @@ namespace wstl {
     /// @ingroup tuple
     /// @see https://en.cppreference.com/w/cpp/utility/tuple/forward_as_tuple
     template<typename... Types>
-    __WSTL_NODISCARD__ constexpr Tuple<Types&&...> ForwardAsTuple(Types&&... args) __WSTL_NOEXCEPT__ {
+    constexpr Tuple<Types&&...> ForwardAsTuple(Types&&... args) __WSTL_NOEXCEPT__ {
         return Tuple<Types&&...>(Forward<Types>(args)...);
     }
 
