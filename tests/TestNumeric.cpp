@@ -17,6 +17,7 @@
 #include <limits>
 #include <vector>
 #include <deque>
+#include <array>
 
 
 TEST_SUITE("Numeric") {
