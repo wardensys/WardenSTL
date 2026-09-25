@@ -948,8 +948,8 @@ TEST_SUITE("Algorithm") {
         complete = false;
 
         while(!complete) {
-            int* pivot1 = wstl::Partition(data2.begin(), data2.end(), wstl::IsEven<int>);
-            int* pivot2 = std::partition(expected2.begin(), expected2.end(), wstl::IsEven<int>);
+            std::array<int, 6>::iterator pivot1 = wstl::Partition(data2.begin(), data2.end(), wstl::IsEven<int>);
+            std::array<int, 6>::iterator pivot2 = std::partition(expected2.begin(), expected2.end(), wstl::IsEven<int>);
 
             ptrdiff_t distance1 = std::distance(data2.begin(), pivot1);
             ptrdiff_t distance2 = std::distance(expected2.begin(), pivot2);
@@ -1050,8 +1050,8 @@ TEST_SUITE("Algorithm") {
         // Empty
         std::array<int, 0> empty;
 
-        int* expectedEmpty = std::min_element(std::begin(empty), std::end(empty), std::greater<int>());
-        int* resultEmpty = wstl::MinElement(std::begin(empty), std::end(empty), std::greater<int>());
+        std::array<int, 0>::iterator expectedEmpty = std::min_element(std::begin(empty), std::end(empty), std::greater<int>());
+        std::array<int, 0>::iterator resultEmpty = wstl::MinElement(std::begin(empty), std::end(empty), std::greater<int>());
         CHECK_EQ(expectedEmpty, resultEmpty);
     }
 
@@ -1079,8 +1079,8 @@ TEST_SUITE("Algorithm") {
         // Empty
         std::array<int, 0> empty;
 
-        int* expectedEmpty = std::max_element(std::begin(empty), std::end(empty), std::greater<int>());
-        int* resultEmpty = wstl::MaxElement(std::begin(empty), std::end(empty), std::greater<int>());
+        std::array<int, 0>::iterator expectedEmpty = std::max_element(std::begin(empty), std::end(empty), std::greater<int>());
+        std::array<int, 0>::iterator resultEmpty = wstl::MaxElement(std::begin(empty), std::end(empty), std::greater<int>());
         CHECK_EQ(expectedEmpty, resultEmpty);
     }
 
@@ -1108,10 +1108,11 @@ TEST_SUITE("Algorithm") {
         CHECK_EQ(expected.second, result.Second);
 
         // Empty
-        std::array<int, 0> empty;
+        typedef std::array<int, 0> EmptyArray;
+        EmptyArray empty;
 
-        std::pair<int*, int*> expectedEmpty = std::minmax_element(std::begin(empty), std::end(empty), std::greater<int>());
-        wstl::Pair<int*, int*> resultEmpty = wstl::MinMaxElement(std::begin(empty), std::end(empty), std::greater<int>());
+        std::pair<EmptyArray::iterator, EmptyArray::iterator> expectedEmpty = std::minmax_element(std::begin(empty), std::end(empty), std::greater<int>());
+        wstl::Pair<EmptyArray::iterator, EmptyArray::iterator> resultEmpty = wstl::MinMaxElement(std::begin(empty), std::end(empty), std::greater<int>());
         CHECK_EQ(expectedEmpty.first, resultEmpty.First);
         CHECK_EQ(expectedEmpty.second, resultEmpty.Second);
     }
@@ -1392,11 +1393,12 @@ TEST_SUITE("Algorithm") {
     }
 
     TEST_CASE("PartialSort") {
-        std::array<int, 10> initial = {5, 7, 4, 2, 8, 6, 1, 9, 0, 3};
+        typedef std::array<int, 10> Array;
+        Array initial = {5, 7, 4, 2, 8, 6, 1, 9, 0, 3};
 
         for(size_t i = 0; i < initial.size(); ++i) {
-            std::array<int, 10> data1 = initial;
-            std::array<int, 10> data2 = initial;
+            Array data1 = initial;
+            Array data2 = initial;
 
             wstl::PartialSort(data1.begin(), data1.begin() + ptrdiff_t(i), data1.end());
             std::partial_sort(data2.begin(), data2.begin() + ptrdiff_t(i), data2.end());
@@ -1406,10 +1408,10 @@ TEST_SUITE("Algorithm") {
             CAPTURE(i);
 
             if (!equal) {
-                for (int* x = data1.begin(); x != data1.end(); ++x) std::cout << *x << ' ';
+                for (Array::iterator x = data1.begin(); x != data1.end(); ++x) std::cout << *x << ' ';
                 std::cout << '\n';
 
-                for (int* x = data2.begin(); x != data2.end(); ++x) std::cout << *x << ' ';
+                for (Array::iterator x = data2.begin(); x != data2.end(); ++x) std::cout << *x << ' ';
                 std::cout << '\n';
             }
 
@@ -1426,10 +1428,10 @@ TEST_SUITE("Algorithm") {
             CAPTURE(i);
 
             if (!equal) {
-                for (int* x = data1.begin(); x != data1.end(); ++x) std::cout << *x << ' ';
+                for (Array::iterator x = data1.begin(); x != data1.end(); ++x) std::cout << *x << ' ';
                 std::cout << '\n';
 
-                for (int* x = data2.begin(); x != data2.end(); ++x) std::cout << *x << ' ';
+                for (Array::iterator x = data2.begin(); x != data2.end(); ++x) std::cout << *x << ' ';
                 std::cout << '\n';
             }
 
