@@ -7,6 +7,7 @@
 #include <wstl/Iterator.hpp>
 #include <iterator>
 #include <vector>
+#include <array>
 #include <wstl/Deque.hpp>
 #include <wstl/Array.hpp>
 
