@@ -36,14 +36,18 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::IsModulo, Expected::is_modulo);
         CHECK_EQ(Result::Digits, Expected::digits);
         CHECK_EQ(Result::Digits10, Expected::digits10);
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(Result::MaxDigits10, Expected::max_digits10);
+        #endif
         CHECK_EQ(Result::Radix, Expected::radix);
         CHECK_EQ(Result::MinExponent, Expected::min_exponent);
         CHECK_EQ(Result::MinExponent10, Expected::min_exponent10);
         CHECK_FALSE(Result::Traps);
         CHECK_EQ(Result::TinynessBefore, Expected::tinyness_before);
         CHECK_EQ(Result::Min(), Expected::min());
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(Result::Lowest(), Expected::lowest());
+        #endif
         CHECK_EQ(Result::Max(), Expected::max());
         CHECK_EQ(Result::Epsilon(), Expected::epsilon());
         CHECK_EQ(Result::RoundError(), Expected::round_error());
@@ -73,14 +77,18 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::IsModulo, Expected::is_modulo);
         CHECK_EQ(Result::Digits, Expected::digits);
         CHECK_EQ(Result::Digits10, Expected::digits10);
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(Result::MaxDigits10, Expected::max_digits10);
+        #endif
         CHECK_EQ(Result::Radix, Expected::radix);
         CHECK_EQ(Result::MinExponent, Expected::min_exponent);
         CHECK_EQ(Result::MinExponent10, Expected::min_exponent10);
         CHECK_FALSE(Result::Traps);
         CHECK_EQ(Result::TinynessBefore, Expected::tinyness_before);
         CHECK_EQ(Result::Min(), Expected::min());
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(Result::Lowest(), Expected::lowest());
+        #endif
         CHECK_EQ(Result::Max(), Expected::max());
         CHECK_EQ(Result::Epsilon(), Expected::epsilon());
         CHECK_EQ(Result::RoundError(), Expected::round_error());
@@ -110,14 +118,18 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::IsModulo, Expected::is_modulo);
         CHECK_EQ(Result::Digits, Expected::digits);
         CHECK_EQ(Result::Digits10, Expected::digits10);
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(Result::MaxDigits10, Expected::max_digits10);
+        #endif
         CHECK_EQ(Result::Radix, Expected::radix);
         CHECK_EQ(Result::MinExponent, Expected::min_exponent);
         CHECK_EQ(Result::MinExponent10, Expected::min_exponent10);
         CHECK_FALSE(Result::Traps);
         CHECK_EQ(Result::TinynessBefore, Expected::tinyness_before);
         CHECK_EQ(Result::Min(), Expected::min());
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(Result::Lowest(), Expected::lowest());
+        #endif
         CHECK_EQ(Result::Max(), Expected::max());
         CHECK_EQ(Result::Epsilon(), Expected::epsilon());
         CHECK_EQ(Result::RoundError(), Expected::round_error());
@@ -147,14 +159,18 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::IsModulo, Expected::is_modulo);
         CHECK_EQ(Result::Digits, Expected::digits);
         CHECK_EQ(Result::Digits10, Expected::digits10);
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(Result::MaxDigits10, Expected::max_digits10);
+        #endif
         CHECK_EQ(Result::Radix, Expected::radix);
         CHECK_EQ(Result::MinExponent, Expected::min_exponent);
         CHECK_EQ(Result::MinExponent10, Expected::min_exponent10);
         CHECK_FALSE(Result::Traps);
         CHECK_EQ(Result::TinynessBefore, Expected::tinyness_before);
         CHECK_EQ(Result::Min(), Expected::min());
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(Result::Lowest(), Expected::lowest());
+        #endif
         CHECK_EQ(Result::Max(), Expected::max());
         CHECK_EQ(Result::Epsilon(), Expected::epsilon());
         CHECK_EQ(Result::RoundError(), Expected::round_error());
@@ -261,7 +277,9 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::IsModulo, Expected::is_modulo);
         CHECK_EQ(Result::Digits, Expected::digits);
         CHECK_EQ(Result::Digits10, Expected::digits10);
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(Result::MaxDigits10, Expected::max_digits10);
+        #endif
         CHECK_EQ(Result::Radix, Expected::radix);
         CHECK_EQ(Result::MinExponent, Expected::min_exponent);
         CHECK_EQ(Result::MinExponent10, Expected::min_exponent10);
@@ -299,14 +317,18 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::IsModulo, Expected::is_modulo);
         CHECK_EQ(Result::Digits, Expected::digits);
         CHECK_EQ(Result::Digits10, Expected::digits10);
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(Result::MaxDigits10, Expected::max_digits10);
+        #endif
         CHECK_EQ(Result::Radix, Expected::radix);
         CHECK_EQ(Result::MinExponent, Expected::min_exponent);
         CHECK_EQ(Result::MinExponent10, Expected::min_exponent10);
         CHECK_FALSE(Result::Traps);
         CHECK_EQ(Result::TinynessBefore, Expected::tinyness_before);
         CHECK_EQ(Result::Min(), Expected::min());
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(Result::Lowest(), Expected::lowest());
+        #endif
         CHECK_EQ(Result::Max(), Expected::max());
         CHECK_EQ(Result::Epsilon(), Expected::epsilon());
         CHECK_EQ(Result::RoundError(), Expected::round_error());
@@ -336,14 +358,18 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::IsModulo, Expected::is_modulo);
         CHECK_EQ(Result::Digits, Expected::digits);
         CHECK_EQ(Result::Digits10, Expected::digits10);
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(Result::MaxDigits10, Expected::max_digits10);
+        #endif
         CHECK_EQ(Result::Radix, Expected::radix);
         CHECK_EQ(Result::MinExponent, Expected::min_exponent);
         CHECK_EQ(Result::MinExponent10, Expected::min_exponent10);
         CHECK_FALSE(Result::Traps);
         CHECK_EQ(Result::TinynessBefore, Expected::tinyness_before);
         CHECK_EQ(Result::Min(), Expected::min());
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(Result::Lowest(), Expected::lowest());
+        #endif
         CHECK_EQ(Result::Max(), Expected::max());
         CHECK_EQ(Result::Epsilon(), Expected::epsilon());
         CHECK_EQ(Result::RoundError(), Expected::round_error());
@@ -373,14 +399,18 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::IsModulo, Expected::is_modulo);
         CHECK_EQ(Result::Digits, Expected::digits);
         CHECK_EQ(Result::Digits10, Expected::digits10);
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(Result::MaxDigits10, Expected::max_digits10);
+        #endif
         CHECK_EQ(Result::Radix, Expected::radix);
         CHECK_EQ(Result::MinExponent, Expected::min_exponent);
         CHECK_EQ(Result::MinExponent10, Expected::min_exponent10);
         CHECK_FALSE(Result::Traps);
         CHECK_EQ(Result::TinynessBefore, Expected::tinyness_before);
         CHECK_EQ(Result::Min(), Expected::min());
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(Result::Lowest(), Expected::lowest());
+        #endif
         CHECK_EQ(Result::Max(), Expected::max());
         CHECK_EQ(Result::Epsilon(), Expected::epsilon());
         CHECK_EQ(Result::RoundError(), Expected::round_error());
@@ -410,14 +440,18 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::IsModulo, Expected::is_modulo);
         CHECK_EQ(Result::Digits, Expected::digits);
         CHECK_EQ(Result::Digits10, Expected::digits10);
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(Result::MaxDigits10, Expected::max_digits10);
+        #endif
         CHECK_EQ(Result::Radix, Expected::radix);
         CHECK_EQ(Result::MinExponent, Expected::min_exponent);
         CHECK_EQ(Result::MinExponent10, Expected::min_exponent10);
         CHECK_FALSE(Result::Traps);
         CHECK_EQ(Result::TinynessBefore, Expected::tinyness_before);
         CHECK_EQ(Result::Min(), Expected::min());
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(Result::Lowest(), Expected::lowest());
+        #endif
         CHECK_EQ(Result::Max(), Expected::max());
         CHECK_EQ(Result::Epsilon(), Expected::epsilon());
         CHECK_EQ(Result::RoundError(), Expected::round_error());
@@ -447,14 +481,18 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::IsModulo, Expected::is_modulo);
         CHECK_EQ(Result::Digits, Expected::digits);
         CHECK_EQ(Result::Digits10, Expected::digits10);
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(Result::MaxDigits10, Expected::max_digits10);
+        #endif
         CHECK_EQ(Result::Radix, Expected::radix);
         CHECK_EQ(Result::MinExponent, Expected::min_exponent);
         CHECK_EQ(Result::MinExponent10, Expected::min_exponent10);
         CHECK_FALSE(Result::Traps);
         CHECK_EQ(Result::TinynessBefore, Expected::tinyness_before);
         CHECK_EQ(Result::Min(), Expected::min());
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(Result::Lowest(), Expected::lowest());
+        #endif
         CHECK_EQ(Result::Max(), Expected::max());
         CHECK_EQ(Result::Epsilon(), Expected::epsilon());
         CHECK_EQ(Result::RoundError(), Expected::round_error());
@@ -484,14 +522,18 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::IsModulo, Expected::is_modulo);
         CHECK_EQ(Result::Digits, Expected::digits);
         CHECK_EQ(Result::Digits10, Expected::digits10);
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(Result::MaxDigits10, Expected::max_digits10);
+        #endif
         CHECK_EQ(Result::Radix, Expected::radix);
         CHECK_EQ(Result::MinExponent, Expected::min_exponent);
         CHECK_EQ(Result::MinExponent10, Expected::min_exponent10);
         CHECK_FALSE(Result::Traps);
         CHECK_EQ(Result::TinynessBefore, Expected::tinyness_before);
         CHECK_EQ(Result::Min(), Expected::min());
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(Result::Lowest(), Expected::lowest());
+        #endif
         CHECK_EQ(Result::Max(), Expected::max());
         CHECK_EQ(Result::Epsilon(), Expected::epsilon());
         CHECK_EQ(Result::RoundError(), Expected::round_error());
@@ -521,14 +563,18 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::IsModulo, Expected::is_modulo);
         CHECK_EQ(Result::Digits, Expected::digits);
         CHECK_EQ(Result::Digits10, Expected::digits10);
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(Result::MaxDigits10, Expected::max_digits10);
+        #endif
         CHECK_EQ(Result::Radix, Expected::radix);
         CHECK_EQ(Result::MinExponent, Expected::min_exponent);
         CHECK_EQ(Result::MinExponent10, Expected::min_exponent10);
         CHECK_FALSE(Result::Traps);
         CHECK_EQ(Result::TinynessBefore, Expected::tinyness_before);
         CHECK_EQ(Result::Min(), Expected::min());
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(Result::Lowest(), Expected::lowest());
+        #endif
         CHECK_EQ(Result::Max(), Expected::max());
         CHECK_EQ(Result::Epsilon(), Expected::epsilon());
         CHECK_EQ(Result::RoundError(), Expected::round_error());
@@ -558,14 +604,18 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::IsModulo, Expected::is_modulo);
         CHECK_EQ(Result::Digits, Expected::digits);
         CHECK_EQ(Result::Digits10, Expected::digits10);
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(Result::MaxDigits10, Expected::max_digits10);
+        #endif
         CHECK_EQ(Result::Radix, Expected::radix);
         CHECK_EQ(Result::MinExponent, Expected::min_exponent);
         CHECK_EQ(Result::MinExponent10, Expected::min_exponent10);
         CHECK_FALSE(Result::Traps);
         CHECK_EQ(Result::TinynessBefore, Expected::tinyness_before);
         CHECK_EQ(Result::Min(), Expected::min());
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(Result::Lowest(), Expected::lowest());
+        #endif
         CHECK_EQ(Result::Max(), Expected::max());
         CHECK_EQ(Result::Epsilon(), Expected::epsilon());
         CHECK_EQ(Result::RoundError(), Expected::round_error());
@@ -595,14 +645,18 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::IsModulo, Expected::is_modulo);
         CHECK_EQ(Result::Digits, Expected::digits);
         CHECK_EQ(Result::Digits10, Expected::digits10);
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(Result::MaxDigits10, Expected::max_digits10);
+        #endif
         CHECK_EQ(Result::Radix, Expected::radix);
         CHECK_EQ(Result::MinExponent, Expected::min_exponent);
         CHECK_EQ(Result::MinExponent10, Expected::min_exponent10);
         CHECK_FALSE(Result::Traps);
         CHECK_EQ(Result::TinynessBefore, Expected::tinyness_before);
         CHECK_EQ(Result::Min(), Expected::min());
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(Result::Lowest(), Expected::lowest());
+        #endif
         CHECK_EQ(Result::Max(), Expected::max());
         CHECK_EQ(Result::Epsilon(), Expected::epsilon());
         CHECK_EQ(Result::RoundError(), Expected::round_error());
@@ -630,13 +684,17 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::IsModulo, Expected::is_modulo);
         CHECK_EQ(Result::Digits, Expected::digits);
         CHECK_EQ(Result::Digits10, Expected::digits10);
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(Result::MaxDigits10, Expected::max_digits10);
+        #endif
         CHECK_EQ(Result::Radix, Expected::radix);
         CHECK_EQ(Result::MinExponent, Expected::min_exponent);
         CHECK_EQ(Result::MinExponent10, Expected::min_exponent10);
         CHECK_FALSE(Result::Traps);
         CHECK_EQ(Result::Min(), Expected::min());
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(Result::Lowest(), Expected::lowest());
+        #endif
         CHECK_EQ(Result::Max(), Expected::max());
         CHECK_EQ(Result::Epsilon(), Expected::epsilon());
         CHECK_EQ(Result::RoundError(), Expected::round_error());
@@ -663,13 +721,17 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::IsModulo, Expected::is_modulo);
         CHECK_EQ(Result::Digits, Expected::digits);
         CHECK_EQ(Result::Digits10, Expected::digits10);
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(Result::MaxDigits10, Expected::max_digits10);
+        #endif
         CHECK_EQ(Result::Radix, Expected::radix);
         CHECK_EQ(Result::MinExponent, Expected::min_exponent);
         CHECK_EQ(Result::MinExponent10, Expected::min_exponent10);
         CHECK_FALSE(Result::Traps);
         CHECK_EQ(Result::Min(), Expected::min());
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(Result::Lowest(), Expected::lowest());
+        #endif
         CHECK_EQ(Result::Max(), Expected::max());
         CHECK_EQ(Result::Epsilon(), Expected::epsilon());
         CHECK_EQ(Result::RoundError(), Expected::round_error());
@@ -696,13 +758,17 @@ TEST_SUITE("Limits") {
         CHECK_EQ(Result::IsModulo, Expected::is_modulo);
         CHECK_EQ(Result::Digits, Expected::digits);
         CHECK_EQ(Result::Digits10, Expected::digits10);
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(Result::MaxDigits10, Expected::max_digits10);
+        #endif
         CHECK_EQ(Result::Radix, Expected::radix);
         CHECK_EQ(Result::MinExponent, Expected::min_exponent);
         CHECK_EQ(Result::MinExponent10, Expected::min_exponent10);
         CHECK_FALSE(Result::Traps);
         CHECK_EQ(Result::Min(), Expected::min());
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(Result::Lowest(), Expected::lowest());
+        #endif
         CHECK_EQ(Result::Max(), Expected::max());
         CHECK_EQ(Result::Epsilon(), Expected::epsilon());
         CHECK_EQ(Result::RoundError(), Expected::round_error());
