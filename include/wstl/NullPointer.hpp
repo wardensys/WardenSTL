@@ -22,10 +22,10 @@ namespace wstl {
     #ifndef __WSTL_CXX11__
     class NullPointerType {
     public:
-        template<class T>
+        template<typename T>
         inline operator T*() const { return 0; }
 
-        template<class T, class U>
+        template<typename T, typename U>
         inline operator T U::*() const { return 0; }
 
         inline bool operator==(NullPointerType) const { return true; }
@@ -35,7 +35,7 @@ namespace wstl {
         void operator&() const;
     };
 
-    #define __WSTL_NULLPTR__ NullPointerType()
+    #define __WSTL_NULLPTR__ wstl::NullPointerType()
     #else
     using NullPointerType = decltype(nullptr);
     #define __WSTL_NULLPTR__ nullptr

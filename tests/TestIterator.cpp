@@ -9,7 +9,6 @@
 #include <vector>
 #include <wstl/Deque.hpp>
 #include <wstl/Array.hpp>
-#include <wstl/NullPointer.hpp>
 
 #include "Utils.hpp"
 
