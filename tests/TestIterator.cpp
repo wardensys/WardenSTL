@@ -142,7 +142,7 @@ struct OutputIterator : wstl::Iterator<wstl::OutputIteratorTag, int> {};
 
 template<typename T>
 struct ForwardIterator : wstl::Iterator<wstl::ForwardIteratorTag, T> {
-    ForwardIterator() : Ptr(nullptr) {}
+    ForwardIterator() : Ptr(__WSTL_NULLPTR__) {}
     ForwardIterator(T* ptr) : Ptr(ptr) {}
     ForwardIterator(const ForwardIterator& other) : Ptr(other.Ptr) {}
 
@@ -194,7 +194,7 @@ bool operator!=(const ForwardIterator<T>& a, const ForwardIterator<T>& b) {
 
 template<typename T>
 struct BidirectionalIterator : wstl::Iterator<wstl::BidirectionalIteratorTag, T> {
-    BidirectionalIterator() : Ptr(nullptr) {}
+    BidirectionalIterator() : Ptr(__WSTL_NULLPTR__) {}
     BidirectionalIterator(T* ptr) : Ptr(ptr) {}
     BidirectionalIterator(const BidirectionalIterator& other) : Ptr(other.Ptr) {}
 
@@ -247,7 +247,7 @@ struct BidirectionalIterator : wstl::Iterator<wstl::BidirectionalIteratorTag, T>
 
 template<typename T>
 struct RandomAccessIterator : wstl::Iterator<wstl::RandomAccessIteratorTag, T> {
-    RandomAccessIterator() : Ptr(nullptr) {}
+    RandomAccessIterator() : Ptr(__WSTL_NULLPTR__) {}
     RandomAccessIterator(T* ptr) : Ptr(ptr) {}
     RandomAccessIterator(const RandomAccessIterator& other) : Ptr(other.Ptr) {}
 
