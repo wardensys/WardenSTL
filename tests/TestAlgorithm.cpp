@@ -425,12 +425,12 @@ TEST_SUITE("Algorithm") {
         std::list<int>::iterator pl2 = std::copy_if(BeginImpl(dataLA), EndImpl(dataLA), BeginImpl(list2), &wstl::IsEven<int>);
         #else
         list2.assign(BeginImpl(buffer2), EndImpl(buffer2));
-        std::list<int>::iterator pl2 = std::next(list2.begin(), 3);
+        std::list<int>::iterator pl2 = wstl::Next(list2.begin(), 3);
         #endif
 
         d2 = std::distance(list2.begin(), pl2);
         CHECK_EQ(d1, d2);
-
+        
         result = std::equal(BeginImpl(list1), EndImpl(list1), BeginImpl(list2));
         CHECK(result);
     }
@@ -483,7 +483,7 @@ TEST_SUITE("Algorithm") {
         #ifdef __WSTL_CXX11__
         std::list<int>::iterator pl2 = std::copy_n(BeginImpl(dataLA), SIZE, EndImpl(list2));
         #else
-        std::list<int>::iterator pl2 = std::copy(BeginImpl(dataLA), std::next(BeginImpl(dataLA), SIZE), EndImpl(list2));
+        std::list<int>::iterator pl2 = std::copy(BeginImpl(dataLA), wstl::Next(BeginImpl(dataLA), SIZE), EndImpl(list2));
         #endif
 
         d1 = std::distance(list1.begin(), pl1);
@@ -653,30 +653,32 @@ TEST_SUITE("Algorithm") {
     TEST_CASE("Fill") {
         int buffer[SIZE];
 
+        wstl::Fill(BeginImpl(buffer), EndImpl(buffer), 5);
+
         #ifdef __WSTL_CXX11__
         auto predicate = [](int x) { return x == 5; };
+        bool result = std::all_of(BeginImpl(buffer), EndImpl(buffer), predicate);
         #else
-        std::binder2nd<std::equal_to<int> > predicate(std::equal_to<int>(), 5);
+        bool result = true;
+        for(size_t i = 0; i < SIZE; ++i) if(buffer[i] != 5) result = false;
         #endif
 
-        wstl::Fill(BeginImpl(buffer), EndImpl(buffer), 5);
-        
-        bool result = std::all_of(BeginImpl(buffer), EndImpl(buffer), predicate);
         CHECK(result);
     }
 
     TEST_CASE("FillInRange") {
         int buffer[SIZE];
 
+        wstl::FillInRange(BeginImpl(buffer), SIZE, 5);
+
         #ifdef __WSTL_CXX11__
         auto predicate = [](int x) { return x == 5; };
-        #else
-        std::binder2nd<std::equal_to<int> > predicate(std::equal_to<int>(), 5);
-        #endif
-
-        wstl::FillInRange(BeginImpl(buffer), SIZE, 5);
-        
         bool result = std::all_of(BeginImpl(buffer), EndImpl(buffer), predicate);
+        #else
+        bool result = true;
+        for(size_t i = 0; i < SIZE; ++i) if(buffer[i] != 5) result = false;
+        #endif
+        
         CHECK(result);
     }
 
@@ -1284,8 +1286,11 @@ TEST_SUITE("Algorithm") {
         wstl::MakeHeap(data1.begin(), data1.end());
         std::make_heap(data2.begin(), data2.end());
 
+        #ifdef __WSTL_CXX11__
         CHECK(std::is_heap(data1.begin(), data1.end()));
         CHECK(std::is_heap(data2.begin(), data2.end()));
+        #endif
+
         CHECK_EQ(data1.size(), data2.size());
 
         bool equal = std::equal(data1.begin(), data1.end(), data2.begin());
@@ -1297,8 +1302,10 @@ TEST_SUITE("Algorithm") {
         data1.pop_back();
         data2.pop_back();
 
+        #ifdef __WSTL_CXX11__
         CHECK(std::is_heap(data1.begin(), data1.end()));
         CHECK(std::is_heap(data2.begin(), data2.end()));
+        #endif
 
         equal = std::equal(data1.begin(), data1.end(), data2.begin());
         CHECK(equal);
@@ -1309,8 +1316,10 @@ TEST_SUITE("Algorithm") {
         wstl::PushHeap(data1.begin(), data1.end());
         std::push_heap(data2.begin(), data2.end());
 
+        #ifdef __WSTL_CXX11__
         CHECK(std::is_heap(data1.begin(), data1.end()));
         CHECK(std::is_heap(data2.begin(), data2.end()));
+        #endif
 
         equal = std::equal(data1.begin(), data1.end(), data2.begin());
         CHECK(equal);
@@ -1322,7 +1331,12 @@ TEST_SUITE("Algorithm") {
         data2.push_back(30);
 
         std::vector<uint32_t>::iterator result1 = wstl::IsHeapUntil(data1.begin(), data1.end());
+
+        #ifdef __WSTL_CXX11__
         std::vector<uint32_t>::iterator result2 = std::is_heap_until(data2.begin(), data2.end());
+        #else
+        std::vector<uint32_t>::iterator result2 = data2.end() - 2;
+        #endif
 
         CHECK_EQ(std::distance(data1.begin(), result1), std::distance(data2.begin(), result2));
 
@@ -1341,12 +1355,9 @@ TEST_SUITE("Algorithm") {
         CHECK(equal);
     }
 
+    #ifdef __WSTL_CXX11__
     TEST_CASE("Heap movable") {
-        #ifdef __WSTL_CXX11__
         typedef MovableData<uint32_t> Item;
-        #else
-        typedef uint32_t Item;
-        #endif
 
         typedef std::vector<Item> Data;
         Data data1;
@@ -1354,14 +1365,14 @@ TEST_SUITE("Algorithm") {
         // Create some data
         Item p1(1U), p2(2U), p3(3U), p4(4U), p5(5U), p6(6U), p7(7U), p8(8U);
 
-        data1.push_back(__WSTL_MOVE__(p1));
-        data1.push_back(__WSTL_MOVE__(p2));
-        data1.push_back(__WSTL_MOVE__(p3));
-        data1.push_back(__WSTL_MOVE__(p4));
-        data1.push_back(__WSTL_MOVE__(p5));
-        data1.push_back(__WSTL_MOVE__(p6));
-        data1.push_back(__WSTL_MOVE__(p7));
-        data1.push_back(__WSTL_MOVE__(p8));
+        data1.push_back(std::move(p1));
+        data1.push_back(std::move(p2));
+        data1.push_back(std::move(p3));
+        data1.push_back(std::move(p4));
+        data1.push_back(std::move(p5));
+        data1.push_back(std::move(p6));
+        data1.push_back(std::move(p7));
+        data1.push_back(std::move(p8));
 
         Data data2;
         data2.push_back(Item(1U));
@@ -1432,17 +1443,30 @@ TEST_SUITE("Algorithm") {
         equal = std::equal(data1.begin(), data1.end(), data2.begin());
         CHECK(equal);
     }
+    #endif
 
     TEST_CASE("IsSortedUntil") {
         int data1[] = { 1, 2, 3, 4, 6, 5, 7, 8, 9, 10 };
-        int data2[] = { 10, 9, 8, 7, 5, 6, 4, 3, 4, 2, 1 };
+        int data2[] = { 10, 9, 8, 5, 7, 6, 4, 3, 4, 2, 1 };
 
         int* p1 = wstl::IsSortedUntil(BeginImpl(data1), EndImpl(data1));
+
+        #ifdef __WSTL_CXX11__
         int* p2 = std::is_sorted_until(BeginImpl(data1), EndImpl(data1));
+        #else
+        int* p2 = data1 + 5;
+        #endif
+
         CHECK_EQ(p1, p2);
 
-        p1 = wstl::IsSortedUntil(BeginImpl(data2), EndImpl(data2));
-        p2 = std::is_sorted_until(BeginImpl(data2), EndImpl(data2));
+        p1 = wstl::IsSortedUntil(BeginImpl(data2), EndImpl(data2), std::greater<int>());
+
+        #ifdef __WSTL_CXX11__
+        p2 = std::is_sorted_until(BeginImpl(data2), EndImpl(data2), std::greater<int>());
+        #else
+        p2 = data2 + 4;
+        #endif
+
         CHECK_EQ(p1, p2); 
     }
 
