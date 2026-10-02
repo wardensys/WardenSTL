@@ -6,6 +6,8 @@
 #include <doctest.h>
 #include <wstl/FunctionTraits.hpp>
 
+#include "Utils.hpp"
+
 
 struct MemberFunction {
     int Fn0();
@@ -75,9 +77,9 @@ struct Functor0 {
 
 TEST_SUITE("FunctionTraits") {
     TEST_CASE("Free void") {
-        typedef decltype(FreeVoid) Function;
-        typedef decltype(&FreeVoid) const volatile FunctionPtr;
-        typedef decltype(FreeVoid)& FunctionRef;
+        typedef __TESTING_DECLTYPE__(FreeVoid) Function;
+        typedef __TESTING_DECLTYPE__(&FreeVoid) const volatile FunctionPtr;
+        typedef __TESTING_DECLTYPE__(FreeVoid)& FunctionRef;
 
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ArgumentTypes, wstl::TypeList<int> >::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<FunctionPtr>::ArgumentTypes, wstl::TypeList<int> >::Value));
@@ -101,9 +103,9 @@ TEST_SUITE("FunctionTraits") {
     }
 
     TEST_CASE("Free 0 parameters") {
-        typedef decltype(Free0) Function;
-        typedef decltype(&Free0) const volatile FunctionPtr;
-        typedef decltype(Free0)& FunctionRef;
+        typedef __TESTING_DECLTYPE__(Free0) Function;
+        typedef __TESTING_DECLTYPE__(&Free0) const volatile FunctionPtr;
+        typedef __TESTING_DECLTYPE__(Free0)& FunctionRef;
 
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ArgumentTypes, wstl::TypeList<> >::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<FunctionPtr>::ArgumentTypes, wstl::TypeList<> >::Value));
@@ -127,9 +129,9 @@ TEST_SUITE("FunctionTraits") {
     }
 
     TEST_CASE("Free 1 parameter") {
-        typedef decltype(Free1) Function;
-        typedef decltype(&Free1) const volatile FunctionPtr;
-        typedef decltype(Free1)& FunctionRef;
+        typedef __TESTING_DECLTYPE__(Free1) Function;
+        typedef __TESTING_DECLTYPE__(&Free1) const volatile FunctionPtr;
+        typedef __TESTING_DECLTYPE__(Free1)& FunctionRef;
 
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ArgumentTypes, wstl::TypeList<int> >::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<FunctionPtr>::ArgumentTypes, wstl::TypeList<int> >::Value));
@@ -153,9 +155,9 @@ TEST_SUITE("FunctionTraits") {
     }
 
     TEST_CASE("Free 2 parameters") {
-        typedef decltype(Free2) Function;
-        typedef decltype(&Free2) const volatile FunctionPtr;
-        typedef decltype(Free2)& FunctionRef;
+        typedef __TESTING_DECLTYPE__(Free2) Function;
+        typedef __TESTING_DECLTYPE__(&Free2) const volatile FunctionPtr;
+        typedef __TESTING_DECLTYPE__(Free2)& FunctionRef;
 
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ArgumentTypes, wstl::TypeList<int, char> >::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<FunctionPtr>::ArgumentTypes, wstl::TypeList<int, char> >::Value));
@@ -180,9 +182,9 @@ TEST_SUITE("FunctionTraits") {
 
     #ifdef __WSTL_CXX11__
     TEST_CASE("Free 3 parameters") {
-        typedef decltype(Free3) Function;
-        typedef decltype(&Free3) const volatile FunctionPtr;
-        typedef decltype(Free3)& FunctionRef;
+        typedef __TESTING_DECLTYPE__(Free3) Function;
+        typedef __TESTING_DECLTYPE__(&Free3) const volatile FunctionPtr;
+        typedef __TESTING_DECLTYPE__(Free3)& FunctionRef;
 
         CHECK(wstl::IsSame<wstl::FunctionTraits<Function>::ArgumentTypes, wstl::TypeList<int, char, double>>::Value);
         CHECK(wstl::IsSame<wstl::FunctionTraits<FunctionPtr>::ArgumentTypes, wstl::TypeList<int, char, double>>::Value);
@@ -204,9 +206,9 @@ TEST_SUITE("FunctionTraits") {
     #endif
 
     TEST_CASE("Free template") {
-        typedef decltype(Free0t<char>) Function;
-        typedef decltype(&Free0t<char>) const volatile FunctionPtr;
-        typedef decltype(Free0t<char>)& FunctionRef;
+        typedef __TESTING_DECLTYPE__(Free0t<char>) Function;
+        typedef __TESTING_DECLTYPE__(&Free0t<char>) const volatile FunctionPtr;
+        typedef __TESTING_DECLTYPE__(Free0t<char>)& FunctionRef;
 
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ArgumentTypes, wstl::TypeList<> >::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<FunctionPtr>::ArgumentTypes, wstl::TypeList<> >::Value));
@@ -230,9 +232,9 @@ TEST_SUITE("FunctionTraits") {
     }
 
     TEST_CASE("Free noexcept") {
-        typedef decltype(FreeNoexcept) Function;
-        typedef decltype(&FreeNoexcept) const volatile FunctionPtr;
-        typedef decltype(FreeNoexcept)& FunctionRef;
+        typedef __TESTING_DECLTYPE__(FreeNoexcept) Function;
+        typedef __TESTING_DECLTYPE__(&FreeNoexcept) const volatile FunctionPtr;
+        typedef __TESTING_DECLTYPE__(FreeNoexcept)& FunctionRef;
 
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ArgumentTypes, wstl::TypeList<char> >::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<FunctionPtr>::ArgumentTypes, wstl::TypeList<char> >::Value));
@@ -256,9 +258,9 @@ TEST_SUITE("FunctionTraits") {
     }
 
     TEST_CASE("Free variadic") {
-        typedef decltype(FreeVariadic) Function;
-        typedef decltype(&FreeVariadic) const volatile FunctionPtr;
-        typedef decltype(FreeVariadic)& FunctionRef;
+        typedef __TESTING_DECLTYPE__(FreeVariadic) Function;
+        typedef __TESTING_DECLTYPE__(&FreeVariadic) const volatile FunctionPtr;
+        typedef __TESTING_DECLTYPE__(FreeVariadic)& FunctionRef;
 
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ArgumentTypes, wstl::TypeList<int> >::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<FunctionPtr>::ArgumentTypes, wstl::TypeList<int> >::Value));
@@ -362,9 +364,9 @@ TEST_SUITE("FunctionTraits") {
     }
 
     TEST_CASE("Member 0 parameters") {
-        typedef decltype(&MemberFunction::Fn0) Function;
-        typedef decltype(&MemberFunction::Fn0) const volatile FunctionPtr;
-        typedef decltype(&MemberFunction::Fn0)& FunctionRef;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn0) Function;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn0) const volatile FunctionPtr;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn0)& FunctionRef;
 
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ArgumentTypes, wstl::TypeList<> >::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<FunctionPtr>::ArgumentTypes, wstl::TypeList<> >::Value));
@@ -388,9 +390,9 @@ TEST_SUITE("FunctionTraits") {
     }
 
     TEST_CASE("Member 0 parameters const") {
-        typedef decltype(&MemberFunction::Fn0c) Function;
-        typedef decltype(&MemberFunction::Fn0c) const volatile FunctionPtr;
-        typedef decltype(&MemberFunction::Fn0c)& FunctionRef;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn0c) Function;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn0c) const volatile FunctionPtr;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn0c)& FunctionRef;
 
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ArgumentTypes, wstl::TypeList<> >::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<FunctionPtr>::ArgumentTypes, wstl::TypeList<> >::Value));
@@ -414,9 +416,9 @@ TEST_SUITE("FunctionTraits") {
     }
 
     TEST_CASE("Member 0 parameters volatile") {
-        typedef decltype(&MemberFunction::Fn0v) Function;
-        typedef decltype(&MemberFunction::Fn0v) const volatile FunctionPtr;
-        typedef decltype(&MemberFunction::Fn0v)& FunctionRef;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn0v) Function;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn0v) const volatile FunctionPtr;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn0v)& FunctionRef;
 
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ArgumentTypes, wstl::TypeList<> >::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<FunctionPtr>::ArgumentTypes, wstl::TypeList<> >::Value));
@@ -440,9 +442,9 @@ TEST_SUITE("FunctionTraits") {
     }
 
     TEST_CASE("Member 0 parameters const volatile") {
-        typedef decltype(&MemberFunction::Fn0cv) Function;
-        typedef decltype(&MemberFunction::Fn0cv) const volatile FunctionPtr;
-        typedef decltype(&MemberFunction::Fn0cv)& FunctionRef;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn0cv) Function;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn0cv) const volatile FunctionPtr;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn0cv)& FunctionRef;
 
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ArgumentTypes, wstl::TypeList<> >::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<FunctionPtr>::ArgumentTypes, wstl::TypeList<> >::Value));
@@ -466,9 +468,9 @@ TEST_SUITE("FunctionTraits") {
     }
 
     TEST_CASE("Member 1 parameter") {
-        typedef decltype(&MemberFunction::Fn1) Function;
-        typedef decltype(&MemberFunction::Fn1) const volatile FunctionPtr;
-        typedef decltype(&MemberFunction::Fn1)& FunctionRef;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn1) Function;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn1) const volatile FunctionPtr;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn1)& FunctionRef;
 
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ArgumentTypes, wstl::TypeList<int> >::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<FunctionPtr>::ArgumentTypes, wstl::TypeList<int> >::Value));
@@ -492,9 +494,9 @@ TEST_SUITE("FunctionTraits") {
     }
 
     TEST_CASE("Member 1 parameter const") {
-        typedef decltype(&MemberFunction::Fn1c) Function;
-        typedef decltype(&MemberFunction::Fn1c) const volatile FunctionPtr;
-        typedef decltype(&MemberFunction::Fn1c)& FunctionRef;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn1c) Function;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn1c) const volatile FunctionPtr;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn1c)& FunctionRef;
 
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ArgumentTypes, wstl::TypeList<int> >::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<FunctionPtr>::ArgumentTypes, wstl::TypeList<int> >::Value));
@@ -518,9 +520,9 @@ TEST_SUITE("FunctionTraits") {
     }
 
     TEST_CASE("Member 1 parameter volatile") {
-        typedef decltype(&MemberFunction::Fn1v) Function;
-        typedef decltype(&MemberFunction::Fn1v) const volatile FunctionPtr;
-        typedef decltype(&MemberFunction::Fn1v)& FunctionRef;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn1v) Function;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn1v) const volatile FunctionPtr;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn1v)& FunctionRef;
 
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ArgumentTypes, wstl::TypeList<int> >::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<FunctionPtr>::ArgumentTypes, wstl::TypeList<int> >::Value));
@@ -544,9 +546,9 @@ TEST_SUITE("FunctionTraits") {
     }
 
     TEST_CASE("Member 1 parameter const volatile") {
-        typedef decltype(&MemberFunction::Fn1cv) Function;
-        typedef decltype(&MemberFunction::Fn1cv) const volatile FunctionPtr;
-        typedef decltype(&MemberFunction::Fn1cv)& FunctionRef;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn1cv) Function;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn1cv) const volatile FunctionPtr;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn1cv)& FunctionRef;
 
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ArgumentTypes, wstl::TypeList<int> >::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<FunctionPtr>::ArgumentTypes, wstl::TypeList<int> >::Value));
@@ -572,9 +574,9 @@ TEST_SUITE("FunctionTraits") {
 
 
     TEST_CASE("Member 2 parameters") {
-        typedef decltype(&MemberFunction::Fn2) Function;
-        typedef decltype(&MemberFunction::Fn2) const volatile FunctionPtr;
-        typedef decltype(&MemberFunction::Fn2)& FunctionRef;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn2) Function;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn2) const volatile FunctionPtr;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn2)& FunctionRef;
 
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ArgumentTypes, wstl::TypeList<int, char> >::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<FunctionPtr>::ArgumentTypes, wstl::TypeList<int, char> >::Value));
@@ -598,9 +600,9 @@ TEST_SUITE("FunctionTraits") {
     }
 
     TEST_CASE("Member 2 parameters const") {
-        typedef decltype(&MemberFunction::Fn2c) Function;
-        typedef decltype(&MemberFunction::Fn2c) const volatile FunctionPtr;
-        typedef decltype(&MemberFunction::Fn2c)& FunctionRef;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn2c) Function;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn2c) const volatile FunctionPtr;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn2c)& FunctionRef;
 
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ArgumentTypes, wstl::TypeList<int, char> >::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<FunctionPtr>::ArgumentTypes, wstl::TypeList<int, char> >::Value));
@@ -624,9 +626,9 @@ TEST_SUITE("FunctionTraits") {
     }
 
     TEST_CASE("Member 2 parameters volatile") {
-        typedef decltype(&MemberFunction::Fn2v) Function;
-        typedef decltype(&MemberFunction::Fn2v) const volatile FunctionPtr;
-        typedef decltype(&MemberFunction::Fn2v)& FunctionRef;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn2v) Function;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn2v) const volatile FunctionPtr;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn2v)& FunctionRef;
 
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ArgumentTypes, wstl::TypeList<int, char> >::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<FunctionPtr>::ArgumentTypes, wstl::TypeList<int, char> >::Value));
@@ -650,9 +652,9 @@ TEST_SUITE("FunctionTraits") {
     }
 
     TEST_CASE("Member 2 parameters const volatile") {
-        typedef decltype(&MemberFunction::Fn2cv) Function;
-        typedef decltype(&MemberFunction::Fn2cv) const volatile FunctionPtr;
-        typedef decltype(&MemberFunction::Fn2cv)& FunctionRef;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn2cv) Function;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn2cv) const volatile FunctionPtr;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn2cv)& FunctionRef;
 
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ArgumentTypes, wstl::TypeList<int, char> >::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<FunctionPtr>::ArgumentTypes, wstl::TypeList<int, char> >::Value));
@@ -677,9 +679,9 @@ TEST_SUITE("FunctionTraits") {
 
     #ifdef __WSTL_CXX11__
     TEST_CASE("Member 3 parameters") {
-        typedef decltype(&MemberFunction::Fn3) Function;
-        typedef decltype(&MemberFunction::Fn3) const volatile FunctionPtr;
-        typedef decltype(&MemberFunction::Fn3)& FunctionRef;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn3) Function;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn3) const volatile FunctionPtr;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn3)& FunctionRef;
 
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ArgumentTypes, wstl::TypeList<int, char, double>>::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<FunctionPtr>::ArgumentTypes, wstl::TypeList<int, char, double>>::Value));
@@ -701,9 +703,9 @@ TEST_SUITE("FunctionTraits") {
     }
 
     TEST_CASE("Member 3 parameters const") {
-        typedef decltype(&MemberFunction::Fn3c) Function;
-        typedef decltype(&MemberFunction::Fn3c) const volatile FunctionPtr;
-        typedef decltype(&MemberFunction::Fn3c)& FunctionRef;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn3c) Function;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn3c) const volatile FunctionPtr;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn3c)& FunctionRef;
 
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ArgumentTypes, wstl::TypeList<int, char, double>>::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<FunctionPtr>::ArgumentTypes, wstl::TypeList<int, char, double>>::Value));
@@ -725,9 +727,9 @@ TEST_SUITE("FunctionTraits") {
     }
 
     TEST_CASE("Member 3 parameters volatile") {
-        typedef decltype(&MemberFunction::Fn3v) Function;
-        typedef decltype(&MemberFunction::Fn3v) const volatile FunctionPtr;
-        typedef decltype(&MemberFunction::Fn3v)& FunctionRef;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn3v) Function;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn3v) const volatile FunctionPtr;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn3v)& FunctionRef;
 
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ArgumentTypes, wstl::TypeList<int, char, double>>::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<FunctionPtr>::ArgumentTypes, wstl::TypeList<int, char, double>>::Value));
@@ -749,9 +751,9 @@ TEST_SUITE("FunctionTraits") {
     }
 
     TEST_CASE("Member 3 parameters const volatile") {
-        typedef decltype(&MemberFunction::Fn3cv) Function;
-        typedef decltype(&MemberFunction::Fn3cv) const volatile FunctionPtr;
-        typedef decltype(&MemberFunction::Fn3cv)& FunctionRef;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn3cv) Function;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn3cv) const volatile FunctionPtr;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::Fn3cv)& FunctionRef;
 
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ArgumentTypes, wstl::TypeList<int, char, double>>::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<FunctionPtr>::ArgumentTypes, wstl::TypeList<int, char, double>>::Value));
@@ -774,9 +776,9 @@ TEST_SUITE("FunctionTraits") {
     #endif
 
     TEST_CASE("Member void function") {
-        typedef decltype(&MemberFunction::VoidFn) Function;
-        typedef decltype(&MemberFunction::VoidFn) const volatile FunctionPtr;
-        typedef decltype(&MemberFunction::VoidFn)& FunctionRef;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::VoidFn) Function;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::VoidFn) const volatile FunctionPtr;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::VoidFn)& FunctionRef;
 
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ArgumentTypes, wstl::TypeList<int> >::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<FunctionPtr>::ArgumentTypes, wstl::TypeList<int> >::Value));
@@ -800,9 +802,9 @@ TEST_SUITE("FunctionTraits") {
     }
 
     TEST_CASE("Member long function") {
-        typedef decltype(&MemberFunction::LongFn) Function;
-        typedef decltype(&MemberFunction::LongFn) const volatile FunctionPtr;
-        typedef decltype(&MemberFunction::LongFn)& FunctionRef;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::LongFn) Function;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::LongFn) const volatile FunctionPtr;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::LongFn)& FunctionRef;
 
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ArgumentTypes, wstl::TypeList<> >::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<FunctionPtr>::ArgumentTypes, wstl::TypeList<> >::Value));
@@ -826,9 +828,9 @@ TEST_SUITE("FunctionTraits") {
     }
 
     TEST_CASE("Member short function") {
-        typedef decltype(&MemberFunction::ShortFn) Function;
-        typedef decltype(&MemberFunction::ShortFn) const volatile FunctionPtr;
-        typedef decltype(&MemberFunction::ShortFn)& FunctionRef;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::ShortFn) Function;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::ShortFn) const volatile FunctionPtr;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::ShortFn)& FunctionRef;
 
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ArgumentTypes, wstl::TypeList<int, char> >::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<FunctionPtr>::ArgumentTypes, wstl::TypeList<int, char> >::Value));
@@ -852,11 +854,11 @@ TEST_SUITE("FunctionTraits") {
     }
 
     TEST_CASE("Member noexcept function") {
-        typedef decltype(&MemberFunction::FnNoexcept) Function;
-        typedef decltype(&MemberFunction::FnNoexcept) const volatile FunctionPtr;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::FnNoexcept) Function;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::FnNoexcept) const volatile FunctionPtr;
 
         #ifdef __WSTL_CXX17__
-        typedef decltype(&MemberFunction::FnNoexcept)& FunctionRef;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::FnNoexcept)& FunctionRef;
         CHECK((wstl::IsSame<wstl::FunctionTraits<FunctionRef>::ArgumentTypes, wstl::TypeList<char> >::Value));
         #endif
 
@@ -882,9 +884,9 @@ TEST_SUITE("FunctionTraits") {
 
     #ifdef __WSTL_CXX11__
     TEST_CASE("Member lvalue reference qualified function") {
-        typedef decltype(&MemberFunction::FnRefOnly) Function;
-        typedef decltype(&MemberFunction::FnRefOnly) const volatile FunctionPtr;
-        typedef decltype(&MemberFunction::FnRefOnly)& FunctionRef;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::FnRefOnly) Function;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::FnRefOnly) const volatile FunctionPtr;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::FnRefOnly)& FunctionRef;
 
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ArgumentTypes, wstl::TypeList<char> >::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<FunctionPtr>::ArgumentTypes, wstl::TypeList<char> >::Value));
@@ -906,9 +908,9 @@ TEST_SUITE("FunctionTraits") {
     }
     
     TEST_CASE("Member rvalue reference qualified function") {
-        typedef decltype(&MemberFunction::FnRRefOnly) Function;
-        typedef decltype(&MemberFunction::FnRRefOnly) const volatile FunctionPtr;
-        typedef decltype(&MemberFunction::FnRRefOnly)& FunctionRef;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::FnRRefOnly) Function;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::FnRRefOnly) const volatile FunctionPtr;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::FnRRefOnly)& FunctionRef;
 
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ArgumentTypes, wstl::TypeList<char> >::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<FunctionPtr>::ArgumentTypes, wstl::TypeList<char> >::Value));
@@ -931,9 +933,9 @@ TEST_SUITE("FunctionTraits") {
     #endif
 
     TEST_CASE("Member static function") {
-        typedef decltype(MemberFunction::FnStatic) Function;
-        typedef decltype(&MemberFunction::FnStatic) const volatile FunctionPtr;
-        typedef decltype(MemberFunction::FnStatic)& FunctionRef;
+        typedef __TESTING_DECLTYPE__(MemberFunction::FnStatic) Function;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::FnStatic) const volatile FunctionPtr;
+        typedef __TESTING_DECLTYPE__(MemberFunction::FnStatic)& FunctionRef;
 
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ArgumentTypes, wstl::TypeList<int> >::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<FunctionPtr>::ArgumentTypes, wstl::TypeList<int> >::Value));
@@ -957,11 +959,11 @@ TEST_SUITE("FunctionTraits") {
     }
 
     TEST_CASE("Member variadic function") {
-        typedef decltype(&MemberFunction::FnVariadic) Function;
-        typedef decltype(&MemberFunction::FnVariadic) const volatile FunctionPtr;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::FnVariadic) Function;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::FnVariadic) const volatile FunctionPtr;
 
         #ifdef __WSTL_CXX17__
-        typedef decltype(&MemberFunction::FnVariadic)& FunctionRef;
+        typedef __TESTING_DECLTYPE__(&MemberFunction::FnVariadic)& FunctionRef;
         CHECK((wstl::IsSame<wstl::FunctionTraits<FunctionRef>::ArgumentTypes, wstl::TypeList<long, char> >::Value));
         #endif
 

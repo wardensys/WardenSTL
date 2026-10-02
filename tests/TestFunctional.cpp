@@ -2640,7 +2640,7 @@ TEST_SUITE("Functional") {
         CHECK_FALSE(ff2(VALUE1, VALUE2));
         CHECK(ff2(0, '\0'));
 
-        wstl::NotFunctionType<decltype(&FreeBool0)> f0(&FreeBool0);
+        wstl::NotFunctionType<__TESTING_DECLTYPE__(&FreeBool0)> f0(&FreeBool0);
 
         functionCalled = false;
         CHECK(f0());
@@ -2648,12 +2648,12 @@ TEST_SUITE("Functional") {
         functionCalled = true;
         CHECK_FALSE(f0());
 
-        wstl::NotFunctionType<decltype(&FreeBool)> f1(&FreeBool);
+        wstl::NotFunctionType<__TESTING_DECLTYPE__(&FreeBool)> f1(&FreeBool);
 
         CHECK(f1(128));
         CHECK_FALSE(f1(VALUE1));
 
-        wstl::NotFunctionType<decltype(&FreeBool2)> f2 = wstl::NotFunction(FreeBool2);
+        wstl::NotFunctionType<__TESTING_DECLTYPE__(&FreeBool2)> f2 = wstl::NotFunction(FreeBool2);
 
         CHECK(f2(10, 'c'));
         CHECK_FALSE(f2(10, '\n'));
@@ -2667,45 +2667,45 @@ TEST_SUITE("Functional") {
 
     #ifdef __WSTL_CXX11__
     TEST_CASE("IsPlaceholder") {
-        CHECK_EQ(wstl::IsPlaceholder<decltype(wstl::placeholders::_1)>::Value, 1);
-        CHECK_EQ(wstl::IsPlaceholder<decltype(wstl::placeholders::_2)>::Value, 2);
-        CHECK_EQ(wstl::IsPlaceholder<decltype(wstl::placeholders::_3)>::Value, 3);
-        CHECK_EQ(wstl::IsPlaceholder<decltype(wstl::placeholders::_4)>::Value, 4);
-        CHECK_EQ(wstl::IsPlaceholder<decltype(wstl::placeholders::_5)>::Value, 5);
-        CHECK_EQ(wstl::IsPlaceholder<decltype(wstl::placeholders::_6)>::Value, 6);
-        CHECK_EQ(wstl::IsPlaceholder<decltype(wstl::placeholders::_7)>::Value, 7);
-        CHECK_EQ(wstl::IsPlaceholder<decltype(wstl::placeholders::_8)>::Value, 8);
-        CHECK_EQ(wstl::IsPlaceholder<decltype(wstl::placeholders::_9)>::Value, 9);
+        CHECK_EQ(wstl::IsPlaceholder<__TESTING_DECLTYPE__(wstl::placeholders::_1)>::Value, 1);
+        CHECK_EQ(wstl::IsPlaceholder<__TESTING_DECLTYPE__(wstl::placeholders::_2)>::Value, 2);
+        CHECK_EQ(wstl::IsPlaceholder<__TESTING_DECLTYPE__(wstl::placeholders::_3)>::Value, 3);
+        CHECK_EQ(wstl::IsPlaceholder<__TESTING_DECLTYPE__(wstl::placeholders::_4)>::Value, 4);
+        CHECK_EQ(wstl::IsPlaceholder<__TESTING_DECLTYPE__(wstl::placeholders::_5)>::Value, 5);
+        CHECK_EQ(wstl::IsPlaceholder<__TESTING_DECLTYPE__(wstl::placeholders::_6)>::Value, 6);
+        CHECK_EQ(wstl::IsPlaceholder<__TESTING_DECLTYPE__(wstl::placeholders::_7)>::Value, 7);
+        CHECK_EQ(wstl::IsPlaceholder<__TESTING_DECLTYPE__(wstl::placeholders::_8)>::Value, 8);
+        CHECK_EQ(wstl::IsPlaceholder<__TESTING_DECLTYPE__(wstl::placeholders::_9)>::Value, 9);
 
-        CHECK_EQ(wstl::IsPlaceholder<wstl::RemoveConstType<decltype(wstl::placeholders::_1)>>::Value, 1);
-        CHECK_EQ(wstl::IsPlaceholder<wstl::RemoveConstType<decltype(wstl::placeholders::_2)>>::Value, 2);
-        CHECK_EQ(wstl::IsPlaceholder<wstl::RemoveConstType<decltype(wstl::placeholders::_3)>>::Value, 3);
-        CHECK_EQ(wstl::IsPlaceholder<wstl::RemoveConstType<decltype(wstl::placeholders::_4)>>::Value, 4);
-        CHECK_EQ(wstl::IsPlaceholder<wstl::RemoveConstType<decltype(wstl::placeholders::_5)>>::Value, 5);
-        CHECK_EQ(wstl::IsPlaceholder<wstl::RemoveConstType<decltype(wstl::placeholders::_6)>>::Value, 6);
-        CHECK_EQ(wstl::IsPlaceholder<wstl::RemoveConstType<decltype(wstl::placeholders::_7)>>::Value, 7);
-        CHECK_EQ(wstl::IsPlaceholder<wstl::RemoveConstType<decltype(wstl::placeholders::_8)>>::Value, 8);
-        CHECK_EQ(wstl::IsPlaceholder<wstl::RemoveConstType<decltype(wstl::placeholders::_9)>>::Value, 9);
+        CHECK_EQ(wstl::IsPlaceholder<wstl::RemoveConstType<__TESTING_DECLTYPE__(wstl::placeholders::_1)>>::Value, 1);
+        CHECK_EQ(wstl::IsPlaceholder<wstl::RemoveConstType<__TESTING_DECLTYPE__(wstl::placeholders::_2)>>::Value, 2);
+        CHECK_EQ(wstl::IsPlaceholder<wstl::RemoveConstType<__TESTING_DECLTYPE__(wstl::placeholders::_3)>>::Value, 3);
+        CHECK_EQ(wstl::IsPlaceholder<wstl::RemoveConstType<__TESTING_DECLTYPE__(wstl::placeholders::_4)>>::Value, 4);
+        CHECK_EQ(wstl::IsPlaceholder<wstl::RemoveConstType<__TESTING_DECLTYPE__(wstl::placeholders::_5)>>::Value, 5);
+        CHECK_EQ(wstl::IsPlaceholder<wstl::RemoveConstType<__TESTING_DECLTYPE__(wstl::placeholders::_6)>>::Value, 6);
+        CHECK_EQ(wstl::IsPlaceholder<wstl::RemoveConstType<__TESTING_DECLTYPE__(wstl::placeholders::_7)>>::Value, 7);
+        CHECK_EQ(wstl::IsPlaceholder<wstl::RemoveConstType<__TESTING_DECLTYPE__(wstl::placeholders::_8)>>::Value, 8);
+        CHECK_EQ(wstl::IsPlaceholder<wstl::RemoveConstType<__TESTING_DECLTYPE__(wstl::placeholders::_9)>>::Value, 9);
 
-        CHECK_EQ(wstl::IsPlaceholder<volatile wstl::RemoveConstType<decltype(wstl::placeholders::_1)>>::Value, 1);
-        CHECK_EQ(wstl::IsPlaceholder<volatile wstl::RemoveConstType<decltype(wstl::placeholders::_2)>>::Value, 2);
-        CHECK_EQ(wstl::IsPlaceholder<volatile wstl::RemoveConstType<decltype(wstl::placeholders::_3)>>::Value, 3);
-        CHECK_EQ(wstl::IsPlaceholder<volatile wstl::RemoveConstType<decltype(wstl::placeholders::_4)>>::Value, 4);
-        CHECK_EQ(wstl::IsPlaceholder<volatile wstl::RemoveConstType<decltype(wstl::placeholders::_5)>>::Value, 5);
-        CHECK_EQ(wstl::IsPlaceholder<volatile wstl::RemoveConstType<decltype(wstl::placeholders::_6)>>::Value, 6);
-        CHECK_EQ(wstl::IsPlaceholder<volatile wstl::RemoveConstType<decltype(wstl::placeholders::_7)>>::Value, 7);
-        CHECK_EQ(wstl::IsPlaceholder<volatile wstl::RemoveConstType<decltype(wstl::placeholders::_8)>>::Value, 8);
-        CHECK_EQ(wstl::IsPlaceholder<volatile wstl::RemoveConstType<decltype(wstl::placeholders::_9)>>::Value, 9);
+        CHECK_EQ(wstl::IsPlaceholder<volatile wstl::RemoveConstType<__TESTING_DECLTYPE__(wstl::placeholders::_1)>>::Value, 1);
+        CHECK_EQ(wstl::IsPlaceholder<volatile wstl::RemoveConstType<__TESTING_DECLTYPE__(wstl::placeholders::_2)>>::Value, 2);
+        CHECK_EQ(wstl::IsPlaceholder<volatile wstl::RemoveConstType<__TESTING_DECLTYPE__(wstl::placeholders::_3)>>::Value, 3);
+        CHECK_EQ(wstl::IsPlaceholder<volatile wstl::RemoveConstType<__TESTING_DECLTYPE__(wstl::placeholders::_4)>>::Value, 4);
+        CHECK_EQ(wstl::IsPlaceholder<volatile wstl::RemoveConstType<__TESTING_DECLTYPE__(wstl::placeholders::_5)>>::Value, 5);
+        CHECK_EQ(wstl::IsPlaceholder<volatile wstl::RemoveConstType<__TESTING_DECLTYPE__(wstl::placeholders::_6)>>::Value, 6);
+        CHECK_EQ(wstl::IsPlaceholder<volatile wstl::RemoveConstType<__TESTING_DECLTYPE__(wstl::placeholders::_7)>>::Value, 7);
+        CHECK_EQ(wstl::IsPlaceholder<volatile wstl::RemoveConstType<__TESTING_DECLTYPE__(wstl::placeholders::_8)>>::Value, 8);
+        CHECK_EQ(wstl::IsPlaceholder<volatile wstl::RemoveConstType<__TESTING_DECLTYPE__(wstl::placeholders::_9)>>::Value, 9);
 
-        CHECK_EQ(wstl::IsPlaceholder<volatile decltype(wstl::placeholders::_1)>::Value, 1);
-        CHECK_EQ(wstl::IsPlaceholder<volatile decltype(wstl::placeholders::_2)>::Value, 2);
-        CHECK_EQ(wstl::IsPlaceholder<volatile decltype(wstl::placeholders::_3)>::Value, 3);
-        CHECK_EQ(wstl::IsPlaceholder<volatile decltype(wstl::placeholders::_4)>::Value, 4);
-        CHECK_EQ(wstl::IsPlaceholder<volatile decltype(wstl::placeholders::_5)>::Value, 5);
-        CHECK_EQ(wstl::IsPlaceholder<volatile decltype(wstl::placeholders::_6)>::Value, 6);
-        CHECK_EQ(wstl::IsPlaceholder<volatile decltype(wstl::placeholders::_7)>::Value, 7);
-        CHECK_EQ(wstl::IsPlaceholder<volatile decltype(wstl::placeholders::_8)>::Value, 8);
-        CHECK_EQ(wstl::IsPlaceholder<volatile decltype(wstl::placeholders::_9)>::Value, 9);
+        CHECK_EQ(wstl::IsPlaceholder<volatile __TESTING_DECLTYPE__(wstl::placeholders::_1)>::Value, 1);
+        CHECK_EQ(wstl::IsPlaceholder<volatile __TESTING_DECLTYPE__(wstl::placeholders::_2)>::Value, 2);
+        CHECK_EQ(wstl::IsPlaceholder<volatile __TESTING_DECLTYPE__(wstl::placeholders::_3)>::Value, 3);
+        CHECK_EQ(wstl::IsPlaceholder<volatile __TESTING_DECLTYPE__(wstl::placeholders::_4)>::Value, 4);
+        CHECK_EQ(wstl::IsPlaceholder<volatile __TESTING_DECLTYPE__(wstl::placeholders::_5)>::Value, 5);
+        CHECK_EQ(wstl::IsPlaceholder<volatile __TESTING_DECLTYPE__(wstl::placeholders::_6)>::Value, 6);
+        CHECK_EQ(wstl::IsPlaceholder<volatile __TESTING_DECLTYPE__(wstl::placeholders::_7)>::Value, 7);
+        CHECK_EQ(wstl::IsPlaceholder<volatile __TESTING_DECLTYPE__(wstl::placeholders::_8)>::Value, 8);
+        CHECK_EQ(wstl::IsPlaceholder<volatile __TESTING_DECLTYPE__(wstl::placeholders::_9)>::Value, 9);
 
         CHECK_EQ(wstl::IsPlaceholder<int>::Value, 0);
         CHECK_EQ(wstl::IsPlaceholder<bool>::Value, 0);
@@ -2716,9 +2716,9 @@ TEST_SUITE("Functional") {
         auto func2 = wstl::Bind<long>(FreeAdd, VALUE1, wstl::placeholders::_1);
         auto func3 = wstl::BindFront(Free3, VALUE1);
 
-        CHECK(wstl::IsBindExpression<decltype(func1)>::Value);
-        CHECK(wstl::IsBindExpression<decltype(func2)>::Value);
-        CHECK_FALSE(wstl::IsBindExpression<decltype(func3)>::Value);
+        CHECK(wstl::IsBindExpression<__TESTING_DECLTYPE__(func1)>::Value);
+        CHECK(wstl::IsBindExpression<__TESTING_DECLTYPE__(func2)>::Value);
+        CHECK_FALSE(wstl::IsBindExpression<__TESTING_DECLTYPE__(func3)>::Value);
     }
 
     TEST_CASE_FIXTURE(SetupFixture, "Bind normal parameters") {
@@ -2733,19 +2733,19 @@ TEST_SUITE("Functional") {
         CHECK(paramsCorrect[0]);
         CHECK(paramsCorrect[1]);
         CHECK(paramsCorrect[2]);
-        CHECK(wstl::IsSame<decltype(func1()), void>::Value);
+        CHECK(wstl::IsSame<__TESTING_DECLTYPE__(func1()), void>::Value);
 
         CHECK(func2());
-        CHECK(wstl::IsSame<decltype(func2()), bool>::Value);
+        CHECK(wstl::IsSame<__TESTING_DECLTYPE__(func2()), bool>::Value);
 
         CHECK_EQ(func3(), 67L);
-        CHECK(wstl::IsSame<decltype(func3()), long>::Value);
+        CHECK(wstl::IsSame<__TESTING_DECLTYPE__(func3()), long>::Value);
 
         functionCalled = false;
         func4();
 
         CHECK(functionCalled);
-        CHECK(wstl::IsSame<decltype(func4()), void>::Value);
+        CHECK(wstl::IsSame<__TESTING_DECLTYPE__(func4()), void>::Value);
 
         #ifdef __WSTL_CXX17__
         CHECK(noexcept(func2()));
@@ -2782,14 +2782,14 @@ TEST_SUITE("Functional") {
         CHECK(paramsCorrect[0]);
         CHECK(paramsCorrect[1]);
         CHECK(paramsCorrect[2]);
-        CHECK(wstl::IsSame<decltype(func1(VALUE1, VALUE3)), void>::Value);
+        CHECK(wstl::IsSame<__TESTING_DECLTYPE__(func1(VALUE1, VALUE3)), void>::Value);
 
         CHECK(func2(VALUE1));
         CHECK_FALSE(func2(128));
-        CHECK(wstl::IsSame<decltype(func2(1)), bool>::Value);
+        CHECK(wstl::IsSame<__TESTING_DECLTYPE__(func2(1)), bool>::Value);
 
         CHECK_EQ(func3(VALUE1 - 1), VALUE1);
-        CHECK(wstl::IsSame<decltype(func3(1)), long>::Value);
+        CHECK(wstl::IsSame<__TESTING_DECLTYPE__(func3(1)), long>::Value);
 
         functionCalled = false;
         paramsCorrect[0] = false;
@@ -2798,7 +2798,7 @@ TEST_SUITE("Functional") {
 
         CHECK(functionCalled);
         CHECK(paramsCorrect[0]);
-        CHECK(wstl::IsSame<decltype(func4(1)), void>::Value);
+        CHECK(wstl::IsSame<__TESTING_DECLTYPE__(func4(1)), void>::Value);
 
         #ifdef __WSTL_CXX17__
         CHECK(noexcept(func2(1)));
@@ -2818,19 +2818,19 @@ TEST_SUITE("Functional") {
         CHECK(paramsCorrect[0]);
         CHECK(paramsCorrect[1]);
         CHECK(paramsCorrect[2]);
-        CHECK(wstl::IsSame<decltype(func1(VALUE3)), void>::Value);
+        CHECK(wstl::IsSame<__TESTING_DECLTYPE__(func1(VALUE3)), void>::Value);
 
         CHECK(func2());
-        CHECK(wstl::IsSame<decltype(func2()), bool>::Value);
+        CHECK(wstl::IsSame<__TESTING_DECLTYPE__(func2()), bool>::Value);
 
         CHECK_EQ(func3(1), 68L);
-        CHECK(wstl::IsSame<decltype(func3(1)), long>::Value);
+        CHECK(wstl::IsSame<__TESTING_DECLTYPE__(func3(1)), long>::Value);
 
         functionCalled = false;
         func4();
 
         CHECK(functionCalled);
-        CHECK(wstl::IsSame<decltype(func4()), void>::Value);
+        CHECK(wstl::IsSame<__TESTING_DECLTYPE__(func4()), void>::Value);
 
         #ifdef __WSTL_CXX17__
         CHECK(noexcept(func2()));
@@ -2852,14 +2852,14 @@ TEST_SUITE("Functional") {
         CHECK(paramsCorrect[0]);
         CHECK(paramsCorrect[1]);
         CHECK(paramsCorrect[2]);
-        CHECK(wstl::IsSame<decltype(func1('\0', FakeInteger{0})), void>::Value);
+        CHECK(wstl::IsSame<__TESTING_DECLTYPE__(func1('\0', FakeInteger{0})), void>::Value);
 
         CHECK(func2(VALUE1 - 1));
         CHECK_FALSE(func2(1));
-        CHECK(wstl::IsSame<decltype(func2(1)), bool>::Value);
+        CHECK(wstl::IsSame<__TESTING_DECLTYPE__(func2(1)), bool>::Value);
 
         CHECK_EQ(func3(VALUE2 - 1, VALUE3), 256L);
-        CHECK(wstl::IsSame<decltype(func3('\0', FakeInteger{0})), long>::Value);
+        CHECK(wstl::IsSame<__TESTING_DECLTYPE__(func3('\0', FakeInteger{0})), long>::Value);
 
         functionCalled = false;
         paramsCorrect[0] = false;
@@ -2868,7 +2868,7 @@ TEST_SUITE("Functional") {
 
         CHECK(functionCalled);
         CHECK(paramsCorrect[0]);
-        CHECK(wstl::IsSame<decltype(func4(1)), void>::Value);
+        CHECK(wstl::IsSame<__TESTING_DECLTYPE__(func4(1)), void>::Value);
 
         #ifdef __WSTL_CXX17__
         CHECK_FALSE(noexcept(func2(1)));
@@ -2886,10 +2886,10 @@ TEST_SUITE("Functional") {
         CHECK(paramsCorrect[0]);
         CHECK(paramsCorrect[1]);
         CHECK(paramsCorrect[2]);
-        CHECK(wstl::IsSame<decltype(func1(VALUE3)), void>::Value);
+        CHECK(wstl::IsSame<__TESTING_DECLTYPE__(func1(VALUE3)), void>::Value);
 
         CHECK(func2());
-        CHECK(wstl::IsSame<decltype(func2()), bool>::Value);
+        CHECK(wstl::IsSame<__TESTING_DECLTYPE__(func2()), bool>::Value);
 
         // Bound argument cvref test
         auto func5 = wstl::BindFront(CVRefCallable(), VALUE1);
@@ -2905,10 +2905,10 @@ TEST_SUITE("Functional") {
         auto func4 = wstl::BindFront<FreeBool2>(1);
 
         CHECK_EQ(func3(FakeInteger{28}), 128);
-        CHECK(wstl::IsSame<decltype(func3(FakeInteger{0})), int>::Value);
+        CHECK(wstl::IsSame<__TESTING_DECLTYPE__(func3(FakeInteger{0})), int>::Value);
 
         CHECK(func4(1));
-        CHECK(wstl::IsSame<decltype(func4(0)), bool>::Value);
+        CHECK(wstl::IsSame<__TESTING_DECLTYPE__(func4(0)), bool>::Value);
 
         CHECK(noexcept(func2()));
         CHECK_FALSE(noexcept(func4(1)));
@@ -2937,10 +2937,10 @@ TEST_SUITE("Functional") {
         CHECK(paramsCorrect[0]);
         CHECK(paramsCorrect[1]);
         CHECK(paramsCorrect[2]);
-        CHECK(wstl::IsSame<decltype(func1(VALUE1)), void>::Value);
+        CHECK(wstl::IsSame<__TESTING_DECLTYPE__(func1(VALUE1)), void>::Value);
 
         CHECK(func2());
-        CHECK(wstl::IsSame<decltype(func2()), bool>::Value);
+        CHECK(wstl::IsSame<__TESTING_DECLTYPE__(func2()), bool>::Value);
 
         // Bound argument cvref test
         auto func5 = wstl::BindBack(CVRefCallable(), VALUE1);
@@ -2956,10 +2956,10 @@ TEST_SUITE("Functional") {
         auto func4 = wstl::BindBack<FreeBool2>(1);
 
         CHECK_EQ(func3(1), 128);
-        CHECK(wstl::IsSame<decltype(func3(0)), int>::Value);
+        CHECK(wstl::IsSame<__TESTING_DECLTYPE__(func3(0)), int>::Value);
 
         CHECK(func4(1));
-        CHECK(wstl::IsSame<decltype(func4(0)), bool>::Value);
+        CHECK(wstl::IsSame<__TESTING_DECLTYPE__(func4(0)), bool>::Value);
 
         CHECK(noexcept(func2()));
         CHECK_FALSE(noexcept(func4(1)));
@@ -2980,7 +2980,7 @@ TEST_SUITE("Functional") {
     #endif
 
     TEST_CASE("BinderFirst") {
-        wstl::BinderFirst<decltype(&FreeAdd), int> b1(&FreeAdd, 67);
+        wstl::BinderFirst<__TESTING_DECLTYPE__(&FreeAdd), int> b1(&FreeAdd, 67);
 
         CHECK_EQ(b1(3), 70);
 
@@ -2993,7 +2993,7 @@ TEST_SUITE("Functional") {
     }
 
     TEST_CASE("BinderSecond") {
-        wstl::BinderSecond<decltype(&FreeAdd), int> b1(&FreeAdd, 67);
+        wstl::BinderSecond<__TESTING_DECLTYPE__(&FreeAdd), int> b1(&FreeAdd, 67);
 
         CHECK_EQ(b1(3), 70);
 
@@ -3006,7 +3006,7 @@ TEST_SUITE("Functional") {
     }
 
     TEST_CASE("MemberFunction") {
-        wstl::MemberFunctionType<decltype(&TestObject::ConstMemberReturn)> f0(&TestObject::ConstMemberReturn);
+        wstl::MemberFunctionType<__TESTING_DECLTYPE__(&TestObject::ConstMemberReturn)> f0(&TestObject::ConstMemberReturn);
 
         CHECK_EQ(f0(testObject), VALUE1);
         CHECK_EQ(f0(&testObject), VALUE1);
@@ -3015,7 +3015,7 @@ TEST_SUITE("Functional") {
         CHECK_EQ(f0(&constTestObject), VALUE1);
         CHECK_EQ(f0(wstl::Reference(constTestObject)), VALUE1);
 
-        wstl::MemberFunctionType<decltype(&TestObject::MemberBool)> f1(&TestObject::MemberBool);
+        wstl::MemberFunctionType<__TESTING_DECLTYPE__(&TestObject::MemberBool)> f1(&TestObject::MemberBool);
 
         CHECK(f1(testObject, VALUE1));
         CHECK(f1(&testObject, VALUE1));
@@ -3024,7 +3024,7 @@ TEST_SUITE("Functional") {
         // The following line should fail with a compilation error
         // CHECK(f1(constTestObject, VALUE1));
 
-        wstl::MemberFunctionType<decltype(&Functor2::operator())> f2(&Functor2::operator());
+        wstl::MemberFunctionType<__TESTING_DECLTYPE__(&Functor2::operator())> f2(&Functor2::operator());
         Functor2 func;
         const Functor2 cfunc;
 
@@ -3036,7 +3036,7 @@ TEST_SUITE("Functional") {
         CHECK(f2(wstl::Reference(cfunc), VALUE1, VALUE2));
 
         #ifdef __WSTL_CXX11__
-        wstl::MemberFunctionType<decltype(&TestObject::MemberBool3)> f3(&TestObject::MemberBool3);
+        wstl::MemberFunctionType<__TESTING_DECLTYPE__(&TestObject::MemberBool3)> f3(&TestObject::MemberBool3);
 
         CHECK(f3(testObject, VALUE1, VALUE2, VALUE3));
         CHECK(f3(&testObject, VALUE1, VALUE2, VALUE3));
@@ -3046,7 +3046,7 @@ TEST_SUITE("Functional") {
         CHECK(f3(wstl::Reference(constTestObject), VALUE1, VALUE2, VALUE3));
         #endif
 
-        wstl::MemberFunctionType<decltype(&Functor::Value)> m1(&Functor::Value);
+        wstl::MemberFunctionType<__TESTING_DECLTYPE__(&Functor::Value)> m1(&Functor::Value);
         Functor func2(10);
         const Functor cfunc2(20);
 

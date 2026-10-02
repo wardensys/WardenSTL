@@ -609,7 +609,7 @@ TEST_SUITE("Tuple") {
         wstl::Tuple<int, double> t1{1, 2.3};
 
         auto ct1 = wstl::TupleConcatenate(t1);
-        static_assert(wstl::IsSame<decltype(ct1), wstl::Tuple<int, double>>::Value, "ct1 Type mismatch");
+        static_assert(wstl::IsSame<__TESTING_DECLTYPE__(ct1), wstl::Tuple<int, double>>::Value, "ct1 Type mismatch");
 
         CHECK_EQ(wstl::Get<0>(ct1), wstl::Get<0>(t1));
         CHECK_EQ(wstl::Get<1>(ct1), wstl::Get<1>(t1));
@@ -618,7 +618,7 @@ TEST_SUITE("Tuple") {
         wstl::Tuple<int, std::string> t2{4, "Hey"};
 
         auto ct2 = wstl::TupleConcatenate(t1, t2);
-        static_assert(wstl::IsSame<decltype(ct2), wstl::Tuple<int, double, int, std::string>>::Value, "ct2 Type mismatch");
+        static_assert(wstl::IsSame<__TESTING_DECLTYPE__(ct2), wstl::Tuple<int, double, int, std::string>>::Value, "ct2 Type mismatch");
 
         CHECK_EQ(wstl::Get<0>(ct2), wstl::Get<0>(t1));
         CHECK_EQ(wstl::Get<1>(ct2), wstl::Get<1>(t1));
@@ -629,7 +629,7 @@ TEST_SUITE("Tuple") {
         wstl::Tuple<bool, int> t3{true, 5};
 
         auto ct3 = wstl::TupleConcatenate(t1, t2, t3);
-        static_assert(wstl::IsSame<decltype(ct3), wstl::Tuple<int, double, int, std::string, bool, int>>::Value, "ct3 Type mismatch");
+        static_assert(wstl::IsSame<__TESTING_DECLTYPE__(ct3), wstl::Tuple<int, double, int, std::string, bool, int>>::Value, "ct3 Type mismatch");
 
         CHECK_EQ(wstl::Get<0>(ct3), wstl::Get<0>(t1));
         CHECK_EQ(wstl::Get<1>(ct3), wstl::Get<1>(t1));
@@ -642,7 +642,7 @@ TEST_SUITE("Tuple") {
         wstl::Tuple<double, int, bool> t4{1.01, 6, false};
 
         auto ct4 = wstl::TupleConcatenate(t1, t2, t3, t4);
-        static_assert(wstl::IsSame<decltype(ct4), wstl::Tuple<int, double, int, std::string, bool, int, double, int, bool>>::Value, "ct4 Type mismatch");
+        static_assert(wstl::IsSame<__TESTING_DECLTYPE__(ct4), wstl::Tuple<int, double, int, std::string, bool, int, double, int, bool>>::Value, "ct4 Type mismatch");
 
         CHECK_EQ(wstl::Get<0>(ct4), wstl::Get<0>(t1));
         CHECK_EQ(wstl::Get<1>(ct4), wstl::Get<1>(t1));

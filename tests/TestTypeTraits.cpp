@@ -398,113 +398,113 @@ TEST_SUITE("TypeTraits") {
 
     TEST_CASE("ResultOf") {
         // Free functions
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(Free0)>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(Free1)>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(Free2)>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(Free3)>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(Free0t<char>)>::Type, char>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(FreeNoexcept)>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(FreeVariadic)>::Type, long>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(Free0)>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(Free1)>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(Free2)>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(Free3)>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(Free0t<char>)>::Type, char>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(FreeNoexcept)>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(FreeVariadic)>::Type, long>::Value));
 
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&Free0)>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&Free1)>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&Free2)>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&Free3)>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&Free0t<char>)>::Type, char>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&FreeNoexcept)>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&FreeVariadic)>::Type, long>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&Free0)>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&Free1)>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&Free2)>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&Free3)>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&Free0t<char>)>::Type, char>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&FreeNoexcept)>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&FreeVariadic)>::Type, long>::Value));
 
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&Free0) const>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&Free1) const>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&Free2) const>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&Free3) const>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&Free0t<char>) const>::Type, char>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&FreeNoexcept) const>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&FreeVariadic) const>::Type, long>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&Free0) const>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&Free1) const>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&Free2) const>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&Free3) const>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&Free0t<char>) const>::Type, char>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&FreeNoexcept) const>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&FreeVariadic) const>::Type, long>::Value));
 
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&Free0) volatile>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&Free1) volatile>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&Free2) volatile>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&Free3) volatile>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&Free0t<char>) volatile>::Type, char>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&FreeNoexcept) volatile>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&FreeVariadic) volatile>::Type, long>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&Free0) volatile>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&Free1) volatile>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&Free2) volatile>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&Free3) volatile>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&Free0t<char>) volatile>::Type, char>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&FreeNoexcept) volatile>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&FreeVariadic) volatile>::Type, long>::Value));
 
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&Free0) const volatile>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&Free1) const volatile>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&Free2) const volatile>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&Free3) const volatile>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&Free0t<char>) const volatile>::Type, char>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&FreeNoexcept) const volatile>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&FreeVariadic) const volatile>::Type, long>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&Free0) const volatile>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&Free1) const volatile>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&Free2) const volatile>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&Free3) const volatile>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&Free0t<char>) const volatile>::Type, char>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&FreeNoexcept) const volatile>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&FreeVariadic) const volatile>::Type, long>::Value));
 
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(Free0)&>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(Free1)&>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(Free2)&>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(Free3)&>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(Free0t<char>)&>::Type, char>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(FreeNoexcept)&>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(FreeVariadic)&>::Type, long>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(Free0)&>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(Free1)&>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(Free2)&>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(Free3)&>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(Free0t<char>)&>::Type, char>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(FreeNoexcept)&>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(FreeVariadic)&>::Type, long>::Value));
 
         // Member functions
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&MemberFunction::Fn0)>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&MemberFunction::Fn1)>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&MemberFunction::Fn2)>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&MemberFunction::Fn3)>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&MemberFunction::Fn0)>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&MemberFunction::Fn1)>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&MemberFunction::Fn2)>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&MemberFunction::Fn3)>::Type, int>::Value));
 
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&MemberFunction::Fn0) const>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&MemberFunction::Fn1) const>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&MemberFunction::Fn2) const>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&MemberFunction::Fn3) const>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&MemberFunction::Fn0) const>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&MemberFunction::Fn1) const>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&MemberFunction::Fn2) const>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&MemberFunction::Fn3) const>::Type, int>::Value));
 
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&MemberFunction::Fn0) volatile>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&MemberFunction::Fn1) volatile>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&MemberFunction::Fn2) volatile>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&MemberFunction::Fn3) volatile>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&MemberFunction::Fn0) volatile>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&MemberFunction::Fn1) volatile>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&MemberFunction::Fn2) volatile>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&MemberFunction::Fn3) volatile>::Type, int>::Value));
         
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&MemberFunction::Fn0) const volatile>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&MemberFunction::Fn1) const volatile>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&MemberFunction::Fn2) const volatile>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&MemberFunction::Fn3) const volatile>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&MemberFunction::Fn0) const volatile>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&MemberFunction::Fn1) const volatile>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&MemberFunction::Fn2) const volatile>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&MemberFunction::Fn3) const volatile>::Type, int>::Value));
 
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&MemberFunction::Fn0)&>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&MemberFunction::Fn1)&>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&MemberFunction::Fn2)&>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&MemberFunction::Fn3)&>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&MemberFunction::Fn0)&>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&MemberFunction::Fn1)&>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&MemberFunction::Fn2)&>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&MemberFunction::Fn3)&>::Type, int>::Value));
 
         // const
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&MemberFunction::Fn0c)>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&MemberFunction::Fn1c)>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&MemberFunction::Fn2c)>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&MemberFunction::Fn3c)>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&MemberFunction::Fn0c)>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&MemberFunction::Fn1c)>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&MemberFunction::Fn2c)>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&MemberFunction::Fn3c)>::Type, int>::Value));
 
         // volatile
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&MemberFunction::Fn0v)>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&MemberFunction::Fn1v)>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&MemberFunction::Fn2v)>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&MemberFunction::Fn3v)>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&MemberFunction::Fn0v)>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&MemberFunction::Fn1v)>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&MemberFunction::Fn2v)>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&MemberFunction::Fn3v)>::Type, int>::Value));
 
         // const volatile
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&MemberFunction::Fn0cv)>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&MemberFunction::Fn1cv)>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&MemberFunction::Fn2cv)>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&MemberFunction::Fn3cv)>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&MemberFunction::Fn0cv)>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&MemberFunction::Fn1cv)>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&MemberFunction::Fn2cv)>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&MemberFunction::Fn3cv)>::Type, int>::Value));
 
         // Return type variations
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&MemberFunction::VoidFn)>::Type, void>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&MemberFunction::LongFn)>::Type, long>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&MemberFunction::ShortFn)>::Type, short>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&MemberFunction::VoidFn)>::Type, void>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&MemberFunction::LongFn)>::Type, long>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&MemberFunction::ShortFn)>::Type, short>::Value));
 
         // Noexcept
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&MemberFunction::FnNoexcept)>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&MemberFunction::FnNoexcept)>::Type, int>::Value));
 
         // Variadic
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&MemberFunction::FnVariadic)>::Type, char>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&MemberFunction::FnVariadic)>::Type, char>::Value));
 
         // Ref qualifiers
         #ifdef __WSTL_CXX11__
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&MemberFunction::FnRefOnly)>::Type, int>::Value));
-        CHECK((wstl::IsSame<wstl::ResultOf<decltype(&MemberFunction::FnRRefOnly)>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&MemberFunction::FnRefOnly)>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&MemberFunction::FnRRefOnly)>::Type, int>::Value));
         #endif
 
         // Functors
@@ -880,11 +880,11 @@ TEST_SUITE("TypeTraits") {
         #endif
     }
     TEST_CASE("IsFunction") {
-        CHECK_EQ(wstl::IsFunction<decltype(Free0)>::Value, std::is_function<decltype(Free0)>::value);
-        CHECK_EQ(wstl::IsFunction<decltype(Free1)>::Value, std::is_function<decltype(Free1)>::value);
-        CHECK_EQ(wstl::IsFunction<decltype(Free2)>::Value, std::is_function<decltype(Free2)>::value);
-        CHECK_EQ(wstl::IsFunction<decltype(Free3)>::Value, std::is_function<decltype(Free3)>::value);
-        CHECK_EQ(wstl::IsFunction<decltype(Free0t<char>)>::Value, std::is_function<decltype(Free0t<char>)>::value);
+        CHECK_EQ(wstl::IsFunction<__TESTING_DECLTYPE__(Free0)>::Value, std::is_function<__TESTING_DECLTYPE__(Free0)>::value);
+        CHECK_EQ(wstl::IsFunction<__TESTING_DECLTYPE__(Free1)>::Value, std::is_function<__TESTING_DECLTYPE__(Free1)>::value);
+        CHECK_EQ(wstl::IsFunction<__TESTING_DECLTYPE__(Free2)>::Value, std::is_function<__TESTING_DECLTYPE__(Free2)>::value);
+        CHECK_EQ(wstl::IsFunction<__TESTING_DECLTYPE__(Free3)>::Value, std::is_function<__TESTING_DECLTYPE__(Free3)>::value);
+        CHECK_EQ(wstl::IsFunction<__TESTING_DECLTYPE__(Free0t<char>)>::Value, std::is_function<__TESTING_DECLTYPE__(Free0t<char>)>::value);
         CHECK_EQ(wstl::IsFunction<int MemberFunction::*>::Value, std::is_function<int MemberFunction::*>::value);
         CHECK_EQ(wstl::IsFunction<int*>::Value, std::is_function<int*>::value);
         CHECK_EQ(wstl::IsFunction<int (MemberFunction::*)(int)>::Value, std::is_function<int (MemberFunction::*)(int)>::value);
@@ -905,14 +905,14 @@ TEST_SUITE("TypeTraits") {
         CHECK_EQ(wstl::IsMemberPointer<int (MemberFunction::*)(int)>::Value, std::is_member_pointer<int (MemberFunction::*)(int)>::value);
         CHECK_EQ(wstl::IsMemberPointer<int*>::Value, std::is_member_pointer<int*>::value);
         CHECK_EQ(wstl::IsMemberPointer<int>::Value, std::is_member_pointer<int>::value);
-        CHECK_EQ(wstl::IsMemberPointer<decltype(&Free0)>::Value, std::is_member_pointer<decltype(&Free0)>::value);
+        CHECK_EQ(wstl::IsMemberPointer<__TESTING_DECLTYPE__(&Free0)>::Value, std::is_member_pointer<__TESTING_DECLTYPE__(&Free0)>::value);
     }
     TEST_CASE("IsMemberFunctionPointer") {
         CHECK_EQ(wstl::IsMemberFunctionPointer<int MemberFunction::*>::Value, std::is_member_function_pointer<int MemberFunction::*>::value);
         CHECK_EQ(wstl::IsMemberFunctionPointer<int (MemberFunction::*)(int)>::Value, std::is_member_function_pointer<int (MemberFunction::*)(int)>::value);
         CHECK_EQ(wstl::IsMemberFunctionPointer<int*>::Value, std::is_member_function_pointer<int*>::value);
         CHECK_EQ(wstl::IsMemberFunctionPointer<int>::Value, std::is_member_function_pointer<int>::value);
-        CHECK_EQ(wstl::IsMemberFunctionPointer<decltype(&Free0)>::Value, std::is_member_function_pointer<decltype(&Free0)>::value);
+        CHECK_EQ(wstl::IsMemberFunctionPointer<__TESTING_DECLTYPE__(&Free0)>::Value, std::is_member_function_pointer<__TESTING_DECLTYPE__(&Free0)>::value);
     }
 
     TEST_CASE("IsMemberObjectPointer") {
@@ -920,7 +920,7 @@ TEST_SUITE("TypeTraits") {
         CHECK_EQ(wstl::IsMemberObjectPointer<int (MemberFunction::*)(int)>::Value, std::is_member_object_pointer<int (MemberFunction::*)(int)>::value);
         CHECK_EQ(wstl::IsMemberObjectPointer<int*>::Value, std::is_member_object_pointer<int*>::value);
         CHECK_EQ(wstl::IsMemberObjectPointer<int>::Value, std::is_member_object_pointer<int>::value);
-        CHECK_EQ(wstl::IsMemberObjectPointer<decltype(&Free0)>::Value, std::is_member_object_pointer<decltype(&Free0)>::value);
+        CHECK_EQ(wstl::IsMemberObjectPointer<__TESTING_DECLTYPE__(&Free0)>::Value, std::is_member_object_pointer<__TESTING_DECLTYPE__(&Free0)>::value);
     }
 
     TEST_CASE("IsClass") {
@@ -1026,7 +1026,7 @@ TEST_SUITE("TypeTraits") {
         CHECK_EQ(wstl::IsScalar<int*>::Value, std::is_scalar<int*>::value);
         CHECK_EQ(wstl::IsScalar<int MemberFunction::*>::Value, std::is_scalar<int MemberFunction::*>::value);
         CHECK_EQ(wstl::IsScalar<int (MemberFunction::*)(int)>::Value, std::is_scalar<int (MemberFunction::*)(int)>::value);
-        CHECK_EQ(wstl::IsScalar<decltype(&Free0)>::Value, std::is_scalar<decltype(&Free0)>::value);
+        CHECK_EQ(wstl::IsScalar<__TESTING_DECLTYPE__(&Free0)>::Value, std::is_scalar<__TESTING_DECLTYPE__(&Free0)>::value);
         CHECK_EQ(wstl::IsScalar<ClassData>::Value, std::is_scalar<ClassData>::value);
         CHECK_EQ(wstl::IsScalar<TestData>::Value, std::is_scalar<TestData>::value);
 
@@ -1665,26 +1665,26 @@ TEST_SUITE("TypeTraits") {
     }
     
     TEST_CASE("InvokeResult") {
-        CHECK(wstl::IsSame<wstl::InvokeResult<decltype(Free0)>::Type, int>::Value);
-        CHECK(wstl::IsSame<wstl::InvokeResult<decltype(Free1), int>::Type, int>::Value);
-        CHECK(wstl::IsSame<wstl::InvokeResult<decltype(Free2), int, char>::Type, int>::Value);
-        CHECK(wstl::IsSame<wstl::InvokeResult<decltype(Free3), int, char, double>::Type, int>::Value);
-        CHECK(wstl::IsSame<wstl::InvokeResult<decltype(Free0t<TestData>)>::Type, TestData>::Value);
-        CHECK(wstl::IsSame<wstl::InvokeResult<decltype(FreeNoexcept), char>::Type, int>::Value);
-        CHECK(wstl::IsSame<wstl::InvokeResult<decltype(FreeVariadic), int, float>::Type, long>::Value);
+        CHECK(wstl::IsSame<wstl::InvokeResult<__TESTING_DECLTYPE__(Free0)>::Type, int>::Value);
+        CHECK(wstl::IsSame<wstl::InvokeResult<__TESTING_DECLTYPE__(Free1), int>::Type, int>::Value);
+        CHECK(wstl::IsSame<wstl::InvokeResult<__TESTING_DECLTYPE__(Free2), int, char>::Type, int>::Value);
+        CHECK(wstl::IsSame<wstl::InvokeResult<__TESTING_DECLTYPE__(Free3), int, char, double>::Type, int>::Value);
+        CHECK(wstl::IsSame<wstl::InvokeResult<__TESTING_DECLTYPE__(Free0t<TestData>)>::Type, TestData>::Value);
+        CHECK(wstl::IsSame<wstl::InvokeResult<__TESTING_DECLTYPE__(FreeNoexcept), char>::Type, int>::Value);
+        CHECK(wstl::IsSame<wstl::InvokeResult<__TESTING_DECLTYPE__(FreeVariadic), int, float>::Type, long>::Value);
 
-        CHECK(wstl::IsSame<wstl::InvokeResult<decltype(&MemberFunction::Fn0), MemberFunction*>::Type, int>::Value);
-        CHECK(wstl::IsSame<wstl::InvokeResult<decltype(&MemberFunction::Fn0), MemberFunction>::Type, int>::Value);
-        CHECK(wstl::IsSame<wstl::InvokeResult<decltype(&MemberFunction::Fn0c), const MemberFunction>::Type, int>::Value);
-        CHECK(wstl::IsSame<wstl::InvokeResult<decltype(&MemberFunction::Fn0v), volatile MemberFunction>::Type, int>::Value);
-        CHECK(wstl::IsSame<wstl::InvokeResult<decltype(&MemberFunction::Fn0cv), const volatile MemberFunction>::Type, int>::Value);
-        CHECK(wstl::IsSame<wstl::InvokeResult<decltype(&MemberFunction::FnRefOnly), MemberFunction&, char>::Type, int>::Value);
-        CHECK(wstl::IsSame<wstl::InvokeResult<decltype(&MemberFunction::FnRRefOnly), MemberFunction, char>::Type, int>::Value);
-        CHECK(wstl::IsSame<wstl::InvokeResult<decltype(&MemberFunction::FnStatic), int>::Type, long>::Value);
-        CHECK(wstl::IsSame<wstl::InvokeResult<decltype(&MemberFunction::FnNoexcept), MemberFunction, char>::Type, int>::Value);
+        CHECK(wstl::IsSame<wstl::InvokeResult<__TESTING_DECLTYPE__(&MemberFunction::Fn0), MemberFunction*>::Type, int>::Value);
+        CHECK(wstl::IsSame<wstl::InvokeResult<__TESTING_DECLTYPE__(&MemberFunction::Fn0), MemberFunction>::Type, int>::Value);
+        CHECK(wstl::IsSame<wstl::InvokeResult<__TESTING_DECLTYPE__(&MemberFunction::Fn0c), const MemberFunction>::Type, int>::Value);
+        CHECK(wstl::IsSame<wstl::InvokeResult<__TESTING_DECLTYPE__(&MemberFunction::Fn0v), volatile MemberFunction>::Type, int>::Value);
+        CHECK(wstl::IsSame<wstl::InvokeResult<__TESTING_DECLTYPE__(&MemberFunction::Fn0cv), const volatile MemberFunction>::Type, int>::Value);
+        CHECK(wstl::IsSame<wstl::InvokeResult<__TESTING_DECLTYPE__(&MemberFunction::FnRefOnly), MemberFunction&, char>::Type, int>::Value);
+        CHECK(wstl::IsSame<wstl::InvokeResult<__TESTING_DECLTYPE__(&MemberFunction::FnRRefOnly), MemberFunction, char>::Type, int>::Value);
+        CHECK(wstl::IsSame<wstl::InvokeResult<__TESTING_DECLTYPE__(&MemberFunction::FnStatic), int>::Type, long>::Value);
+        CHECK(wstl::IsSame<wstl::InvokeResult<__TESTING_DECLTYPE__(&MemberFunction::FnNoexcept), MemberFunction, char>::Type, int>::Value);
 
-        CHECK(wstl::IsSame<wstl::InvokeResult<decltype(&A::M), A&>::Type, int&>::Value);
-        CHECK(wstl::IsSame<wstl::InvokeResult<decltype(&A::M), A*>::Type, int&>::Value);
+        CHECK(wstl::IsSame<wstl::InvokeResult<__TESTING_DECLTYPE__(&A::M), A&>::Type, int&>::Value);
+        CHECK(wstl::IsSame<wstl::InvokeResult<__TESTING_DECLTYPE__(&A::M), A*>::Type, int&>::Value);
 
         CHECK(wstl::IsSame<wstl::InvokeResult<Functor0>::Type, int>::Value);
         CHECK(wstl::IsSame<wstl::InvokeResult<Functor2, int, char>::Type, long>::Value);
@@ -1692,85 +1692,85 @@ TEST_SUITE("TypeTraits") {
 
     TEST_CASE("IsInvocable") {
         // Free function
-        CHECK(wstl::IsInvocable<decltype(Free0)>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(Free0), float>::Value);
-        CHECK(wstl::IsInvocable<decltype(Free1), int>::Value);
-        CHECK(wstl::IsInvocable<decltype(Free1), long>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(Free1)>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(Free1), TestData>::Value);
-        CHECK(wstl::IsInvocable<decltype(Free2), int, char>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(Free2), int>::Value);
-        CHECK(wstl::IsInvocable<decltype(Free3), int, char, double>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(Free3), int, char, double, float>::Value);
-        CHECK(wstl::IsInvocable<decltype(Free0t<TestData>)>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(Free0t<TestData>), int>::Value);
-        CHECK(wstl::IsInvocable<decltype(FreeNoexcept), char>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(FreeNoexcept), TestData>::Value);
-        CHECK(wstl::IsInvocable<decltype(FreeVariadic), int, float>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(FreeVariadic), TestData>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(FreeVariadic)>::Value);
+        CHECK(wstl::IsInvocable<__TESTING_DECLTYPE__(Free0)>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(Free0), float>::Value);
+        CHECK(wstl::IsInvocable<__TESTING_DECLTYPE__(Free1), int>::Value);
+        CHECK(wstl::IsInvocable<__TESTING_DECLTYPE__(Free1), long>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(Free1)>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(Free1), TestData>::Value);
+        CHECK(wstl::IsInvocable<__TESTING_DECLTYPE__(Free2), int, char>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(Free2), int>::Value);
+        CHECK(wstl::IsInvocable<__TESTING_DECLTYPE__(Free3), int, char, double>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(Free3), int, char, double, float>::Value);
+        CHECK(wstl::IsInvocable<__TESTING_DECLTYPE__(Free0t<TestData>)>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(Free0t<TestData>), int>::Value);
+        CHECK(wstl::IsInvocable<__TESTING_DECLTYPE__(FreeNoexcept), char>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(FreeNoexcept), TestData>::Value);
+        CHECK(wstl::IsInvocable<__TESTING_DECLTYPE__(FreeVariadic), int, float>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(FreeVariadic), TestData>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(FreeVariadic)>::Value);
 
         // Member function pointer
-        CHECK(wstl::IsInvocable<decltype(&MemberFunction::Fn0), MemberFunction>::Value);
-        CHECK(wstl::IsInvocable<decltype(&MemberFunction::Fn0), MemberFunction*>::Value);
-        CHECK(wstl::IsInvocable<decltype(&MemberFunction::Fn0), MemberFunction&>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(&MemberFunction::Fn0), MemberFunction, int>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(&MemberFunction::Fn0)>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(&MemberFunction::Fn0), const MemberFunction>::Value);
-        CHECK(wstl::IsInvocable<decltype(&MemberFunction::Fn0c), MemberFunction>::Value);
-        CHECK(wstl::IsInvocable<decltype(&MemberFunction::Fn0c), const MemberFunction*>::Value);
-        CHECK(wstl::IsInvocable<decltype(&MemberFunction::Fn0c), const MemberFunction&>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(&MemberFunction::Fn0c), MemberFunction, int>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(&MemberFunction::Fn0c)>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(&MemberFunction::Fn0c), volatile MemberFunction>::Value);
-        CHECK(wstl::IsInvocable<decltype(&MemberFunction::Fn0v), MemberFunction>::Value);
-        CHECK(wstl::IsInvocable<decltype(&MemberFunction::Fn0v), volatile MemberFunction*>::Value);
-        CHECK(wstl::IsInvocable<decltype(&MemberFunction::Fn0v), volatile MemberFunction&>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(&MemberFunction::Fn0v), MemberFunction, char>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(&MemberFunction::Fn0v)>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(&MemberFunction::Fn0v), const MemberFunction>::Value);
-        CHECK(wstl::IsInvocable<decltype(&MemberFunction::Fn0cv), MemberFunction>::Value);
-        CHECK(wstl::IsInvocable<decltype(&MemberFunction::Fn0cv), const MemberFunction*>::Value);
-        CHECK(wstl::IsInvocable<decltype(&MemberFunction::Fn0cv), volatile MemberFunction&>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(&MemberFunction::Fn0cv), MemberFunction, char>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(&MemberFunction::Fn0cv)>::Value);
-        CHECK(wstl::IsInvocable<decltype(&MemberFunction::FnRefOnly), MemberFunction&, char>::Value);
-        CHECK(wstl::IsInvocable<decltype(&MemberFunction::FnRefOnly), MemberFunction*, char>::Value);
-        CHECK(wstl::IsInvocable<decltype(&MemberFunction::FnRefOnly), MemberFunction&, int>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(&MemberFunction::FnRefOnly), MemberFunction&, char, int>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(&MemberFunction::FnRefOnly), MemberFunction, char>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(&MemberFunction::FnRefOnly), const MemberFunction&, char>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(&MemberFunction::FnRefOnly), MemberFunction>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(&MemberFunction::FnRefOnly)>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(&MemberFunction::FnRefOnly), MemberFunction&, TestData>::Value);
-        CHECK(wstl::IsInvocable<decltype(&MemberFunction::FnRRefOnly), MemberFunction, char>::Value);
-        CHECK(wstl::IsInvocable<decltype(&MemberFunction::FnRRefOnly), MemberFunction&&, char>::Value);
-        CHECK(wstl::IsInvocable<decltype(&MemberFunction::FnRRefOnly), MemberFunction, int>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(&MemberFunction::FnRRefOnly), MemberFunction, char, int>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(&MemberFunction::FnRRefOnly), MemberFunction&, char>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(&MemberFunction::FnRRefOnly), const MemberFunction, char>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(&MemberFunction::FnRRefOnly), MemberFunction>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(&MemberFunction::FnRRefOnly)>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(&MemberFunction::FnRRefOnly), MemberFunction, TestData>::Value);
-        CHECK(wstl::IsInvocable<decltype(&MemberFunction::FnStatic), int>::Value);
-        CHECK(wstl::IsInvocable<decltype(&MemberFunction::FnStatic), char>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(&MemberFunction::FnStatic)>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(&MemberFunction::FnStatic), TestData>::Value);
-        CHECK(wstl::IsInvocable<decltype(&MemberFunction::FnNoexcept), MemberFunction, char>::Value);
-        CHECK(wstl::IsInvocable<decltype(&MemberFunction::FnNoexcept), MemberFunction*, double>::Value);
-        CHECK(wstl::IsInvocable<decltype(&MemberFunction::FnNoexcept), MemberFunction&, char>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(&MemberFunction::FnNoexcept), MemberFunction, char, int>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(&MemberFunction::FnNoexcept), MemberFunction>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(&MemberFunction::FnNoexcept), const MemberFunction, char>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(&MemberFunction::FnNoexcept)>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(&MemberFunction::FnNoexcept), char>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(&MemberFunction::FnNoexcept), MemberFunction, TestData>::Value);
+        CHECK(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::Fn0), MemberFunction>::Value);
+        CHECK(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::Fn0), MemberFunction*>::Value);
+        CHECK(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::Fn0), MemberFunction&>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::Fn0), MemberFunction, int>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::Fn0)>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::Fn0), const MemberFunction>::Value);
+        CHECK(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::Fn0c), MemberFunction>::Value);
+        CHECK(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::Fn0c), const MemberFunction*>::Value);
+        CHECK(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::Fn0c), const MemberFunction&>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::Fn0c), MemberFunction, int>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::Fn0c)>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::Fn0c), volatile MemberFunction>::Value);
+        CHECK(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::Fn0v), MemberFunction>::Value);
+        CHECK(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::Fn0v), volatile MemberFunction*>::Value);
+        CHECK(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::Fn0v), volatile MemberFunction&>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::Fn0v), MemberFunction, char>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::Fn0v)>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::Fn0v), const MemberFunction>::Value);
+        CHECK(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::Fn0cv), MemberFunction>::Value);
+        CHECK(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::Fn0cv), const MemberFunction*>::Value);
+        CHECK(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::Fn0cv), volatile MemberFunction&>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::Fn0cv), MemberFunction, char>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::Fn0cv)>::Value);
+        CHECK(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::FnRefOnly), MemberFunction&, char>::Value);
+        CHECK(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::FnRefOnly), MemberFunction*, char>::Value);
+        CHECK(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::FnRefOnly), MemberFunction&, int>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::FnRefOnly), MemberFunction&, char, int>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::FnRefOnly), MemberFunction, char>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::FnRefOnly), const MemberFunction&, char>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::FnRefOnly), MemberFunction>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::FnRefOnly)>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::FnRefOnly), MemberFunction&, TestData>::Value);
+        CHECK(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::FnRRefOnly), MemberFunction, char>::Value);
+        CHECK(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::FnRRefOnly), MemberFunction&&, char>::Value);
+        CHECK(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::FnRRefOnly), MemberFunction, int>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::FnRRefOnly), MemberFunction, char, int>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::FnRRefOnly), MemberFunction&, char>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::FnRRefOnly), const MemberFunction, char>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::FnRRefOnly), MemberFunction>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::FnRRefOnly)>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::FnRRefOnly), MemberFunction, TestData>::Value);
+        CHECK(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::FnStatic), int>::Value);
+        CHECK(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::FnStatic), char>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::FnStatic)>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::FnStatic), TestData>::Value);
+        CHECK(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::FnNoexcept), MemberFunction, char>::Value);
+        CHECK(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::FnNoexcept), MemberFunction*, double>::Value);
+        CHECK(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::FnNoexcept), MemberFunction&, char>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::FnNoexcept), MemberFunction, char, int>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::FnNoexcept), MemberFunction>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::FnNoexcept), const MemberFunction, char>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::FnNoexcept)>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::FnNoexcept), char>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(&MemberFunction::FnNoexcept), MemberFunction, TestData>::Value);
 
         // Member object pointer
-        CHECK(wstl::IsInvocable<decltype(&A::M), A&>::Value);
-        CHECK(wstl::IsInvocable<decltype(&A::M), A>::Value);
-        CHECK(wstl::IsInvocable<decltype(&A::M), A*>::Value);
-        CHECK_FALSE(wstl::IsInvocable<decltype(&A::M)>::Value);
+        CHECK(wstl::IsInvocable<__TESTING_DECLTYPE__(&A::M), A&>::Value);
+        CHECK(wstl::IsInvocable<__TESTING_DECLTYPE__(&A::M), A>::Value);
+        CHECK(wstl::IsInvocable<__TESTING_DECLTYPE__(&A::M), A*>::Value);
+        CHECK_FALSE(wstl::IsInvocable<__TESTING_DECLTYPE__(&A::M)>::Value);
 
         // Functor
         CHECK(wstl::IsInvocable<Functor0>::Value);
@@ -1783,132 +1783,132 @@ TEST_SUITE("TypeTraits") {
 
     TEST_CASE("IsInvocableReturn") {
         // Free function
-        CHECK(wstl::IsInvocableReturn<void, decltype(FreeVoid), int>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<void, decltype(FreeVoid), TestData>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<void, decltype(FreeVoid)>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(FreeVoid), int>::Value);
+        CHECK(wstl::IsInvocableReturn<void, __TESTING_DECLTYPE__(FreeVoid), int>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<void, __TESTING_DECLTYPE__(FreeVoid), TestData>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<void, __TESTING_DECLTYPE__(FreeVoid)>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(FreeVoid), int>::Value);
 
-        CHECK(wstl::IsInvocableReturn<int, decltype(Free0)>::Value);
-        CHECK(wstl::IsInvocableReturn<void, decltype(Free0)>::Value);
-        CHECK(wstl::IsInvocableReturn<char, decltype(Free0)>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(Free0), float>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<TestData, decltype(Free0)>::Value);
+        CHECK(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(Free0)>::Value);
+        CHECK(wstl::IsInvocableReturn<void, __TESTING_DECLTYPE__(Free0)>::Value);
+        CHECK(wstl::IsInvocableReturn<char, __TESTING_DECLTYPE__(Free0)>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(Free0), float>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<TestData, __TESTING_DECLTYPE__(Free0)>::Value);
 
-        CHECK(wstl::IsInvocableReturn<int, decltype(Free1), int>::Value);
-        CHECK(wstl::IsInvocableReturn<void, decltype(Free1), long>::Value);
-        CHECK(wstl::IsInvocableReturn<char, decltype(Free1), int>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(Free1)>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(Free1), TestData>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<TestData, decltype(Free1), int>::Value);
-        CHECK(wstl::IsInvocableReturn<int, decltype(Free2), int, char>::Value);
-        CHECK(wstl::IsInvocableReturn<void, decltype(Free2), int, char>::Value);
-        CHECK(wstl::IsInvocableReturn<char, decltype(Free2), int, long>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(Free2), int>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<TestData, decltype(Free2), int, char>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(Free2), int, TestData>::Value);
-        CHECK(wstl::IsInvocableReturn<int, decltype(Free3), int, char, double>::Value);
-        CHECK(wstl::IsInvocableReturn<void, decltype(Free3), int, char, double>::Value);
-        CHECK(wstl::IsInvocableReturn<char, decltype(Free3), int, char, float>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(Free3), int, char, double, float>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<TestData, decltype(Free3), int, char, double>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(Free3), int, char, TestData>::Value);
-        CHECK(wstl::IsInvocableReturn<TestData, decltype(Free0t<TestData>)>::Value);
-        CHECK(wstl::IsInvocableReturn<void, decltype(Free0t<TestData>)>::Value);
-        CHECK(wstl::IsInvocableReturn<char, decltype(Free0t<int>)>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<TestData, decltype(Free0t<TestData>), int>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(Free0t<TestData>), int>::Value);
-        CHECK(wstl::IsInvocableReturn<int, decltype(FreeNoexcept), char>::Value);
-        CHECK(wstl::IsInvocableReturn<void, decltype(FreeNoexcept), char>::Value);
-        CHECK(wstl::IsInvocableReturn<char, decltype(FreeNoexcept), int>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(FreeNoexcept), char, int>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<TestData, decltype(FreeNoexcept), char>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(FreeNoexcept), TestData>::Value);
-        CHECK(wstl::IsInvocableReturn<long, decltype(FreeVariadic), int>::Value);
-        CHECK(wstl::IsInvocableReturn<void, decltype(FreeVariadic), int, float>::Value);
-        CHECK(wstl::IsInvocableReturn<char, decltype(FreeVariadic), int, double, char>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<long, decltype(FreeVariadic)>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<TestData, decltype(FreeVariadic), int>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<long, decltype(FreeVariadic), TestData>::Value);
+        CHECK(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(Free1), int>::Value);
+        CHECK(wstl::IsInvocableReturn<void, __TESTING_DECLTYPE__(Free1), long>::Value);
+        CHECK(wstl::IsInvocableReturn<char, __TESTING_DECLTYPE__(Free1), int>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(Free1)>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(Free1), TestData>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<TestData, __TESTING_DECLTYPE__(Free1), int>::Value);
+        CHECK(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(Free2), int, char>::Value);
+        CHECK(wstl::IsInvocableReturn<void, __TESTING_DECLTYPE__(Free2), int, char>::Value);
+        CHECK(wstl::IsInvocableReturn<char, __TESTING_DECLTYPE__(Free2), int, long>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(Free2), int>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<TestData, __TESTING_DECLTYPE__(Free2), int, char>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(Free2), int, TestData>::Value);
+        CHECK(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(Free3), int, char, double>::Value);
+        CHECK(wstl::IsInvocableReturn<void, __TESTING_DECLTYPE__(Free3), int, char, double>::Value);
+        CHECK(wstl::IsInvocableReturn<char, __TESTING_DECLTYPE__(Free3), int, char, float>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(Free3), int, char, double, float>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<TestData, __TESTING_DECLTYPE__(Free3), int, char, double>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(Free3), int, char, TestData>::Value);
+        CHECK(wstl::IsInvocableReturn<TestData, __TESTING_DECLTYPE__(Free0t<TestData>)>::Value);
+        CHECK(wstl::IsInvocableReturn<void, __TESTING_DECLTYPE__(Free0t<TestData>)>::Value);
+        CHECK(wstl::IsInvocableReturn<char, __TESTING_DECLTYPE__(Free0t<int>)>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<TestData, __TESTING_DECLTYPE__(Free0t<TestData>), int>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(Free0t<TestData>), int>::Value);
+        CHECK(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(FreeNoexcept), char>::Value);
+        CHECK(wstl::IsInvocableReturn<void, __TESTING_DECLTYPE__(FreeNoexcept), char>::Value);
+        CHECK(wstl::IsInvocableReturn<char, __TESTING_DECLTYPE__(FreeNoexcept), int>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(FreeNoexcept), char, int>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<TestData, __TESTING_DECLTYPE__(FreeNoexcept), char>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(FreeNoexcept), TestData>::Value);
+        CHECK(wstl::IsInvocableReturn<long, __TESTING_DECLTYPE__(FreeVariadic), int>::Value);
+        CHECK(wstl::IsInvocableReturn<void, __TESTING_DECLTYPE__(FreeVariadic), int, float>::Value);
+        CHECK(wstl::IsInvocableReturn<char, __TESTING_DECLTYPE__(FreeVariadic), int, double, char>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<long, __TESTING_DECLTYPE__(FreeVariadic)>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<TestData, __TESTING_DECLTYPE__(FreeVariadic), int>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<long, __TESTING_DECLTYPE__(FreeVariadic), TestData>::Value);
 
         // Member function pointer
-        CHECK(wstl::IsInvocableReturn<int, decltype(&MemberFunction::Fn0), MemberFunction>::Value);
-        CHECK(wstl::IsInvocableReturn<void, decltype(&MemberFunction::Fn0), MemberFunction*>::Value);
-        CHECK(wstl::IsInvocableReturn<char, decltype(&MemberFunction::Fn0), MemberFunction&>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(&MemberFunction::Fn0), const MemberFunction>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(&MemberFunction::Fn0), MemberFunction, int>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(&MemberFunction::Fn0), int>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<TestData, decltype(&MemberFunction::Fn0)>::Value);
-        CHECK(wstl::IsInvocableReturn<int, decltype(&MemberFunction::Fn0c), MemberFunction>::Value);
-        CHECK(wstl::IsInvocableReturn<void, decltype(&MemberFunction::Fn0c), const MemberFunction*>::Value);
-        CHECK(wstl::IsInvocableReturn<char, decltype(&MemberFunction::Fn0c), MemberFunction&>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(&MemberFunction::Fn0c), volatile MemberFunction>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(&MemberFunction::Fn0c), MemberFunction, int>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(&MemberFunction::Fn0c), int>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<TestData, decltype(&MemberFunction::Fn0c)>::Value);
-        CHECK(wstl::IsInvocableReturn<int, decltype(&MemberFunction::Fn0v), MemberFunction>::Value);
-        CHECK(wstl::IsInvocableReturn<void, decltype(&MemberFunction::Fn0v), volatile MemberFunction*>::Value);
-        CHECK(wstl::IsInvocableReturn<char, decltype(&MemberFunction::Fn0v), MemberFunction&>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(&MemberFunction::Fn0v), const MemberFunction>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(&MemberFunction::Fn0v), MemberFunction, int>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(&MemberFunction::Fn0v), int>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<TestData, decltype(&MemberFunction::Fn0v)>::Value);
-        CHECK(wstl::IsInvocableReturn<int, decltype(&MemberFunction::Fn0cv), MemberFunction>::Value);
-        CHECK(wstl::IsInvocableReturn<void, decltype(&MemberFunction::Fn0cv), const MemberFunction*>::Value);
-        CHECK(wstl::IsInvocableReturn<char, decltype(&MemberFunction::Fn0cv), volatile MemberFunction&>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(&MemberFunction::Fn0cv), MemberFunction, int>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(&MemberFunction::Fn0cv), int>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<TestData, decltype(&MemberFunction::Fn0cv)>::Value);
-        CHECK(wstl::IsInvocableReturn<int, decltype(&MemberFunction::FnRefOnly), MemberFunction&, char>::Value);
-        CHECK(wstl::IsInvocableReturn<void, decltype(&MemberFunction::FnRefOnly), MemberFunction*, char>::Value);
-        CHECK(wstl::IsInvocableReturn<char, decltype(&MemberFunction::FnRefOnly), MemberFunction&, long>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(&MemberFunction::FnRefOnly), MemberFunction&, char, int>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(&MemberFunction::FnRefOnly), MemberFunction, char>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(&MemberFunction::FnRefOnly), const MemberFunction&, char>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(&MemberFunction::FnRefOnly), MemberFunction&>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(&MemberFunction::FnRefOnly), char>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<TestData, decltype(&MemberFunction::FnRefOnly), MemberFunction&, char>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(&MemberFunction::FnRefOnly), MemberFunction&, TestData>::Value);
-        CHECK(wstl::IsInvocableReturn<int, decltype(&MemberFunction::FnRRefOnly), MemberFunction, char>::Value);
-        CHECK(wstl::IsInvocableReturn<void, decltype(&MemberFunction::FnRRefOnly), MemberFunction&&, char>::Value);
-        CHECK(wstl::IsInvocableReturn<char, decltype(&MemberFunction::FnRRefOnly), MemberFunction, long>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(&MemberFunction::FnRRefOnly), MemberFunction, char, int>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(&MemberFunction::FnRRefOnly), MemberFunction&, char>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(&MemberFunction::FnRRefOnly), MemberFunction*, char>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(&MemberFunction::FnRRefOnly), const MemberFunction, char>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(&MemberFunction::FnRRefOnly), MemberFunction>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(&MemberFunction::FnRRefOnly), char>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<TestData, decltype(&MemberFunction::FnRRefOnly), MemberFunction, char>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(&MemberFunction::FnRRefOnly), MemberFunction, TestData>::Value);
-        CHECK(wstl::IsInvocableReturn<long, decltype(&MemberFunction::FnStatic), int>::Value);
-        CHECK(wstl::IsInvocableReturn<void, decltype(&MemberFunction::FnStatic), int>::Value);
-        CHECK(wstl::IsInvocableReturn<char, decltype(&MemberFunction::FnStatic), long>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<long, decltype(&MemberFunction::FnStatic)>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<TestData, decltype(&MemberFunction::FnStatic), int>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<long, decltype(&MemberFunction::FnStatic), TestData>::Value);
-        CHECK(wstl::IsInvocableReturn<int, decltype(&MemberFunction::FnNoexcept), MemberFunction, char>::Value);
-        CHECK(wstl::IsInvocableReturn<void, decltype(&MemberFunction::FnNoexcept), MemberFunction*, char>::Value);
-        CHECK(wstl::IsInvocableReturn<char, decltype(&MemberFunction::FnNoexcept), MemberFunction&, long>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(&MemberFunction::FnNoexcept), MemberFunction, char, int>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(&MemberFunction::FnNoexcept), const MemberFunction, char>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(&MemberFunction::FnNoexcept), MemberFunction>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(&MemberFunction::FnNoexcept), char>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<TestData, decltype(&MemberFunction::FnNoexcept), MemberFunction, char>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(&MemberFunction::FnNoexcept), MemberFunction, TestData>::Value);
-        CHECK(wstl::IsInvocableReturn<void, decltype(&MemberFunction::VoidFn), MemberFunction*, char>::Value);
-        CHECK(wstl::IsInvocableReturn<void, decltype(&MemberFunction::VoidFn), MemberFunction&, long>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<void, decltype(&MemberFunction::VoidFn), MemberFunction, char, int>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<void, decltype(&MemberFunction::VoidFn), const MemberFunction, char>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<void, decltype(&MemberFunction::VoidFn), MemberFunction>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<void, decltype(&MemberFunction::VoidFn), char>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(&MemberFunction::VoidFn), MemberFunction, char>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<void, decltype(&MemberFunction::VoidFn), MemberFunction, TestData>::Value);
+        CHECK(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::Fn0), MemberFunction>::Value);
+        CHECK(wstl::IsInvocableReturn<void, __TESTING_DECLTYPE__(&MemberFunction::Fn0), MemberFunction*>::Value);
+        CHECK(wstl::IsInvocableReturn<char, __TESTING_DECLTYPE__(&MemberFunction::Fn0), MemberFunction&>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::Fn0), const MemberFunction>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::Fn0), MemberFunction, int>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::Fn0), int>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<TestData, __TESTING_DECLTYPE__(&MemberFunction::Fn0)>::Value);
+        CHECK(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::Fn0c), MemberFunction>::Value);
+        CHECK(wstl::IsInvocableReturn<void, __TESTING_DECLTYPE__(&MemberFunction::Fn0c), const MemberFunction*>::Value);
+        CHECK(wstl::IsInvocableReturn<char, __TESTING_DECLTYPE__(&MemberFunction::Fn0c), MemberFunction&>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::Fn0c), volatile MemberFunction>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::Fn0c), MemberFunction, int>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::Fn0c), int>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<TestData, __TESTING_DECLTYPE__(&MemberFunction::Fn0c)>::Value);
+        CHECK(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::Fn0v), MemberFunction>::Value);
+        CHECK(wstl::IsInvocableReturn<void, __TESTING_DECLTYPE__(&MemberFunction::Fn0v), volatile MemberFunction*>::Value);
+        CHECK(wstl::IsInvocableReturn<char, __TESTING_DECLTYPE__(&MemberFunction::Fn0v), MemberFunction&>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::Fn0v), const MemberFunction>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::Fn0v), MemberFunction, int>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::Fn0v), int>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<TestData, __TESTING_DECLTYPE__(&MemberFunction::Fn0v)>::Value);
+        CHECK(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::Fn0cv), MemberFunction>::Value);
+        CHECK(wstl::IsInvocableReturn<void, __TESTING_DECLTYPE__(&MemberFunction::Fn0cv), const MemberFunction*>::Value);
+        CHECK(wstl::IsInvocableReturn<char, __TESTING_DECLTYPE__(&MemberFunction::Fn0cv), volatile MemberFunction&>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::Fn0cv), MemberFunction, int>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::Fn0cv), int>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<TestData, __TESTING_DECLTYPE__(&MemberFunction::Fn0cv)>::Value);
+        CHECK(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::FnRefOnly), MemberFunction&, char>::Value);
+        CHECK(wstl::IsInvocableReturn<void, __TESTING_DECLTYPE__(&MemberFunction::FnRefOnly), MemberFunction*, char>::Value);
+        CHECK(wstl::IsInvocableReturn<char, __TESTING_DECLTYPE__(&MemberFunction::FnRefOnly), MemberFunction&, long>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::FnRefOnly), MemberFunction&, char, int>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::FnRefOnly), MemberFunction, char>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::FnRefOnly), const MemberFunction&, char>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::FnRefOnly), MemberFunction&>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::FnRefOnly), char>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<TestData, __TESTING_DECLTYPE__(&MemberFunction::FnRefOnly), MemberFunction&, char>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::FnRefOnly), MemberFunction&, TestData>::Value);
+        CHECK(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::FnRRefOnly), MemberFunction, char>::Value);
+        CHECK(wstl::IsInvocableReturn<void, __TESTING_DECLTYPE__(&MemberFunction::FnRRefOnly), MemberFunction&&, char>::Value);
+        CHECK(wstl::IsInvocableReturn<char, __TESTING_DECLTYPE__(&MemberFunction::FnRRefOnly), MemberFunction, long>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::FnRRefOnly), MemberFunction, char, int>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::FnRRefOnly), MemberFunction&, char>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::FnRRefOnly), MemberFunction*, char>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::FnRRefOnly), const MemberFunction, char>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::FnRRefOnly), MemberFunction>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::FnRRefOnly), char>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<TestData, __TESTING_DECLTYPE__(&MemberFunction::FnRRefOnly), MemberFunction, char>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::FnRRefOnly), MemberFunction, TestData>::Value);
+        CHECK(wstl::IsInvocableReturn<long, __TESTING_DECLTYPE__(&MemberFunction::FnStatic), int>::Value);
+        CHECK(wstl::IsInvocableReturn<void, __TESTING_DECLTYPE__(&MemberFunction::FnStatic), int>::Value);
+        CHECK(wstl::IsInvocableReturn<char, __TESTING_DECLTYPE__(&MemberFunction::FnStatic), long>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<long, __TESTING_DECLTYPE__(&MemberFunction::FnStatic)>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<TestData, __TESTING_DECLTYPE__(&MemberFunction::FnStatic), int>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<long, __TESTING_DECLTYPE__(&MemberFunction::FnStatic), TestData>::Value);
+        CHECK(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::FnNoexcept), MemberFunction, char>::Value);
+        CHECK(wstl::IsInvocableReturn<void, __TESTING_DECLTYPE__(&MemberFunction::FnNoexcept), MemberFunction*, char>::Value);
+        CHECK(wstl::IsInvocableReturn<char, __TESTING_DECLTYPE__(&MemberFunction::FnNoexcept), MemberFunction&, long>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::FnNoexcept), MemberFunction, char, int>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::FnNoexcept), const MemberFunction, char>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::FnNoexcept), MemberFunction>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::FnNoexcept), char>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<TestData, __TESTING_DECLTYPE__(&MemberFunction::FnNoexcept), MemberFunction, char>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::FnNoexcept), MemberFunction, TestData>::Value);
+        CHECK(wstl::IsInvocableReturn<void, __TESTING_DECLTYPE__(&MemberFunction::VoidFn), MemberFunction*, char>::Value);
+        CHECK(wstl::IsInvocableReturn<void, __TESTING_DECLTYPE__(&MemberFunction::VoidFn), MemberFunction&, long>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<void, __TESTING_DECLTYPE__(&MemberFunction::VoidFn), MemberFunction, char, int>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<void, __TESTING_DECLTYPE__(&MemberFunction::VoidFn), const MemberFunction, char>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<void, __TESTING_DECLTYPE__(&MemberFunction::VoidFn), MemberFunction>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<void, __TESTING_DECLTYPE__(&MemberFunction::VoidFn), char>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::VoidFn), MemberFunction, char>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<void, __TESTING_DECLTYPE__(&MemberFunction::VoidFn), MemberFunction, TestData>::Value);
 
         // Member object pointer
-        CHECK(wstl::IsInvocableReturn<int, decltype(&A::M), A&>::Value);
-        CHECK(wstl::IsInvocableReturn<void, decltype(&A::M), A>::Value);
-        CHECK(wstl::IsInvocableReturn<char, decltype(&A::M), A*>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<int, decltype(&A::M)>::Value);
-        CHECK_FALSE(wstl::IsInvocableReturn<TestData, decltype(&A::M), A>::Value);
+        CHECK(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(&A::M), A&>::Value);
+        CHECK(wstl::IsInvocableReturn<void, __TESTING_DECLTYPE__(&A::M), A>::Value);
+        CHECK(wstl::IsInvocableReturn<char, __TESTING_DECLTYPE__(&A::M), A*>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<int, __TESTING_DECLTYPE__(&A::M)>::Value);
+        CHECK_FALSE(wstl::IsInvocableReturn<TestData, __TESTING_DECLTYPE__(&A::M), A>::Value);
 
         // Functor
         CHECK(wstl::IsInvocableReturn<int, Functor0>::Value);
@@ -1927,33 +1927,33 @@ TEST_SUITE("TypeTraits") {
     #ifdef __WSTL_CXX17__
     TEST_CASE("IsNothrowInvocable") {
         // Free function
-        CHECK_FALSE(wstl::IsNothrowInvocable<decltype(Free0)>::Value);
-        CHECK_FALSE(wstl::IsNothrowInvocable<decltype(Free0), float>::Value);
-        CHECK(wstl::IsNothrowInvocable<decltype(FreeNoexcept), char>::Value);
-        CHECK_FALSE(wstl::IsNothrowInvocable<decltype(FreeNoexcept), TestData>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocable<__TESTING_DECLTYPE__(Free0)>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocable<__TESTING_DECLTYPE__(Free0), float>::Value);
+        CHECK(wstl::IsNothrowInvocable<__TESTING_DECLTYPE__(FreeNoexcept), char>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocable<__TESTING_DECLTYPE__(FreeNoexcept), TestData>::Value);
 
         // Member function pointer
-        CHECK_FALSE(wstl::IsNothrowInvocable<decltype(&MemberFunction::Fn0), MemberFunction>::Value);
-        CHECK_FALSE(wstl::IsNothrowInvocable<decltype(&MemberFunction::Fn0), MemberFunction*>::Value);
-        CHECK_FALSE(wstl::IsNothrowInvocable<decltype(&MemberFunction::Fn0), MemberFunction&>::Value);
-        CHECK_FALSE(wstl::IsNothrowInvocable<decltype(&MemberFunction::Fn0), MemberFunction, int>::Value);
-        CHECK_FALSE(wstl::IsNothrowInvocable<decltype(&MemberFunction::Fn0)>::Value);
-        CHECK_FALSE(wstl::IsNothrowInvocable<decltype(&MemberFunction::Fn0), const MemberFunction>::Value);
-        CHECK(wstl::IsNothrowInvocable<decltype(&MemberFunction::FnNoexcept), MemberFunction, char>::Value);
-        CHECK(wstl::IsNothrowInvocable<decltype(&MemberFunction::FnNoexcept), MemberFunction*, double>::Value);
-        CHECK(wstl::IsNothrowInvocable<decltype(&MemberFunction::FnNoexcept), MemberFunction&, char>::Value);
-        CHECK_FALSE(wstl::IsNothrowInvocable<decltype(&MemberFunction::FnNoexcept), MemberFunction, char, int>::Value);
-        CHECK_FALSE(wstl::IsNothrowInvocable<decltype(&MemberFunction::FnNoexcept), MemberFunction>::Value);
-        CHECK_FALSE(wstl::IsNothrowInvocable<decltype(&MemberFunction::FnNoexcept), const MemberFunction, char>::Value);
-        CHECK_FALSE(wstl::IsNothrowInvocable<decltype(&MemberFunction::FnNoexcept)>::Value);
-        CHECK_FALSE(wstl::IsNothrowInvocable<decltype(&MemberFunction::FnNoexcept), char>::Value);
-        CHECK_FALSE(wstl::IsNothrowInvocable<decltype(&MemberFunction::FnNoexcept), MemberFunction, TestData>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocable<__TESTING_DECLTYPE__(&MemberFunction::Fn0), MemberFunction>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocable<__TESTING_DECLTYPE__(&MemberFunction::Fn0), MemberFunction*>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocable<__TESTING_DECLTYPE__(&MemberFunction::Fn0), MemberFunction&>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocable<__TESTING_DECLTYPE__(&MemberFunction::Fn0), MemberFunction, int>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocable<__TESTING_DECLTYPE__(&MemberFunction::Fn0)>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocable<__TESTING_DECLTYPE__(&MemberFunction::Fn0), const MemberFunction>::Value);
+        CHECK(wstl::IsNothrowInvocable<__TESTING_DECLTYPE__(&MemberFunction::FnNoexcept), MemberFunction, char>::Value);
+        CHECK(wstl::IsNothrowInvocable<__TESTING_DECLTYPE__(&MemberFunction::FnNoexcept), MemberFunction*, double>::Value);
+        CHECK(wstl::IsNothrowInvocable<__TESTING_DECLTYPE__(&MemberFunction::FnNoexcept), MemberFunction&, char>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocable<__TESTING_DECLTYPE__(&MemberFunction::FnNoexcept), MemberFunction, char, int>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocable<__TESTING_DECLTYPE__(&MemberFunction::FnNoexcept), MemberFunction>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocable<__TESTING_DECLTYPE__(&MemberFunction::FnNoexcept), const MemberFunction, char>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocable<__TESTING_DECLTYPE__(&MemberFunction::FnNoexcept)>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocable<__TESTING_DECLTYPE__(&MemberFunction::FnNoexcept), char>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocable<__TESTING_DECLTYPE__(&MemberFunction::FnNoexcept), MemberFunction, TestData>::Value);
 
         // Member object pointer
-        CHECK(wstl::IsNothrowInvocable<decltype(&A::M), A&>::Value);
-        CHECK(wstl::IsNothrowInvocable<decltype(&A::M), A>::Value);
-        CHECK(wstl::IsNothrowInvocable<decltype(&A::M), A*>::Value);
-        CHECK_FALSE(wstl::IsNothrowInvocable<decltype(&A::M)>::Value);
+        CHECK(wstl::IsNothrowInvocable<__TESTING_DECLTYPE__(&A::M), A&>::Value);
+        CHECK(wstl::IsNothrowInvocable<__TESTING_DECLTYPE__(&A::M), A>::Value);
+        CHECK(wstl::IsNothrowInvocable<__TESTING_DECLTYPE__(&A::M), A*>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocable<__TESTING_DECLTYPE__(&A::M)>::Value);
 
         // Functor
         CHECK_FALSE(wstl::IsNothrowInvocable<Functor0>::Value);
@@ -1964,42 +1964,42 @@ TEST_SUITE("TypeTraits") {
 
     TEST_CASE("IsNothrowInvocableReturn") {
         // Free function
-        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, decltype(Free0)>::Value);
-        CHECK_FALSE(wstl::IsNothrowInvocableReturn<void, decltype(Free0)>::Value);
-        CHECK_FALSE(wstl::IsNothrowInvocableReturn<char, decltype(Free0)>::Value);
-        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, decltype(Free0), float>::Value);
-        CHECK_FALSE(wstl::IsNothrowInvocableReturn<TestData, decltype(Free0)>::Value);
-        CHECK(wstl::IsNothrowInvocableReturn<int, decltype(FreeNoexcept), char>::Value);
-        CHECK(wstl::IsNothrowInvocableReturn<void, decltype(FreeNoexcept), char>::Value);
-        CHECK(wstl::IsNothrowInvocableReturn<char, decltype(FreeNoexcept), int>::Value);
-        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, decltype(FreeNoexcept), char, int>::Value);
-        CHECK_FALSE(wstl::IsNothrowInvocableReturn<TestData, decltype(FreeNoexcept), char>::Value);
-        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, decltype(FreeNoexcept), TestData>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, __TESTING_DECLTYPE__(Free0)>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<void, __TESTING_DECLTYPE__(Free0)>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<char, __TESTING_DECLTYPE__(Free0)>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, __TESTING_DECLTYPE__(Free0), float>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<TestData, __TESTING_DECLTYPE__(Free0)>::Value);
+        CHECK(wstl::IsNothrowInvocableReturn<int, __TESTING_DECLTYPE__(FreeNoexcept), char>::Value);
+        CHECK(wstl::IsNothrowInvocableReturn<void, __TESTING_DECLTYPE__(FreeNoexcept), char>::Value);
+        CHECK(wstl::IsNothrowInvocableReturn<char, __TESTING_DECLTYPE__(FreeNoexcept), int>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, __TESTING_DECLTYPE__(FreeNoexcept), char, int>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<TestData, __TESTING_DECLTYPE__(FreeNoexcept), char>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, __TESTING_DECLTYPE__(FreeNoexcept), TestData>::Value);
 
         // Member function pointer
-        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, decltype(&MemberFunction::Fn0), MemberFunction>::Value);
-        CHECK_FALSE(wstl::IsNothrowInvocableReturn<void, decltype(&MemberFunction::Fn0), MemberFunction*>::Value);
-        CHECK_FALSE(wstl::IsNothrowInvocableReturn<char, decltype(&MemberFunction::Fn0), MemberFunction&>::Value);
-        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, decltype(&MemberFunction::Fn0), const MemberFunction>::Value);
-        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, decltype(&MemberFunction::Fn0), MemberFunction, int>::Value);
-        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, decltype(&MemberFunction::Fn0), int>::Value);
-        CHECK_FALSE(wstl::IsNothrowInvocableReturn<TestData, decltype(&MemberFunction::Fn0)>::Value);
-        CHECK(wstl::IsNothrowInvocableReturn<int, decltype(&MemberFunction::FnNoexcept), MemberFunction, char>::Value);
-        CHECK(wstl::IsNothrowInvocableReturn<void, decltype(&MemberFunction::FnNoexcept), MemberFunction*, char>::Value);
-        CHECK(wstl::IsNothrowInvocableReturn<char, decltype(&MemberFunction::FnNoexcept), MemberFunction&, long>::Value);
-        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, decltype(&MemberFunction::FnNoexcept), MemberFunction, char, int>::Value);
-        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, decltype(&MemberFunction::FnNoexcept), const MemberFunction, char>::Value);
-        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, decltype(&MemberFunction::FnNoexcept), MemberFunction>::Value);
-        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, decltype(&MemberFunction::FnNoexcept), char>::Value);
-        CHECK_FALSE(wstl::IsNothrowInvocableReturn<TestData, decltype(&MemberFunction::FnNoexcept), MemberFunction, char>::Value);
-        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, decltype(&MemberFunction::FnNoexcept), MemberFunction, TestData>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::Fn0), MemberFunction>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<void, __TESTING_DECLTYPE__(&MemberFunction::Fn0), MemberFunction*>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<char, __TESTING_DECLTYPE__(&MemberFunction::Fn0), MemberFunction&>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::Fn0), const MemberFunction>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::Fn0), MemberFunction, int>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::Fn0), int>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<TestData, __TESTING_DECLTYPE__(&MemberFunction::Fn0)>::Value);
+        CHECK(wstl::IsNothrowInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::FnNoexcept), MemberFunction, char>::Value);
+        CHECK(wstl::IsNothrowInvocableReturn<void, __TESTING_DECLTYPE__(&MemberFunction::FnNoexcept), MemberFunction*, char>::Value);
+        CHECK(wstl::IsNothrowInvocableReturn<char, __TESTING_DECLTYPE__(&MemberFunction::FnNoexcept), MemberFunction&, long>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::FnNoexcept), MemberFunction, char, int>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::FnNoexcept), const MemberFunction, char>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::FnNoexcept), MemberFunction>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::FnNoexcept), char>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<TestData, __TESTING_DECLTYPE__(&MemberFunction::FnNoexcept), MemberFunction, char>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, __TESTING_DECLTYPE__(&MemberFunction::FnNoexcept), MemberFunction, TestData>::Value);
 
         // Member object pointer
-        CHECK(wstl::IsNothrowInvocableReturn<int, decltype(&A::M), A&>::Value);
-        CHECK(wstl::IsNothrowInvocableReturn<void, decltype(&A::M), A>::Value);
-        CHECK(wstl::IsNothrowInvocableReturn<char, decltype(&A::M), A*>::Value);
-        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, decltype(&A::M)>::Value);
-        CHECK_FALSE(wstl::IsNothrowInvocableReturn<TestData, decltype(&A::M), A>::Value);
+        CHECK(wstl::IsNothrowInvocableReturn<int, __TESTING_DECLTYPE__(&A::M), A&>::Value);
+        CHECK(wstl::IsNothrowInvocableReturn<void, __TESTING_DECLTYPE__(&A::M), A>::Value);
+        CHECK(wstl::IsNothrowInvocableReturn<char, __TESTING_DECLTYPE__(&A::M), A*>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, __TESTING_DECLTYPE__(&A::M)>::Value);
+        CHECK_FALSE(wstl::IsNothrowInvocableReturn<TestData, __TESTING_DECLTYPE__(&A::M), A>::Value);
 
         // Functor
         CHECK_FALSE(wstl::IsNothrowInvocableReturn<int, Functor0>::Value);

@@ -23,6 +23,10 @@ namespace wstl {
         return stream << "NullPointer";
     }
 }
+
+#define __TESTING_DECLTYPE__(x) __typeof__(x)
+#else
+#define __TESTING_DECLTYPE__(x) decltype(x)
 #endif
 
 template<typename T>

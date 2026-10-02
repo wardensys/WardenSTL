@@ -20,11 +20,14 @@ namespace {
 TEST_SUITE("Utility") {
     TEST_CASE("AsConst") {
         Dummy d;
-        const Dummy cd;
         const Dummy& ref = wstl::AsConst(d);
 
+        #ifdef __WSTL_CXX11__
+        const Dummy cd;
         CHECK((wstl::IsSame<decltype(wstl::AsConst(d)), const Dummy&>::Value));
         CHECK((wstl::IsSame<decltype(wstl::AsConst(cd)), const Dummy&>::Value));
+        #endif
+
         CHECK_EQ(&ref, &d);
 
         // The following line should not compile due to deleted overload for rvalue references
@@ -184,8 +187,8 @@ TEST_SUITE("Utility") {
     TEST_CASE("Pair template deduction guide") {
         wstl::Pair p(67, 6.7);
 
-        CHECK(wstl::IsSameValue<decltype(p.First), int>);
-        CHECK(wstl::IsSameValue<decltype(p.Second), double>);
+        CHECK(wstl::IsSameValue<__TESTING_DECLTYPE__(p.First), int>);
+        CHECK(wstl::IsSameValue<__TESTING_DECLTYPE__(p.Second), double>);
         CHECK_EQ(p.First, 67);
         CHECK_EQ(p.Second, 6.7);
     }
@@ -426,7 +429,7 @@ TEST_SUITE("Utility") {
 
         // Practical test, sum of integers
         CHECK_EQ(IntegerSum(Data{}), 145);
-        CHECK(wstl::IsSame<decltype(IntegerSum(Data{})), short>::Value);
+        CHECK(wstl::IsSame<__TESTING_DECLTYPE__(IntegerSum(Data{})), short>::Value);
 
         // MakeIntegerSequence
         using Data2 = wstl::MakeIntegerSequence<char, 10>;
@@ -435,7 +438,7 @@ TEST_SUITE("Utility") {
         CHECK_EQ(Data2::Size(), 10UL);
         
         CHECK_EQ(IntegerSum(Data2{}), 45);
-        CHECK(wstl::IsSame<decltype(IntegerSum(Data2{})), char>::Value);
+        CHECK(wstl::IsSame<__TESTING_DECLTYPE__(IntegerSum(Data2{})), char>::Value);
     }
 
     TEST_CASE("IndexSequence") {
@@ -445,7 +448,7 @@ TEST_SUITE("Utility") {
         CHECK_EQ(Data::Size(), 6UL);
 
         CHECK_EQ(IntegerSum(Data{}), 145UL);
-        CHECK(wstl::IsSame<decltype(IntegerSum(Data{})), size_t>::Value);
+        CHECK(wstl::IsSame<__TESTING_DECLTYPE__(IntegerSum(Data{})), size_t>::Value);
 
         // MakeIndexSequence
         using Data2 = wstl::MakeIndexSequence<7>;
@@ -454,7 +457,7 @@ TEST_SUITE("Utility") {
         CHECK_EQ(Data2::Size(), 7UL);
         
         CHECK_EQ(IntegerSum(Data2{}), 21UL);
-        CHECK(wstl::IsSame<decltype(IntegerSum(Data2{})), size_t>::Value);
+        CHECK(wstl::IsSame<__TESTING_DECLTYPE__(IntegerSum(Data2{})), size_t>::Value);
 
         // IndexSequenceFor
         using Data3 = wstl::IndexSequenceFor<int, char, double, FakeInteger, long>;
@@ -463,7 +466,7 @@ TEST_SUITE("Utility") {
         CHECK_EQ(Data3::Size(), 5UL);
         
         CHECK_EQ(IntegerSum(Data3{}), 10UL);
-        CHECK(wstl::IsSame<decltype(IntegerSum(Data3{})), size_t>::Value);
+        CHECK(wstl::IsSame<__TESTING_DECLTYPE__(IntegerSum(Data3{})), size_t>::Value);
     }
     #endif
 }

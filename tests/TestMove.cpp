@@ -52,10 +52,10 @@ TEST_SUITE("Utility") {
     }
 
     TEST_CASE("Move") {
-        CHECK(wstl::IsSame<decltype(wstl::Move(wstl::DeclareValue<int&>())), int&&>::Value);
-        CHECK(wstl::IsSame<decltype(wstl::Move(wstl::DeclareValue<const int&>())), const int&&>::Value);
-        CHECK(wstl::IsSame<decltype(wstl::Move(wstl::DeclareValue<int>())), int&&>::Value);
-        CHECK(wstl::IsSame<decltype(wstl::Move(wstl::DeclareValue<const int>())), const int&&>::Value);
+        CHECK(wstl::IsSame<__TESTING_DECLTYPE__(wstl::Move(wstl::DeclareValue<int&>())), int&&>::Value);
+        CHECK(wstl::IsSame<__TESTING_DECLTYPE__(wstl::Move(wstl::DeclareValue<const int&>())), const int&&>::Value);
+        CHECK(wstl::IsSame<__TESTING_DECLTYPE__(wstl::Move(wstl::DeclareValue<int>())), int&&>::Value);
+        CHECK(wstl::IsSame<__TESTING_DECLTYPE__(wstl::Move(wstl::DeclareValue<const int>())), const int&&>::Value);
     }
 
     TEST_CASE("MoveIfNoexcept") {
@@ -64,10 +64,10 @@ TEST_SUITE("Utility") {
         NonNoexceptMovable m;
         const NonNoexceptMovable cm;
 
-        CHECK(wstl::IsSame<decltype(wstl::MoveIfNoexcept(x)), int&&>::Value);
-        CHECK(wstl::IsSame<decltype(wstl::MoveIfNoexcept(cx)), const int&&>::Value);
-        CHECK(wstl::IsSame<decltype(wstl::MoveIfNoexcept(m)), const NonNoexceptMovable&>::Value);
-        CHECK(wstl::IsSame<decltype(wstl::MoveIfNoexcept(cm)), const NonNoexceptMovable&>::Value);
+        CHECK(wstl::IsSame<__TESTING_DECLTYPE__(wstl::MoveIfNoexcept(x)), int&&>::Value);
+        CHECK(wstl::IsSame<__TESTING_DECLTYPE__(wstl::MoveIfNoexcept(cx)), const int&&>::Value);
+        CHECK(wstl::IsSame<__TESTING_DECLTYPE__(wstl::MoveIfNoexcept(m)), const NonNoexceptMovable&>::Value);
+        CHECK(wstl::IsSame<__TESTING_DECLTYPE__(wstl::MoveIfNoexcept(cm)), const NonNoexceptMovable&>::Value);
     }
 
     TEST_CASE("ForwardLike") {

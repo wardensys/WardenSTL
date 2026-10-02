@@ -832,80 +832,80 @@ TEST_SUITE("Iterator") {
         // Raw arrays
         CHECK_EQ(wstl::Begin(arr), arr);
         CHECK_EQ(wstl::End(arr), arr + 3);
-        CHECK((wstl::IsSame<decltype(wstl::Begin(arr)), int*>::Value));
-        CHECK((wstl::IsSame<decltype(wstl::End(arr)), int*>::Value));
+        CHECK((wstl::IsSame<__TESTING_DECLTYPE__(wstl::Begin(arr)), int*>::Value));
+        CHECK((wstl::IsSame<__TESTING_DECLTYPE__(wstl::End(arr)), int*>::Value));
 
         CHECK_EQ(wstl::Begin(carr), carr);
         CHECK_EQ(wstl::End(carr), carr + 3);
-        CHECK((wstl::IsSame<decltype(wstl::Begin(carr)), const int*>::Value));
-        CHECK((wstl::IsSame<decltype(wstl::End(carr)), const int*>::Value));
+        CHECK((wstl::IsSame<__TESTING_DECLTYPE__(wstl::Begin(carr)), const int*>::Value));
+        CHECK((wstl::IsSame<__TESTING_DECLTYPE__(wstl::End(carr)), const int*>::Value));
 
         CHECK_EQ(wstl::ConstBegin(arr), arr);
         CHECK_EQ(wstl::ConstEnd(arr), arr + 3);
         CHECK_EQ(wstl::ConstBegin(carr), carr);
         CHECK_EQ(wstl::ConstEnd(carr), carr + 3);
-        CHECK((wstl::IsSame<decltype(wstl::ConstBegin(arr)), const int*>::Value));
-        CHECK((wstl::IsSame<decltype(wstl::ConstEnd(arr)), const int*>::Value));
-        CHECK((wstl::IsSame<decltype(wstl::ConstBegin(carr)), const int*>::Value));
-        CHECK((wstl::IsSame<decltype(wstl::ConstEnd(carr)), const int*>::Value));
+        CHECK((wstl::IsSame<__TESTING_DECLTYPE__(wstl::ConstBegin(arr)), const int*>::Value));
+        CHECK((wstl::IsSame<__TESTING_DECLTYPE__(wstl::ConstEnd(arr)), const int*>::Value));
+        CHECK((wstl::IsSame<__TESTING_DECLTYPE__(wstl::ConstBegin(carr)), const int*>::Value));
+        CHECK((wstl::IsSame<__TESTING_DECLTYPE__(wstl::ConstEnd(carr)), const int*>::Value));
 
         CHECK_EQ(wstl::ReverseBegin(arr).Base(), arr + 3);
         CHECK_EQ(wstl::ReverseEnd(arr).Base(), arr);
-        CHECK((wstl::IsSame<decltype(wstl::ReverseBegin(arr)), wstl::ReverseIterator<int*> >::Value));
-        CHECK((wstl::IsSame<decltype(wstl::ReverseEnd(arr)), wstl::ReverseIterator<int*> >::Value));
+        CHECK((wstl::IsSame<__TESTING_DECLTYPE__(wstl::ReverseBegin(arr)), wstl::ReverseIterator<int*> >::Value));
+        CHECK((wstl::IsSame<__TESTING_DECLTYPE__(wstl::ReverseEnd(arr)), wstl::ReverseIterator<int*> >::Value));
 
         CHECK_EQ(wstl::ReverseBegin(carr).Base(), carr + 3);
         CHECK_EQ(wstl::ReverseEnd(carr).Base(), carr);
-        CHECK((wstl::IsSame<decltype(wstl::ReverseBegin(carr)), wstl::ReverseIterator<const int*> >::Value));
-        CHECK((wstl::IsSame<decltype(wstl::ReverseEnd(carr)), wstl::ReverseIterator<const int*> >::Value));
+        CHECK((wstl::IsSame<__TESTING_DECLTYPE__(wstl::ReverseBegin(carr)), wstl::ReverseIterator<const int*> >::Value));
+        CHECK((wstl::IsSame<__TESTING_DECLTYPE__(wstl::ReverseEnd(carr)), wstl::ReverseIterator<const int*> >::Value));
 
         CHECK_EQ(wstl::ConstReverseBegin(arr).Base(), arr + 3);
         CHECK_EQ(wstl::ConstReverseEnd(arr).Base(), arr);
         CHECK_EQ(wstl::ConstReverseBegin(carr).Base(), carr + 3);
         CHECK_EQ(wstl::ConstReverseEnd(carr).Base(), carr);
-        CHECK((wstl::IsSame<decltype(wstl::ConstReverseBegin(arr)), wstl::ReverseIterator<const int*> >::Value));
-        CHECK((wstl::IsSame<decltype(wstl::ConstReverseEnd(arr)), wstl::ReverseIterator<const int*> >::Value));
-        CHECK((wstl::IsSame<decltype(wstl::ConstReverseBegin(carr)), wstl::ReverseIterator<const int*> >::Value));
-        CHECK((wstl::IsSame<decltype(wstl::ConstReverseEnd(carr)), wstl::ReverseIterator<const int*> >::Value));
+        CHECK((wstl::IsSame<__TESTING_DECLTYPE__(wstl::ConstReverseBegin(arr)), wstl::ReverseIterator<const int*> >::Value));
+        CHECK((wstl::IsSame<__TESTING_DECLTYPE__(wstl::ConstReverseEnd(arr)), wstl::ReverseIterator<const int*> >::Value));
+        CHECK((wstl::IsSame<__TESTING_DECLTYPE__(wstl::ConstReverseBegin(carr)), wstl::ReverseIterator<const int*> >::Value));
+        CHECK((wstl::IsSame<__TESTING_DECLTYPE__(wstl::ConstReverseEnd(carr)), wstl::ReverseIterator<const int*> >::Value));
 
         // Containers
         CHECK_EQ(wstl::Begin(deq), deq.Begin());
         CHECK_EQ(wstl::End(deq), deq.End());
-        CHECK((wstl::IsSame<decltype(wstl::Begin(deq)), wstl::Deque<int, 3>::Iterator>::Value));
-        CHECK((wstl::IsSame<decltype(wstl::End(deq)), wstl::Deque<int, 3>::Iterator>::Value));
+        CHECK((wstl::IsSame<__TESTING_DECLTYPE__(wstl::Begin(deq)), wstl::Deque<int, 3>::Iterator>::Value));
+        CHECK((wstl::IsSame<__TESTING_DECLTYPE__(wstl::End(deq)), wstl::Deque<int, 3>::Iterator>::Value));
 
         CHECK_EQ(wstl::Begin(cdeq), cdeq.Begin());
         CHECK_EQ(wstl::End(cdeq), cdeq.End());
-        CHECK((wstl::IsSame<decltype(wstl::Begin(cdeq)), wstl::Deque<int, 3>::ConstIterator>::Value));
-        CHECK((wstl::IsSame<decltype(wstl::End(cdeq)), wstl::Deque<int, 3>::ConstIterator>::Value));
+        CHECK((wstl::IsSame<__TESTING_DECLTYPE__(wstl::Begin(cdeq)), wstl::Deque<int, 3>::ConstIterator>::Value));
+        CHECK((wstl::IsSame<__TESTING_DECLTYPE__(wstl::End(cdeq)), wstl::Deque<int, 3>::ConstIterator>::Value));
 
         CHECK_EQ(wstl::ConstBegin(deq), deq.Begin());
         CHECK_EQ(wstl::ConstEnd(deq), deq.End());
         CHECK_EQ(wstl::ConstBegin(cdeq), cdeq.Begin());
         CHECK_EQ(wstl::ConstEnd(cdeq), cdeq.End());
-        CHECK((wstl::IsSame<decltype(wstl::ConstBegin(deq)), wstl::Deque<int, 3>::ConstIterator>::Value));
-        CHECK((wstl::IsSame<decltype(wstl::ConstEnd(deq)), wstl::Deque<int, 3>::ConstIterator>::Value));
-        CHECK((wstl::IsSame<decltype(wstl::ConstBegin(cdeq)), wstl::Deque<int, 3>::ConstIterator>::Value));
-        CHECK((wstl::IsSame<decltype(wstl::ConstEnd(cdeq)), wstl::Deque<int, 3>::ConstIterator>::Value));
+        CHECK((wstl::IsSame<__TESTING_DECLTYPE__(wstl::ConstBegin(deq)), wstl::Deque<int, 3>::ConstIterator>::Value));
+        CHECK((wstl::IsSame<__TESTING_DECLTYPE__(wstl::ConstEnd(deq)), wstl::Deque<int, 3>::ConstIterator>::Value));
+        CHECK((wstl::IsSame<__TESTING_DECLTYPE__(wstl::ConstBegin(cdeq)), wstl::Deque<int, 3>::ConstIterator>::Value));
+        CHECK((wstl::IsSame<__TESTING_DECLTYPE__(wstl::ConstEnd(cdeq)), wstl::Deque<int, 3>::ConstIterator>::Value));
 
         CHECK_EQ(wstl::ReverseBegin(deq), deq.ReverseBegin());
         CHECK_EQ(wstl::ReverseEnd(deq), deq.ReverseEnd());
-        CHECK((wstl::IsSame<decltype(wstl::ReverseBegin(deq)), wstl::Deque<int, 3>::ReverseIterator>::Value));
-        CHECK((wstl::IsSame<decltype(wstl::ReverseEnd(deq)), wstl::Deque<int, 3>::ReverseIterator>::Value));
+        CHECK((wstl::IsSame<__TESTING_DECLTYPE__(wstl::ReverseBegin(deq)), wstl::Deque<int, 3>::ReverseIterator>::Value));
+        CHECK((wstl::IsSame<__TESTING_DECLTYPE__(wstl::ReverseEnd(deq)), wstl::Deque<int, 3>::ReverseIterator>::Value));
 
         CHECK_EQ(wstl::ReverseBegin(cdeq), cdeq.ReverseBegin());
         CHECK_EQ(wstl::ReverseEnd(cdeq), cdeq.ReverseEnd());
-        CHECK((wstl::IsSame<decltype(wstl::ReverseBegin(cdeq)), wstl::Deque<int, 3>::ConstReverseIterator>::Value));
-        CHECK((wstl::IsSame<decltype(wstl::ReverseEnd(cdeq)), wstl::Deque<int, 3>::ConstReverseIterator>::Value));
+        CHECK((wstl::IsSame<__TESTING_DECLTYPE__(wstl::ReverseBegin(cdeq)), wstl::Deque<int, 3>::ConstReverseIterator>::Value));
+        CHECK((wstl::IsSame<__TESTING_DECLTYPE__(wstl::ReverseEnd(cdeq)), wstl::Deque<int, 3>::ConstReverseIterator>::Value));
 
         CHECK_EQ(wstl::ConstReverseBegin(deq), deq.ConstReverseBegin());
         CHECK_EQ(wstl::ConstReverseEnd(deq), deq.ConstReverseEnd());
         CHECK_EQ(wstl::ConstReverseBegin(cdeq), cdeq.ConstReverseBegin());
         CHECK_EQ(wstl::ConstReverseEnd(cdeq), cdeq.ConstReverseEnd());
-        CHECK((wstl::IsSame<decltype(wstl::ConstReverseBegin(deq)), wstl::Deque<int, 3>::ConstReverseIterator>::Value));
-        CHECK((wstl::IsSame<decltype(wstl::ConstReverseEnd(deq)), wstl::Deque<int, 3>::ConstReverseIterator>::Value));
-        CHECK((wstl::IsSame<decltype(wstl::ConstReverseBegin(cdeq)), wstl::Deque<int, 3>::ConstReverseIterator>::Value));
-        CHECK((wstl::IsSame<decltype(wstl::ConstReverseEnd(cdeq)), wstl::Deque<int, 3>::ConstReverseIterator>::Value));
+        CHECK((wstl::IsSame<__TESTING_DECLTYPE__(wstl::ConstReverseBegin(deq)), wstl::Deque<int, 3>::ConstReverseIterator>::Value));
+        CHECK((wstl::IsSame<__TESTING_DECLTYPE__(wstl::ConstReverseEnd(deq)), wstl::Deque<int, 3>::ConstReverseIterator>::Value));
+        CHECK((wstl::IsSame<__TESTING_DECLTYPE__(wstl::ConstReverseBegin(cdeq)), wstl::Deque<int, 3>::ConstReverseIterator>::Value));
+        CHECK((wstl::IsSame<__TESTING_DECLTYPE__(wstl::ConstReverseEnd(cdeq)), wstl::Deque<int, 3>::ConstReverseIterator>::Value));
     }
 
     TEST_CASE("ArraySize") {

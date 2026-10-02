@@ -122,11 +122,11 @@ namespace wstl {
         /// @param second Value of the second object
         __WSTL_CONSTEXPR14__ Pair(const T1& first, const T2& second) : First(first), Second(second) {}
 
-        /// @brief Templated parameterized constructor
-        /// @param first Value of the first object
-        /// @param second Value of the second object
-        template<typename U1, typename U2>
-        __WSTL_CONSTEXPR14__ Pair(const U1& first, const U2& second) : First(first), Second(second) {}
+        // /// @brief Templated parameterized constructor
+        // /// @param first Value of the first object
+        // /// @param second Value of the second object
+        // template<typename U1, typename U2>
+        // __WSTL_CONSTEXPR14__ Pair(const U1& first, const U2& second) : First(first), Second(second) {}
 
         /// @brief Copy constructor - copies from pair of the same types
         /// @param other Pair to copy from
