@@ -223,13 +223,13 @@ TEST_SUITE("Numeric") {
         // Bidirectional iterator
         std::list<int> data3(data1, data1 + 9);
 
-        CHECK_EQ(*wstl::Midpoint(data3.begin(), data3.end()), *std::next(data3.begin(), 4));
+        CHECK_EQ(*wstl::Midpoint(data3.begin(), data3.end()), *wstl::Next(data3.begin(), 4));
 
         // Forward iterator
         CustomForwardIterator<int*> fb(data1);
         CustomForwardIterator<int*> fe(data1 + 9);
 
-        CHECK_EQ(*wstl::Midpoint(fb, fe), *std::next(fb, 4));
+        CHECK_EQ(*wstl::Midpoint(fb, fe), *wstl::Next(fb, 4));
     }
 
     struct Hel {
