@@ -99,11 +99,12 @@ TEST_SUITE("Algorithm") {
     TEST_CASE("FindIfNot") {
         #ifdef __WSTL_CXX11__
         auto predicate = [](int x) { return x == 3; };
+        int* it1 = std::find_if_not(BeginImpl(dataA), EndImpl(dataA), predicate);
         #else
         std::binder2nd<std::equal_to<int> > predicate(std::equal_to<int>(), 3);
+        int* it1 = dataA;
         #endif
 
-        int* it1 = std::find_if_not(BeginImpl(dataA), EndImpl(dataA), predicate);
         int* it2 = wstl::FindIfNot(BeginImpl(dataA), EndImpl(dataA), predicate);
 
         CHECK_EQ(it1, it2);
@@ -113,17 +114,23 @@ TEST_SUITE("Algorithm") {
         #ifdef __WSTL_CXX11__
         auto truePredicate = [](int x) { return x > 0; };
         auto falsePredicate = [](int x) { return x > 3; };
+        bool expected = std::all_of(BeginImpl(dataA), EndImpl(dataA), truePredicate);
         #else
         std::binder2nd<std::greater<int> > truePredicate(std::greater<int>(), 0);
         std::binder2nd<std::greater<int> > falsePredicate(std::greater<int>(), 3);
+        bool expected = true;
         #endif
 
-        bool expected = std::all_of(BeginImpl(dataA), EndImpl(dataA), truePredicate);
         bool result = wstl::AllOf(BeginImpl(dataA), EndImpl(dataA), truePredicate);
 
         CHECK_EQ(expected, result);
 
+        #ifdef __WSTL_CXX11__
         expected = std::all_of(BeginImpl(dataA), EndImpl(dataA), falsePredicate);
+        #else
+        expected = false;
+        #endif
+
         result = wstl::AllOf(BeginImpl(dataA), EndImpl(dataA), falsePredicate);
 
         CHECK_EQ(expected, result);
@@ -133,17 +140,23 @@ TEST_SUITE("Algorithm") {
         #ifdef __WSTL_CXX11__
         auto truePredicate = [](int x) { return x < 3; };
         auto falsePredicate = [](int x) { return x < 0; };
+        bool expected = std::any_of(BeginImpl(dataA), EndImpl(dataA), truePredicate);
         #else
         std::binder2nd<std::less<int> > truePredicate(std::less<int>(), 0);
         std::binder2nd<std::less<int> > falsePredicate(std::less<int>(), 3);
+        bool expected = false;
         #endif
 
-        bool expected = std::any_of(BeginImpl(dataA), EndImpl(dataA), truePredicate);
         bool result = wstl::AnyOf(BeginImpl(dataA), EndImpl(dataA), truePredicate);
 
         CHECK_EQ(expected, result);
 
+        #ifdef __WSTL_CXX11__
         expected = std::any_of(BeginImpl(dataA), EndImpl(dataA), falsePredicate);
+        #else
+        expected = true;
+        #endif
+
         result = wstl::AnyOf(BeginImpl(dataA), EndImpl(dataA), falsePredicate);
 
         CHECK_EQ(expected, result);
@@ -153,17 +166,23 @@ TEST_SUITE("Algorithm") {
         #ifdef __WSTL_CXX11__
         auto truePredicate = [](int x) { return x < 0; };
         auto falsePredicate = [](int x) { return x < 3; };
+        bool expected = std::none_of(BeginImpl(dataA), EndImpl(dataA), truePredicate);
         #else
         std::binder2nd<std::less<int> > truePredicate(std::less<int>(), 0);
         std::binder2nd<std::less<int> > falsePredicate(std::less<int>(), 3);
+        bool expected = true;
         #endif
 
-        bool expected = std::none_of(BeginImpl(dataA), EndImpl(dataA), truePredicate);
         bool result = wstl::NoneOf(BeginImpl(dataA), EndImpl(dataA), truePredicate);
 
         CHECK_EQ(expected, result);
 
+        #ifdef __WSTL_CXX11__
         expected = std::none_of(BeginImpl(dataA), EndImpl(dataA), falsePredicate);
+        #else
+        expected = false;
+        #endif
+
         result = wstl::NoneOf(BeginImpl(dataA), EndImpl(dataA), falsePredicate);
 
         CHECK_EQ(expected, result);
@@ -357,12 +376,18 @@ TEST_SUITE("Algorithm") {
     TEST_CASE("CopyIf") {
         // POD pointer
         int buffer1[SIZE] = {0};
-        int buffer2[SIZE] = {0};
 
         int* p1 = wstl::CopyIf(BeginImpl(dataA), EndImpl(dataA), BeginImpl(buffer1), &wstl::IsEven<int>);
-        int* p2 = std::copy_if(BeginImpl(dataA), EndImpl(dataA), BeginImpl(buffer2), &wstl::IsEven<int>);
-
         ptrdiff_t d1 = std::distance(buffer1, p1);
+
+        #ifdef __WSTL_CXX11__
+        int buffer2[SIZE] = {0};
+        int* p2 = std::copy_if(BeginImpl(dataA), EndImpl(dataA), BeginImpl(buffer2), &wstl::IsEven<int>);
+        #else
+        int buffer2[SIZE] = {4, 10, 6};
+        int* p2 = buffer2 + 3;
+        #endif
+
         ptrdiff_t d2 = std::distance(buffer2, p2);
         CHECK_EQ(d1, d2);
 
@@ -371,12 +396,18 @@ TEST_SUITE("Algorithm") {
 
         // Non-POD pointer
         NonTrivialData bufferN1[NONTRIVIAL_SIZE];
-        NonTrivialData bufferN2[NONTRIVIAL_SIZE];
 
         NonTrivialData* pn1 = wstl::CopyIf(BeginImpl(dataN), EndImpl(dataN), BeginImpl(bufferN1), &CopyIfPredicate2);
-        NonTrivialData* pn2 = std::copy_if(BeginImpl(dataN), EndImpl(dataN), BeginImpl(bufferN2), &CopyIfPredicate2);
-
         d1 = std::distance(bufferN1, pn1);
+
+        #ifdef __WSTL_CXX11__
+        NonTrivialData bufferN2[NONTRIVIAL_SIZE];
+        NonTrivialData* pn2 = std::copy_if(BeginImpl(dataN), EndImpl(dataN), BeginImpl(bufferN2), &CopyIfPredicate2);
+        #else
+        NonTrivialData bufferN2[NONTRIVIAL_SIZE];
+        NonTrivialData* pn2 = bufferN2;
+        #endif
+
         d2 = std::distance(bufferN2, pn2);
         CHECK_EQ(d1, d2);
 
@@ -388,9 +419,15 @@ TEST_SUITE("Algorithm") {
         std::list<int> list2(SIZE);
 
         std::list<int>::iterator pl1 = wstl::CopyIf(BeginImpl(dataLA), EndImpl(dataLA), BeginImpl(list1), &wstl::IsEven<int>);
-        std::list<int>::iterator pl2 = std::copy_if(BeginImpl(dataLA), EndImpl(dataLA), BeginImpl(list2), &wstl::IsEven<int>);
-
         d1 = std::distance(list1.begin(), pl1);
+
+        #ifdef __WSTL_CXX11__
+        std::list<int>::iterator pl2 = std::copy_if(BeginImpl(dataLA), EndImpl(dataLA), BeginImpl(list2), &wstl::IsEven<int>);
+        #else
+        list2.assign(BeginImpl(buffer2), EndImpl(buffer2));
+        std::list<int>::iterator pl2 = std::next(list2.begin(), 3);
+        #endif
+
         d2 = std::distance(list2.begin(), pl2);
         CHECK_EQ(d1, d2);
 
@@ -404,7 +441,12 @@ TEST_SUITE("Algorithm") {
         int buffer2[SIZE] = {0};
 
         int* p1 = wstl::CopyInRange(BeginImpl(dataA), SIZE, BeginImpl(buffer1));
+
+        #ifdef __WSTL_CXX11__
         int* p2 = std::copy_n(BeginImpl(dataA), SIZE, BeginImpl(buffer2));
+        #else
+        int* p2 = std::copy(BeginImpl(dataA), BeginImpl(dataA) + SIZE, BeginImpl(buffer2));
+        #endif
 
         ptrdiff_t d1 = std::distance(buffer1, p1);
         ptrdiff_t d2 = std::distance(buffer2, p2);
@@ -418,7 +460,12 @@ TEST_SUITE("Algorithm") {
         NonTrivialData bufferN2[NONTRIVIAL_SIZE];
 
         NonTrivialData* pn1 = wstl::CopyInRange(BeginImpl(dataN), NONTRIVIAL_SIZE, BeginImpl(bufferN1));
+
+        #ifdef __WSTL_CXX11__
         NonTrivialData* pn2 = std::copy_n(BeginImpl(dataN), NONTRIVIAL_SIZE, BeginImpl(bufferN2));
+        #else
+        NonTrivialData* pn2 = std::copy(BeginImpl(dataN), BeginImpl(dataN) + NONTRIVIAL_SIZE, BeginImpl(bufferN2));
+        #endif
 
         d1 = std::distance(bufferN1, pn1);
         d2 = std::distance(bufferN2, pn2);
@@ -432,7 +479,12 @@ TEST_SUITE("Algorithm") {
         std::list<int> list2(SIZE);
 
         std::list<int>::iterator pl1 = wstl::CopyInRange(BeginImpl(dataLA), SIZE, EndImpl(list1));
+
+        #ifdef __WSTL_CXX11__
         std::list<int>::iterator pl2 = std::copy_n(BeginImpl(dataLA), SIZE, EndImpl(list2));
+        #else
+        std::list<int>::iterator pl2 = std::copy(BeginImpl(dataLA), std::next(BeginImpl(dataLA), SIZE), EndImpl(list2));
+        #endif
 
         d1 = std::distance(list1.begin(), pl1);
         d2 = std::distance(list2.begin(), pl2);
@@ -906,17 +958,23 @@ TEST_SUITE("Algorithm") {
 
         #ifdef __WSTL_CXX11__
         auto predicate = std::bind(std::greater<int>(), std::placeholders::_1, 4);
+        bool expected = std::is_partitioned(BeginImpl(data), EndImpl(data), predicate);
         #else
         std::binder2nd<std::greater<int> > predicate(std::greater<int>(), 4);
+        bool expected = false;
         #endif
 
-        bool expected = std::is_partitioned(BeginImpl(data), EndImpl(data), predicate);
         bool result = wstl::IsPartitioned(BeginImpl(data), EndImpl(data), predicate);
         CHECK_EQ(expected, result);
 
         std::partition(BeginImpl(data), EndImpl(data), predicate);
 
+        #ifdef __WSTL_CXX11__
         expected = std::is_partitioned(BeginImpl(data), EndImpl(data), predicate);
+        #else
+        expected = true;
+        #endif
+
         result = wstl::IsPartitioned(BeginImpl(data), EndImpl(data), predicate);
         CHECK_EQ(expected, result);
     }
@@ -981,17 +1039,21 @@ TEST_SUITE("Algorithm") {
     TEST_CASE("PartitionCopy") {
         int data1False[SIZE] = {0};
         int data1True[SIZE] = {0};
+
+        #ifdef __WSTL_CXX11__
         int data2False[SIZE] = {0};
         int data2True[SIZE] = {0};
 
-        #ifdef __WSTL_CXX11__
         auto predicate = std::bind(std::greater<int>(), std::placeholders::_1, 4);
+        std::partition_copy(BeginImpl(dataA), EndImpl(dataA), data2True, data2False, predicate);
         #else
+        int data2False[SIZE] = {4, 1, 3};
+        int data2True[SIZE] = {5, 7, 10, 6, 7, 7};
+
         std::binder2nd<std::greater<int> > predicate(std::greater<int>(), 4);
         #endif
 
         wstl::PartitionCopy(BeginImpl(dataA), EndImpl(dataA), data1True, data1False, predicate);
-        std::partition_copy(BeginImpl(dataA), EndImpl(dataA), data2True, data2False, predicate);
 
         bool result = std::equal(BeginImpl(data2True), EndImpl(data2True), BeginImpl(data1True));
         CHECK(result);
@@ -1037,13 +1099,25 @@ TEST_SUITE("Algorithm") {
         std::partition(BeginImpl(data), EndImpl(data), predicate1);
 
         int* p1 = wstl::PartitionPoint(BeginImpl(data), EndImpl(data), predicate1);
+
+        #ifdef __WSTL_CXX11__
         int* p2 = std::partition_point(BeginImpl(data), EndImpl(data), predicate1);
+        #else
+        int* p2 = data + 4;
+        #endif
+
         CHECK_EQ(p1, p2);
 
         std::partition(BeginImpl(data), EndImpl(data), predicate2);
 
         p1 = wstl::PartitionPoint(BeginImpl(data), EndImpl(data), predicate2);
+
+        #ifdef __WSTL_CXX11__
         p2 = std::partition_point(BeginImpl(data), EndImpl(data), predicate2);
+        #else
+        p2 = data;
+        #endif
+
         CHECK_EQ(p1, p2);
     }
 
@@ -1107,13 +1181,24 @@ TEST_SUITE("Algorithm") {
 
     TEST_CASE("MinMaxElement") {
         // Normal
+        #ifdef __WSTL_CXX11__
         std::pair<int*, int*> expected = std::minmax_element(BeginImpl(dataA), EndImpl(dataA));
+        #else
+        std::pair<int*, int*> expected(dataA + 3, dataA + 4);
+        #endif
+
         wstl::Pair<int*, int*> result = wstl::MinMaxElement(BeginImpl(dataA), EndImpl(dataA));
         CHECK_EQ(expected.first, result.First);
         CHECK_EQ(expected.second, result.Second);
 
         // Compare
+        #ifdef __WSTL_CXX11__
         expected = std::minmax_element(BeginImpl(dataA), EndImpl(dataA), std::greater<int>());
+        #else
+        expected.first = dataA + 4;
+        expected.second = dataA + 3;
+        #endif
+
         result = wstl::MinMaxElement(BeginImpl(dataA), EndImpl(dataA), std::greater<int>());
         CHECK_EQ(expected.first, result.First);
         CHECK_EQ(expected.second, result.Second);
@@ -1121,8 +1206,13 @@ TEST_SUITE("Algorithm") {
         // Empty
         int empty[1];
 
-        std::pair<int*, int*> expectedEmpty = std::minmax_element(BeginImpl(empty), EndImpl(empty), std::greater<int>());
-        wstl::Pair<int*, int*> resultEmpty = wstl::MinMaxElement(BeginImpl(empty), EndImpl(empty), std::greater<int>());
+        #ifdef __WSTL_CXX11__
+        std::pair<int*, int*> expectedEmpty = std::minmax_element(empty, empty, std::greater<int>());
+        #else
+        std::pair<int*, int*> expectedEmpty(empty, empty);
+        #endif
+
+        wstl::Pair<int*, int*> resultEmpty = wstl::MinMaxElement(empty, empty, std::greater<int>());
         CHECK_EQ(expectedEmpty.first, resultEmpty.First);
         CHECK_EQ(expectedEmpty.second, resultEmpty.Second);
     }
