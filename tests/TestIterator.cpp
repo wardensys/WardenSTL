@@ -7,7 +7,6 @@
 #include <wstl/Iterator.hpp>
 #include <iterator>
 #include <vector>
-#include <array>
 #include <wstl/Deque.hpp>
 #include <wstl/Array.hpp>
 
@@ -585,9 +584,9 @@ TEST_SUITE("Iterator") {
         CHECK_EQ(*it1, *it2);
 
         // Practical test
-        std::array<int, 5> data = {1, 2, 3, 4, 5};
+        int data[5] = {1, 2, 3, 4, 5};
 
-        CHECK(wstl::Equal(wstl::MakeReverseIterator(data.end()), wstl::MakeReverseIterator(data.begin()), data.rbegin()));
+        CHECK(wstl::Equal(wstl::MakeReverseIterator(EndImpl(data)), wstl::MakeReverseIterator(BeginImpl(data)), std::reverse_iterator<int*>(EndImpl(data))));
     }
 
     #ifdef __WSTL_CXX11__
@@ -783,12 +782,12 @@ TEST_SUITE("Iterator") {
         data.push_back(4);
         data.push_back(5);
 
-        std::array<int, 7> expected = {67, 1, 2, 3, 4, 5, 67};
+        int expected[7] = {67, 1, 2, 3, 4, 5, 67};
         wstl::Deque<int, 7> result(2, 67);
         
         std::copy(data.begin(), data.end(), wstl::Inserter(result, result.Begin() + 1));
 
-        CHECK(wstl::Equal(expected.begin(), expected.end(), result.Begin()));
+        CHECK(wstl::Equal(expected, expected + 7, result.Begin()));
     }
 
     TEST_CASE("FrontInsertIterator") {
@@ -799,12 +798,12 @@ TEST_SUITE("Iterator") {
         data.push_back(4);
         data.push_back(5);
 
-        std::array<int, 7> expected = {5, 4, 3, 2, 1, 67, 67};
+        int expected[7] = {5, 4, 3, 2, 1, 67, 67};
         wstl::Deque<int, 7> result(2, 67);
         
         std::copy(data.begin(), data.end(), wstl::FrontInserter(result));
 
-        CHECK(wstl::Equal(expected.begin(), expected.end(), result.Begin()));
+        CHECK(wstl::Equal(BeginImpl(expected), EndImpl(expected), result.Begin()));
     }
 
     TEST_CASE("BackInsertIterator") {
@@ -815,12 +814,12 @@ TEST_SUITE("Iterator") {
         data.push_back(4);
         data.push_back(5);
 
-        std::array<int, 7> expected = {67, 67, 1, 2, 3, 4, 5};
+        int expected[] = {67, 67, 1, 2, 3, 4, 5};
         wstl::Deque<int, 7> result(2, 67);
         
         std::copy(data.begin(), data.end(), wstl::BackInserter(result));
 
-        CHECK(wstl::Equal(expected.begin(), expected.end(), result.Begin()));
+        CHECK(wstl::Equal(BeginImpl(expected), EndImpl(expected), result.Begin()));
     }
 
     TEST_CASE("Range access functions") {

@@ -14,16 +14,18 @@
 #include <list>
 #include <iterator>
 #include <functional>
-#include <forward_list>
 #include <numeric>
-#include <random>
 #include <memory>
-#include <array>
+#include <vector>
 
 #include <wstl/Algorithm.hpp>
 #include <wstl/Bit.hpp>
 
 #include "Utils.hpp"
+
+#ifdef __WSTL_CXX11__
+#include <random>
+#endif
 
 
 namespace {
@@ -805,16 +807,19 @@ TEST_SUITE("Algorithm") {
 
     TEST_CASE("Rotate") {
         // POD
-        std::array<int, 7> initial = {1, 2, 3, 4, 5, 6, 7};
+        int initial[7] = {1, 2, 3, 4, 5, 6, 7};
 
-        for(size_t i = 0; i < initial.size(); ++i) {
-            std::array<int, 7> data1(initial);
-            std::array<int, 7> data2(initial);
+        for(size_t i = 0; i < 7; ++i) {
+            int data1[7];
+            int data2[7];
+            
+            CopyArrays(initial, data1);
+            CopyArrays(initial, data2);
 
-            wstl::Rotate(data1.data(), data1.data() + i, data1.data() + data1.size());
-            std::rotate(data2.data(), data2.data() + i, data2.data() + data2.size());
+            wstl::Rotate(data1, data1 + i, data1 + 7);
+            std::rotate(data2, data2 + i, data2 + 7);
 
-            bool result = std::equal(data1.begin(), data1.end(), data2.begin());
+            bool result = std::equal(data1, data1 + 7, data2);
             CHECK(result);
         }
 
@@ -835,15 +840,16 @@ TEST_SUITE("Algorithm") {
 
     TEST_CASE("RotateCopy") {
         // POD
-        std::array<int, 7> initial = {1, 2, 3, 4, 5, 6, 7};
+        int initial[7] = {1, 2, 3, 4, 5, 6, 7};
 
-        for(size_t i = 0; i < initial.size(); ++i) {
-            std::array<int, 7> data1, data2;
+        for(size_t i = 0; i < 7; ++i) {
+            int data1[7];
+            int data2[7];
 
-            wstl::RotateCopy(initial.data(), initial.data() + i, initial.data() + initial.size(), data1.data());
-            std::rotate_copy(initial.data(), initial.data() + i, initial.data() + initial.size(), data2.data());
+            wstl::RotateCopy(initial, initial + i, initial + 7, data1);
+            std::rotate_copy(initial, initial + i, initial + 7, data2);
 
-            bool result = std::equal(data1.begin(), data1.end(), data2.begin());
+            bool result = std::equal(data1, data1 + 7, data2);
             CHECK(result);
         }
 
@@ -917,41 +923,44 @@ TEST_SUITE("Algorithm") {
 
     TEST_CASE("Partition") {
         // Forward iterator
-        std::array<int, 6> initial = {1, 2, 3, 4, 5, 6};
+        int initial[6] = {1, 2, 3, 4, 5, 6};
 
-        std::forward_list<int> expected1(BeginImpl(initial), EndImpl(initial));
-        std::forward_list<int> data1(BeginImpl(initial), EndImpl(initial));
+        int expected1[6];
+        int data1[6];
+
+        CopyArrays(initial, expected1);
+        CopyArrays(initial, data1);
 
         bool complete = false;
 
         while(!complete) {
-            std::forward_list<int>::iterator pivot1 = wstl::Partition(data1.begin(), data1.end(), wstl::IsEven<int>);
-            std::forward_list<int>::iterator pivot2 = std::partition(expected1.begin(), expected1.end(), wstl::IsEven<int>);
+            CustomForwardIterator<int*> pivot1 = wstl::Partition(CustomForwardIterator<int*>(data1), CustomForwardIterator<int*>(data1 + 6), wstl::IsEven<int>);
+            CustomForwardIterator<int*> pivot2 = std::partition(CustomForwardIterator<int*>(expected1), CustomForwardIterator<int*>(expected1 + 6), wstl::IsEven<int>);
 
-            ptrdiff_t distance1 = std::distance(data1.begin(), pivot1);
-            ptrdiff_t distance2 = std::distance(expected1.begin(), pivot2);
+            ptrdiff_t distance1 = std::distance(CustomForwardIterator<int*>(data1), pivot1);
+            ptrdiff_t distance2 = std::distance(CustomForwardIterator<int*>(expected1), pivot2);
 
             CHECK_EQ(distance1, distance2);
             CHECK_EQ(*pivot1, *pivot2);
 
-            bool result = std::equal(expected1.begin(), expected1.end(), data1.begin());
+            bool result = std::equal(expected1, expected1 + 6, data1);
             CHECK(result);
 
             complete = !std::next_permutation(BeginImpl(initial), EndImpl(initial));
 
-            expected1.assign(BeginImpl(initial), EndImpl(initial));
-            data1.assign(BeginImpl(initial), EndImpl(initial));
+            CopyArrays(initial, expected1);
+            CopyArrays(initial, data1);
         }
 
         // Bidirectional iterator
-        std::array<int, 6> expected2 = initial;
-        std::array<int, 6> data2 = initial;
+        std::list<int> expected2(BeginImpl(initial), EndImpl(initial));
+        std::list<int> data2(BeginImpl(initial), EndImpl(initial));
 
         complete = false;
 
         while(!complete) {
-            std::array<int, 6>::iterator pivot1 = wstl::Partition(data2.begin(), data2.end(), wstl::IsEven<int>);
-            std::array<int, 6>::iterator pivot2 = std::partition(expected2.begin(), expected2.end(), wstl::IsEven<int>);
+            std::list<int>::iterator pivot1 = wstl::Partition(data2.begin(), data2.end(), wstl::IsEven<int>);
+            std::list<int>::iterator pivot2 = std::partition(expected2.begin(), expected2.end(), wstl::IsEven<int>);
 
             ptrdiff_t distance1 = std::distance(data2.begin(), pivot1);
             ptrdiff_t distance2 = std::distance(expected2.begin(), pivot2);
@@ -964,8 +973,8 @@ TEST_SUITE("Algorithm") {
 
             complete = !std::next_permutation(BeginImpl(initial), EndImpl(initial));
 
-            expected2 = initial;
-            data2 = initial;
+            expected2.assign(BeginImpl(initial), EndImpl(initial));
+            data2.assign(BeginImpl(initial), EndImpl(initial));
         }
     }
 
@@ -1050,10 +1059,10 @@ TEST_SUITE("Algorithm") {
         CHECK_EQ(expected, result);
 
         // Empty
-        std::array<int, 0> empty;
+        int empty[1];
 
-        std::array<int, 0>::iterator expectedEmpty = std::min_element(BeginImpl(empty), EndImpl(empty), std::greater<int>());
-        std::array<int, 0>::iterator resultEmpty = wstl::MinElement(BeginImpl(empty), EndImpl(empty), std::greater<int>());
+        int* expectedEmpty = std::min_element(BeginImpl(empty), EndImpl(empty), std::greater<int>());
+        int* resultEmpty = wstl::MinElement(BeginImpl(empty), EndImpl(empty), std::greater<int>());
         CHECK_EQ(expectedEmpty, resultEmpty);
     }
 
@@ -1079,10 +1088,10 @@ TEST_SUITE("Algorithm") {
         CHECK_EQ(expected, result);
 
         // Empty
-        std::array<int, 0> empty;
+        int empty[1];
 
-        std::array<int, 0>::iterator expectedEmpty = std::max_element(BeginImpl(empty), EndImpl(empty), std::greater<int>());
-        std::array<int, 0>::iterator resultEmpty = wstl::MaxElement(BeginImpl(empty), EndImpl(empty), std::greater<int>());
+        int* expectedEmpty = std::max_element(BeginImpl(empty), EndImpl(empty), std::greater<int>());
+        int* resultEmpty = wstl::MaxElement(BeginImpl(empty), EndImpl(empty), std::greater<int>());
         CHECK_EQ(expectedEmpty, resultEmpty);
     }
 
@@ -1110,11 +1119,10 @@ TEST_SUITE("Algorithm") {
         CHECK_EQ(expected.second, result.Second);
 
         // Empty
-        typedef std::array<int, 0> EmptyArray;
-        EmptyArray empty;
+        int empty[1];
 
-        std::pair<EmptyArray::iterator, EmptyArray::iterator> expectedEmpty = std::minmax_element(BeginImpl(empty), EndImpl(empty), std::greater<int>());
-        wstl::Pair<EmptyArray::iterator, EmptyArray::iterator> resultEmpty = wstl::MinMaxElement(BeginImpl(empty), EndImpl(empty), std::greater<int>());
+        std::pair<int*, int*> expectedEmpty = std::minmax_element(BeginImpl(empty), EndImpl(empty), std::greater<int>());
+        wstl::Pair<int*, int*> resultEmpty = wstl::MinMaxElement(BeginImpl(empty), EndImpl(empty), std::greater<int>());
         CHECK_EQ(expectedEmpty.first, resultEmpty.First);
         CHECK_EQ(expectedEmpty.second, resultEmpty.Second);
     }
@@ -1369,7 +1377,7 @@ TEST_SUITE("Algorithm") {
 
     TEST_CASE("QuickSort") {
         std::vector<int> data(100, 0);
-        std::iota(data.begin(), data.end(), 1);
+        CustomIota(data.begin(), data.end(), 1);
 
         for(int i = 0; i < 100; ++i) {
             #ifdef __WSTL_CXX11__
@@ -1399,45 +1407,47 @@ TEST_SUITE("Algorithm") {
     }
 
     TEST_CASE("PartialSort") {
-        typedef std::array<int, 10> Array;
-        Array initial = {5, 7, 4, 2, 8, 6, 1, 9, 0, 3};
+        int initial[10] = {5, 7, 4, 2, 8, 6, 1, 9, 0, 3};
 
-        for(size_t i = 0; i < initial.size(); ++i) {
-            Array data1 = initial;
-            Array data2 = initial;
+        for(size_t i = 0; i < 10; ++i) {
+            int data1[10];
+            int data2[10];
 
-            wstl::PartialSort(data1.begin(), data1.begin() + ptrdiff_t(i), data1.end());
-            std::partial_sort(data2.begin(), data2.begin() + ptrdiff_t(i), data2.end());
+            CopyArrays(initial, data1);
+            CopyArrays(initial, data2);
 
-            bool equal = std::equal(data1.begin(), data1.begin() + ptrdiff_t(i), data2.begin());
+            wstl::PartialSort(data1, data1 + ptrdiff_t(i), data1 + 10);
+            std::partial_sort(data2, data2 + ptrdiff_t(i), data2 + 10);
+
+            bool equal = std::equal(data1, data1 + ptrdiff_t(i), data2);
 
             CAPTURE(i);
 
             if (!equal) {
-                for (Array::iterator x = data1.begin(); x != data1.end(); ++x) std::cout << *x << ' ';
+                for (int* x = data1; x != data1 + 10; ++x) std::cout << *x << ' ';
                 std::cout << '\n';
 
-                for (Array::iterator x = data2.begin(); x != data2.end(); ++x) std::cout << *x << ' ';
+                for (int* x = data2; x != data2 + 10; ++x) std::cout << *x << ' ';
                 std::cout << '\n';
             }
 
             CHECK(equal);
 
-            data1 = initial;
-            data2 = initial;
+            CopyArrays(initial, data1);
+            CopyArrays(initial, data2);
 
-            wstl::PartialSort(data1.begin(), data1.begin() + ptrdiff_t(i), data1.end(), std::greater<int>());
-            std::partial_sort(data2.begin(), data2.begin() + ptrdiff_t(i), data2.end(), std::greater<int>());
+            wstl::PartialSort(data1, data1 + ptrdiff_t(i), data1 + 10, std::greater<int>());
+            std::partial_sort(data2, data2 + ptrdiff_t(i), data2 + 10, std::greater<int>());
 
-            equal = std::equal(data1.begin(), data1.begin() + ptrdiff_t(i), data2.begin());
+            equal = std::equal(data1, data1 + ptrdiff_t(i), data2);
 
             CAPTURE(i);
 
             if (!equal) {
-                for (Array::iterator x = data1.begin(); x != data1.end(); ++x) std::cout << *x << ' ';
+                for (int* x = data1; x != data1 + 10; ++x) std::cout << *x << ' ';
                 std::cout << '\n';
 
-                for (Array::iterator x = data2.begin(); x != data2.end(); ++x) std::cout << *x << ' ';
+                for (int* x = data2; x != data2 + 10; ++x) std::cout << *x << ' ';
                 std::cout << '\n';
             }
 
@@ -1446,25 +1456,25 @@ TEST_SUITE("Algorithm") {
     }
 
     TEST_CASE("PartialSortCopy") {
-        std::array<int, 10> initial = {5, 7, 4, 2, 8, 6, 1, 9, 0, 3};
+        int initial[10] = {5, 7, 4, 2, 8, 6, 1, 9, 0, 3};
 
-        for(size_t i = 0; i < initial.size(); ++i) {
-            std::vector<int> data1(initial.size());
-            std::vector<int> data2(initial.size());
+        for(size_t i = 0; i < 10; ++i) {
+            std::vector<int> data1(10);
+            std::vector<int> data2(10);
 
-            wstl::PartialSortCopy(initial.begin(), initial.begin() + ptrdiff_t(5), data1.begin(), data1.end());
-            std::partial_sort_copy(initial.begin(), initial.begin() + ptrdiff_t(5), data2.begin(), data2.end());
+            wstl::PartialSortCopy(initial, initial + ptrdiff_t(5), data1.begin(), data1.end());
+            std::partial_sort_copy(initial, initial + ptrdiff_t(5), data2.begin(), data2.end());
 
             bool equal = std::equal(data1.begin(), data1.end(), data2.begin());
             CHECK(equal);
 
             data1.clear();
-            data1.resize(initial.size());
+            data1.resize(10);
             data2.clear();
-            data2.resize(initial.size());
+            data2.resize(10);
 
-            wstl::PartialSortCopy(initial.begin(), initial.begin() + ptrdiff_t(5), data1.begin(), data1.end(), std::greater<int>());
-            std::partial_sort_copy(initial.begin(), initial.begin() + ptrdiff_t(5), data2.begin(), data2.end(), std::greater<int>());
+            wstl::PartialSortCopy(initial, initial + ptrdiff_t(5), data1.begin(), data1.end(), std::greater<int>());
+            std::partial_sort_copy(initial, initial + ptrdiff_t(5), data2.begin(), data2.end(), std::greater<int>());
 
             equal = std::equal(data1.begin(), data1.end(), data2.begin());
             CHECK(equal);
@@ -1495,31 +1505,34 @@ TEST_SUITE("Algorithm") {
     }
 
     TEST_CASE("InplaceMerge") {
-        std::array<int, 9> data1 = {2, 4, 6, 7, 9, 1, 3, 5, 8};
-        std::array<int, 9> data2 = {9, 7, 6, 4, 1, 8, 5, 3, 2};
+        int data1[9] = {2, 4, 6, 7, 9, 1, 3, 5, 8};
+        int data2[9] = {9, 7, 6, 4, 1, 8, 5, 3, 2};
 
-        std::array<int, 9> result(data1);
-        std::array<int, 9> expected(data1);
+        int result[9];
+        int expected[9];
 
-        wstl::InplaceMerge(result.begin(), result.begin() + 5, result.end());
-        std::inplace_merge(expected.begin(), expected.begin() + 5, expected.end());
+        CopyArrays(data1, result);
+        CopyArrays(data1, expected);
 
-        bool equal = std::equal(expected.begin(), expected.end(), result.begin());
+        wstl::InplaceMerge(result, result + 5, result + 9);
+        std::inplace_merge(expected, expected + 5, expected + 9);
+
+        bool equal = std::equal(expected, expected + 9, result);
         CHECK(equal);
 
-        result = data2;
-        expected = data2;
+        CopyArrays(data2, result);
+        CopyArrays(data2, expected);
 
-        wstl::InplaceMerge(result.begin(), result.begin() + 5, result.end(), std::greater<int>());
-        std::inplace_merge(expected.begin(), expected.begin() + 5, expected.end(), std::greater<int>());
+        wstl::InplaceMerge(result, result + 5, result + 9, std::greater<int>());
+        std::inplace_merge(expected, expected + 5, expected + 9, std::greater<int>());
 
-        equal = std::equal(expected.begin(), expected.end(), result.begin());
+        equal = std::equal(expected, expected + 9, result);
         CHECK(equal);
     }
 
     TEST_CASE("MergeSort") {
         std::vector<int> data(100, 0);
-        std::iota(data.begin(), data.end(), 1);
+        CustomIota(data.begin(), data.end(), 1);
         std::vector<int> buffer(100);
 
         for(int i = 0; i < 100; ++i) {
@@ -1551,7 +1564,7 @@ TEST_SUITE("Algorithm") {
 
     TEST_CASE("InplaceMergeSort") {
         std::vector<int> data(100, 0);
-        std::iota(data.begin(), data.end(), 1);
+        CustomIota(data.begin(), data.end(), 1);
 
         for(int i = 0; i < 100; ++i) {
             #ifdef __WSTL_CXX11__
@@ -1602,7 +1615,7 @@ TEST_SUITE("Algorithm") {
 
     TEST_CASE("HeapSort") {
         std::vector<int> data(100, 0);
-        std::iota(data.begin(), data.end(), 1);
+        CustomIota(data.begin(), data.end(), 1);
 
         for(int i = 0; i < 100; ++i) {
             #ifdef __WSTL_CXX11__
@@ -1632,36 +1645,39 @@ TEST_SUITE("Algorithm") {
     }
 
     TEST_CASE("NthElement") {
-        std::array<int, 8> initial = {1, 2, 3, 4, 5, 6};
+        int initial[8] = {1, 2, 3, 4, 5, 6};
 
-        std::array<int, 8> compare = initial;
-        std::array<int, 8> data = initial;
+        int compare[8];
+        int data[8];
+
+        CopyArrays(initial, compare);
+        CopyArrays(initial, data);
 
         bool complete = false;
 
         while (!complete) {
-            for (size_t i = 0; i < initial.size(); ++i) {
-                std::sort(compare.begin(), compare.end());
-                wstl::NthElement(data.begin(), data.begin() + i, data.end());
+            for (size_t i = 0; i < 8; ++i) {
+                std::sort(compare, compare + 8);
+                wstl::NthElement(data, data + i, data + 8);
 
-                data = initial;
+                CopyArrays(initial, data);
 
-                std::sort(compare.begin(), compare.end(), std::greater<int>());
-                wstl::NthElement(data.begin(), data.begin() + i, data.end(), std::greater<int>());
+                std::sort(compare, compare + 8, std::greater<int>());
+                wstl::NthElement(data, data + i, data + 8, std::greater<int>());
 
                 CHECK_EQ(compare[i], data[i]);
             }
 
-            complete = !std::next_permutation(initial.begin(), initial.end());
+            complete = !std::next_permutation(initial, initial + 8);
 
-            compare = initial;
-            data = initial;
+            CopyArrays(initial, compare);
+            CopyArrays(initial, data);
         }
     }
 
     TEST_CASE("Sort") {
         std::vector<int> data(100, 0);
-        std::iota(data.begin(), data.end(), 1);
+        CustomIota(data.begin(), data.end(), 1);
 
         for(int i = 0; i < 100; ++i) {
             #ifdef __WSTL_CXX11__
@@ -2203,7 +2219,13 @@ TEST_SUITE("Algorithm") {
         // Random access iterator
         out1.clear();
         out1.resize(8);
+
+        #ifdef __WSTL_CXX11__
         std::vector<Item>::iterator result = wstl::MoveSafe(std::make_move_iterator(data1.begin()), std::make_move_iterator(data1.end()), out1.begin(), out1.end());
+        #else
+        std::vector<Item>::iterator result = wstl::MoveSafe(data1.begin(), data1.end(), out1.begin(), out1.end());
+        #endif
+
         CHECK_EQ(out1.end(), result);
 
         bool equal = std::equal(out1.begin(), out1.end(), check1.begin());
@@ -2212,7 +2234,13 @@ TEST_SUITE("Algorithm") {
         // Non-random access iterator
         out1.clear();
         out1.resize(8);
+
+        #ifdef __WSTL_CXX11__
         result = wstl::MoveSafe(std::make_move_iterator(data3.begin()), std::make_move_iterator(data3.end()), out1.begin(), out1.end());
+        #else
+        result = wstl::MoveSafe(data3.begin(), data3.end(), out1.begin(), out1.end());
+        #endif
+
         CHECK_EQ(out1.end(), result);
 
         equal = std::equal(out1.begin(), out1.end(), check1.begin());
@@ -2223,7 +2251,13 @@ TEST_SUITE("Algorithm") {
         // Random access iterator
         out1.clear();
         out1.resize(5);
+
+        #ifdef __WSTL_CXX11__
         result = wstl::MoveSafe(std::make_move_iterator(data1.begin()), std::make_move_iterator(data1.end()), out2.begin(), out2.end());
+        #else
+        result = wstl::MoveSafe(data1.begin(), data1.end(), out2.begin(), out2.end());
+        #endif
+
         CHECK_EQ(out2.end(), result);
 
         equal = std::equal(out2.begin(), out2.end(), check2.begin());
@@ -2232,7 +2266,13 @@ TEST_SUITE("Algorithm") {
         // Non-random access iterator
         out1.clear();
         out1.resize(5);
+
+        #ifdef __WSTL_CXX11__
         result = wstl::MoveSafe(std::make_move_iterator(data3.begin()), std::make_move_iterator(data3.end()), out2.begin(), out2.end());
+        #else
+        result = wstl::MoveSafe(data3.begin(), data3.end(), out2.begin(), out2.end());
+        #endif
+
         CHECK_EQ(out2.end(), result);
 
         equal = std::equal(out2.begin(), out2.end(), check2.begin());
@@ -2243,7 +2283,13 @@ TEST_SUITE("Algorithm") {
         // Random access iterator
         out1.clear();
         out1.resize(10);
+
+        #ifdef __WSTL_CXX11__
         result = wstl::MoveSafe(std::make_move_iterator(data4.begin()), std::make_move_iterator(data4.end()), out1.begin(), out1.end());
+        #else
+        result = wstl::MoveSafe(data4.begin(), data4.end(), out1.begin(), out1.end());
+        #endif
+
         CHECK_EQ(out1.begin() + 5, result);
 
         equal = std::equal(out1.begin(), out1.end(), check3.begin());
@@ -2252,7 +2298,13 @@ TEST_SUITE("Algorithm") {
         // Non-random access iterator
         out1.clear();
         out1.resize(10);
+
+        #ifdef __WSTL_CXX11__
         result = wstl::MoveSafe(std::make_move_iterator(data4.begin()), std::make_move_iterator(data4.end()), out1.begin(), out1.end());
+        #else
+        result = wstl::MoveSafe(data4.begin(), data4.end(), out1.begin(), out1.end());
+        #endif
+
         CHECK_EQ(out1.begin() + 5, result);
 
         equal = std::equal(out1.begin(), out1.end(), check3.begin());

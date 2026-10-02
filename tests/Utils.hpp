@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <wstl/NullPointer.hpp>
 
+
 #ifndef __WSTL_CXX11__
 namespace doctest {
     inline String toString(const wstl::NullPointerType&) {
@@ -23,6 +24,63 @@ namespace wstl {
     }
 }
 #endif
+
+template<typename T>
+struct CustomForwardIterator {
+    typedef typename std::iterator_traits<T>::difference_type difference_type;
+    typedef std::forward_iterator_tag iterator_category;
+    typedef typename std::iterator_traits<T>::reference reference;
+    typedef typename std::iterator_traits<T>::pointer pointer;
+    typedef typename std::iterator_traits<T>::value_type value_type;
+
+    CustomForwardIterator() : m_Iterator() {}
+    CustomForwardIterator(T iterator) : m_Iterator(iterator) {}
+
+    reference operator*() const {
+        return *m_Iterator;
+    }
+
+    pointer operator->() const {
+        return m_Iterator;
+    }
+
+    CustomForwardIterator& operator++() {
+        ++m_Iterator;
+        return *this;
+    }
+
+    CustomForwardIterator operator++(int) {
+        CustomForwardIterator original(*this);
+        ++m_Iterator;
+        return original;
+    }
+
+private:
+    T m_Iterator;
+
+    template<typename U>
+    friend bool operator==(const CustomForwardIterator<U>& a, const CustomForwardIterator<U>& b);
+};
+
+template<typename T>
+bool operator==(const CustomForwardIterator<T>& a, const CustomForwardIterator<T>& b) {
+    return a.m_Iterator == b.m_Iterator;
+}
+
+template<typename T>
+bool operator!=(const CustomForwardIterator<T>& a, const CustomForwardIterator<T>& b) {
+    return !(a == b);
+}
+
+template<typename T, size_t N>
+void CopyArrays(const T (&source)[N], T (&destination)[N]) {
+    for(size_t i = 0; i < N; ++i) destination[i] = source[i];
+}
+
+template <typename ForwardIterator, typename T>
+void CustomIota(ForwardIterator first, ForwardIterator last, T value) {
+    while (first != last) *first++ = value++;
+}
 
 template<typename C>
 inline typename C::iterator BeginImpl(C& c) {

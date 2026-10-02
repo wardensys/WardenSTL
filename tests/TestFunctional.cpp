@@ -6,7 +6,6 @@
 #include <doctest.h>
 #include <wstl/Functional.hpp>
 #include <functional>
-#include <array>
 #include <vector>
 
 #include "Utils.hpp"
@@ -14,7 +13,7 @@
 
 namespace {
     static bool functionCalled = false;
-    static std::array<bool, 3> paramsCorrect = {false, false, false};
+    static int paramsCorrect[3] = {false, false, false};
 
     static const __WSTL_CONSTEXPR__ int VALUE1 = 67;
     static const __WSTL_CONSTEXPR__ char VALUE2 = 'x';
@@ -2099,10 +2098,10 @@ TEST_SUITE("Functional") {
         CHECK_EQ(rc, 69);
 
         // Container
-        std::array<int, 5> arr = {1, 2, 3, 4, 5};
-        std::vector<wstl::ReferenceWrapper<int> > arrRef(arr.begin(), arr.end());
+        int arr[5] = {1, 2, 3, 4, 5};
+        std::vector<wstl::ReferenceWrapper<int> > arrRef(arr, arr + 5);
 
-        CHECK(std::equal(arr.begin(), arr.end(), arrRef.begin()));
+        CHECK(std::equal(arr, arr + 5, arrRef.begin()));
 
         // Callables
         Functor f(1);

@@ -13,11 +13,9 @@
 #include <wstl/Numeric.hpp>
 #include <numeric>
 #include <list>
-#include <forward_list>
 #include <limits>
 #include <vector>
 #include <deque>
-#include <array>
 
 #include "Utils.hpp"
 
@@ -211,26 +209,27 @@ TEST_SUITE("Numeric") {
         CHECK_EQ(wstl::Midpoint(std::numeric_limits<double>::max(), -std::numeric_limits<double>::max()), doctest::Approx(0.0).epsilon(0.001));
 
         // Pointer
-        std::array<int, 9> data1 = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+        int data1[9] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-        CHECK_EQ(*wstl::Midpoint(data1.data(), data1.data() + data1.size()), data1[4]);
-        CHECK_EQ(*wstl::Midpoint(data1.data() + data1.size(), data1.data()), data1[5]);
+        CHECK_EQ(*wstl::Midpoint(data1, data1 + 9), data1[4]);
+        CHECK_EQ(*wstl::Midpoint(data1 + 9, data1), data1[5]);
 
         // Random-access iterator
-        std::deque<int> data2(data1.begin(), data1.end());
+        std::deque<int> data2(data1, data1 + 9);
 
         CHECK_EQ(*wstl::Midpoint(data2.begin(), data2.end()), data2[4]);
         CHECK_EQ(*wstl::Midpoint(data2.end(), data2.begin()), data2[5]);
 
         // Bidirectional iterator
-        std::list<int> data3(data1.begin(), data1.end());
+        std::list<int> data3(data1, data1 + 9);
 
         CHECK_EQ(*wstl::Midpoint(data3.begin(), data3.end()), *std::next(data3.begin(), 4));
 
         // Forward iterator
-        std::forward_list<int> data4(data1.begin(), data1.end());
+        CustomForwardIterator<int*> fb(data1);
+        CustomForwardIterator<int*> fe(data1 + 9);
 
-        CHECK_EQ(*wstl::Midpoint(data4.begin(), data4.end()), *std::next(data4.begin(), 4));
+        CHECK_EQ(*wstl::Midpoint(fb, fe), *std::next(fb, 4));
     }
 
     struct Hel {

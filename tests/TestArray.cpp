@@ -11,7 +11,7 @@
 
 #include <doctest.h>
 #include <wstl/Array.hpp>
-#include <array>
+#include <iterator>
 
 #include "Utils.hpp"
 
@@ -20,11 +20,10 @@ TEST_SUITE("Array") {
     static const size_t SIZE = 10;
 
     typedef wstl::Array<int, SIZE> Data;
-    typedef std::array<int, SIZE> CompareData;
     typedef wstl::Array<int, 0> ZeroData;
     
-    CompareData compareData = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-    CompareData swapData = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
+    int compareData[SIZE] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    int swapData[SIZE] = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
 
     TEST_CASE("Constructor") {
         Data data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
@@ -54,7 +53,7 @@ TEST_SUITE("Array") {
     TEST_CASE("At") {
         Data data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-        for(size_t i = 0; i < data.Size(); ++i) CHECK_EQ(data.At(i), compareData.at(i));
+        for(size_t i = 0; i < data.Size(); ++i) CHECK_EQ(data.At(i), compareData[i]);
 
         CHECK_THROWS_AS({ int i = data.At(data.Size()); (void) i; }, wstl::OutOfRange);
     }
@@ -72,11 +71,11 @@ TEST_SUITE("Array") {
 
         int& ref = data.Front();
         const int& constRef = data.Front();
-        CHECK_EQ(ref, compareData.front());
-        CHECK_EQ(constRef, compareData.front());
+        CHECK_EQ(ref, compareData[0]);
+        CHECK_EQ(constRef, compareData[0]);
 
         ++ref;
-        CHECK_EQ(ref, compareData.front() + 1);
+        CHECK_EQ(ref, compareData[0] + 1);
     }
 
     TEST_CASE("Back") {
@@ -84,11 +83,11 @@ TEST_SUITE("Array") {
 
         int& ref = data.Back();
         const int& constRef = data.Back();
-        CHECK_EQ(ref, compareData.back());
-        CHECK_EQ(constRef, compareData.back());
+        CHECK_EQ(ref, compareData[9]);
+        CHECK_EQ(constRef, compareData[9]);
 
         ++ref;
-        CHECK_EQ(ref, compareData.back() + 1);
+        CHECK_EQ(ref, compareData[9] + 1);
     }
 
     TEST_CASE("Data") {
@@ -153,28 +152,28 @@ TEST_SUITE("Array") {
     TEST_CASE("Iterator") {
         Data data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-        bool result = wstl::Equal(data.Begin(), data.End(), compareData.begin());
+        bool result = wstl::Equal(data.Begin(), data.End(), compareData);
         CHECK(result);
     }
 
     TEST_CASE("ConstIterator") {
         Data data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-        bool result = wstl::Equal(data.ConstBegin(), data.ConstEnd(), compareData.cbegin());
+        bool result = wstl::Equal(data.ConstBegin(), data.ConstEnd(), compareData);
         CHECK(result);
     }
 
     TEST_CASE("ReverseIterator") {
         Data data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-        bool result = wstl::Equal(data.ReverseBegin(), data.ReverseEnd(), compareData.rbegin());
+        bool result = wstl::Equal(data.ReverseBegin(), data.ReverseEnd(), std::reverse_iterator<int*>(compareData + SIZE));
         CHECK(result);
     }
 
     TEST_CASE("ConstReverseIterator") {
         Data data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-        bool result = wstl::Equal(data.ConstReverseBegin(), data.ConstReverseEnd(), compareData.crbegin());
+        bool result = wstl::Equal(data.ConstReverseBegin(), data.ConstReverseEnd(), std::reverse_iterator<int*>(compareData + SIZE));
         CHECK(result);
     }
 
@@ -197,10 +196,10 @@ TEST_SUITE("Array") {
         Data data = {0};
         data.Fill(1);
 
-        CompareData compare;
-        compare.fill(1);
+        int compare[10];
+        std::fill(compare, compare + 10, 1);
 
-        bool result = std::equal(data.Begin(), data.End(), compare.begin());
+        bool result = std::equal(data.Begin(), data.End(), compare);
         CHECK(result);
     }
 
@@ -210,8 +209,8 @@ TEST_SUITE("Array") {
 
         wstl::Swap(data1, data2); // Effectively calls data1.Swap(data2);
 
-        CHECK(std::equal(compareData.begin(), compareData.end(), data1.Begin()));
-        CHECK(std::equal(swapData.begin(), swapData.end(), data2.Begin()));
+        CHECK(std::equal(compareData, compareData + SIZE, data1.Begin()));
+        CHECK(std::equal(swapData, swapData + SIZE, data2.Begin()));
     }
 
     TEST_CASE("Assign") {
@@ -586,7 +585,7 @@ TEST_SUITE("Array") {
         int arr[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
         wstl::Array<int, 10> data = wstl::ToArray(arr);
 
-        bool equal = std::equal(compareData.begin(), compareData.end(), data.Begin());
+        bool equal = std::equal(compareData, compareData + SIZE, data.Begin());
         CHECK(equal);
     }
 
