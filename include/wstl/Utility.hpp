@@ -117,46 +117,41 @@ namespace wstl {
         /// @brief Default constructor - initializes both objects to their default-constructed values 
         __WSTL_CONSTEXPR__ Pair() : First(), Second() {}
 
-        /// @brief Parameterized constructor
-        /// @param first Value of the first object
-        /// @param second Value of the second object
-        __WSTL_CONSTEXPR14__ Pair(const T1& first, const T2& second) : First(first), Second(second) {}
-
-        // /// @brief Templated parameterized constructor
-        // /// @param first Value of the first object
-        // /// @param second Value of the second object
-        // template<typename U1, typename U2>
-        // __WSTL_CONSTEXPR14__ Pair(const U1& first, const U2& second) : First(first), Second(second) {}
-
         /// @brief Copy constructor - copies from pair of the same types
         /// @param other Pair to copy from
-        __WSTL_CONSTEXPR14__ Pair(const Pair& other) : First(other.First), Second(other.Second) {}
+        __WSTL_CONSTEXPR__ Pair(const Pair& other) : First(other.First), Second(other.Second) {}
 
         /// @brief Templated copy constructor - copies from pair of potentially different types
         /// @param other Pair to copy from
         template<typename U1, typename U2>
-        __WSTL_CONSTEXPR14__ Pair(const Pair<U1, U2>& other) : First(other.First), Second(other.Second) {}
+        __WSTL_CONSTEXPR__ Pair(const Pair<U1, U2>& other) : First(other.First), Second(other.Second) {}
 
         #ifdef __WSTL_CXX11__
+        /// @brief Parameterized constructor
+        /// @param first Value of the first object
+        /// @param second Value of the second object
+        /// @since C++11
+        constexpr Pair(const T1& first, const T2& second) : First(first), Second(second) {}
+
         /// @brief Move constructor from parameters - constructs members by moving from parameters
         /// @param first Value for the first object
         /// @param second Value for the second object
         /// @since C++11
         template<typename U1, typename U2>
-        __WSTL_CONSTEXPR14__ Pair(U1&& first, U2&& second) : First(Forward<U1>(first)), 
+        constexpr Pair(U1&& first, U2&& second) : First(Forward<U1>(first)), 
             Second(Forward<U2>(second)) {}
 
         /// @brief Move constructor - moves from pair of the same types
         /// @param other Pair to move from
         /// @since C++11
-        __WSTL_CONSTEXPR14__ Pair(Pair&& other) : First(Move(other.First)), 
+        constexpr Pair(Pair&& other) : First(Move(other.First)), 
             Second(Move(other.Second)) {}
 
         /// @brief Templated move constructor - moves from pair of potentially different types
         /// @param other Pair to move from
         /// @since C++11
         template<typename U1, typename U2>
-        __WSTL_CONSTEXPR14__ Pair(Pair<U1, U2>&& other) : First(Forward<U1>(other.First)), 
+        constexpr Pair(Pair<U1, U2>&& other) : First(Forward<U1>(other.First)), 
             Second(Forward<U2>(other.Second)) {}
 
         /// @brief Piecewise constructor - constructs members from tuples of arguments
@@ -164,8 +159,14 @@ namespace wstl {
         /// @param secondArgs Tuple of arguments for the second member
         /// @since C++11
         template<typename... Args1, typename... Args2>
-        __WSTL_CONSTEXPR14__ Pair(PiecewiseConstructType, Tuple<Args1...> firstArgs, Tuple<Args2...> secondArgs) : 
+        constexpr Pair(PiecewiseConstructType, Tuple<Args1...> firstArgs, Tuple<Args2...> secondArgs) : 
             Pair(firstArgs, secondArgs, IndexSequenceFor<Args1...>{}, IndexSequenceFor<Args2...>{}) {}
+        #else
+        /// @brief Templated parameterized constructor
+        /// @param first Value of the first object
+        /// @param second Value of the second object
+        template<typename U1, typename U2>
+        Pair(const U1& first, const U2& second) : First(first), Second(second) {}
         #endif
 
         /// @brief Swaps content of two pairs
@@ -227,7 +228,7 @@ namespace wstl {
     #ifdef __WSTL_CXX11__
     private:
         template<typename... Args1, size_t... Indices1, typename... Args2, size_t... Indices2>
-        __WSTL_CONSTEXPR14__ Pair(Tuple<Args1...>& firstArgs, Tuple<Args2...>& secondArgs, 
+        constexpr Pair(Tuple<Args1...>& firstArgs, Tuple<Args2...>& secondArgs, 
             IndexSequence<Indices1...>, IndexSequence<Indices2...>) : First(Forward<Args1>(Get<Indices1>(firstArgs))...), Second(Forward<Args2>(Get<Indices2>(secondArgs))...) {}
     #endif
     };
@@ -283,28 +284,28 @@ namespace wstl {
     /// @ingroup utility
     /// @see https://en.cppreference.com/w/cpp/utility/pair/get
     template<size_t Index, typename T1, typename T2>
-    __WSTL_CONSTEXPR14__ 
+    __WSTL_CONSTEXPR__ 
     inline typename EnableIf<(Index == 0), typename TupleElement<Index, Pair<T1, T2> >::Type&>::Type Get(Pair<T1, T2>& pair) __WSTL_NOEXCEPT__ {
         return pair.First;
     }
 
     /// @copydoc Get(Pair<T1, T2>&)
     template<size_t Index, typename T1, typename T2>
-    __WSTL_CONSTEXPR14__ 
+    __WSTL_CONSTEXPR__ 
     inline typename EnableIf<(Index == 1), typename TupleElement<Index, Pair<T1, T2> >::Type&>::Type Get(Pair<T1, T2>& pair) __WSTL_NOEXCEPT__ {
         return pair.Second;
     }
 
     /// @copydoc Get(Pair<T1, T2>&)
     template<size_t Index, typename T1, typename T2>
-    __WSTL_CONSTEXPR14__ 
+    __WSTL_CONSTEXPR__ 
     inline typename EnableIf<(Index == 0), const typename TupleElement<Index, Pair<T1, T2> >::Type&>::Type Get(const Pair<T1, T2>& pair) __WSTL_NOEXCEPT__ {
         return pair.First;
     }
 
     /// @copydoc Get(Pair<T1, T2>&)
     template<size_t Index, typename T1, typename T2>
-    __WSTL_CONSTEXPR14__ 
+    __WSTL_CONSTEXPR__ 
     inline typename EnableIf<(Index == 1), const typename TupleElement<Index, Pair<T1, T2> >::Type&>::Type Get(const Pair<T1, T2>& pair) __WSTL_NOEXCEPT__ {
         return pair.Second;
     }
@@ -312,28 +313,28 @@ namespace wstl {
     #ifdef __WSTL_CXX11__
     /// @copydoc Get(Pair<T1, T2>&)
     template<size_t Index, typename T1, typename T2>
-    __WSTL_CONSTEXPR14__
+    __WSTL_CONSTEXPR__
     inline EnableIfType<(Index == 0), TupleElementType<Index, Pair<T1, T2>>&&> Get(Pair<T1, T2>&& pair) __WSTL_NOEXCEPT__ {
         return Move(pair.First);
     }
 
     /// @copydoc Get(Pair<T1, T2>&)
     template<size_t Index, typename T1, typename T2>
-    __WSTL_CONSTEXPR14__
+    __WSTL_CONSTEXPR__
     inline EnableIfType<(Index == 1), TupleElementType<Index, Pair<T1, T2>>&&> Get(Pair<T1, T2>&& pair) __WSTL_NOEXCEPT__ {
         return Move(pair.Second);
     }
 
     /// @copydoc Get(Pair<T1, T2>&)
     template<size_t Index, typename T1, typename T2>
-    __WSTL_CONSTEXPR14__
+    __WSTL_CONSTEXPR__
     inline EnableIfType<(Index == 0), const TupleElementType<Index, Pair<T1, T2>>&&> Get(const Pair<T1, T2>&& pair) __WSTL_NOEXCEPT__ {
         return Move(pair.First);
     }
 
     /// @copydoc Get(Pair<T1, T2>&)
     template<size_t Index, typename T1, typename T2>
-    __WSTL_CONSTEXPR14__
+    __WSTL_CONSTEXPR__
     inline EnableIfType<(Index == 1), const TupleElementType<Index, Pair<T1, T2>>&&> Get(const Pair<T1, T2>&& pair) __WSTL_NOEXCEPT__ {
         return Move(pair.Second);
     }
@@ -342,37 +343,37 @@ namespace wstl {
     // Comparison operators for Pair
 
     template<typename T1, typename T2, typename U1, typename U2>
-    __WSTL_CONSTEXPR14__
+    __WSTL_CONSTEXPR__
     inline bool operator==(const Pair<T1, T2>& a, const Pair<U1, U2>& b) {
         return (a.First == b.First) && (a.Second == b.Second);
     }
 
     template<typename T1, typename T2, typename U1, typename U2>
-    __WSTL_CONSTEXPR14__
+    __WSTL_CONSTEXPR__
     inline bool operator!=(const Pair<T1, T2>& a, const Pair<U1, U2>& b) {
         return !(a == b);
     }
 
     template<typename T1, typename T2, typename U1, typename U2>
-    __WSTL_CONSTEXPR14__
+    __WSTL_CONSTEXPR__
     inline bool operator<(const Pair<T1, T2>& a, const Pair<U1, U2>& b) {
         return (a.First < b.First) || (!(b.First < a.First) && (a.Second < b.Second));
     }
 
     template<typename T1, typename T2, typename U1, typename U2>
-    __WSTL_CONSTEXPR14__
+    __WSTL_CONSTEXPR__
     inline bool operator>(const Pair<T1, T2>& a, const Pair<U1, U2>& b) {
         return (b < a);
     }
 
     template<typename T1, typename T2, typename U1, typename U2>
-    __WSTL_CONSTEXPR14__ 
+    __WSTL_CONSTEXPR__ 
     inline bool operator<=(const Pair<T1, T2>& a, const Pair<U1, U2>& b) {
         return !(b < a);
     }
 
     template<typename T1, typename T2, typename U1, typename U2>
-    __WSTL_CONSTEXPR14__ 
+    __WSTL_CONSTEXPR__ 
     inline bool operator>=(const Pair<T1, T2>& a, const Pair<U1, U2>& b) {
         return !(a < b);
     }
@@ -387,8 +388,7 @@ namespace wstl {
     /// @ingroup utility
     /// @see https://en.cppreference.com/w/cpp/utility/pair/make_pair
     template<typename T1, typename T2>
-    __WSTL_CONSTEXPR14__ 
-    inline Pair<UnwrapReferenceDecayType<T1>, UnwrapReferenceDecayType<T2>> MakePair(T1&& a, T2&& b) {
+    constexpr Pair<UnwrapReferenceDecayType<T1>, UnwrapReferenceDecayType<T2>> MakePair(T1&& a, T2&& b) {
         return { Forward<T1>(a), Forward<T2>(b) };
     }
     #else

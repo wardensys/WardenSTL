@@ -2099,7 +2099,10 @@ TEST_SUITE("Functional") {
 
         // Container
         int arr[5] = {1, 2, 3, 4, 5};
-        std::vector<wstl::ReferenceWrapper<int> > arrRef(arr, arr + 5);
+        std::vector<wstl::ReferenceWrapper<int> > arrRef;
+
+        for (int* it = arr; it != arr + 5; ++it) 
+            arrRef.push_back(wstl::ReferenceWrapper<int>(*it));
 
         CHECK(std::equal(arr, arr + 5, arrRef.begin()));
 
