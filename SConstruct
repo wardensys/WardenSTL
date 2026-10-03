@@ -26,9 +26,6 @@ AddOption(
 compiler = GetOption('compiler')
 cppstd = GetOption('cppstd')
 
-print(f"Using {compiler if compiler is not None else 'default'} compiler.")
-print(f"Using C++{cppstd} standard.")
-
 GNU_COMPILER_FLAGS = [
     f'-std=c++{cppstd}', 
     '-Wall', 
@@ -89,6 +86,10 @@ env.Append(
 
 if cppstd == '98':
     env.Append(CPPDEFINES = 'DOCTEST_CONFIG_NO_POSIX_SIGNALS')
+
+print(f"\nUsing {compiler if compiler is not None else 'default'} compiler.")
+print(f"Using C++{cppstd} standard.")
+print(f"\nCompiler info:\n{env.backtick(f'{env["CXX"]} --version')}")
 
 # Compilation database for IDE (VSCode)
 
