@@ -14,6 +14,10 @@
 #include <limits>
 #include <cmath>
 
+#ifdef isnan
+#undef isnan
+#endif
+
 
 TEST_SUITE("Limits") {
     TEST_CASE("NumericLimits bool") {
