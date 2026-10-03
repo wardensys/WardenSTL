@@ -1586,7 +1586,7 @@ namespace wstl {
         static char __TestImplicitlyConvertible(...);
 
         template<typename From>
-        static From& __TestConvertFrom();
+        static typename RemoveReference<From>::Type& __TestConvertFrom();
 
         template<typename From, typename To>
         struct __IsConvertible : BoolConstant<
