@@ -340,6 +340,7 @@ TEST_SUITE("TypeTraits") {
     }
 
     TEST_CASE("AddPointer") {
+        #ifdef __WSTL_CXX11__
         CHECK((wstl::IsSame<wstl::AddPointer<int>::Type, std::add_pointer<int>::type>::Value));
         CHECK((wstl::IsSame<wstl::AddPointer<const int>::Type, std::add_pointer<const int>::type>::Value));
         CHECK((wstl::IsSame<wstl::AddPointer<int*>::Type, std::add_pointer<int*>::type>::Value));
@@ -348,16 +349,30 @@ TEST_SUITE("TypeTraits") {
         CHECK((wstl::IsSame<wstl::AddPointer<int* volatile>::Type, std::add_pointer<int* volatile>::type>::Value));
         CHECK((wstl::IsSame<wstl::AddPointer<int* const volatile>::Type, std::add_pointer<int* const volatile>::type>::Value));
         CHECK((wstl::IsSame<wstl::AddPointer<int**>::Type, std::add_pointer<int**>::type>::Value));
+        #else
+        CHECK((wstl::IsSame<wstl::AddPointer<int>::Type, int*>::Value));
+        CHECK((wstl::IsSame<wstl::AddPointer<const int>::Type, const int*>::Value));
+        CHECK((wstl::IsSame<wstl::AddPointer<int*>::Type, int**>::Value));
+        CHECK((wstl::IsSame<wstl::AddPointer<const int*>::Type, const int**>::Value));
+        CHECK((wstl::IsSame<wstl::AddPointer<int* const>::Type, int* const*>::Value));
+        CHECK((wstl::IsSame<wstl::AddPointer<int* volatile>::Type, int* volatile*>::Value));
+        CHECK((wstl::IsSame<wstl::AddPointer<int* const volatile>::Type, int* const volatile*>::Value));
+        CHECK((wstl::IsSame<wstl::AddPointer<int**>::Type, int***>::Value));
+        #endif
     }
 
     TEST_CASE("AddLValueReference") {
+        #ifdef __WSTL_CXX11__
+        CHECK((wstl::IsSame<wstl::AddLValueReference<int&&>::Type, std::add_lvalue_reference<int&&>::type>::Value));
         CHECK((wstl::IsSame<wstl::AddLValueReference<void>::Type, std::add_lvalue_reference<void>::type>::Value));
         CHECK((wstl::IsSame<wstl::AddLValueReference<int>::Type, std::add_lvalue_reference<int>::type>::Value));
         CHECK((wstl::IsSame<wstl::AddLValueReference<int*>::Type, std::add_lvalue_reference<int*>::type>::Value));
         CHECK((wstl::IsSame<wstl::AddLValueReference<int&>::Type, std::add_lvalue_reference<int&>::type>::Value));
-
-        #ifdef __WSTL_CXX11__
-        CHECK((wstl::IsSame<wstl::AddLValueReference<int&&>::Type, std::add_lvalue_reference<int&&>::type>::Value));
+        #else
+        CHECK((wstl::IsSame<wstl::AddLValueReference<void>::Type, void>::Value));
+        CHECK((wstl::IsSame<wstl::AddLValueReference<int>::Type, int&>::Value));
+        CHECK((wstl::IsSame<wstl::AddLValueReference<int*>::Type, int*&>::Value));
+        CHECK((wstl::IsSame<wstl::AddLValueReference<int&>::Type, int&>::Value));
         #endif
     }
 
@@ -372,28 +387,55 @@ TEST_SUITE("TypeTraits") {
     #endif
 
     TEST_CASE("AddConst") {
+        #ifdef __WSTL_CXX11__
         CHECK((wstl::IsSame<wstl::AddConst<int>::Type, std::add_const<int>::type>::Value));
         CHECK((wstl::IsSame<wstl::AddConst<const int>::Type, std::add_const<const int>::type>::Value));
         CHECK((wstl::IsSame<wstl::AddConst<volatile int>::Type, std::add_const<volatile int>::type>::Value));
         CHECK((wstl::IsSame<wstl::AddConst<int*>::Type, std::add_const<int*>::type>::Value));
+        #else
+        CHECK((wstl::IsSame<wstl::AddConst<int>::Type, const int>::Value));
+        CHECK((wstl::IsSame<wstl::AddConst<const int>::Type, const int>::Value));
+        CHECK((wstl::IsSame<wstl::AddConst<volatile int>::Type, const volatile int>::Value));
+        CHECK((wstl::IsSame<wstl::AddConst<int*>::Type, int* const>::Value));
+        #endif
     }
 
     TEST_CASE("AddVolatile") {
+        #ifdef __WSTL_CXX11__
         CHECK((wstl::IsSame<wstl::AddVolatile<int>::Type, std::add_volatile<int>::type>::Value));
         CHECK((wstl::IsSame<wstl::AddVolatile<const int>::Type, std::add_volatile<const int>::type>::Value));
         CHECK((wstl::IsSame<wstl::AddVolatile<volatile int>::Type, std::add_volatile<volatile int>::type>::Value));
         CHECK((wstl::IsSame<wstl::AddVolatile<int*>::Type, std::add_volatile<int*>::type>::Value));
+        #else
+        CHECK((wstl::IsSame<wstl::AddVolatile<int>::Type, volatile int>::Value));
+        CHECK((wstl::IsSame<wstl::AddVolatile<const int>::Type, const volatile int>::Value));
+        CHECK((wstl::IsSame<wstl::AddVolatile<volatile int>::Type, volatile int>::Value));
+        CHECK((wstl::IsSame<wstl::AddVolatile<int*>::Type, int* volatile>::Value));
+        #endif
     }
 
     TEST_CASE("AddCV") {
+        #ifdef __WSTL_CXX11__
         CHECK((wstl::IsSame<wstl::AddCV<int>::Type, std::add_cv<int>::type>::Value));
         CHECK((wstl::IsSame<wstl::AddCV<const int>::Type, std::add_cv<const int>::type>::Value));
         CHECK((wstl::IsSame<wstl::AddCV<volatile int>::Type, std::add_cv<volatile int>::type>::Value));
         CHECK((wstl::IsSame<wstl::AddCV<const volatile int>::Type, std::add_cv<const volatile int>::type>::Value));
         CHECK((wstl::IsSame<wstl::AddCV<int*>::Type, std::add_cv<int*>::type>::Value));
+        #else
+        CHECK((wstl::IsSame<wstl::AddCV<int>::Type, const volatile int>::Value));
+        CHECK((wstl::IsSame<wstl::AddCV<const int>::Type, const volatile int>::Value));
+        CHECK((wstl::IsSame<wstl::AddCV<volatile int>::Type, const volatile int>::Value));
+        CHECK((wstl::IsSame<wstl::AddCV<const volatile int>::Type, const volatile int>::Value));
+        CHECK((wstl::IsSame<wstl::AddCV<int*>::Type, int* const volatile>::Value));
+        #endif
     }
 
     TEST_CASE("RemoveCVReference") {
+        #ifdef __WSTL_CXX11__
+        CHECK(wstl::IsSame<wstl::RemoveCVReference<int&&>::Type, std::remove_cv<std::remove_reference<int&&>::type>::type>::Value);
+        CHECK(wstl::IsSame<wstl::RemoveCVReference<volatile int&&>::Type, std::remove_cv<std::remove_reference<volatile int&&>::type>::type>::Value);
+        CHECK(wstl::IsSame<wstl::RemoveCVReference<const int&&>::Type, std::remove_cv<std::remove_reference<const int&&>::type>::type>::Value);
+        CHECK(wstl::IsSame<wstl::RemoveCVReference<const volatile int&&>::Type, std::remove_cv<std::remove_reference<const volatile int&&>::type>::type>::Value);
         CHECK((wstl::IsSame<wstl::RemoveCVReference<int>::Type, std::remove_cv<std::remove_reference<int>::type>::type>::Value));
         CHECK((wstl::IsSame<wstl::RemoveCVReference<int* const>::Type, std::remove_cv<std::remove_reference<int* const>::type>::type>::Value));
         CHECK((wstl::IsSame<wstl::RemoveCVReference<int* volatile>::Type, std::remove_cv<std::remove_reference<int* volatile>::type>::type>::Value));
@@ -406,16 +448,24 @@ TEST_SUITE("TypeTraits") {
         CHECK((wstl::IsSame<wstl::RemoveCVReference<volatile int&>::Type, std::remove_cv<std::remove_reference<volatile int&>::type>::type>::Value));
         CHECK((wstl::IsSame<wstl::RemoveCVReference<const volatile int>::Type, std::remove_cv<std::remove_reference<const volatile int>::type>::type>::Value));
         CHECK((wstl::IsSame<wstl::RemoveCVReference<const volatile int&>::Type, std::remove_cv<std::remove_reference<const volatile int&>::type>::type>::Value));
-
-        #ifdef __WSTL_CXX11__
-        CHECK(wstl::IsSame<wstl::RemoveCVReference<int&&>::Type, std::remove_cv<std::remove_reference<int&&>::type>::type>::Value);
-        CHECK(wstl::IsSame<wstl::RemoveCVReference<volatile int&&>::Type, std::remove_cv<std::remove_reference<volatile int&&>::type>::type>::Value);
-        CHECK(wstl::IsSame<wstl::RemoveCVReference<const int&&>::Type, std::remove_cv<std::remove_reference<const int&&>::type>::type>::Value);
-        CHECK(wstl::IsSame<wstl::RemoveCVReference<const volatile int&&>::Type, std::remove_cv<std::remove_reference<const volatile int&&>::type>::type>::Value);
+        #else
+        CHECK((wstl::IsSame<wstl::RemoveCVReference<int>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::RemoveCVReference<int* const>::Type, int*>::Value));
+        CHECK((wstl::IsSame<wstl::RemoveCVReference<int* volatile>::Type, int*>::Value));
+        CHECK((wstl::IsSame<wstl::RemoveCVReference<int* const volatile>::Type, int*>::Value));
+        CHECK((wstl::IsSame<wstl::RemoveCVReference<const int* const&>::Type, const int*>::Value));
+        CHECK((wstl::IsSame<wstl::RemoveCVReference<int&>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::RemoveCVReference<const int>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::RemoveCVReference<const int&>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::RemoveCVReference<volatile int>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::RemoveCVReference<volatile int&>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::RemoveCVReference<const volatile int>::Type, int>::Value));
+        CHECK((wstl::IsSame<wstl::RemoveCVReference<const volatile int&>::Type, int>::Value));
         #endif
     }
 
     TEST_CASE("AlignmentOf") {
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(wstl::AlignmentOf<char>::Value, std::alignment_of<char>::value);
         CHECK_EQ(wstl::AlignmentOf<unsigned char>::Value, std::alignment_of<unsigned char>::value);
         CHECK_EQ(wstl::AlignmentOf<short>::Value, std::alignment_of<short>::value);
@@ -429,18 +479,45 @@ TEST_SUITE("TypeTraits") {
         CHECK_EQ(wstl::AlignmentOf<float>::Value, std::alignment_of<float>::value);
         CHECK_EQ(wstl::AlignmentOf<double>::Value, std::alignment_of<double>::value);
         CHECK_EQ(wstl::AlignmentOf<Object>::Value, std::alignment_of<Object>::value);
+        #else
+        CHECK_EQ(wstl::AlignmentOf<char>::Value, 1UL);
+        CHECK_EQ(wstl::AlignmentOf<unsigned char>::Value, 1UL);
+        CHECK_EQ(wstl::AlignmentOf<short>::Value, 2UL);
+        CHECK_EQ(wstl::AlignmentOf<unsigned short>::Value, 2UL);
+        CHECK_EQ(wstl::AlignmentOf<int>::Value, 4UL);
+        CHECK_EQ(wstl::AlignmentOf<unsigned int>::Value, 4UL);
+        CHECK_EQ(wstl::AlignmentOf<long>::Value, 8UL);
+        CHECK_EQ(wstl::AlignmentOf<unsigned long>::Value, 8UL);
+        CHECK_EQ(wstl::AlignmentOf<long long>::Value, 8UL);
+        CHECK_EQ(wstl::AlignmentOf<unsigned long long>::Value, 8UL);
+        CHECK_EQ(wstl::AlignmentOf<float>::Value, 4UL);
+        CHECK_EQ(wstl::AlignmentOf<double>::Value, 8UL);
+        CHECK_EQ(wstl::AlignmentOf<Object>::Value, 4UL);
+        #endif
     }
 
     TEST_CASE("Rank") {
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(wstl::Rank<int>::Value, std::rank<int>::value);
         CHECK_EQ(wstl::Rank<int[10]>::Value, std::rank<int[10]>::value);
         CHECK_EQ(wstl::Rank<int[10][10]>::Value, std::rank<int[10][10]>::value);
+        #else
+        CHECK_EQ(wstl::Rank<int>::Value, 0UL);
+        CHECK_EQ(wstl::Rank<int[10]>::Value, 1UL);
+        CHECK_EQ(wstl::Rank<int[10][10]>::Value, 2UL);
+        #endif
     }
 
     TEST_CASE("Extent") {
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(wstl::Extent<int>::Value, std::extent<int>::value);
         CHECK_EQ(wstl::Extent<int[]>::Value, std::extent<int[]>::value);
         CHECK_EQ(wstl::Extent<int[10]>::Value, std::extent<int[10]>::value);
+        #else
+        CHECK_EQ(wstl::Extent<int>::Value, 0UL);
+        CHECK_EQ(wstl::Extent<int[]>::Value, 0UL);
+        CHECK_EQ(wstl::Extent<int[10]>::Value, 10UL);
+        #endif
     }
 
     TEST_CASE("Conditional") {
