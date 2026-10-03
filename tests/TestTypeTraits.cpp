@@ -15,6 +15,7 @@
 #include <type_traits>
 #endif
 #include <cstddef>
+#include <climits>
 
 #include "Utils.hpp"
 
