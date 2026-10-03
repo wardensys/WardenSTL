@@ -89,7 +89,7 @@ if cppstd == '98':
 
 print(f"\nUsing {compiler if compiler is not None else 'default'} compiler.")
 print(f"Using C++{cppstd} standard.")
-print(f"\nCompiler info:\n{env.backtick(f'{env["CXX"]} --version')}")
+print(f"\nCompiler info:\n{env.backtick(f'{env["CXX"]} {'' if env["CXX"] == 'cl' else '--version'}')}")
 
 # Compilation database for IDE (VSCode)
 
