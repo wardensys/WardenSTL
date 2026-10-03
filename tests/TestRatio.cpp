@@ -11,7 +11,6 @@
 
 #include <doctest.h>
 #include <wstl/Ratio.hpp>
-#include <type_traits>
 
 
 TEST_SUITE("Ratio") {
@@ -25,7 +24,7 @@ TEST_SUITE("Ratio") {
         typedef wstl::Ratio<NUMERATOR, DENOMINATOR> Data;
         typedef Data::Type RatioType;
 
-        CHECK_FALSE((std::is_same<Data, RatioType>::value));
+        CHECK_FALSE((wstl::IsSame<Data, RatioType>::Value));
 
         CHECK_EQ(Data::Numerator, N);
         CHECK_EQ(Data::Denominator, D);
