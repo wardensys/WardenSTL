@@ -31,9 +31,41 @@ namespace wstl {
         inline bool operator==(NullPointerType) const { return true; }
         inline bool operator!=(NullPointerType) const { return false; }
 
+        template<typename T>
+        inline bool operator==(T* pointer) const { return pointer == 0; }
+
+        template<typename T>
+        inline bool operator!=(T* pointer) const { return pointer != 0; }
+
+        template<typename T, typename U>
+        inline bool operator==(T U::* pointer) const { return pointer == 0; }
+
+        template<typename T, typename U>
+        inline bool operator!=(T U::* pointer) const { return pointer != 0; }
+
     private:
         void operator&() const;
     };
+
+    template<typename T>
+    inline bool operator==(T* pointer, NullPointerType) { 
+        return pointer == 0; 
+    }
+
+    template<typename T>
+    inline bool operator!=(T* pointer, NullPointerType) { 
+        return pointer != 0; 
+    }
+
+    template<typename T, typename U>
+    inline bool operator==(T U::* pointer, NullPointerType) { 
+        return pointer == 0; 
+    }
+
+    template<typename T, typename U>
+    inline bool operator!=(T U::* pointer, NullPointerType) { 
+        return pointer != 0; 
+    }
 
     #define __WSTL_NULLPTR__ wstl::NullPointerType()
     #else

@@ -614,7 +614,7 @@ namespace wstl {
 
         /// @brief Conversion operator to check if the `Function` is valid (i.e. has a callable)
         operator bool() const __WSTL_NOEXCEPT__ {
-            return (m_Function != static_cast<Return (Object::*)(Arg1, Arg2)>(NullPointer)) && (m_Object != NullPointer);
+            return (m_Function != NullPointer) && (m_Object != NullPointer);
         }
 
         /// @brief Function call operator to invoke the stored member function on the object
@@ -696,7 +696,7 @@ namespace wstl {
 
         /// @brief Conversion operator to check if the `Function` is valid (i.e. has a callable)
         operator bool() const __WSTL_NOEXCEPT__ {
-            return (m_Function != static_cast<Return (Object::*)(Arg1, Arg2) const>(NullPointer)) && (m_Object != NullPointer);
+            return (m_Function != NullPointer) && (m_Object != NullPointer);
         }
 
         /// @brief Function call operator to invoke the stored const member function on the object
@@ -893,7 +893,7 @@ namespace wstl {
 
         /// @brief Conversion operator to check if the `Function` is valid (i.e. has a callable)
         operator bool() const __WSTL_NOEXCEPT__ {
-            return (m_Function != static_cast<Return (Object::*)(Arg)>(NullPointer)) && (m_Object != NullPointer);
+            return (m_Function != NullPointer) && (m_Object != NullPointer);
         }
 
         /// @brief Function call operator to invoke the stored member function on the object
@@ -974,7 +974,7 @@ namespace wstl {
 
         /// @brief Conversion operator to check if the `Function` is valid (i.e. has a callable)
         operator bool() const __WSTL_NOEXCEPT__ {
-            return (m_Function != static_cast<Return (Object::*)(Arg) const>(NullPointer)) && (m_Object != NullPointer);
+            return (m_Function != NullPointer) && (m_Object != NullPointer);
         }
 
         /// @brief Function call operator to invoke the stored const member function on the object
@@ -1169,7 +1169,7 @@ namespace wstl {
 
         /// @brief Conversion operator to check if the `Function` is valid (i.e. has a callable)
         operator bool() const __WSTL_NOEXCEPT__ {
-            return (m_Function != static_cast<Return (Object::*)()>(NullPointer)) && (m_Object != NullPointer);
+            return (m_Function != NullPointer) && (m_Object != NullPointer);
         }
 
         /// @brief Function call operator to invoke the stored member function on the object
@@ -1249,8 +1249,7 @@ namespace wstl {
 
         /// @brief Conversion operator to check if the `Function` is valid (i.e. has a callable)
         operator bool() const __WSTL_NOEXCEPT__ {
-            return (m_Function != static_cast<Return (Object::*)() const>(NullPointer)) && 
-                (m_Object != NullPointer);
+            return (m_Function != NullPointer) && (m_Object != NullPointer);
         }
 
         /// @brief Function call operator to invoke the stored const member function on the object
