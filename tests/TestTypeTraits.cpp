@@ -1335,6 +1335,7 @@ TEST_SUITE("TypeTraits") {
     }
 
     TEST_CASE("IsBaseOf") {
+        #ifdef __WSTL_CXX11__
         CHECK_EQ((wstl::IsBaseOf<A, A>::Value), (std::is_base_of<A, A>::value));
         CHECK_EQ((wstl::IsBaseOf<A, BBaseA>::Value), (std::is_base_of<A, BBaseA>::value));
         CHECK_EQ((wstl::IsBaseOf<A, CBaseB>::Value), (std::is_base_of<A, CBaseB>::value));
@@ -1342,6 +1343,15 @@ TEST_SUITE("TypeTraits") {
         CHECK_EQ((wstl::IsBaseOf<BBaseA, A>::Value), (std::is_base_of<BBaseA, A>::value));
         CHECK_EQ((wstl::IsBaseOf<UnionData, UnionData>::Value), (std::is_base_of<UnionData, UnionData>::value));
         CHECK_EQ((wstl::IsBaseOf<int, int>::Value), (std::is_base_of<int, int>::value));
+        #else
+        CHECK((wstl::IsBaseOf<A, A>::Value));
+        CHECK((wstl::IsBaseOf<A, BBaseA>::Value));
+        CHECK((wstl::IsBaseOf<A, CBaseB>::Value));
+        CHECK_FALSE((wstl::IsBaseOf<A, D>::Value));
+        CHECK_FALSE((wstl::IsBaseOf<BBaseA, A>::Value));
+        CHECK_FALSE((wstl::IsBaseOf<UnionData, UnionData>::Value));
+        CHECK_FALSE((wstl::IsBaseOf<int, int>::Value));
+        #endif
     }
 
     TEST_CASE("IsConvertible") {
@@ -1603,6 +1613,7 @@ TEST_SUITE("TypeTraits") {
     }
 
     TEST_CASE("IsTriviallyConstructible") {
+        #ifdef __WSTL_CXX11__
         CHECK_EQ(wstl::IsTriviallyConstructible<int>::Value, std::is_trivially_constructible<int>::value);
         CHECK_EQ(wstl::IsTriviallyConstructible<A>::Value, std::is_trivially_constructible<A>::value);
         CHECK_EQ(wstl::IsTriviallyConstructible<TestData>::Value, std::is_trivially_constructible<TestData>::value);
@@ -1610,6 +1621,15 @@ TEST_SUITE("TypeTraits") {
         CHECK_EQ(wstl::IsTriviallyConstructible<NonTrivialData>::Value, std::is_trivially_constructible<NonTrivialData>::value);
         CHECK_EQ(wstl::IsTriviallyConstructible<Implicit>::Value, std::is_trivially_constructible<Implicit>::value);
         CHECK_EQ(wstl::IsTriviallyConstructible<Explicit>::Value, std::is_trivially_constructible<Explicit>::value);
+        #else
+        CHECK(wstl::IsTriviallyConstructible<int>::Value);
+        CHECK(wstl::IsTriviallyConstructible<A>::Value);
+        CHECK(wstl::IsTriviallyConstructible<TestData>::Value);
+        CHECK_FALSE(wstl::IsTriviallyConstructible<void>::Value);
+        CHECK_FALSE(wstl::IsTriviallyConstructible<NonTrivialData>::Value);
+        CHECK_FALSE(wstl::IsTriviallyConstructible<Implicit>::Value);
+        CHECK_FALSE(wstl::IsTriviallyConstructible<Explicit>::Value);
+        #endif
     }
 
     TEST_CASE("IsNothrowConstructible") {

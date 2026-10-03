@@ -206,9 +206,15 @@ TEST_SUITE("FunctionTraits") {
     #endif
 
     TEST_CASE("Free template") {
+        #ifdef __WSTL_CXX11__
         typedef __TESTING_DECLTYPE__(Free0t<char>) Function;
-        typedef __TESTING_DECLTYPE__(&Free0t<char>) const volatile FunctionPtr;
         typedef __TESTING_DECLTYPE__(Free0t<char>)& FunctionRef;
+        #else
+        typedef char Function();
+        typedef char (&FunctionRef)();
+        #endif
+
+        typedef __TESTING_DECLTYPE__(&Free0t<char>) const volatile FunctionPtr;
 
         CHECK((wstl::IsSame<wstl::FunctionTraits<Function>::ArgumentTypes, wstl::TypeList<> >::Value));
         CHECK((wstl::IsSame<wstl::FunctionTraits<FunctionPtr>::ArgumentTypes, wstl::TypeList<> >::Value));
