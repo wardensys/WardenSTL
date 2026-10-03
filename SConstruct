@@ -87,6 +87,9 @@ env.Append(
     ]
 )
 
+if cppstd == '98':
+    env.Append(CPPDEFINES = 'DOCTEST_CONFIG_NO_POSIX_SIGNALS')
+
 # Compilation database for IDE (VSCode)
 
 env.Tool('compilation_db')
