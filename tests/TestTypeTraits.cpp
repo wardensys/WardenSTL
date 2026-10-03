@@ -532,7 +532,11 @@ TEST_SUITE("TypeTraits") {
         CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(Free1)>::Type, int>::Value));
         CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(Free2)>::Type, int>::Value));
         CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(Free3)>::Type, int>::Value));
+        #ifdef __WSTL_CXX11__
         CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(Free0t<char>)>::Type, char>::Value));
+        #else
+        CHECK((wstl::IsSame<wstl::ResultOf<char ()>::Type, char>::Value));
+        #endif
         CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(FreeNoexcept)>::Type, int>::Value));
         CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(FreeVariadic)>::Type, long>::Value));
 
@@ -540,7 +544,11 @@ TEST_SUITE("TypeTraits") {
         CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&Free1)>::Type, int>::Value));
         CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&Free2)>::Type, int>::Value));
         CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&Free3)>::Type, int>::Value));
+        #ifdef __WSTL_CXX11__
         CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&Free0t<char>)>::Type, char>::Value));
+        #else
+        CHECK((wstl::IsSame<wstl::ResultOf<char (*)()>::Type, char>::Value));
+        #endif
         CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&FreeNoexcept)>::Type, int>::Value));
         CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&FreeVariadic)>::Type, long>::Value));
 
@@ -548,7 +556,11 @@ TEST_SUITE("TypeTraits") {
         CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&Free1) const>::Type, int>::Value));
         CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&Free2) const>::Type, int>::Value));
         CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&Free3) const>::Type, int>::Value));
+        #ifdef __WSTL_CXX11__
         CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&Free0t<char>) const>::Type, char>::Value));
+        #else
+        CHECK((wstl::IsSame<wstl::ResultOf<char (*const)()>::Type, char>::Value));
+        #endif
         CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&FreeNoexcept) const>::Type, int>::Value));
         CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&FreeVariadic) const>::Type, long>::Value));
 
@@ -556,7 +568,11 @@ TEST_SUITE("TypeTraits") {
         CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&Free1) volatile>::Type, int>::Value));
         CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&Free2) volatile>::Type, int>::Value));
         CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&Free3) volatile>::Type, int>::Value));
+        #ifdef __WSTL_CXX11__
         CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&Free0t<char>) volatile>::Type, char>::Value));
+        #else
+        CHECK((wstl::IsSame<wstl::ResultOf<char (*volatile)()>::Type, char>::Value));
+        #endif
         CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&FreeNoexcept) volatile>::Type, int>::Value));
         CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&FreeVariadic) volatile>::Type, long>::Value));
 
@@ -564,7 +580,11 @@ TEST_SUITE("TypeTraits") {
         CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&Free1) const volatile>::Type, int>::Value));
         CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&Free2) const volatile>::Type, int>::Value));
         CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&Free3) const volatile>::Type, int>::Value));
+        #ifdef __WSTL_CXX11__
         CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&Free0t<char>) const volatile>::Type, char>::Value));
+        #else
+        CHECK((wstl::IsSame<wstl::ResultOf<char (*const volatile)()>::Type, char>::Value));
+        #endif
         CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&FreeNoexcept) const volatile>::Type, int>::Value));
         CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(&FreeVariadic) const volatile>::Type, long>::Value));
 
@@ -572,7 +592,11 @@ TEST_SUITE("TypeTraits") {
         CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(Free1)&>::Type, int>::Value));
         CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(Free2)&>::Type, int>::Value));
         CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(Free3)&>::Type, int>::Value));
+        #ifdef __WSTL_CXX11__
         CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(Free0t<char>)&>::Type, char>::Value));
+        #else
+        CHECK((wstl::IsSame<wstl::ResultOf<char (&)()>::Type, char>::Value));
+        #endif
         CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(FreeNoexcept)&>::Type, int>::Value));
         CHECK((wstl::IsSame<wstl::ResultOf<__TESTING_DECLTYPE__(FreeVariadic)&>::Type, long>::Value));
 
@@ -1238,7 +1262,7 @@ TEST_SUITE("TypeTraits") {
         CHECK(wstl::IsFunction<__TESTING_DECLTYPE__(Free1)>::Value);
         CHECK(wstl::IsFunction<__TESTING_DECLTYPE__(Free2)>::Value);
         CHECK(wstl::IsFunction<__TESTING_DECLTYPE__(Free3)>::Value);
-        CHECK(wstl::IsFunction<__TESTING_DECLTYPE__(Free0t<char>)>::Value);
+        CHECK(wstl::IsFunction<char()>::Value);
         CHECK_FALSE(wstl::IsFunction<int MemberFunction::*>::Value);
         CHECK_FALSE(wstl::IsFunction<int*>::Value);
         CHECK_FALSE(wstl::IsFunction<int (MemberFunction::*)(int)>::Value);
