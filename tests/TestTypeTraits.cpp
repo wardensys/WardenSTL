@@ -163,10 +163,19 @@ private:
     ~NoDestructor() __WSTL_DELETE__;
 };
 
+WSTL_DESTRUCTIBLE_OVERRIDE98(NoDestructor, false)
+
+struct CustomDestructor {
+    CustomDestructor(int) {}
+    ~CustomDestructor() {}
+};
+
 struct PrivateDestructor {
 private:
     ~PrivateDestructor() {}
 };
+
+WSTL_DESTRUCTIBLE_OVERRIDE98(PrivateDestructor, false)
 
 struct Abstract {
     virtual void Foo() = 0;
@@ -2023,8 +2032,14 @@ TEST_SUITE("TypeTraits") {
         CHECK_EQ(wstl::IsDestructible<int&>::Value, std::is_destructible<int&>::value);
         CHECK_EQ(wstl::IsDestructible<TestData>::Value, std::is_destructible<TestData>::value);
         CHECK_EQ(wstl::IsDestructible<NothrowData>::Value, std::is_destructible<NothrowData>::value);
+        CHECK_EQ(wstl::IsDestructible<int(&)()>::Value, std::is_destructible<int(&)()>::value);
+        CHECK_EQ(wstl::IsDestructible<int(*)()>::Value, std::is_destructible<int(*)()>::value);
         CHECK_EQ(wstl::IsDestructible<NoDestructor>::Value, std::is_destructible<NoDestructor>::value);
+        CHECK_EQ(wstl::IsDestructible<NoDestructor[1]>::Value, std::is_destructible<NoDestructor[1]>::value);
         CHECK_EQ(wstl::IsDestructible<void>::Value, std::is_destructible<void>::value);
+        CHECK_EQ(wstl::IsDestructible<int()>::Value, std::is_destructible<int()>::value);
+        CHECK_EQ(wstl::IsDestructible<int[]>::Value, std::is_destructible<int[]>::value);
+        CHECK_EQ(wstl::IsDestructible<int[1]>::Value, std::is_destructible<int[1]>::value);
         CHECK_EQ(wstl::IsDestructible<Abstract>::Value, std::is_destructible<Abstract>::value);
         CHECK_EQ(wstl::IsDestructible<PrivateDestructor>::Value, std::is_destructible<PrivateDestructor>::value);
         #else
@@ -2032,8 +2047,15 @@ TEST_SUITE("TypeTraits") {
         CHECK(wstl::IsDestructible<int&>::Value);
         CHECK(wstl::IsDestructible<TestData>::Value);
         CHECK(wstl::IsDestructible<NothrowData>::Value);
+        CHECK(wstl::IsDestructible<CustomDestructor>::Value);
+        CHECK(wstl::IsDestructible<int(&)()>::Value);
+        CHECK(wstl::IsDestructible<int(*)()>::Value);
         CHECK_FALSE(wstl::IsDestructible<NoDestructor>::Value);
+        CHECK_FALSE(wstl::IsDestructible<NoDestructor[1]>::Value);
         CHECK_FALSE(wstl::IsDestructible<void>::Value);
+        CHECK_FALSE(wstl::IsDestructible<int()>::Value);
+        CHECK_FALSE(wstl::IsDestructible<int[]>::Value);
+        CHECK(wstl::IsDestructible<int[1]>::Value);
         CHECK(wstl::IsDestructible<Abstract>::Value);
         CHECK_FALSE(wstl::IsDestructible<PrivateDestructor>::Value);
         #endif
@@ -2045,8 +2067,14 @@ TEST_SUITE("TypeTraits") {
         CHECK_EQ(wstl::IsTriviallyDestructible<int&>::Value, std::is_trivially_destructible<int&>::value);
         CHECK_EQ(wstl::IsTriviallyDestructible<TestData>::Value, std::is_trivially_destructible<TestData>::value);
         CHECK_EQ(wstl::IsTriviallyDestructible<NothrowData>::Value, std::is_trivially_destructible<NothrowData>::value);
+        CHECK_EQ(wstl::IsTriviallyDestructible<int(&)()>::Value, std::is_trivially_destructible<int(&)()>::value);
+        CHECK_EQ(wstl::IsTriviallyDestructible<int(*)()>::Value, std::is_trivially_destructible<int(*)()>::value);
         CHECK_EQ(wstl::IsTriviallyDestructible<NoDestructor>::Value, std::is_trivially_destructible<NoDestructor>::value);
+        CHECK_EQ(wstl::IsTriviallyDestructible<NoDestructor[1]>::Value, std::is_trivially_destructible<NoDestructor[1]>::value);
         CHECK_EQ(wstl::IsTriviallyDestructible<void>::Value, std::is_trivially_destructible<void>::value);
+        CHECK_EQ(wstl::IsTriviallyDestructible<int()>::Value, std::is_trivially_destructible<int()>::value);
+        CHECK_EQ(wstl::IsTriviallyDestructible<int[]>::Value, std::is_trivially_destructible<int[]>::value);
+        CHECK_EQ(wstl::IsTriviallyDestructible<int[1]>::Value, std::is_trivially_destructible<int[1]>::value);
         CHECK_EQ(wstl::IsTriviallyDestructible<Abstract>::Value, std::is_trivially_destructible<Abstract>::value);
         CHECK_EQ(wstl::IsTriviallyDestructible<PrivateDestructor>::Value, std::is_trivially_destructible<PrivateDestructor>::value);
         #else
@@ -2054,8 +2082,14 @@ TEST_SUITE("TypeTraits") {
         CHECK(wstl::IsTriviallyDestructible<int&>::Value);
         CHECK(wstl::IsTriviallyDestructible<TestData>::Value);
         CHECK_FALSE(wstl::IsTriviallyDestructible<NothrowData>::Value);
+        CHECK(wstl::IsTriviallyDestructible<int(&)()>::Value);
+        CHECK(wstl::IsTriviallyDestructible<int(*)()>::Value);
         CHECK_FALSE(wstl::IsTriviallyDestructible<NoDestructor>::Value);
+        CHECK_FALSE(wstl::IsTriviallyDestructible<NoDestructor[1]>::Value);
         CHECK_FALSE(wstl::IsTriviallyDestructible<void>::Value);
+        CHECK_FALSE(wstl::IsTriviallyDestructible<int()>::Value);
+        CHECK_FALSE(wstl::IsTriviallyDestructible<int[]>::Value);
+        CHECK(wstl::IsTriviallyDestructible<int[1]>::Value);
         CHECK(wstl::IsTriviallyDestructible<Abstract>::Value);
         CHECK_FALSE(wstl::IsTriviallyDestructible<PrivateDestructor>::Value);
         #endif
@@ -2067,8 +2101,13 @@ TEST_SUITE("TypeTraits") {
         CHECK_EQ(wstl::IsNothrowDestructible<int&>::Value, std::is_nothrow_destructible<int&>::value);
         CHECK_EQ(wstl::IsNothrowDestructible<TestData>::Value, std::is_nothrow_destructible<TestData>::value);
         CHECK_EQ(wstl::IsNothrowDestructible<NothrowData>::Value, std::is_nothrow_destructible<NothrowData>::value);
+        CHECK_EQ(wstl::IsNothrowDestructible<int(&)()>::Value, std::is_nothrow_destructible<int(&)()>::value);
+        CHECK_EQ(wstl::IsNothrowDestructible<int(*)()>::Value, std::is_nothrow_destructible<int(*)()>::value);
         CHECK_EQ(wstl::IsNothrowDestructible<NoDestructor>::Value, std::is_nothrow_destructible<NoDestructor>::value);
         CHECK_EQ(wstl::IsNothrowDestructible<void>::Value, std::is_nothrow_destructible<void>::value);
+        CHECK_EQ(wstl::IsNothrowDestructible<int()>::Value, std::is_nothrow_destructible<int()>::value);
+        CHECK_EQ(wstl::IsNothrowDestructible<int[]>::Value, std::is_nothrow_destructible<int[]>::value);
+        CHECK_EQ(wstl::IsNothrowDestructible<int[1]>::Value, std::is_nothrow_destructible<int[1]>::value);
         CHECK_EQ(wstl::IsNothrowDestructible<Abstract>::Value, std::is_nothrow_destructible<Abstract>::value);
         CHECK_EQ(wstl::IsNothrowDestructible<PrivateDestructor>::Value, std::is_nothrow_destructible<PrivateDestructor>::value);
         #else
@@ -2076,8 +2115,14 @@ TEST_SUITE("TypeTraits") {
         CHECK(wstl::IsNothrowDestructible<int&>::Value);
         CHECK(wstl::IsNothrowDestructible<TestData>::Value);
         CHECK(wstl::IsNothrowDestructible<NothrowData>::Value);
+        CHECK(wstl::IsNothrowDestructible<int(&)()>::Value);
+        CHECK(wstl::IsNothrowDestructible<int(*)()>::Value);
         CHECK_FALSE(wstl::IsNothrowDestructible<NoDestructor>::Value);
+        CHECK_FALSE(wstl::IsNothrowDestructible<NoDestructor[1]>::Value);
         CHECK_FALSE(wstl::IsNothrowDestructible<void>::Value);
+        CHECK_FALSE(wstl::IsNothrowDestructible<int()>::Value);
+        CHECK_FALSE(wstl::IsNothrowDestructible<int[]>::Value);
+        CHECK(wstl::IsNothrowDestructible<int[1]>::Value);
         CHECK(wstl::IsNothrowDestructible<Abstract>::Value);
         CHECK_FALSE(wstl::IsNothrowDestructible<PrivateDestructor>::Value);
         #endif

@@ -2438,15 +2438,32 @@ namespace wstl {
         template<typename T>
         static auto __TestDestructible(int) -> decltype(DeclareValue<T&>().~T(), TrueType{});
 
-        template<typename T>
+        template<typename>
         static FalseType __TestDestructible(...);
+        #else
+        template<typename T>
+        static long __TestDestructible(char (*)[sizeof(((T*)0)->~T(), 1)]);
+
+        template<typename>
+        static char __TestDestructible(...);
+
+        template<typename T>
+        struct __IsDestructible : BoolConstant<sizeof(__TestDestructible<T>(0)) == sizeof(long)> {};
+
+        template<typename T>
+        struct __IsDestructible<T&> : TrueType {};
+
+        template<typename T, size_t N>
+        struct __IsDestructible<T[N]> : __IsDestructible<T> {};
         #endif
     }
 
     /// @brief Checks whether type is destructible
     /// @tparam T Type to check
-    /// @note This trait mainly uses `__is_destructible` or `__has_user_destructor` builtins, but if they're not available,
+    /// @note This trait mainly uses `__is_destructible` builtin, but if it's not available,
     /// it will use a fallback implementation that generally works but may not be 100% accurate in all cases.
+    /// @warning In C++98 you need to explicitly override some types with `WSTL_DESTRUCTIBLE_OVERRIDE98` 
+    /// if they have private destructors to avoid compilation error.
     /// @ingroup type_traits
     /// @see https://en.cppreference.com/w/cpp/types/is_destructible
     template<typename T>
@@ -2457,9 +2474,30 @@ namespace wstl {
         #elif defined(__WSTL_CXX11__)
             decltype(__private::__TestDestructible<RemoveCVReferenceType<RemoveAllExtentsType<T>>>(0))::Value
         #else
-            false
+            __private::__IsDestructible<T>::Value
         #endif
     > {};
+
+    #if !defined(__WSTL_CXX11__) && (defined(__WSTL_TYPETRAITS_NO_BUILTINS__) || !__WSTL_HAS_BUILTIN__(__is_destructible))
+        /// @brief Overrides a value of `IsDestructible` for a type if compiler does not support needed builtins in C++98
+        /// @param x Type to override
+        /// @param value Value to set, must be a compile-time boolean
+        /// @note Use this macro only in global namespace
+        /// @ingroup type_traits
+        #define WSTL_DESTRUCTIBLE_OVERRIDE98(x, value) namespace wstl { \
+            namespace __private { \
+                template<> \
+                struct __IsDestructible<x> : BoolConstant<value> {}; \
+            } \
+        }
+    #else
+        /// @brief Overrides a value of `IsDestructible` for a type if compiler does not support needed builtins in C++98
+        /// @param x Type to override
+        /// @param value Value to set, must be a compile-time boolean
+        /// @note Use this macro only in global namespace
+        /// @ingroup type_traits
+        #define WSTL_DESTRUCTIBLE_OVERRIDE98(x, value)
+    #endif
 
     #ifdef __WSTL_CXX17__
     /// @copydoc IsDestructible
