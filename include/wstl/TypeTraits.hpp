@@ -1313,20 +1313,15 @@ namespace wstl {
 
     // Is lvalue reference
 
-    namespace __private {
-        template<typename T>
-        struct __IsLValueReference : FalseType {};
-
-        template<typename T>
-        struct __IsLValueReference<T&> : TrueType {};
-    }   
-
     /// @brief Checks whether type is lvalue reference
     /// @tparam T Type to check
     /// @ingroup type_traits
     /// @see https://en.cppreference.com/w/cpp/types/is_lvalue_reference
     template<typename T>
-    struct IsLValueReference : __private::__IsLValueReference<typename RemoveCV<T>::Type> {};
+    struct IsLValueReference : FalseType {};
+
+    template<typename T>
+    struct IsLValueReference<T&> : TrueType {};
 
     #ifdef __WSTL_CXX17__
     /// @copydoc IsLValueReference
@@ -1338,21 +1333,16 @@ namespace wstl {
     // Is rvalue reference
 
     #ifdef __WSTL_CXX11__
-    namespace __private {
-        template<typename T>
-        struct __IsRValueReference : FalseType {};
-
-        template<typename T>
-        struct __IsRValueReference<T&&> : TrueType {};
-    }
-
     /// @brief Checks whether type is rvalue reference
     /// @tparam T Type to check
     /// @ingroup type_traits
     /// @since C++11
     /// @see https://en.cppreference.com/w/cpp/types/is_rvalue_reference
     template<typename T>
-    struct IsRValueReference : __private::__IsRValueReference<typename RemoveCV<T>::Type> {};
+    struct IsRValueReference : FalseType {};
+
+    template<typename T>
+    struct IsRValueReference<T&&> : TrueType {};
 
     #ifdef __WSTL_CXX17__
     /// @copydoc IsRValueReference
@@ -2434,15 +2424,19 @@ namespace wstl {
     // Is destructible
 
     namespace __private {
+        template<typename T>
+        struct __IsArrayUnknownBounds : FalseType {};
+
+        template<typename T>
+        struct __IsArrayUnknownBounds<T[]> : TrueType {};
+
         #ifdef __WSTL_CXX11__
         template<typename T>
-        static auto __TestDestructible(int) -> decltype(DeclareValue<T&>().~T(), TrueType{});
-
-        template<typename>
-        static FalseType __TestDestructible(...);
+        static auto __TestDestructible(int) -> decltype(DeclareValue<T&>().~T(), long{});
         #else
         template<typename T>
         static long __TestDestructible(char (*)[sizeof(((T*)0)->~T(), 1)]);
+        #endif
 
         template<typename>
         static char __TestDestructible(...);
@@ -2455,6 +2449,10 @@ namespace wstl {
 
         template<typename T, size_t N>
         struct __IsDestructible<T[N]> : __IsDestructible<T> {};
+
+        #ifdef __WSTL_CXX11__
+        template<typename T>
+        struct __IsDestructible<T&&> : TrueType {};
         #endif
     }
 
@@ -2471,10 +2469,8 @@ namespace wstl {
         #if !defined(__WSTL_TYPETRAITS_NO_BUILTINS__) && (__WSTL_HAS_BUILTIN__(__is_destructible) \
             || defined(__WSTL_ICC__) || defined(__WSTL_MSVC__))
             __is_destructible(T)
-        #elif defined(__WSTL_CXX11__)
-            decltype(__private::__TestDestructible<RemoveCVReferenceType<RemoveAllExtentsType<T>>>(0))::Value
         #else
-            __private::__IsDestructible<T>::Value
+            __private::__IsDestructible<typename RemoveCV<T>::Type>::Value
         #endif
     > {};
 
@@ -2544,6 +2540,20 @@ namespace wstl {
 
         template<typename T>
         static FalseType __TestNothrowDestructible(...);
+
+        template<typename T>
+        struct __IsNothrowDestructible : decltype(__TestNothrowDestructible<T>(0)) {};
+
+        template<typename T>
+        struct __IsNothrowDestructible<T&> : TrueType {};
+
+        template<typename T, size_t N>
+        struct __IsNothrowDestructible<T[N]> : __IsDestructible<T> {};
+
+        #ifdef __WSTL_CXX11__
+        template<typename T>
+        struct __IsNothrowDestructible<T&&> : TrueType {};
+        #endif
         #endif
     }
 
@@ -2556,11 +2566,11 @@ namespace wstl {
     /// @see https://en.cppreference.com/w/cpp/types/is_destructible
     template<typename T>
     struct IsNothrowDestructible : BoolConstant<
-        #if !defined(__WSTL_TYPETRAITS_NO_BUILTINS__) && (__WSTL_HAS_BUILTIN__(__is_nothrow_destructible) \
+        #if defined(__WSTL_TYPETRAITS_NO_BUILTINS__) && (__WSTL_HAS_BUILTIN__(__is_nothrow_destructible) \
             || defined(__WSTL_MSVC__) || defined(__WSTL_ICC__))
             __is_nothrow_destructible(T)
         #elif defined(__WSTL_CXX11__)
-            decltype(__private::__TestNothrowDestructible<RemoveCVReferenceType<RemoveAllExtentsType<T>>>(0))::Value
+            __private::__IsNothrowDestructible<RemoveCVType<T>>::Value
         #else
             false
         #endif
