@@ -2566,7 +2566,7 @@ namespace wstl {
     /// @see https://en.cppreference.com/w/cpp/types/is_destructible
     template<typename T>
     struct IsNothrowDestructible : BoolConstant<
-        #if defined(__WSTL_TYPETRAITS_NO_BUILTINS__) && (__WSTL_HAS_BUILTIN__(__is_nothrow_destructible) \
+        #if !defined(__WSTL_TYPETRAITS_NO_BUILTINS__) && (__WSTL_HAS_BUILTIN__(__is_nothrow_destructible) \
             || defined(__WSTL_MSVC__) || defined(__WSTL_ICC__))
             __is_nothrow_destructible(T)
         #elif defined(__WSTL_CXX11__)

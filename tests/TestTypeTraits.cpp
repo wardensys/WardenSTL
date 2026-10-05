@@ -2120,7 +2120,8 @@ TEST_SUITE("TypeTraits") {
         CHECK_EQ(wstl::IsNothrowDestructible<int[1]>::Value, std::is_nothrow_destructible<int[1]>::value);
         CHECK_EQ(wstl::IsNothrowDestructible<Abstract>::Value, std::is_nothrow_destructible<Abstract>::value);
         CHECK_EQ(wstl::IsNothrowDestructible<PrivateDestructor>::Value, std::is_nothrow_destructible<PrivateDestructor>::value);
-        #else
+        #elif !defined(__WSTL_TYPETRAITS_NO_BUILTINS__) && (__WSTL_HAS_BUILTIN__(__is_nothrow_destructible) \
+            || defined(__WSTL_MSVC__) || defined(__WSTL_ICC__))
         CHECK(wstl::IsNothrowDestructible<int>::Value);
         CHECK(wstl::IsNothrowDestructible<int&>::Value);
         CHECK(wstl::IsNothrowDestructible<const int&>::Value);
@@ -2136,6 +2137,23 @@ TEST_SUITE("TypeTraits") {
         CHECK_FALSE(wstl::IsNothrowDestructible<int[]>::Value);
         CHECK(wstl::IsNothrowDestructible<int[1]>::Value);
         CHECK(wstl::IsNothrowDestructible<Abstract>::Value);
+        CHECK_FALSE(wstl::IsNothrowDestructible<PrivateDestructor>::Value);
+        #else
+        CHECK_FALSE(wstl::IsNothrowDestructible<int>::Value);
+        CHECK_FALSE(wstl::IsNothrowDestructible<int&>::Value);
+        CHECK_FALSE(wstl::IsNothrowDestructible<const int&>::Value);
+        CHECK_FALSE(wstl::IsNothrowDestructible<TestData>::Value);
+        CHECK_FALSE(wstl::IsNothrowDestructible<NothrowData>::Value);
+        CHECK_FALSE(wstl::IsNothrowDestructible<int(&)()>::Value);
+        CHECK_FALSE(wstl::IsNothrowDestructible<int(*)()>::Value);
+        CHECK_FALSE(wstl::IsNothrowDestructible<NoDestructor>::Value);
+        CHECK_FALSE(wstl::IsNothrowDestructible<volatile NoDestructor>::Value);
+        CHECK_FALSE(wstl::IsNothrowDestructible<NoDestructor[1]>::Value);
+        CHECK_FALSE(wstl::IsNothrowDestructible<void>::Value);
+        CHECK_FALSE(wstl::IsNothrowDestructible<int()>::Value);
+        CHECK_FALSE(wstl::IsNothrowDestructible<int[]>::Value);
+        CHECK_FALSE(wstl::IsNothrowDestructible<int[1]>::Value);
+        CHECK_FALSE(wstl::IsNothrowDestructible<Abstract>::Value);
         CHECK_FALSE(wstl::IsNothrowDestructible<PrivateDestructor>::Value);
         #endif
     }
