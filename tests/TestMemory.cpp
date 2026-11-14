@@ -1776,9 +1776,9 @@ TEST_SUITE("Memory") {
     }
 
     TEST_CASE("UninitializedBuffer") {
-        typedef wstl::UninitializedBuffer<uint32_t, 3> StorageType;
+        typedef wstl::UninitializedBuffer<uint32_t, 3> BufferType;
 
-        const size_t alignment = wstl::AlignmentOf<StorageType>::Value;
+        const size_t alignment = wstl::AlignmentOf<BufferType>::Value;
 
         #ifdef __WSTL_CXX11__
         const size_t expected = std::alignment_of<uint32_t>::value;
@@ -1786,14 +1786,14 @@ TEST_SUITE("Memory") {
         const size_t expected = 4UL;
         #endif
 
-        CHECK_EQ(StorageType::Alignment, alignment);
+        CHECK_EQ(BufferType::Alignment, alignment);
         CHECK_EQ(alignment, expected);
 
-        CHECK_EQ(StorageType::ObjectSize, sizeof(uint32_t));
-        CHECK_EQ(StorageType::StaticSize, 3);
+        CHECK_EQ(BufferType::ObjectSize, sizeof(uint32_t));
+        CHECK_EQ(BufferType::StaticSize, 3);
 
-        StorageType buffer;
-        const StorageType& refbuffer = buffer;
+        BufferType buffer;
+        const BufferType& refbuffer = buffer;
         buffer[0] = 0U;
         buffer[1] = 1U;
         buffer[2] = 2U;
