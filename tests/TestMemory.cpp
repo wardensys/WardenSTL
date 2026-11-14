@@ -734,9 +734,6 @@ TEST_SUITE("Memory") {
 
         wstl::UniquePointer<int[]> mp(__WSTL_MOVE__(up));
 
-        std::unique_ptr<int[]> std_up(new int[4]);
-        std::unique_ptr<const int[]> std_up2(std::move(std_up));
-
         CHECK(up.Get() == wstl::NullPointer);
         CHECK_FALSE((bool) up);
         CHECK(mp.Get() != wstl::NullPointer);
