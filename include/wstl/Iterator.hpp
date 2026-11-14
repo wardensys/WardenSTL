@@ -162,7 +162,7 @@ namespace wstl {
         };
 
         #else
-        template<typename Iterator, bool __IsIterator = sizeof(__TestLibraryIterator<Iterator>(0, 0, 0, 0, 0)) == sizeof(long)>
+        template<typename Iterator, bool __IsIterator = WSTL_TYPEDEF_TEST_RESULT(__TestLibraryIterator, Iterator, 5)>
         struct __IteratorTraits {};
 
         template<typename Iterator>

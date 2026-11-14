@@ -1,6 +1,6 @@
 from SCons.Environment import Environment
 from SCons.Script import AddOption, GetOption, COMMAND_LINE_TARGETS
-from SCons.Builder import Node
+from SCons.Builder import Node, Builder
 import webbrowser
 import os
 
@@ -76,7 +76,8 @@ env.Append(
         '__WSTL_EXCEPTION_LOCATION__',
         '__WSTL_CHECK_ITERATOR__',
         '__WSTL_CHECK_INDEXOPERATOR__',
-        '__WSTL_MATH_SUPPORT__'
+        '__WSTL_MATH_SUPPORT__',
+        '__WSTL_HANDLE_ERRORS__'
     ],
     CPPPATH = [
         env.Dir(f'thirdparty/{"doctest98" if cppstd == "98" else "doctest"}/doctest' ).srcnode(),
@@ -145,7 +146,8 @@ env.Depends(tests, cdb)
 
 if 'syntax_check' in COMMAND_LINE_TARGETS:
     syntaxEnv = env.Clone(
-        CXXCOMSTR = 'Syntax checking [$SOURCE]'
+        CXXCOMSTR = 'Syntax checking [$SOURCE]',
+        CXXCOM = '$CXX $CXXFLAGS $CCFLAGS $_CCCOMCOM $SOURCES'
     )
 
     syntaxEnv.Append(CXXFLAGS = SYNTAX_CHECKS_FLAG[syntaxEnv['CXX']])

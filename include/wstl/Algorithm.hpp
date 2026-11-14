@@ -520,7 +520,7 @@ namespace wstl {
     template<typename InputIterator, typename Size, typename OutputIterator>
     __WSTL_CONSTEXPR14__
     OutputIterator CopyInRange(InputIterator first, Size count, OutputIterator resultFirst) {
-        if(count > 0) for(Size i = 0; i != count; ++i, ++resultFirst, ++first) *resultFirst = *first; 
+        for(; count > 0; --count, ++resultFirst, ++first) *resultFirst = *first; 
         return resultFirst;
     }
 
@@ -544,6 +544,7 @@ namespace wstl {
     /// @param first Iterator to the beginning of the source range
     /// @param last Iterator to the end of the source range
     /// @param resultFirst Iterator to the beginning of the destination range
+    /// @note In C++98 it copies because move semantics are not available
     /// @return Output iterator to the past the last element moved
     /// @ingroup algorithm
     /// @see https://en.cppreference.com/w/cpp/algorithm/move
@@ -561,6 +562,7 @@ namespace wstl {
     /// @param last Iterator to the end of the source range
     /// @param resultLast Iterator to the beginning of the destination range
     /// @return Output iterator to the past the last element moved
+    /// @note In C++98 it copies because move semantics are not available
     /// @ingroup algorithm
     /// @see https://en.cppreference.com/w/cpp/algorithm/move_backward
     template<typename BidirectionalIterator1, typename BidirectionalIterator2>
@@ -590,12 +592,13 @@ namespace wstl {
     /// @param first Iterator to the beginning of the range
     /// @param count Number of elements to fill
     /// @param value Value to fill the range with
+    /// @return Output iterator to the past the last element filled
     /// @ingroup algorithm
     /// @see https://en.cppreference.com/w/cpp/algorithm/fill_n
     template<typename OutputIterator, typename Size, typename T>
     __WSTL_CONSTEXPR14__ 
     OutputIterator FillInRange(OutputIterator first, Size count, const T& value) {
-        if(count > 0) for(Size i = 0; i < count; ++i, ++first) *first = value;
+        for(; count > 0; --count, ++first) *first = value;
         return first;
     }
 
@@ -658,7 +661,7 @@ namespace wstl {
     template<typename OutputIterator, typename Size, typename Generator>
     __WSTL_CONSTEXPR14__ 
     OutputIterator GenerateInRange(OutputIterator first, Size count, Generator generator) {
-        if(count > 0) for(Size i = 0; i < count; ++i, ++first) *first = generator();
+        for(; count > 0; --count, ++first) *first = generator();
         return first;
     }
 

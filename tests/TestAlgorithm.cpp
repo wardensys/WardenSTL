@@ -1291,13 +1291,16 @@ TEST_SUITE("Algorithm") {
         CHECK(std::is_heap(data2.begin(), data2.end()));
         #endif
 
-        CHECK_EQ(data1.size(), data2.size());
+        CHECK(wstl::IsHeap(data1.begin(), data1.end()));
+        CHECK(wstl::IsHeap(data2.begin(), data2.end()));
 
-        bool equal = std::equal(data1.begin(), data1.end(), data2.begin());
-        CHECK(equal);
+        CHECK_EQ(data1.size(), data2.size());
 
         wstl::PopHeap(data1.begin(), data1.end());
         std::pop_heap(data2.begin(), data2.end());
+
+        CHECK_EQ(data1.back(), 8);
+        CHECK_EQ(data2.back(), 8);
 
         data1.pop_back();
         data2.pop_back();
@@ -1307,8 +1310,8 @@ TEST_SUITE("Algorithm") {
         CHECK(std::is_heap(data2.begin(), data2.end()));
         #endif
 
-        equal = std::equal(data1.begin(), data1.end(), data2.begin());
-        CHECK(equal);
+        CHECK(wstl::IsHeap(data1.begin(), data1.end()));
+        CHECK(wstl::IsHeap(data2.begin(), data2.end()));
 
         data1.push_back(10);
         data2.push_back(10);
@@ -1316,13 +1319,16 @@ TEST_SUITE("Algorithm") {
         wstl::PushHeap(data1.begin(), data1.end());
         std::push_heap(data2.begin(), data2.end());
 
+        CHECK_EQ(data1.front(), 10);
+        CHECK_EQ(data2.front(), 10);
+
         #ifdef __WSTL_CXX11__
         CHECK(std::is_heap(data1.begin(), data1.end()));
         CHECK(std::is_heap(data2.begin(), data2.end()));
         #endif
 
-        equal = std::equal(data1.begin(), data1.end(), data2.begin());
-        CHECK(equal);
+        CHECK(wstl::IsHeap(data1.begin(), data1.end()));
+        CHECK(wstl::IsHeap(data2.begin(), data2.end()));
 
         // Intentionally mess up the heap
         data1.push_back(20);
@@ -1340,8 +1346,13 @@ TEST_SUITE("Algorithm") {
 
         CHECK_EQ(std::distance(data1.begin(), result1), std::distance(data2.begin(), result2));
 
-        equal = std::equal(data1.begin(), data1.end(), data2.begin());
-        CHECK(equal);
+        #ifdef __WSTL_CXX11__
+        CHECK_FALSE(std::is_heap(data1.begin(), data1.end()));
+        CHECK_FALSE(std::is_heap(data2.begin(), data2.end()));
+        #endif
+
+        CHECK_FALSE(wstl::IsHeap(data1.begin(), data1.end()));
+        CHECK_FALSE(wstl::IsHeap(data2.begin(), data2.end()));
 
         data1.pop_back();
         data1.pop_back();
@@ -1351,7 +1362,7 @@ TEST_SUITE("Algorithm") {
         wstl::SortHeap(data1.begin(), data1.end());
         std::sort_heap(data2.begin(), data2.end());
 
-        equal = std::equal(data1.begin(), data1.end(), data2.begin());
+        bool equal = std::equal(data1.begin(), data1.end(), data2.begin());
         CHECK(equal);
     }
 
