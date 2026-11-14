@@ -56,7 +56,6 @@ namespace wstl {
             if(__WSTL_UNLIKELY_EXPR__(!(condition))) __WSTL_UNLIKELY__ {    \
                 wstl::__private::__ErrorHandlerError((exception));          \
                 throw((exception));                                         \
-                return;                                                     \
             }                                                               \
         } while(false)
 
@@ -64,7 +63,6 @@ namespace wstl {
             if(__WSTL_UNLIKELY_EXPR__(!(condition))) __WSTL_UNLIKELY__ {        \
                 wstl::__private::__ErrorHandlerError((exception));              \
                 throw((exception));                                             \
-                return(value);                                                  \
             }                                                                   \
         } while(false)
 
@@ -76,13 +74,11 @@ namespace wstl {
         #define __WSTL_THROW_RETURN__(exception) do {           \
             wstl::__private::__ErrorHandlerError((exception));  \
             throw((exception));                                 \
-            return;                                             \
         } while(falses)
 
         #define __WSTL_THROW_RETURNVALUE__(exception, value) do {   \
             wstl::__private::__ErrorHandlerError((exception));      \
             throw((exception));                                     \
-            return (value);                                         \
         } while(false)
     #else
         #define __WSTL_ASSERT__(condition, exception) do {                                  \

@@ -147,13 +147,19 @@ struct CustomDeleterCopyable {
 };
 
 struct Deletable {
-    Deletable() : Valid(true) {}
+    Deletable() : Valid(true), Counter(__WSTL_NULLPTR__) {}
+    Deletable(size_t* counter) : Counter(counter) {}
+
+    ~Deletable() {
+        if(Counter) ++(*Counter);
+    }
 
     void Delete() {
         Valid = false;
     }
     
     bool Valid;
+    size_t* Counter;
 };
 
 struct DeletableDeleter {
@@ -1688,22 +1694,14 @@ TEST_SUITE("Memory") {
         ::operator delete(memory1);
 
         // Non-trivial types
-        void* memory2 = ::operator new(sizeof(From));
-        From* result2 = wstl::ConstructAt(static_cast<From*>(memory2), 10);
-        
+        size_t counter = 0;
+        void* memory2 = ::operator new(sizeof(Deletable));
+        Deletable* result2 = wstl::ConstructAt(static_cast<Deletable*>(memory2), &counter);
+
         wstl::DestroyAt(result2);
-        CHECK_EQ(result2->Value, 0);
+        CHECK_EQ(counter, 1);
 
         ::operator delete(memory2);
-
-        void* memory3 = ::operator new(sizeof(NonTrivialData));
-        NonTrivialData* result3 = wstl::ConstructAt(static_cast<NonTrivialData*>(memory3), 10, 20);
-
-        wstl::DestroyAt(result3);
-        CHECK_EQ(result3->A, 0);
-        CHECK_EQ(result3->B, 0);
-
-        ::operator delete(memory3);
     }
 
     TEST_CASE("DestroyInRange") {
@@ -1722,29 +1720,17 @@ TEST_SUITE("Memory") {
         delete[] memory1;
 
         // Non-trivial types
-        NonTrivialData* memory2 = new NonTrivialData[4];
-        memory2[0].A = 1;
-        memory2[0].B = 2;
-        memory2[1].A = 3;
-        memory2[1].B = 4;
-        memory2[2].A = 5;
-        memory2[2].B = 6;
-        memory2[3].A = 7;
-        memory2[3].B = 8;
+        size_t counter = 0;
+        void* memory2 = ::operator new(sizeof(Deletable) * 4);
+        
+        for(size_t i = 0; i < 4; ++i) 
+            wstl::ConstructAt<Deletable>(static_cast<Deletable*>(memory2) + i, &counter);
 
-        NonTrivialData* result2 = wstl::DestroyInRange(memory2, 4);
-        CHECK_EQ(result2, memory2 + 4);
+        Deletable* result2 = wstl::DestroyInRange(static_cast<Deletable*>(memory2), 4);
+        CHECK_EQ(result2, static_cast<Deletable*>(memory2) + 4);
+        CHECK_EQ(counter, 4);
 
-        CHECK_EQ(memory2[0].A, 0);
-        CHECK_EQ(memory2[1].A, 0);
-        CHECK_EQ(memory2[2].A, 0);
-        CHECK_EQ(memory2[3].A, 0);
-        CHECK_EQ(memory2[0].B, 0);
-        CHECK_EQ(memory2[1].B, 0);
-        CHECK_EQ(memory2[2].B, 0);
-        CHECK_EQ(memory2[3].B, 0);
-
-        delete[] memory2;
+        ::operator delete(memory2);
     }
 
     TEST_CASE("AlignedStorage") {
