@@ -38,7 +38,7 @@
 #ifdef __WSTL_HANDLE_ERRORS__
 namespace wstl {
     namespace __private {
-        static void __ErrorHandlerError(const Exception&);
+        void __ErrorHandlerError(const Exception&);
     }
 }
 #endif
