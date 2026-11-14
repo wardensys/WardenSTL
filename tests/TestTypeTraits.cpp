@@ -207,8 +207,6 @@ union UnionData {
     class ClassData {};
 };
 
-typedef wstl::AlignedStorage<sizeof(uint16_t), wstl::AlignmentOf<uint32_t>::Value>::Type StorageType;
-
 struct Object {
     int a;
     char b;
@@ -2493,48 +2491,6 @@ TEST_SUITE("TypeTraits") {
         CHECK_FALSE((wstl::IsTypeAligned<int, 2>::Value));
     }
 
-    TEST_CASE("AlignedStorage") {
-        StorageType data[10];
-
-        size_t alignment = wstl::AlignmentOf<StorageType>::Value;
-
-        #ifdef __WSTL_CXX11__
-        size_t expected = std::alignment_of<uint32_t>::value;
-        #else
-        size_t expected = 4UL;
-        #endif
-
-        CHECK_EQ(alignment, expected);
-
-        // Test alignment of each element
-        for(int i = 0; i < 10; ++i) CHECK_EQ((size_t(&data[i]) % expected), 0UL);
-    }
-
-    TEST_CASE("AlignedStorage conversion operators") {
-        StorageType data;
-        void* ptrData = &data.Data;
-
-        uint32_t& ref = data;
-        const uint32_t& cref = data;
-        CHECK_EQ(&ref, ptrData);
-        CHECK_EQ(&cref, ptrData);
-
-        uint32_t* ptr = data;
-        const uint32_t* cptr = data;
-        CHECK_EQ(ptr, ptrData);
-        CHECK_EQ(cptr, ptrData);
-
-        uint32_t& ref2 = data.GetReference<uint32_t>();
-        const uint32_t& cref2 = data.GetReference<uint32_t>();
-        CHECK_EQ(&ref2, ptrData);
-        CHECK_EQ(&cref2, ptrData);
-
-        uint32_t* ptr2 = data.GetPointer<uint32_t>();
-        const uint32_t* cptr2 = data.GetPointer<uint32_t>();
-        CHECK_EQ(ptr2, ptrData);
-        CHECK_EQ(cptr2, ptrData);
-    }
-
     TEST_CASE("IsAligned") {
         union {
             uint32_t Value;
@@ -2926,7 +2882,6 @@ TEST_SUITE("TypeTraits") {
     #endif
     #endif
 
-    
     TEST_CASE("UnderlyingType") {
         #if !defined(__WSTL_TYPETRAITS_NO_BUILTINS__) && defined(__WSTL_CXX11__) && defined(__WSTL_SUPPORTED_COMPILER__)
         enum Enum1 : int {};

@@ -163,6 +163,11 @@ struct NonTrivialData {
     NonTrivialData() : A(0), B(0) {}
     NonTrivialData(int a, int b) : A(a), B(b) {}
 
+    ~NonTrivialData() { 
+        A = 0;
+        B = 0;
+    }
+
     int A;
     int B;
 };
@@ -176,6 +181,10 @@ struct FakeInteger {
 
 struct From {
     From(int x) : Value(x) {};
+
+    ~From() { 
+        Value = 0;
+    }
 
     int Value;
 };
