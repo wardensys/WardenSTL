@@ -1308,8 +1308,8 @@ namespace wstl {
     template<typename OutputIterator, typename Size>
     typename EnableIf<IsTriviallyConstructible<typename IteratorTraits<OutputIterator>::ValueType>::Value, OutputIterator>::Type
     UninitializedValueConstructInRange(OutputIterator first, Size count) {
-        // Do nothing
-        return Next(first, count);
+        typedef typename IteratorTraits<OutputIterator>::ValueType ValueType;
+        return FillInRange(first, count, ValueType());
     }
 
     /// @brief Value constructs N elements in uninitialized memory
